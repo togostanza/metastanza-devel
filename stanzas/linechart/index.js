@@ -13,7 +13,7 @@ import {
   downloadTSVMenuItem,
   appendCustomCss,
 } from "togostanza-utils";
-import validateParams from "../../lib/validateParams";
+import validateParams from "@/lib/validateParams";
 
 export default class Linechart extends Stanza {
   menu() {
