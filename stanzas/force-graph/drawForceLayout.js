@@ -100,7 +100,13 @@ export default function (
         (d) => d[symbols.idSym] // edge id
       )
       .attr("viewBox", [0, 0, markerBoxWidth, markerBoxHeight])
-      .attr("refX", (d) => refX + d[symbols.targetNodeSym][symbols.nodeSizeSym])
+      .attr(
+        "refX",
+        (d) =>
+          refX +
+          d[symbols.targetNodeSym][symbols.nodeSizeSym] /
+            d[symbols.edgeWidthSym]
+      )
       .attr("refY", refY)
       .attr("markerWidth", markerBoxWidth)
       .attr("markerHeight", markerBoxHeight)

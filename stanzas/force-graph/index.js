@@ -14,9 +14,9 @@ import {
   appendCustomCss,
 } from "togostanza-utils";
 
-// import * as jsonData from "./assets/lesMiserables.json";
+import * as jsonData from "./assets/lesMiserables.json";
 
-// const { default: json } = jsonData;
+const { default: json } = jsonData;
 export default class ForceGraph extends Stanza {
   menu() {
     return [
@@ -50,11 +50,13 @@ export default class ForceGraph extends Stanza {
     const width = parseInt(css("--togostanza-outline-width"));
     const height = parseInt(css("--togostanza-outline-height"));
 
-    const values = await loadData(
-      this.params["data-url"],
-      this.params["data-type"],
-      this.root.querySelector("main")
-    );
+    const values = json;
+
+    // await loadData(
+    //   this.params["data-url"],
+    //   this.params["data-type"],
+    //   this.root.querySelector("main")
+    // );
 
     this._data = values;
 
