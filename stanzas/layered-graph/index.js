@@ -35,6 +35,12 @@ export default class ForceGraph extends Stanza {
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
+    const setFallbackVal = (param, defVal) => {
+      return isNaN(parseFloat(this.params[param]))
+        ? defVal
+        : this.params[param];
+    };
+
     //data
 
     const width = parseInt(this.params["width"]);
@@ -120,11 +126,11 @@ export default class ForceGraph extends Stanza {
     };
 
     const edgeWidthParams = {
-      basedOn: this.params["edge-width-based-on"] || "fixed",
-      dataKey: this.params["edge-width-data-key"] || "",
-      fixedWidth: this.params["edge-fixed-width"] || 1,
-      minWidth: this.params["edge-min-width"],
-      maxWidth: this.params["edge-max-width"],
+      dataKey: this.params["edge-width-key"] || "",
+      minWidth: setFallbackVal("edge-width-min", 1),
+      maxWidth: this.params["edge-width-max"],
+      scale: this.params["edge-width-scale"] || "linear",
+      showArrows: this.params["edge-show_arrows"],
     };
 
     const edgeColorParams = {
@@ -176,6 +182,60 @@ export default class ForceGraph extends Stanza {
       } else {
         return straightLink(d, targetAccessor, sourceAccessor);
       }
+    }
+
+    const markerBoxWidth = 8;
+    const markerBoxHeight = 4;
+    const refX = markerBoxWidth;
+    const refY = markerBoxHeight / 2;
+
+    const arrowPoints = [
+      [0, 0],
+      [0, markerBoxHeight],
+      [markerBoxWidth, markerBoxHeight / 2],
+    ];
+
+    if (edgeWidthParams.showArrows) {
+      const defs = svg.append("defs");
+
+      const defsD = defs.selectAll("marker").data(prepEdges);
+
+      defsD
+        .enter()
+        .append("marker")
+        .attr(
+          "id",
+          (d) => d[symbols.idSym] // edge id
+        )
+        .attr("viewBox", [0, 0, markerBoxWidth, markerBoxHeight])
+        .attr(
+          "refX",
+          (d) =>
+            refX +
+            d[symbols.targetNodeSym][symbols.nodeSizeSym] /
+              d[symbols.edgeWidthSym]
+        )
+        .attr("refY", refY)
+        .attr("markerWidth", markerBoxWidth)
+        .attr("markerHeight", markerBoxHeight)
+        .attr("orient", "auto-start-reverse")
+        .append("path")
+        .attr("d", d3.line()(arrowPoints))
+        .attr("stroke", "none")
+        .attr("fill", (d) => d[symbols.edgeColorSym]);
+
+      defs
+        .append("marker")
+        .attr("id", "arrow-default")
+        .attr("viewBox", [0, 0, markerBoxWidth, markerBoxHeight])
+        .attr("refX", refX)
+        .attr("refY", refY)
+        .attr("markerWidth", markerBoxWidth)
+        .attr("markerHeight", markerBoxHeight)
+        .attr("orient", "auto-start-reverse")
+        .append("path")
+        .attr("d", d3.line()(arrowPoints))
+        .attr("stroke", "none");
     }
 
     const maxNodesInGroup = d3.max(
@@ -263,7 +323,11 @@ export default class ForceGraph extends Stanza {
         .style("stroke", (d) => d.edge[symbols.edgeColorSym])
         .style("stroke-width", (d) => d.edge[symbols.edgeWidthSym])
         .attr("d", drawLink)
-        .sort(edge3d.sort);
+        .sort(edge3d.sort)
+        .attr(
+          "marker-end",
+          (d) => `url(#${d.edge[symbols.idSym] || "default"})`
+        );
 
       linesStrip.exit().remove();
 
