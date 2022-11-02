@@ -3,6 +3,8 @@ import * as d3 from "d3";
 import { _3d } from "d3-3d";
 import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
+import { StanzaColorGenerator } from "@/lib/ColorGenerator";
+
 import { curvedLink, straightLink } from "./curvedLink";
 import prepareGraphData, {
   get3DEdges,
@@ -35,20 +37,21 @@ export default class ForceGraph extends Stanza {
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
-    const setFallbackVal = (param, defVal) => {
-      return isNaN(parseFloat(this.params[param]))
-        ? defVal
-        : this.params[param];
+    const setFallbackNumVal = (value, defVal) => {
+      return isNaN(parseFloat(value)) ? defVal : parseFloat(value);
     };
 
     //data
 
-    const width = parseInt(this.params["width"]);
-    const height = parseInt(this.params["height"]);
+    const width = setFallbackNumVal(css("--togostanza-outline-width"), 200);
+    const height = setFallbackNumVal(css("--togostanza-outline-height"), 200);
+    const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
 
     this.renderTemplate({
       template: "stanza.html.hbs",
     });
+
+    const cg = new StanzaColorGenerator(this);
 
     const values = json;
     //  await loadData(
@@ -62,22 +65,14 @@ export default class ForceGraph extends Stanza {
     const nodes = values.nodes;
     const edges = values.links;
 
-    const MARGIN = {
-      TOP: this.params["padding"],
-      BOTTOM: this.params["padding"],
-      LEFT: this.params["padding"],
-      RIGHT: this.params["padding"],
-    };
     const HEIGHT = height - MARGIN.TOP - MARGIN.BOTTOM;
     const WIDTH = width - MARGIN.LEFT - MARGIN.RIGHT;
 
     // Setting color scale
-    const togostanzaColors = [];
-    for (let i = 0; i < 6; i++) {
-      togostanzaColors.push(css(`--togostanza-series-${i}-color`));
-    }
-    const color = function () {
-      return d3.scaleOrdinal().range(togostanzaColors);
+    const togostanzaColors = cg.stanzaColor;
+
+    const color = function (type = "scaleOrdinal") {
+      return d3[type]().range(togostanzaColors);
     };
 
     const root = this.root.querySelector("main");
@@ -87,6 +82,7 @@ export default class ForceGraph extends Stanza {
     if (existingSvg) {
       existingSvg.remove();
     }
+
     const svg = d3
       .select(el)
       .append("svg")
@@ -96,55 +92,54 @@ export default class ForceGraph extends Stanza {
     this.tooltip = new ToolTip();
     root.append(this.tooltip);
 
-    const constRarius = !!this.params["constant-radius"];
+    const constRarius = !!this.params["group_planes-constant_radius"];
 
     const groupPlaneColorParams = {
-      basedOn: this.params["group-plane-color-based-on"],
+      colorPlane: this.params["group_planes-color_plane"],
       // default fixed color by css
     };
 
     const groupsSortParams = {
-      sortBy: this.params["group-planes-sort-by"],
-      sortOrder: this.params["group-planes-sort-order"] || "ascending",
+      sortBy: this.params["group_planes-sort-key"],
+      sortOrder: this.params["group_planes-sort-order"] || "ascending",
     };
 
     const nodesSortParams = {
-      sortBy: this.params["nodes-sort-by"],
+      sortBy: this.params["nodes-sort-key"],
       sortOrder: this.params["nodes-sort-order"] || "ascending",
     };
 
     const nodeSizeParams = {
-      basedOn: this.params["node-size-based-on"] || "fixed",
-      dataKey: this.params["node-size-data-key"] || "",
-      fixedSize: this.params["node-fixed-size"] || 3,
-      minSize: this.params["node-min-size"],
-      maxSize: this.params["node-max-size"],
+      dataKey: this.params["node-size-key"] || "",
+      minSize: setFallbackNumVal(this.params["node-size-min"], 3),
+      maxSize: setFallbackNumVal(this.params["node-size-max"], 6),
+      scale: this.params["node-size-scale"] || "linear",
     };
+
     const nodeColorParams = {
-      basedOn: this.params["node-color-based-on"] || "fixed",
-      dataKey: this.params["node-color-data-key"] || "",
+      dataKey: this.params["node-color-key"] || "",
     };
 
     const edgeWidthParams = {
       dataKey: this.params["edge-width-key"] || "",
-      minWidth: setFallbackVal("edge-width-min", 1),
+      minWidth: setFallbackNumVal("edge-width-min", 1),
       maxWidth: this.params["edge-width-max"],
       scale: this.params["edge-width-scale"] || "linear",
       showArrows: this.params["edge-show_arrows"],
     };
 
     const edgeColorParams = {
-      basedOn: this.params["edge-color-based-on"] || "fixed",
-      dataKey: this.params["edge-color-data-key"] || "",
+      basedOn: this.params["edge-color-based_on"],
+      dataKey: this.params["edge-color-key"] || "",
     };
 
     const tooltipParams = {
-      dataKey: this.params["nodes-tooltip-data-key"],
+      dataKey: this.params["tooltips-key"],
       show: nodes.some((d) => d[this.params["nodes-tooltip-data-key"]]),
     };
 
-    const highlightAdjEdges = this.params["highlight-adjacent-edges"] || false;
-    const highlightGroupPlanes = this.params["highlight-group-planes"] || false;
+    const highlightAdjEdges = this.params["highlight-adjacent_edges"] || false;
+    const highlightGroupPlanes = this.params["highlight-group_planes"] || false;
 
     const params = {
       MARGIN,
@@ -429,7 +424,7 @@ export default class ForceGraph extends Stanza {
 
       const planes = svgG.selectAll("path.group-plane");
       const points = svgG.selectAll("circle.node");
-      const links = svgG.selectAll("line.link");
+      const links = svgG.selectAll("path.link");
 
       if (highlightGroupPlanes) {
         addPlanesHighlight(planes, points, links);
@@ -654,4 +649,40 @@ export default class ForceGraph extends Stanza {
       this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
     }
   }
+}
+
+function getMarginsFromCSSString(str) {
+  const splitted = str.trim().split(/\W+/);
+
+  const res = {
+    TOP: 0,
+    RIGHT: 0,
+    BOTTOM: 0,
+    LEFT: 0,
+  };
+
+  switch (splitted.length) {
+    case 1:
+      res.TOP = res.RIGHT = res.BOTTOM = res.LEFT = parseInt(splitted[0]);
+      break;
+    case 2:
+      res.TOP = res.BOTTOM = parseInt(splitted[0]);
+      res.LEFT = res.RIGHT = parseInt(splitted[1]);
+      break;
+    case 3:
+      res.TOP = parseInt(splitted[0]);
+      res.LEFT = res.RIGHT = parseInt(splitted[1]);
+      res.BOTTOM = parseInt(splitted[2]);
+      break;
+    case 4:
+      res.TOP = parseInt(splitted[0]);
+      res.RIGHT = parseInt(splitted[1]);
+      res.BOTTOM = parseInt(splitted[2]);
+      res.LEFT = parseInt(splitted[3]);
+      break;
+    default:
+      break;
+  }
+
+  return res;
 }
