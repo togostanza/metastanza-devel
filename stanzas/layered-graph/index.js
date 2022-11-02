@@ -71,7 +71,7 @@ export default class ForceGraph extends Stanza {
     };
 
     const root = this.root.querySelector("main");
-    const el = this.root.getElementById("graph-3d-circle");
+    const el = this.root.getElementById("layered-graph");
 
     const existingSvg = root.getElementsByTagName("svg")[0];
     if (existingSvg) {

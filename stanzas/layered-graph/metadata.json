@@ -2,7 +2,7 @@
   "@context": {
     "stanza": "http://togostanza.org/resource/stanza#"
   },
-  "@id": "glayered-graph",
+  "@id": "layered-graph",
   "stanza:label": "Layered graph",
   "stanza:definition": "3D Layered graph MetaStanza",
   "stanza:license": "MIT",
