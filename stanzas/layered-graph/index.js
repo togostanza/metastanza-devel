@@ -236,7 +236,9 @@ export default class ForceGraph extends Stanza {
       .scale(scale);
 
     function processData(data) {
-      const planes = svgG.selectAll("path").data(data[2], (d) => d.groupId);
+      const planes = svgG
+        .selectAll("path.group-plane")
+        .data(data[2], (d) => d.groupId);
 
       planes
         .enter()
@@ -250,7 +252,7 @@ export default class ForceGraph extends Stanza {
 
       planes.exit().remove();
 
-      const linesStrip = svgG.selectAll("path").data(data[1]);
+      const linesStrip = svgG.selectAll("path.link").data(data[1]);
 
       linesStrip
         .enter()
@@ -260,10 +262,6 @@ export default class ForceGraph extends Stanza {
         .merge(linesStrip)
         .style("stroke", (d) => d.edge[symbols.edgeColorSym])
         .style("stroke-width", (d) => d.edge[symbols.edgeWidthSym])
-        // .attr("x1", (d) => d.edge[symbols.sourceNodeSym].projected.x)
-        // .attr("y1", (d) => d.edge[symbols.sourceNodeSym].projected.y)
-        // .attr("x2", (d) => d.edge[symbols.targetNodeSym].projected.x)
-        // .attr("y2", (d) => d.edge[symbols.targetNodeSym].projected.y)
         .attr("d", drawLink)
         .sort(edge3d.sort);
 
@@ -306,7 +304,6 @@ export default class ForceGraph extends Stanza {
       // Add x,y,z of source and target nodes to 3D edges
       edgesWithCoords = get3DEdges(prepEdges);
 
-      console.log(edgesWithCoords);
       // Laying out nodes=========
       const DEPTH = HEIGHT;
       const yPointScale = d3.scalePoint([-DEPTH / 2, DEPTH / 2]).domain(
