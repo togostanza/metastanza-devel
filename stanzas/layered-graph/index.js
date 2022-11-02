@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import { _3d } from "d3-3d";
 import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
+import { curvedLink, straightLink } from "./curvedLink";
 import prepareGraphData, {
   get3DEdges,
   getGroupPlanes,
@@ -15,6 +16,8 @@ import {
   downloadTSVMenuItem,
   appendCustomCss,
 } from "togostanza-utils";
+
+import { default as json } from "./assets/lesMiserables.json";
 
 export default class ForceGraph extends Stanza {
   menu() {
@@ -41,11 +44,12 @@ export default class ForceGraph extends Stanza {
       template: "stanza.html.hbs",
     });
 
-    const values = await loadData(
-      this.params["data-url"],
-      this.params["data-type"],
-      this.root.querySelector("main")
-    );
+    const values = json;
+    //  await loadData(
+    //   this.params["data-url"],
+    //   this.params["data-type"],
+    //   this.root.querySelector("main")
+    // );
 
     this._data = values;
 
@@ -158,6 +162,22 @@ export default class ForceGraph extends Stanza {
       params
     );
 
+    const targetAccessor = (d) => d.edge[symbols.targetNodeSym].projected;
+    const sourceAccessor = (d) => d.edge[symbols.sourceNodeSym].projected;
+
+    function drawLink(d) {
+      if (d.edge[symbols.isPairEdge]) {
+        return curvedLink(
+          d,
+          d.edge[symbols.isPairEdge],
+          targetAccessor,
+          sourceAccessor
+        );
+      } else {
+        return straightLink(d, targetAccessor, sourceAccessor);
+      }
+    }
+
     const maxNodesInGroup = d3.max(
       Object.entries(groupHash),
       (d) => d[1].length
@@ -229,22 +249,22 @@ export default class ForceGraph extends Stanza {
         .sort(plane3d.sort);
 
       planes.exit().remove();
-      const linesStrip = svgG
-        .selectAll("line")
-        .data(data[1], (d) => d.edge[symbols.idSym]);
+
+      const linesStrip = svgG.selectAll("path").data(data[1]);
 
       linesStrip
         .enter()
-        .append("line")
+        .append("path")
         .attr("class", "_3d")
         .classed("link", true)
         .merge(linesStrip)
         .style("stroke", (d) => d.edge[symbols.edgeColorSym])
         .style("stroke-width", (d) => d.edge[symbols.edgeWidthSym])
-        .attr("x1", (d) => d.edge[symbols.sourceNodeSym].projected.x)
-        .attr("y1", (d) => d.edge[symbols.sourceNodeSym].projected.y)
-        .attr("x2", (d) => d.edge[symbols.targetNodeSym].projected.x)
-        .attr("y2", (d) => d.edge[symbols.targetNodeSym].projected.y)
+        // .attr("x1", (d) => d.edge[symbols.sourceNodeSym].projected.x)
+        // .attr("y1", (d) => d.edge[symbols.sourceNodeSym].projected.y)
+        // .attr("x2", (d) => d.edge[symbols.targetNodeSym].projected.x)
+        // .attr("y2", (d) => d.edge[symbols.targetNodeSym].projected.y)
+        .attr("d", drawLink)
         .sort(edge3d.sort);
 
       linesStrip.exit().remove();
@@ -286,6 +306,7 @@ export default class ForceGraph extends Stanza {
       // Add x,y,z of source and target nodes to 3D edges
       edgesWithCoords = get3DEdges(prepEdges);
 
+      console.log(edgesWithCoords);
       // Laying out nodes=========
       const DEPTH = HEIGHT;
       const yPointScale = d3.scalePoint([-DEPTH / 2, DEPTH / 2]).domain(

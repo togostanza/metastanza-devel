@@ -79,7 +79,7 @@
     { "id": "Mme.Hucheloup", "group": 8 }
   ],
   "links": [
-    { "source": "Napoleon", "target": "Myriel", "value": 1 },
+    { "source": "Napoleon", "target": "Myriel", "value": 2 },
     { "source": "Myriel", "target": "Napoleon", "value": 3 },
     { "source": "Mlle.Baptistine", "target": "Myriel", "value": 8 },
     { "source": "Mme.Magloire", "target": "Myriel", "value": 10 },
@@ -91,6 +91,7 @@
     { "source": "Count", "target": "Myriel", "value": 2 },
     { "source": "OldMan", "target": "Myriel", "value": 1 },
     { "source": "Valjean", "target": "Labarre", "value": 1 },
+    { "source": "Labarre", "target": "Valjean", "value": 1 },
     { "source": "Valjean", "target": "Mme.Magloire", "value": 3 },
     { "source": "Valjean", "target": "Mlle.Baptistine", "value": 3 },
     { "source": "Valjean", "target": "Myriel", "value": 5 },
