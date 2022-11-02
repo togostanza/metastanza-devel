@@ -112,7 +112,7 @@ export default class ForceGraph extends Stanza {
     const nodeSizeParams = {
       dataKey: this.params["node-size-key"] || "",
       minSize: setFallbackNumVal(this.params["node-size-min"], 3),
-      maxSize: setFallbackNumVal(this.params["node-size-max"], 6),
+      maxSize: this.params["node-size-max"],
       scale: this.params["node-size-scale"] || "linear",
     };
 
