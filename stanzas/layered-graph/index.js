@@ -122,11 +122,13 @@ export default class ForceGraph extends Stanza {
 
     const edgeWidthParams = {
       dataKey: this.params["edge-width-key"] || "",
-      minWidth: setFallbackNumVal("edge-width-min", 1),
+      minWidth: setFallbackNumVal(this.params["edge-width-min"], 1),
       maxWidth: this.params["edge-width-max"],
       scale: this.params["edge-width-scale"] || "linear",
       showArrows: this.params["edge-show_arrows"],
     };
+
+    console.log("edgeWidthParams.minWidth", edgeWidthParams.minWidth);
 
     const edgeColorParams = {
       basedOn: this.params["edge-color-based_on"],
@@ -203,13 +205,13 @@ export default class ForceGraph extends Stanza {
           (d) => d[symbols.idSym] // edge id
         )
         .attr("viewBox", [0, 0, markerBoxWidth, markerBoxHeight])
-        .attr(
-          "refX",
-          (d) =>
+        .attr("refX", (d) => {
+          return (
             refX +
             d[symbols.targetNodeSym][symbols.nodeSizeSym] /
               d[symbols.edgeWidthSym]
-        )
+          );
+        })
         .attr("refY", refY)
         .attr("markerWidth", markerBoxWidth)
         .attr("markerHeight", markerBoxHeight)
