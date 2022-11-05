@@ -49,7 +49,6 @@ export default class VennStanza extends Stanza {
 
     // get data
     this.data = await this.getData();
-    console.log(this.data);
     this.totals = this.data.map((datum) => {
       const total = {
         set: datum.set,
@@ -74,8 +73,11 @@ export default class VennStanza extends Stanza {
   drawVennDiagram() {
     // set common parameters and styles
     const container = this.root.querySelector("#venn-diagrams");
-    const svgWidth = this.params["width"];
-    const svgHeight = this.params["height"];
+
+    const getPropertyValue = (key) =>
+      window.getComputedStyle(this.element).getPropertyValue(key);
+    const svgWidth = getPropertyValue(`--togostanza-outline-width`);
+    const svgHeight = getPropertyValue(`--togostanza-outline-height`);
     container.style.width = svgWidth + "px";
     container.style.height = svgHeight + "px";
 

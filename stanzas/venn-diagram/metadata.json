@@ -36,18 +36,6 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "width",
-      "stanza:type": "number",
-      "stanza:example": 800,
-      "stanza:description": "Width"
-    },
-    {
-      "stanza:key": "height",
-      "stanza:type": "number",
-      "stanza:example": 380,
-      "stanza:description": "Height"
-    },
-    {
       "stanza:key": "blend-mode",
       "stanza:type": "single-choice",
       "stanza:choice": ["normal", "multiply", "screen"],
@@ -57,6 +45,36 @@
   ],
   "stanza:menu-placement": "bottom-right",
   "stanza:style": [
+    {
+      "stanza:key": "--togostanza-fonts-font_family",
+      "stanza:type": "text",
+      "stanza:default": "Helvetica Neue",
+      "stanza:description": "Font family"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_color",
+      "stanza:type": "color",
+      "stanza:default": "#000000",
+      "stanza:description": "Label font color"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_size_primary",
+      "stanza:type": "number",
+      "stanza:default": 12,
+      "stanza:description": "Label font size"
+    },
+    {
+      "stanza:key": "--togostanza-outline-width",
+      "stanza:type": "number",
+      "stanza:default": 800,
+      "stanza:description": "Width"
+    },
+    {
+      "stanza:key": "--togostanza-outline-height",
+      "stanza:type": "number",
+      "stanza:default": 380,
+      "stanza:description": "Height"
+    },
     {
       "stanza:key": "--togostanza-series-0-color",
       "stanza:type": "color",
@@ -92,24 +110,6 @@
       "stanza:type": "color",
       "stanza:default": "#F75976",
       "stanza:description": "Group color 5"
-    },
-    {
-      "stanza:key": "--togostanza-fonts-font_family",
-      "stanza:type": "text",
-      "stanza:default": "Helvetica Neue",
-      "stanza:description": "Font family"
-    },
-    {
-      "stanza:key": "--togostanza-fonts-font_color",
-      "stanza:type": "color",
-      "stanza:default": "#000000",
-      "stanza:description": "Label font color"
-    },
-    {
-      "stanza:key": "--togostanza-fonts-font_size_primary",
-      "stanza:type": "number",
-      "stanza:default": 12,
-      "stanza:description": "Label font size"
     }
   ],
   "stanza:incomingEvent": [],
