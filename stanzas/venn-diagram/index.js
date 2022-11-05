@@ -105,7 +105,7 @@ export default class VennStanza extends Stanza {
     selectedDiagram.setAttribute("transform", `scale(${scale})`);
     const labelFontSize = +window
       .getComputedStyle(this.element)
-      .getPropertyValue("--togostanza-label-font-size")
+      .getPropertyValue("--togostanza-fonts-font_size_primary")
       .trim();
     selectedDiagram.querySelectorAll("text").forEach((text) => {
       text.style.fontSize = labelFontSize / scale + "px";
