@@ -85,6 +85,8 @@ export default class VennStanza extends Stanza {
     const selectedDiagram = this.root.querySelector(
       `.venn-diagram[data-number-of-data="${this.numberOfData}"]`
     );
+    const padding = getPropertyValue(`--togostanza-outline-padding`);
+    selectedDiagram.style.transform = `translate(${padding}px, ${padding}px)`;
     if (!selectedDiagram) {
       console.error(
         "Venn diagrams with more than six elements are not supported. Please try using Euler diagrams."
@@ -99,7 +101,7 @@ export default class VennStanza extends Stanza {
       .querySelector("main")
       .getBoundingClientRect();
     const rect = selectedDiagram.getBoundingClientRect();
-    const margin = Math.max(rect.x - containerRect.x, rect.y - containerRect.y);
+    const margin = Math.max(rect.x - containerRect.x, rect.y - containerRect.y) + padding;
     const scale = Math.min(
       svgWidth / (rect.width + margin * 2),
       svgHeight / (rect.height + margin * 2)

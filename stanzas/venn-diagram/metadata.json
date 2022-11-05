@@ -76,6 +76,12 @@
       "stanza:description": "Height"
     },
     {
+      "stanza:key": "--togostanza-outline-padding",
+      "stanza:type": "number",
+      "stanza:default": 50,
+      "stanza:description": "Padding"
+    },
+    {
       "stanza:key": "--togostanza-series-0-color",
       "stanza:type": "color",
       "stanza:default": "#6590e6",
