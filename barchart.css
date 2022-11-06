@@ -1,75 +1,45 @@
-summary {
-  display: none;
+.legend .label text {
+  color: black;
+  font-size: 0.5em;
 }
 
-svg.marks {
+svg .gridlines > .tick > line {
+  stroke: var(--togostanza-grid-color);
+  opacity: var(--togostanza-grid-opacity);
+  stroke-width: var(--togostanza-grid-width);
+  stroke-dasharray: var(--togostanza-grid-dash-length), var(--togostanza-grid-dash-length);
+}
+svg .gridlines > path.domain {
+  display: none;
+}
+svg .bars rect {
+  stroke-width: var(--togostanza-bars-border-width);
+  stroke: var(--togostanza-bars-border-color);
+}
+svg .axis > .tick > line {
+  stroke: var(--togostanza-tick-color);
+  stroke-width: var(--togostanza-tick-width);
+}
+svg .axis > .tick > text {
+  font-size: calc(var(--togostanza-label-font-size) * 1px);
+  fill: var(--togostanza-label-font-color);
+}
+svg .axis > path {
+  stroke: var(--togostanza-axis-color);
+  stroke-width: var(--togostanza-axis-width);
+}
+svg .axis.title text {
+  font-size: calc(var(--togostanza-title-font-size) * 1px);
+  font-weight: var(--togostanza-title-font-weight);
+  fill: var(--togostanza-title-font-color);
+}
+svg line.error-bar-line {
+  stroke: var(--togostanza-errorbar-line-color);
+  stroke-width: calc(var(--togostanza-errorbar-line-width) * 1px);
+  opacity: var(--togostanza-errorbar-line-opacity);
+}
+
+main {
   background-color: var(--togostanza-background-color);
-}
-
-svg#dl_button {
-  position: absolute;
-}
-svg#dl_button.dl-top-left {
-  top: 20px;
-  left: 40px;
-}
-svg#dl_button.dl-top-right {
-  top: 20px;
-  right: 40px;
-}
-svg#dl_button.dl-bottom-left {
-  bottom: 20px;
-  left: 40px;
-}
-svg#dl_button.dl-bottom-right {
-  bottom: 20px;
-  right: 40px;
-}
-svg#dl_button.dl-none {
-  display: none;
-}
-svg#dl_button .circle_g {
-  cursor: pointer;
-  opacity: 0.5;
-}
-svg#dl_button .hover {
-  opacity: 1;
-}
-
-div#dl_list {
-  width: fit-content;
-  position: absolute;
-  border: solid 1px var(--togostanza-label-font-color);
-  background-color: #ffffff;
-  font-size: 12px;
-  font-family: var(--togostanza-font-family);
-}
-div#dl_list.dl-top-left {
-  top: 40px;
-  left: 50px;
-}
-div#dl_list.dl-top-right {
-  top: 40px;
-  right: 50px;
-  bottom: 40px;
-  left: 50px;
-}
-div#dl_list.dl-bottom-right {
-  bottom: 40px;
-  right: 50px;
-}
-div#dl_list.dl-none {
-  display: none;
-}
-div#dl_list ul {
-  list-style-type: none;
-  margin: 0px;
-  padding: 0px;
-}
-div#dl_list ul li {
-  cursor: pointer;
-  padding: 0px 10px 0px 10px;
-}
-div#dl_list ul li.hover {
-  background-color: #dddddd;
+  border: calc(var(--togostanza-border-width) * 1px) solid var(--togostanza-border-color);
 }

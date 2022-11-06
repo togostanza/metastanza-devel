@@ -1,6 +1,6 @@
-import { S as Stanza, d as defineStanzaElement } from './transform-0e5d4876.js';
-import { l as loadData } from './load-data-ad9ea040.js';
-import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, f as appendCustomCss } from './index-75ea921b.js';
+import { S as Stanza, d as defineStanzaElement } from './transform-6201f181.js';
+import { l as loadData } from './load-data-891812c8.js';
+import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, f as appendCustomCss } from './index-f02ddcd0.js';
 import './dsv-ac31b097.js';
 
 class Scorecard extends Stanza {

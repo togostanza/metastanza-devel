@@ -1,7 +1,7 @@
-import { S as Stanza, d as defineStanzaElement } from './transform-0e5d4876.js';
-import { f as appendCustomCss } from './index-75ea921b.js';
+import { S as Stanza, d as defineStanzaElement } from './transform-6201f181.js';
+import { f as appendCustomCss } from './index-f02ddcd0.js';
 import { d as defineComponent, c as createElementBlock, a as createBaseVNode, B as normalizeStyle, t as toDisplayString, F as Fragment, o as openBlock, p as createVNode, b as createCommentVNode, e as createBlock, g as createTextVNode, f as resolveComponent, j as reactive, x as onMounted, i as ref, D as onRenderTriggered, r as renderList, n as normalizeClass, q as createApp } from './runtime-dom.esm-bundler-f53c2341.js';
-import { l as loadData } from './load-data-ad9ea040.js';
+import { l as loadData } from './load-data-891812c8.js';
 import './dsv-ac31b097.js';
 
 var script$2 = defineComponent({

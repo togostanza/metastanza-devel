@@ -1,28 +1,140 @@
-import { S as Stanza, d as defineStanzaElement } from './transform-0e5d4876.js';
-import { e as embed } from './vega-embed.module-107ee7fa.js';
-import { l as loadData } from './load-data-ad9ea040.js';
-import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-75ea921b.js';
-import './step-94a89c98.js';
-import './manyBody-93e14d1c.js';
+import { S as Stanza, s as select, d as defineStanzaElement } from './transform-6201f181.js';
+import { l as loadData } from './load-data-891812c8.js';
+import { T as ToolTip } from './ToolTip-2d2051c6.js';
+import { L as Legend } from './Legend-03de143d.js';
+import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-f02ddcd0.js';
+import { m as max } from './max-2c042256.js';
+import { o as ordinal, f as format } from './ordinal-b8a60008.js';
+import { b as band } from './band-d6b4025b.js';
+import { l as linear } from './linear-7ab34a85.js';
+import { a as axisBottom, b as axisLeft } from './axis-3dba94d9.js';
+import { s as stack } from './stack-322237e7.js';
+import { g as group } from './group-0239ab56.js';
+import { e as extent } from './extent-14a1e8e9.js';
+import './dsv-ac31b097.js';
 import './range-e15c6861.js';
-import './stratify-7050dfd9.js';
-import './index-c76c1b89.js';
-import './dice-7bdb0652.js';
-import './linear-919165bc.js';
-import './ordinal-e772a8c0.js';
-import './max-2c042256.js';
-import './min-4a3f8e4e.js';
-import './pow-43a0d612.js';
 import './array-80a7907a.js';
 import './constant-c49047a5.js';
-import './line-5ff356a1.js';
-import './point-7945b9d0.js';
-import './path-a78af922.js';
-import './arc-06a68a59.js';
-import './basis-0dde91c7.js';
-import './dsv-ac31b097.js';
-import './sum-44e7480e.js';
-import './partition-e955ad6c.js';
+
+function getXTextLabelProps(
+  angle,
+  xLabelsMarginUp,
+  axisPlacement = "bottom"
+) {
+  let textAnchor, dominantBaseline;
+  angle = parseInt(angle);
+  xLabelsMarginUp = parseInt(xLabelsMarginUp);
+
+  let sign = 1;
+  if (axisPlacement === "top") {
+    dominantBaseline = "bottom";
+    sign = -1;
+  } else {
+    dominantBaseline = "hanging";
+  }
+
+  const x = sign * xLabelsMarginUp * Math.sin((angle * Math.PI) / 180);
+  const y = sign * xLabelsMarginUp * Math.cos((angle * Math.PI) / 180);
+
+  switch (true) {
+    case angle < 0 && angle % 180 !== 0:
+      if (axisPlacement === "top") {
+        textAnchor = "start";
+      } else {
+        textAnchor = "end";
+      }
+      if (angle === -90) {
+        dominantBaseline = "central";
+      }
+      break;
+
+    case angle > 0 && angle % 180 !== 0:
+      if (axisPlacement === "top") {
+        textAnchor = "end";
+      } else {
+        textAnchor = "start";
+      }
+      if (angle === 90) {
+        dominantBaseline = "central";
+      }
+      break;
+    case angle === 0:
+      textAnchor = "middle";
+      break;
+    case angle % 180 === 0:
+      textAnchor = "middle";
+      dominantBaseline = "bottom";
+      break;
+  }
+
+  return {
+    x,
+    y,
+    textAnchor,
+    dominantBaseline,
+  };
+}
+function getYTextLabelProps(
+  angle,
+  yLabelsMarginRight,
+  axisPlacement = "left"
+) {
+  let textAnchor, dominantBaseline;
+  angle = parseInt(angle);
+  yLabelsMarginRight = parseInt(yLabelsMarginRight);
+
+  let sign = 1;
+
+  if (axisPlacement === "right") {
+    sign = -1;
+    dominantBaseline = "hanging";
+    textAnchor = "start";
+  } else {
+    dominantBaseline = "bottom";
+    textAnchor = "end";
+  }
+
+  const x = -sign * yLabelsMarginRight * Math.cos((angle * Math.PI) / 180);
+  const y = sign * yLabelsMarginRight * Math.sin((angle * Math.PI) / 180);
+
+  switch (true) {
+    case angle < 0 && angle % 180 !== 0:
+      if (axisPlacement === "right") {
+        dominantBaseline = "hanging";
+      } else {
+        dominantBaseline = "bottom";
+      }
+      if (angle === -90) {
+        textAnchor = "middle";
+      }
+      break;
+
+    case angle > 0 && angle % 180 !== 0:
+      if (axisPlacement === "right") {
+        dominantBaseline = "bottom";
+      } else {
+        dominantBaseline = "hanging";
+      }
+      if (angle === 90) {
+        textAnchor = "middle";
+      }
+      break;
+
+    case angle % 180 === 0:
+      if (angle > 0) {
+        textAnchor = "start";
+      }
+      dominantBaseline = "central";
+      break;
+  }
+
+  return {
+    x,
+    y,
+    textAnchor,
+    dominantBaseline,
+  };
+}
 
 class Barchart extends Stanza {
   menu() {
@@ -38,365 +150,691 @@ class Barchart extends Stanza {
   async render() {
     appendCustomCss(this, this.params["custom-css-url"]);
 
-    const { default: metadata } = await Promise.resolve().then(function () { return metadata$1; });
-
-    const params = new Map(
-      metadata["stanza:parameter"].map((param) => [
-        param["stanza:key"],
-        {
-          default: param["stanza:example"],
-          required: !!param["stanza:required"],
-        },
-      ])
-    );
-
-    for (const param in this.params) {
-      if (
-        params.get(param).required &&
-        typeof this.params[param] === "undefined"
-      ) {
-        throw new Error(`Required parameter ${param} is not defined`);
-      }
-    }
-
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
-    const chartType = this.params["chart-type"];
 
-    //width,height,padding
-    const width = this.params["width"] || params.get("width").default;
-    const height = this.params["height"] || params.get("height").default;
-    const padding = this.params["padding"];
+    //width、height、padding
 
     //data
-    const labelVariable = this.params["category"]; //x
-    const valueVariable = this.params["value"]; //y
-    const groupVariable = this.params["group-by"] //group
-      ? this.params["group-by"]
-      : "none"; //z
+    const xKeyName = this.params["category"];
+    const yKeyName = this.params["value"];
+    const xAxisTitle = this.params["category-title"];
+    const yAxisTitle = this.params["value-title"];
+    const yTicksNumber = this.params["yticks-number"] || 3;
+    const showLegend = this.params["legend"] || "top-right";
+    const groupKeyName = this.params["group-by"];
+    const showXGrid = this.params["xgrid"] === "true" ? true : false;
+    const showYGrid = this.params["ygrid"] === "true" ? true : false;
+    const xLabelAngle =
+      parseInt(this.params["xlabel-angle"]) === 0
+        ? 0
+        : parseInt(this.params["xlabel-angle"]) || -90;
+    const yLabelAngle =
+      parseInt(this.params["ylabel-angle"]) === 0
+        ? 0
+        : parseInt(this.params["ylabel-angle"]) || 0;
+    const barPlacement = this.params["bar-placement"];
+    const errorKeyName = this.params["error-key"];
+    const showErrorBars =
+      this.params["error-key"] !== "" || this.params["error-key"] !== undefined;
+
+    const errorBarWidth =
+      typeof this.params["error-bar-width"] !== "undefined"
+        ? this.params["error-bar-width"]
+        : 0.4;
+    const xLabelPadding =
+      parseInt(this.params["xlabel-padding"]) === 0
+        ? 0
+        : parseInt(this.params["xlabel-padding"]) || 7;
+    const yLabelPadding =
+      parseInt(this.params["ylabel-padding"]) === 0
+        ? 0
+        : parseInt(this.params["ylabel-padding"]) || 10;
+    const ylabelFormat = this.params["ylabel-format"] || null;
+    const xTitlePadding = this.params["xtitle-padding"] || 15;
+    const yTitlePadding = this.params["ytitle-padding"] || 25;
+    const xTickSize = parseInt(this.params["xtick-size"])
+      ? parseInt(this.params["xtick-size"])
+      : 0;
+    const yTickSize = parseInt(this.params["ytick-size"])
+      ? parseInt(this.params["ytick-size"])
+      : 0;
+    const axisTitleFontSize =
+      parseInt(css("--togostanza-title-font-size")) || 10;
+    const barPaddings =
+      typeof this.params["bar-paddings"] === "undefined"
+        ? 0.1
+        : this.params["bar-paddings"];
+    const barSubPaddings =
+      typeof this.params["bar-sub-paddings"] === "undefined"
+        ? 0.1
+        : this.params["bar-sub-paddings"];
+    const xTickPlacement = this.params["xtick-placement"] || "in-between";
+    const showBarTooltips =
+      this.params["bar-tooltips"] === "true" ? true : false;
+
+    const showXAxis = this.params["show-x-axis"] === "false" ? false : true;
+    const showYAxis = this.params["show-y-axis"] === "false" ? false : true;
+
+    this.renderTemplate({
+      template: "stanza.html.hbs",
+    });
+
+    const root = this.root.querySelector("main");
+    const el = this.root.getElementById("barchart-d3");
+
+    // On change params rerender - Check if legend and svg already existing and remove them -
+    const existingLegend = this.root.querySelector("togostanza--legend");
+
+    if (!this.tooltip && showBarTooltips) {
+      this.tooltip = new ToolTip();
+      root.append(this.tooltip);
+    }
+
+    if (existingLegend) {
+      existingLegend.remove();
+    }
+    const existingSVG = this.root.querySelector("svg");
+    if (existingSVG) {
+      existingSVG.remove();
+    }
+    // ====
+
+    // Add legend
+
+    if (showLegend !== "none") {
+      this.legend = new Legend();
+      root.append(this.legend);
+    }
 
     const values = await loadData(
       this.params["data-url"],
       this.params["data-type"],
       this.root.querySelector("main")
     );
-    this._data = values;
 
-    function constructData(chartType) {
-      switch (chartType) {
-        case "grouped":
-          return [
-            {
-              name: "table",
-              values,
-            },
-          ];
-        case "stacked":
-          return [
-            {
-              name: "table",
-              values,
-              transform: [
-                {
-                  type: "stack",
-                  field: valueVariable,
-                  groupby: [labelVariable],
-                  sort: { field: groupVariable },
-                },
-              ],
-            },
-          ];
-      }
+    // TODO For now, artificially add 20% error and randomly add or not add it
+
+    function getRandomTrueFalse() {
+      return Math.random() >= 0.5;
     }
 
-    const getTitle = (
-      stackedParamsTitle,
-      stackedDefaultTitle,
-      groupedParamsTitle,
-      groupedDefaultTitle
+    values.forEach((item) => {
+      if (getRandomTrueFalse()) {
+        item.error = item[yKeyName] * 0.2;
+      }
+    });
+
+    // Check data
+    let error;
+    if (!values.some((val) => yKeyName in val || parseFloat(val[yKeyName]))) {
+      error = new Error(
+        "--togostanza-barchart ERROR: No y-axis key found in data"
+      );
+      console.error(error);
+      return error;
+    }
+    if (!values.some((val) => xKeyName in val || parseFloat(val[xKeyName]))) {
+      error = new Error(
+        "--togostanza-barchart ERROR: No x-axis key found in data"
+      );
+      console.error(error);
+      return error;
+    }
+
+    //=========
+
+    this._data = values;
+
+    const togostanzaColors = [];
+    for (let i = 0; i < 6; i++) {
+      togostanzaColors.push(css(`--togostanza-series-${i}-color`));
+    }
+
+    let dataMax = max(
+      values,
+      (d) => +d[yKeyName] + (parseFloat(d[errorKeyName]) || 0)
+    );
+
+    const width = parseInt(this.params["width"]);
+    const height = parseInt(this.params["height"]);
+
+    const svg = select(el)
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
+
+    /// make below function to redraw with different margins if some labels are beyound the svg
+
+    const redrawSVG = (
+      MARGIN = {
+        TOP: 10,
+        BOTTOM: Math.max(
+          60,
+          xTitlePadding + xTickSize + 10 + axisTitleFontSize
+        ),
+        LEFT: Math.max(60, yTitlePadding + yTickSize + 10 + axisTitleFontSize),
+
+        RIGHT: 10,
+      }
     ) => {
-      switch (chartType) {
-        case "stacked":
-          return stackedParamsTitle === ""
-            ? stackedDefaultTitle
-            : stackedParamsTitle;
-        case "grouped":
-          return groupedParamsTitle === ""
-            ? groupedDefaultTitle
-            : groupedParamsTitle;
+      const existingChart = svg.select("g.chart");
+      if (!existingChart.empty()) {
+        existingChart
+          .transition()
+          .duration(200)
+          .attr("opacity", 0)
+          .on("end", () => {
+            existingChart.remove();
+          });
+      }
+
+      const HEIGHT = height - MARGIN.TOP - MARGIN.BOTTOM;
+      const WIDTH = width - MARGIN.LEFT - MARGIN.RIGHT;
+
+      const graphArea = svg.append("g").attr("class", "chart");
+
+      const barsArea = graphArea
+        .append("g")
+        .attr("class", "bars")
+        .attr("transform", `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`);
+
+      const xAxisArea = graphArea
+        .append("g")
+        .attr("class", "x axis")
+        .attr("transform", `translate(${MARGIN.LEFT},${HEIGHT + MARGIN.TOP})`);
+
+      const yTitleArea = graphArea.append("g").attr("class", "y axis title");
+
+      const xTitleArea = graphArea
+        .append("g")
+        .attr("class", "x axis title")
+        .attr("dominant-baseline", "hanging")
+        .attr(
+          "transform",
+          `translate(0,${HEIGHT + MARGIN.TOP + xTickSize + xTitlePadding})`
+        );
+
+      xTitleArea
+        .append("text")
+        .text(xAxisTitle)
+        .attr("text-anchor", "middle")
+        .attr("x", MARGIN.LEFT + WIDTH / 2);
+
+      const yAxisArea = graphArea
+        .append("g")
+        .attr("transform", `translate(${MARGIN.LEFT},${MARGIN.TOP})`)
+        .attr("class", "y axis");
+
+      yTitleArea.attr(
+        "transform",
+        `translate(${MARGIN.LEFT - yTickSize - yTitlePadding},0)`
+      );
+
+      yTitleArea
+        .append("text")
+        .text(yAxisTitle)
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "top")
+        .attr("transform", `rotate(-90)`)
+        .attr("x", -HEIGHT / 2 - MARGIN.TOP);
+
+      const xAxisLabelsProps = getXTextLabelProps(
+        xLabelAngle,
+        xLabelPadding + xTickSize
+      );
+      const yAxisLabelsProps = getYTextLabelProps(
+        yLabelAngle,
+        yLabelPadding + yTickSize
+      );
+
+      /// Axes preparation
+      const xAxisLabels = [...new Set(values.map((d) => d[xKeyName]))];
+      const gSubKeyNames = [...new Set(values.map((d) => d[groupKeyName]))];
+
+      const color = ordinal()
+        .domain(gSubKeyNames)
+        .range(togostanzaColors);
+
+      const toggleState = new Map(
+        gSubKeyNames.map((_, index) => ["" + index, false])
+      );
+
+      const x = band()
+        .domain(xAxisLabels)
+        .range([0, WIDTH])
+        .padding(barPaddings);
+
+      const y = linear().range([HEIGHT, 0]);
+
+      const xAxisGenerator = axisBottom(x).tickSizeOuter(0);
+
+      const yAxisGenerator = axisLeft(y)
+        .ticks(yTicksNumber)
+        .tickFormat((d) => format(ylabelFormat)(d));
+
+      const xAxisGridGenerator = axisBottom(x)
+        .tickSize(-HEIGHT)
+        .tickFormat("");
+
+      const yAxisGridGenerator = axisLeft(y)
+        .tickSize(-WIDTH)
+        .tickFormat("")
+        .ticks(yTicksNumber);
+
+      const yGridLines = barsArea.append("g").attr("class", "y gridlines");
+
+      const barsGroups = barsArea.append("g").attr("class", "bars-group");
+
+      xAxisGenerator.tickSize(xTickSize);
+
+      yAxisGenerator.tickSize(yTickSize);
+
+      const update = (values) => {
+        const xAxisLabels = [...new Set(values.map((d) => d[xKeyName]))];
+        const subKeyNames = [...new Set(values.map((d) => d[groupKeyName]))];
+
+        x.domain(xAxisLabels);
+
+        if (showXAxis) {
+          xAxisArea
+            .transition()
+            .duration(200)
+            .call(xAxisGenerator)
+            .selectAll("text")
+            .attr("text-anchor", xAxisLabelsProps.textAnchor)
+            .attr("alignment-baseline", xAxisLabelsProps.dominantBaseline)
+            .attr("y", xAxisLabelsProps.y)
+            .attr("x", xAxisLabelsProps.x)
+            .attr("dy", null)
+            .attr("transform", `rotate(${xLabelAngle})`)
+            .on("end", function (_, i, nodes) {
+              if (i === nodes.length - 1) {
+                check(xAxisArea.node().getBoundingClientRect());
+              }
+            });
+        }
+
+        if (xTickPlacement === "in-between") {
+          xAxisArea
+            .selectAll("g.tick>line")
+            .attr("x1", -(x.bandwidth() + x.step() * x.paddingInner()) / 2)
+            .attr("x2", -(x.bandwidth() + x.step() * x.paddingInner()) / 2);
+        }
+
+        // Show/hide grid lines
+        if (showXGrid) {
+          barsArea
+            .append("g")
+            .attr("class", "x gridlines")
+            .attr("transform", "translate(0," + HEIGHT + ")")
+            .call(xAxisGridGenerator);
+        }
+
+        if (barPlacement === "stacked") {
+          updateStackedBars(values);
+        } else {
+          updateGroupedBars(values);
+        }
+
+        if (showBarTooltips) {
+          const arr = this.root.querySelectorAll("svg rect");
+          this.tooltip.setup(arr);
+        }
+
+        if (showLegend !== "none") {
+          this.legend.setup(
+            gSubKeyNames.map((item, index) => {
+              return {
+                id: "" + index,
+                label: item,
+                color: color(item),
+                node: svg
+                  .selectAll("g.bars-group rect")
+                  .filter((d) => {
+                    if (barPlacement === "stacked") {
+                      return d.key === item;
+                    }
+                    return d[groupKeyName] === item;
+                  })
+                  .nodes(),
+              };
+            }),
+            this.root.querySelector("main"),
+            {
+              fadeoutNodes: svg.selectAll("g.bars-group rect").nodes(),
+              position: showLegend.split("-"),
+              fadeProp: "opacity",
+              showLeaders: false,
+            }
+          );
+        }
+
+        function updateStackedBars(values) {
+          const stack$1 = stack().keys(subKeyNames);
+
+          const dataset = [];
+          for (const entry of group(values, (d) => d[xKeyName]).entries()) {
+            dataset.push({
+              x: entry[0],
+              ...Object.fromEntries(
+                entry[1].map((d) => [d[groupKeyName], +d[yKeyName]])
+              ),
+            });
+          }
+
+          const stackedData = stack$1(dataset);
+
+          dataMax = max(stackedData.flat(), (d) => d[1]);
+
+          y.domain([0, dataMax * 1.05]);
+
+          if (showYAxis) {
+            yAxisArea
+              .transition()
+              .duration(200)
+              .call(yAxisGenerator)
+              .selectAll("text")
+              .attr("text-anchor", yAxisLabelsProps.textAnchor)
+              .attr("alignment-baseline", yAxisLabelsProps.dominantBaseline)
+              .attr("dy", null)
+              .attr("x", yAxisLabelsProps.x)
+              .attr("y", yAxisLabelsProps.y)
+              .attr("transform", `rotate(${yLabelAngle})`);
+          }
+
+          if (showYGrid) {
+            yGridLines.transition().duration(200).call(yAxisGridGenerator);
+          }
+
+          stackedData.forEach((item) => {
+            item.forEach((d) => (d.key = item.key));
+          });
+
+          const gs = barsGroups
+            .selectAll("rect")
+            .data(stackedData.flat(), (d) => `${d.key}-${d[0][xKeyName]}`);
+
+          gs.join(
+            (enter) => {
+              return enter
+                .append("rect")
+                .attr("fill", (d) => color(d.key))
+                .attr("x", (d) => {
+                  return x(d.data.x);
+                })
+                .attr("y", (d) => {
+                  return y(d[1]);
+                })
+                .attr("height", 0)
+                .attr("width", x.bandwidth())
+                .transition()
+                .duration(200)
+                .attr("y", (d) => {
+                  return y(d[1]);
+                })
+                .attr("height", (d) => {
+                  if (d[1]) {
+                    return y(d[0]) - y(d[1]);
+                  }
+                  return 0;
+                });
+            },
+            (update) => {
+              return update
+                .transition()
+                .duration(200)
+                .attr("x", (d) => x(d.data.x))
+                .attr("y", (d) => {
+                  return y(d[1]);
+                })
+                .attr("width", x.bandwidth())
+                .attr("height", (d) => {
+                  if (d[1]) {
+                    return y(d[0]) - y(d[1]);
+                  }
+                  return 0;
+                });
+            },
+            (exit) => {
+              exit
+                .transition()
+                .duration(200)
+                .attr("opacity", 0)
+                .on("end", () => {
+                  exit.remove();
+                });
+            }
+          )
+            .attr("data-tooltip", (d) => `${d.key}: ${d[1] - d[0]}`)
+            .attr("data-html", "true")
+            .attr("class", (d) => {
+              return `data-${gSubKeyNames.findIndex((item) => item === d.key)}`;
+            });
+        }
+
+        function updateGroupedBars(values) {
+          const dataset = group(values, (d) => d[xKeyName]);
+
+          const yMinMax = extent(
+            values,
+            (d) => +d[yKeyName] + (parseFloat(d[errorKeyName]) || 0) / 2
+          );
+
+          y.domain([0, yMinMax[1] * 1.05]);
+          if (showYAxis) {
+            yAxisArea
+              .transition()
+              .duration(200)
+              .call(yAxisGenerator)
+              .selectAll("text")
+              .attr("text-anchor", yAxisLabelsProps.textAnchor)
+              .attr("alignment-baseline", yAxisLabelsProps.dominantBaseline)
+              .attr("dy", null)
+              .attr("x", yAxisLabelsProps.x)
+              .attr("y", yAxisLabelsProps.y)
+              .attr("transform", `rotate(${yLabelAngle})`);
+          }
+
+          if (showYGrid) {
+            yGridLines.transition().duration(200).call(yAxisGridGenerator);
+          }
+
+          const subX = band()
+            .domain(subKeyNames)
+            .range([0, x.bandwidth()])
+            .padding(barSubPaddings);
+
+          //For every group of bars - own g with
+          const barsGroup = barsGroups
+            .selectAll("g")
+            .data(dataset, (d) => d[0])
+            .join(
+              (enter) => {
+                return enter.append("g");
+              },
+              (update) => update,
+              (exit) => {
+                exit.remove();
+              }
+            )
+            .attr("transform", (d) => {
+              return `translate(${x(d[0])},0)`;
+            });
+
+          // inside every g insert bars on its own x genertor
+          barsGroup
+            .selectAll("rect")
+            .data(
+              (d) => {
+                return d[1];
+              },
+              (d) => `${d[xKeyName]}-${d[groupKeyName]}`
+            )
+            .join(
+              (enter) => enter.append("rect").transition(300),
+              (update) => update,
+              (exit) => {
+                exit.remove();
+              }
+            )
+            .transition(300)
+            .attr("data-tooltip", (d) => `${d[groupKeyName]}: ${d[yKeyName]}`)
+            .attr("x", (d) => subX(d[groupKeyName]))
+            .attr("y", (d) => y(+d[yKeyName]))
+            .attr("width", subX.bandwidth())
+            .attr("height", (d) => y(0) - y(+d[yKeyName]))
+            .attr(
+              "class",
+              (d) =>
+                `data-${gSubKeyNames.findIndex(
+                  (item) => item === d[groupKeyName]
+                )}`
+            )
+            .attr("fill", (d) => {
+              return color(d[groupKeyName]);
+            });
+
+          if (showErrorBars) {
+            barsGroup.call(errorBars, y, subX, errorBarWidth);
+          }
+        }
+        // Check if X axis labels gets beyond the svg borders and adjust margins if necessary:
+
+        function check(axisBBox) {
+          const svgBBox = svg.node().getBoundingClientRect();
+
+          const deltaLeftWidth = svgBBox.left - axisBBox.left;
+          const deltaRightWidth = axisBBox.right - svgBBox.right;
+          const deltaBottomHeight = axisBBox.bottom - svgBBox.bottom;
+          const deltaTopHeight = svgBBox.top - axisBBox.top;
+
+          if (
+            deltaLeftWidth > 0 ||
+            deltaRightWidth > 0 ||
+            deltaBottomHeight > 0 ||
+            deltaTopHeight > 0
+          ) {
+            MARGIN.LEFT =
+              deltaLeftWidth > 0
+                ? MARGIN.LEFT + deltaLeftWidth + 5
+                : MARGIN.LEFT;
+            MARGIN.RIGHT =
+              deltaRightWidth > 0
+                ? MARGIN.RIGHT + deltaRightWidth + 5
+                : MARGIN.RIGHT;
+            MARGIN.BOTTOM =
+              deltaBottomHeight > 0
+                ? MARGIN.BOTTOM + deltaBottomHeight + 5
+                : MARGIN.BOTTOM;
+            MARGIN.TOP =
+              deltaTopHeight > 0 ? MARGIN.TOP + deltaTopHeight + 5 : MARGIN.TOP;
+
+            redrawSVG(MARGIN);
+          }
+        }
+      };
+
+      update(values);
+
+      if (showLegend !== "none") {
+        const legend = this.root
+          .querySelector("togostanza--legend")
+          .shadowRoot.querySelector(".legend > table > tbody");
+
+        legend.addEventListener("click", (e) => {
+          const parentNode = e.target.parentNode;
+          if (parentNode.nodeName === "TR") {
+            const id = parentNode.dataset.id;
+            parentNode.style.opacity = toggleState.get("" + id) ? 1 : 0.5;
+            toggleState.set("" + id, !toggleState.get("" + id));
+
+            // filter out data wich was clicked
+            const newData = values.filter(
+              (item) =>
+                !toggleState.get("" + gSubKeyNames.indexOf(item[groupKeyName]))
+            );
+
+            update(newData);
+          }
+        });
+      }
+
+      function errorBars(selection, yAxis, subXAxis, errorBarWidth) {
+        selection.each(function (d) {
+          const selG = select(this);
+
+          const errorBarGroup = selG
+            .selectAll("g")
+            .data(d[1])
+            .enter()
+            .filter((d) => {
+              return (
+                d[errorKeyName] !== undefined &&
+                !isNaN(parseFloat(d[errorKeyName]))
+              );
+            })
+            .append("g")
+            .attr("class", "error-bar");
+
+          errorBarGroup
+            .append("line")
+            .attr("class", "error-bar-line")
+            .attr(
+              "x1",
+              (d) => subXAxis(d[groupKeyName]) + subXAxis.bandwidth() / 2
+            )
+            .attr("y1", (d) => yAxis(+d[yKeyName] - d[errorKeyName] / 2))
+            .attr(
+              "x2",
+              (d) => subXAxis(d[groupKeyName]) + subXAxis.bandwidth() / 2
+            )
+            .attr("y2", (d) => yAxis(+d[yKeyName] + d[errorKeyName] / 2));
+
+          // upper stroke
+          errorBarGroup
+            .append("line")
+            .attr("class", "error-bar-line")
+            .attr(
+              "x1",
+              (d) =>
+                subXAxis(d[groupKeyName]) +
+                subXAxis.bandwidth() / 2 -
+                errorBarWidth / 2
+            )
+            .attr(
+              "x2",
+              (d) =>
+                subXAxis(d[groupKeyName]) +
+                subXAxis.bandwidth() / 2 +
+                errorBarWidth / 2
+            )
+            .attr("y1", (d) => yAxis(+d[yKeyName] - d[errorKeyName] / 2))
+            .attr("y2", (d) => yAxis(+d[yKeyName] - d[errorKeyName] / 2));
+          // lower stroke
+          errorBarGroup
+            .append("line")
+            .attr("class", "error-bar-line")
+            .attr(
+              "x1",
+              (d) =>
+                subXAxis(d[groupKeyName]) +
+                subXAxis.bandwidth() / 2 -
+                errorBarWidth / 2
+            )
+            .attr(
+              "x2",
+              (d) =>
+                subXAxis(d[groupKeyName]) +
+                subXAxis.bandwidth() / 2 +
+                errorBarWidth / 2
+            )
+            .attr("y1", (d) => yAxis(+d[yKeyName] + d[errorKeyName] / 2))
+            .attr("y2", (d) => yAxis(+d[yKeyName] + d[errorKeyName] / 2));
+        });
       }
     };
 
-    const axes = [
-      {
-        scale: "xscale",
-        orient:
-          this.params["xaxis-placement"] ||
-          params.get("xaxis-placement").default,
-        domainColor: "var(--togostanza-axis-color)",
-        domainWidth: css("--togostanza-axis-width"),
-        grid: this.params["xgrid"] === "true",
-        gridColor: "var(--togostanza-grid-color)",
-        gridDash: css("--togostanza-grid-dash-length"),
-        gridOpacity: css("--togostanza-grid-opacity"),
-        gridWidth: css("--togostanza-grid-width"),
-        ticks: this.params["xtick"] === "true",
-        tickColor: "var(--togostanza-tick-color)",
-        tickSize: css("--togostanza-tick-length"),
-        tickWidth: css("--togostanza-tick-width"),
-        title: getTitle(
-          this.params["category-title"],
-          labelVariable,
-          this.params["value-title"],
-          valueVariable
-        ),
-        titleColor: "var(--togostanza-title-font-color)",
-        titleFont: css("--togostanza-font-family"),
-        titleFontSize: css("--togostanza-title-font-size"),
-        titleFontWeight: css("--togostanza-title-font-weight"),
-        titlePadding: this.params["xtitle-padding"],
-        labelPadding: this.params["xlabel-padding"],
-        labelAlign: this.params["xlabel-alignment"],
-        labelLimit: this.params["xlabel-max-width"],
-        encode: {
-          labels: {
-            interactive: true,
-            update: {
-              angle: { value: this.params["xlabel-angle"] },
-              fill: { value: "var(--togostanza-label-font-color)" },
-              font: { value: css("--togostanza-font-family") },
-              fontSize: { value: css("--togostanza-label-font-size") },
-            },
-          },
-        },
-      },
-      {
-        scale: "yscale",
-        orient:
-          this.params["yaxis-placement"] ||
-          params.get("yaxis-placement").default,
-        domainColor: "var(--togostanza-axis-color)",
-        domainWidth: css("--togostanza-axis-width"),
-        grid: this.params["ygrid"] === "true",
-        gridColor: "var(--togostanza-grid-color)",
-        gridDash: css("--togostanza-grid-dash-length"),
-        gridOpacity: css("--togostanza-grid-opacity"),
-        gridWidth: css("--togostanza-grid-width"),
-        ticks: this.params["ytick"] === "true",
-        tickColor: "var(--togostanza-tick-color)",
-        tickSize: css("--togostanza-tick-length"),
-        tickWidth: css("--togostanza-tick-width"),
-        title: getTitle(
-          this.params["value-title"],
-          valueVariable,
-          this.params["category-title"],
-          labelVariable
-        ),
-        titleColor: "var(--togostanza-title-font-color)",
-        titleFont: css("--togostanza-font-family"),
-        titleFontSize: css("--togostanza-title-font-size"),
-        titleFontWeight: css("--togostanza-title-font-weight"),
-        titlePadding: this.params["ytitle-padding"],
-        labelPadding: this.params["ylabel-padding"],
-        labelAlign: this.params["ylabel-alignment"],
-        labelLimit: this.params["ylabel-max-width"],
-        zindex: 0,
-        encode: {
-          labels: {
-            interactive: true,
-            update: {
-              angle: {
-                value: this.params["ylabel-angle"],
-              },
-              fill: { value: "var(--togostanza-label-font-color)" },
-              font: {
-                value: css("--togostanza-font-family"),
-              },
-              fontSize: { value: css("--togostanza-label-font-size") },
-            },
-          },
-        },
-      },
-    ];
-
-    // legend
-    const legends = [
-      {
-        fill: "color",
-        orient: "none",
-        legendX: this.params["legend-padding"]
-          ? width + this.params["legend-padding"]
-          : width + 18,
-        title: getTitle(
-          this.params["legend-title"],
-          groupVariable,
-          this.params["legend-title"],
-          groupVariable
-        ),
-        titleColor: "var(--togostanza-title-font-color)",
-        titleFont: css("--togostanza-font-family"),
-        titleFontSize: css("--togostanza-title-font-size"),
-        titleFontWeight: css("--togostanza-title-font-weight"),
-        labelColor: "var(--togostanza-label-font-color)",
-        labelFont: css("--togostanza-font-family"),
-        labelFontSize: css("--togostanza-label-font-size"),
-        symbolStrokeColor: css("--togostanza-border-color"),
-        symbolStrokeWidth: css("--togostanza-border-width"),
-        symbolLimit: "2000",
-      },
-    ];
-
-    const colorScale = {
-      name: "color",
-      type: "ordinal",
-      domain: { data: "table", field: groupVariable },
-      range: [
-        "var(--togostanza-series-0-color)",
-        "var(--togostanza-series-1-color)",
-        "var(--togostanza-series-2-color)",
-        "var(--togostanza-series-3-color)",
-        "var(--togostanza-series-4-color)",
-        "var(--togostanza-series-5-color)",
-      ],
-    };
-
-    const constructScale = (chartType) => {
-      switch (chartType) {
-        case "grouped":
-          return [
-            colorScale,
-            {
-              name: "xscale",
-              type: "linear",
-              domain: { data: "table", field: valueVariable },
-              range: "width",
-            },
-            {
-              name: "yscale",
-              type: "band",
-              domain: { data: "table", field: labelVariable },
-              range: "height",
-              padding: 0.2,
-              paddingInner: this.params["padding-inner"],
-              paddingOuter: this.params["padding-outer"],
-            },
-          ];
-        case "stacked":
-          return [
-            colorScale,
-            {
-              name: "xscale",
-              type: "band",
-              range: "width",
-              domain: { data: "table", field: labelVariable },
-              paddingInner: this.params["padding-inner"],
-              paddingOuter: this.params["padding-outer"],
-            },
-            {
-              name: "yscale",
-              type: "linear",
-              range: "height",
-              nice: true,
-              zero: true,
-              domain: { data: "table", field: "y1" },
-            },
-          ];
-      }
-    };
-
-    const constructMark = (chartType) => {
-      switch (chartType) {
-        case "grouped":
-          return [
-            {
-              type: "group",
-              from: {
-                facet: {
-                  data: "table",
-                  name: "facet",
-                  groupby: labelVariable,
-                },
-              },
-              encode: {
-                enter: {
-                  y: { scale: "yscale", field: labelVariable },
-                },
-              },
-              signals: [{ name: "height", update: "bandwidth('yscale')" }],
-              scales: [
-                {
-                  name: "pos",
-                  type: "band",
-                  range: "height",
-                  domain: { data: "facet", field: groupVariable },
-                },
-              ],
-              marks: [
-                {
-                  name: "bars",
-                  from: { data: "facet" },
-
-                  type: "rect",
-                  encode: {
-                    enter: {
-                      y: { scale: "pos", field: groupVariable },
-                      height: { scale: "pos", band: 1 },
-                      x: { scale: "xscale", field: valueVariable },
-                      x2: { scale: "xscale", value: 0 },
-                      fill: { scale: "color", field: groupVariable },
-                      stroke: { value: "var(--togostanza-border-color)" },
-                      strokeWidth: { value: css("--togostanza-border-width") },
-                    },
-                  },
-                },
-              ],
-            },
-          ];
-        case "stacked":
-          return [
-            {
-              type: "group",
-              from: { data: "table" },
-              encode: {
-                enter: {
-                  x: { scale: "xscale", field: labelVariable },
-                  width: {
-                    scale: "xscale",
-                    band:
-                      this.params["bar-width"] ||
-                      params.get("bar-width").default,
-                  },
-                  y: { scale: "yscale", field: "y0" },
-                  y2: { scale: "yscale", field: "y1" },
-                  fill: { scale: "color", field: groupVariable },
-                  stroke: { value: "var(--togostanza-border-color)" },
-                  strokeWidth: { value: css("--togostanza-border-width") },
-                },
-              },
-            },
-          ];
-      }
-    };
-
-    const spec = {
-      $schema: "https://vega.github.io/schema/vega/v5.json",
-      width,
-      height,
-      padding,
-      data: constructData(chartType),
-      scales: constructScale(chartType),
-      axes,
-      legends:
-        this.params["legend"] === "true" && this.params["group-by"]
-          ? legends
-          : [],
-      marks: constructMark(chartType),
-    };
-
-    const el = this.root.querySelector("main");
-    const opts = {
-      renderer: "svg",
-    };
-    await embed(el, spec, opts);
+    redrawSVG();
   }
 }
 
@@ -412,29 +850,16 @@ var metadata = {
 	"@id": "barchart",
 	"stanza:label": "Barchart",
 	"stanza:definition": "Barchart MetaStanza",
-	"stanza:type": "Stanza",
-	"stanza:display": "Chart",
-	"stanza:provider": "TogoStanza",
 	"stanza:license": "MIT",
 	"stanza:author": "DBCLS",
 	"stanza:address": "https://github.com/togostanza/metastanza",
 	"stanza:contributor": [
-	"PENQE"
+	"PENQE",
+	"Einishi Tech"
 ],
-	"stanza:created": "2020-11-06",
-	"stanza:updated": "2020-11-06",
+	"stanza:created": "2021-01-18",
+	"stanza:updated": "2021-02-16",
 	"stanza:parameter": [
-	{
-		"stanza:key": "chart-type",
-		"stanza:type": "single-choice",
-		"stanza:choice": [
-			"stacked",
-			"grouped"
-		],
-		"stanza:example": "stacked",
-		"stanza:description": "Type of barchart",
-		"stanza:required": true
-	},
 	{
 		"stanza:key": "data-url",
 		"stanza:example": "https://sparql-support.dbcls.jp/sparqlist/api/metastanza_multi_data_chart",
@@ -473,21 +898,65 @@ var metadata = {
 		"stanza:required": false
 	},
 	{
+		"stanza:key": "bar-placement",
+		"stanza:type": "single-choice",
+		"stanza:choice": [
+			"stacked",
+			"grouped"
+		],
+		"stanza:example": "grouped",
+		"stanza:description": "Bars arrangement",
+		"stanza:required": true
+	},
+	{
+		"stanza:key": "error-key",
+		"stanza:type": "string",
+		"stanza:example": "error",
+		"stanza:description": "Show error bars",
+		"stanza:required": false
+	},
+	{
+		"stanza:key": "error-bar-width",
+		"stanza:type": "number",
+		"stanza:example": 10,
+		"stanza:description": "Error bar horizontal line width in px",
+		"stanza:required": false
+	},
+	{
+		"stanza:key": "bar-paddings",
+		"stanza:type": "number",
+		"stanza:example": 0.1,
+		"stanza:description": "Bars spacing",
+		"stanza:required": false
+	},
+	{
+		"stanza:key": "bar-sub-paddings",
+		"stanza:type": "number",
+		"stanza:example": 0.1,
+		"stanza:description": "Bars spacing inside bar group",
+		"stanza:required": false
+	},
+	{
+		"stanza:key": "bar-tooltips",
+		"stanza:type": "single-choice",
+		"stanza:choice": [
+			"true",
+			"false"
+		],
+		"stanza:example": "true",
+		"stanza:description": "Show bars tooltips",
+		"stanza:required": false
+	},
+	{
 		"stanza:key": "category-title",
-		"stanza:example": "",
+		"stanza:example": "chromosome",
 		"stanza:description": "Title for category variable (In case of blank, 'category' variable name will be assigned)",
 		"stanza:required": false
 	},
 	{
 		"stanza:key": "value-title",
-		"stanza:example": "",
+		"stanza:example": "count",
 		"stanza:description": "Title for value variable (In case of blank, 'value' variable name will be assigned)",
-		"stanza:required": false
-	},
-	{
-		"stanza:key": "legend-title",
-		"stanza:example": "",
-		"stanza:description": "Title for group variable, which is used as legend title (In case of blank, 'group' variable name will be assigned)",
 		"stanza:required": false
 	},
 	{
@@ -499,13 +968,13 @@ var metadata = {
 	{
 		"stanza:key": "width",
 		"stanza:type": "number",
-		"stanza:example": 400,
+		"stanza:example": 600,
 		"stanza:description": "Width"
 	},
 	{
 		"stanza:key": "height",
 		"stanza:type": "number",
-		"stanza:example": 300,
+		"stanza:example": 400,
 		"stanza:description": "Height"
 	},
 	{
@@ -515,36 +984,17 @@ var metadata = {
 		"stanza:description": "Padding"
 	},
 	{
-		"stanza:key": "padding-inner",
-		"stanza:type": "number",
-		"stanza:example": 0.1,
-		"stanza:description": "Padding between each bars (0-1)"
-	},
-	{
-		"stanza:key": "padding-outer",
-		"stanza:type": "number",
-		"stanza:example": 0.4,
-		"stanza:description": "Padding outside of bar group (0-1)"
-	},
-	{
-		"stanza:key": "xaxis-placement",
+		"stanza:key": "legend",
 		"stanza:type": "single-choice",
 		"stanza:choice": [
-			"top",
-			"bottom"
+			"none",
+			"top-left",
+			"top-right",
+			"bottom-left",
+			"bottom-right"
 		],
-		"stanza:example": "bottom",
-		"stanza:description": "X axis placement"
-	},
-	{
-		"stanza:key": "yaxis-placement",
-		"stanza:type": "single-choice",
-		"stanza:choice": [
-			"left",
-			"right"
-		],
-		"stanza:example": "left",
-		"stanza:description": "Y axis placement"
+		"stanza:example": "top-right",
+		"stanza:description": "Where to show the legend. 'none' for no legend"
 	},
 	{
 		"stanza:key": "xgrid",
@@ -573,7 +1023,17 @@ var metadata = {
 			"true",
 			"false"
 		],
-		"stanza:example": false,
+		"stanza:example": true,
+		"stanza:description": "Show X tick"
+	},
+	{
+		"stanza:key": "xtick-placement",
+		"stanza:type": "single-choice",
+		"stanza:choice": [
+			"center",
+			"in-between"
+		],
+		"stanza:example": "in-between",
 		"stanza:description": "Show X tick"
 	},
 	{
@@ -587,26 +1047,39 @@ var metadata = {
 		"stanza:description": "Show Y tick"
 	},
 	{
-		"stanza:key": "xlabel-max-width",
-		"stanza:type": "number",
-		"stanza:example": 200,
-		"stanza:description": "Max width of each X label"
+		"stanza:key": "yticks-number",
+		"stanza:example": 3,
+		"stanza:description": "Y axis ticks number",
+		"stanza:required": true
 	},
 	{
-		"stanza:key": "ylabel-max-width",
+		"stanza:key": "xtick-size",
 		"stanza:type": "number",
-		"stanza:example": 200,
-		"stanza:description": "Max width of each Y label"
+		"stanza:example": 5,
+		"stanza:description": "X axis tick size"
+	},
+	{
+		"stanza:key": "ytick-size",
+		"stanza:type": "number",
+		"stanza:example": 5,
+		"stanza:description": "Y axis tick size"
 	},
 	{
 		"stanza:key": "xlabel-angle",
-		"stanza:example": 0,
+		"stanza:example": -90,
 		"stanza:description": "X label angle (in degree)"
 	},
 	{
 		"stanza:key": "ylabel-angle",
+		"stanza:type": "number",
 		"stanza:example": 0,
 		"stanza:description": "Y label angle (in degree)"
+	},
+	{
+		"stanza:key": "ylabel-format",
+		"stanza:type": "string",
+		"stanza:example": ",.2r",
+		"stanza:description": "Y axis tick labels number format. See more format strings in d3.format() documentation"
 	},
 	{
 		"stanza:key": "xlabel-padding",
@@ -621,59 +1094,36 @@ var metadata = {
 		"stanza:description": "Padding between Y label and tick"
 	},
 	{
-		"stanza:key": "xlabel-alignment",
-		"stanza:type": "single-choice",
-		"stanza:choice": [
-			"left",
-			"center",
-			"right"
-		],
-		"stanza:example": "left",
-		"stanza:description": "X label alignment"
-	},
-	{
-		"stanza:key": "ylabel-alignment",
-		"stanza:type": "single-choice",
-		"stanza:choice": [
-			"left",
-			"center",
-			"right"
-		],
-		"stanza:example": "right",
-		"stanza:description": "Y label alignment"
-	},
-	{
 		"stanza:key": "xtitle-padding",
 		"stanza:type": "number",
-		"stanza:example": 10,
+		"stanza:example": 20,
 		"stanza:description": "Padding between X title and label"
 	},
 	{
 		"stanza:key": "ytitle-padding",
 		"stanza:type": "number",
-		"stanza:example": 10,
+		"stanza:example": 40,
 		"stanza:description": "Padding between Y title and label"
 	},
 	{
-		"stanza:key": "bar-width",
-		"stanza:example": 0.8,
-		"stanza:description": "Bar width (0-1)"
-	},
-	{
-		"stanza:key": "legend",
+		"stanza:key": "show-x-axis",
 		"stanza:type": "single-choice",
 		"stanza:choice": [
 			"true",
 			"false"
 		],
 		"stanza:example": true,
-		"stanza:description": "Show legend"
+		"stanza:description": "Show X Axis"
 	},
 	{
-		"stanza:key": "legend-padding",
-		"stanza:type": "number",
-		"stanza:example": 18,
-		"stanza:description": "Padding between chart and legend"
+		"stanza:key": "show-y-axis",
+		"stanza:type": "single-choice",
+		"stanza:choice": [
+			"true",
+			"false"
+		],
+		"stanza:example": true,
+		"stanza:description": "Show Y Axis"
 	}
 ],
 	"stanza:menu-placement": "bottom-right",
@@ -723,7 +1173,7 @@ var metadata = {
 	{
 		"stanza:key": "--togostanza-axis-color",
 		"stanza:type": "color",
-		"stanza:default": "#4E5059",
+		"stanza:default": "#333333",
 		"stanza:description": "Axis color"
 	},
 	{
@@ -735,7 +1185,7 @@ var metadata = {
 	{
 		"stanza:key": "--togostanza-grid-color",
 		"stanza:type": "color",
-		"stanza:default": "#aeb3bf",
+		"stanza:default": "#333333",
 		"stanza:description": "Grid color"
 	},
 	{
@@ -747,7 +1197,7 @@ var metadata = {
 	{
 		"stanza:key": "--togostanza-grid-opacity",
 		"stanza:type": "number",
-		"stanza:default": 0.5,
+		"stanza:default": 0.1,
 		"stanza:description": "Grid opacity (0-1)"
 	},
 	{
@@ -775,6 +1225,42 @@ var metadata = {
 		"stanza:description": "Tick width (in pixel)"
 	},
 	{
+		"stanza:key": "--togostanza-errorbar-line-width",
+		"stanza:type": "number",
+		"stanza:default": 1,
+		"stanza:description": "Errorbar line width"
+	},
+	{
+		"stanza:key": "--togostanza-errorbar-line-color",
+		"stanza:type": "color",
+		"stanza:default": "#333333",
+		"stanza:description": "Errorbar line color"
+	},
+	{
+		"stanza:key": "--togostanza-errorbar-line-opacity",
+		"stanza:type": "number",
+		"stanza:default": 0.4,
+		"stanza:description": "Errorbar line opacity"
+	},
+	{
+		"stanza:key": "--togostanza-title-font-color",
+		"stanza:type": "color",
+		"stanza:default": "#4E5059",
+		"stanza:description": "Title font color"
+	},
+	{
+		"stanza:key": "--togostanza-title-font-size",
+		"stanza:type": "number",
+		"stanza:default": 10,
+		"stanza:description": "Title font size"
+	},
+	{
+		"stanza:key": "--togostanza-title-font-weight",
+		"stanza:type": "number",
+		"stanza:default": 400,
+		"stanza:description": "Title font weight"
+	},
+	{
 		"stanza:key": "--togostanza-label-font-color",
 		"stanza:type": "color",
 		"stanza:default": "#4E5059",
@@ -787,6 +1273,18 @@ var metadata = {
 		"stanza:description": "Label font size"
 	},
 	{
+		"stanza:key": "--togostanza-bars-border-color",
+		"stanza:type": "color",
+		"stanza:default": "#4E5059",
+		"stanza:description": "Bars border color"
+	},
+	{
+		"stanza:key": "--togostanza-bars-border-width",
+		"stanza:type": "number",
+		"stanza:default": 0.5,
+		"stanza:description": "Bars border width"
+	},
+	{
 		"stanza:key": "--togostanza-border-color",
 		"stanza:type": "color",
 		"stanza:default": "#4E5059",
@@ -795,50 +1293,21 @@ var metadata = {
 	{
 		"stanza:key": "--togostanza-border-width",
 		"stanza:type": "number",
-		"stanza:default": 0.5,
+		"stanza:default": 0,
 		"stanza:description": "Border width"
 	},
 	{
-		"stanza:key": "--togostanza-title-font-color",
-		"stanza:type": "color",
-		"stanza:default": "#4E5059",
-		"stanza:description": "Title font color"
-	},
-	{
-		"stanza:key": "--togostanza-title-font-size",
-		"stanza:type": "number",
-		"stanza:default": 12,
-		"stanza:description": "Title font size"
-	},
-	{
-		"stanza:key": "--togostanza-title-font-weight",
-		"stanza:type": "number",
-		"stanza:default": 400,
-		"stanza:description": "Title font weight"
-	},
-	{
 		"stanza:key": "--togostanza-background-color",
 		"stanza:type": "color",
-		"stanza:default": "rgba(255,255,255,0)",
-		"stanza:description": "Background color"
-	},
-	{
-		"stanza:key": "--togostanza-background-color",
-		"stanza:type": "color",
-		"stanza:default": "rgba(255,255,255,0)",
+		"stanza:default": "rgba(255,255,255,0.0)",
 		"stanza:description": "Background color"
 	}
 ]
 };
 
-var metadata$1 = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  'default': metadata
-});
-
 var templates = [
   ["stanza.html.hbs", {"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "";
+    return "<div id=\"barchart-d3\"></div>";
 },"useData":true}]
 ];
 
