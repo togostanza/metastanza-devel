@@ -1,82 +1,25 @@
 // Load the repository-wide global style here. The actual file is located at ../common.scss for details.
-@use '@/common.scss';
+@use "@/common.scss";
 
-//delete vega mark
-summary {
-  display: none;
+main {
+  font-family: var(--togostanza-fonts-font_family);
 }
 
-svg.marks {
-  background-color: var(--togostanza-background-color);
-}
+svg {
+  background-color: var(--togostanza-theme-background_color);
 
-//dl button style
-svg#dl_button {
-  position: absolute;
-  &.dl-top-left {
-    top: 20px;
-    left: 40px;
+  .link {
+    fill: none;
+    stroke: var(--togostanza-border-color);
+    stroke-width: calc(var(--togostanza-border-width) * 1px);
   }
-  &.dl-top-right {
-    top: 20px;
-    right: 40px;
+  text {
+    font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+    fill: var(--togostanza-fonts-font_color);
   }
-  &.dl-bottom-left {
-    bottom: 20px;
-    left: 40px;
-  }
-  &.dl-bottom-right {
-    bottom: 20px;
-    right: 40px;
-  }
-  &.dl-none {
-    display: none;
-  }
-  .circle_g {
-    cursor: pointer;
-    opacity: 0.5;
-  }
-  .hover {
-    opacity: 1;
-  }
-}
-
-div#dl_list {
-  width: fit-content;
-  position: absolute;
-  border: solid 1px var(--togostanza-label-font-color);
-  background-color: #ffffff;
-  font-size: 12px;
-  font-family: var(--togostanza-font-family);
-  &.dl-top-left {
-    top: 40px;
-    left: 50px;
-  }
-  &.dl-top-right {
-    top: 40px;
-    right: 50px;
-  }
-  &.dl-bottom-left {
-    bottom: 40px;
-    left: 50px;
-  }
-  &.dl-bottom-right {
-    bottom: 40px;
-    right: 50px;
-  }
-  &.dl-none {
-    display: none;
-  }
-  ul {
-    list-style-type: none;
-    margin: 0px;
-    padding: 0px;
-    li {
+  circle {
+    &.with-children {
       cursor: pointer;
-      padding: 0px 10px 0px 10px;
-      &.hover {
-        background-color: #dddddd;
-      }
     }
   }
 }
