@@ -392,5 +392,5 @@ function linear() {
   return linearish(scale);
 }
 
-export { ticks as a, bisector as b, copy as c, descending as d, tickStep as e, continuous as f, precisionRound as g, precisionPrefix as h, interpolateRound as i, ascending as j, bisectRight as k, linear as l, tickFormat as m, bisect as n, bisectLeft as o, precisionFixed as p, numbers as q, number$1 as r, number as s, transformer as t, linearish as u, identity as v, tickIncrement as w, bisectCenter as x };
-//# sourceMappingURL=linear-5abb5706.js.map
+export { ticks as a, linearish as b, copy as c, descending as d, bisector as e, tickStep as f, continuous as g, interpolateRound as h, identity as i, precisionRound as j, precisionPrefix as k, linear as l, ascending as m, bisectRight as n, tickFormat as o, precisionFixed as p, bisect as q, bisectLeft as r, numbers as s, transformer as t, number$1 as u, number as v, tickIncrement as w, bisectCenter as x };
+//# sourceMappingURL=linear-3b3000d7.js.map

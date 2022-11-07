@@ -2,7 +2,7 @@ import { S as Stanza, s as select, d as defineStanzaElement } from './transform-
 import { l as loadData } from './load-data-aabde340.js';
 import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-6a951c08.js';
 import { s as stratify, h as hierarchy } from './stratify-7050dfd9.js';
-import { l as linear } from './linear-5abb5706.js';
+import { l as linear } from './linear-3b3000d7.js';
 import { f as format, o as ordinal, a as interpolate$1 } from './ordinal-84566185.js';
 import { s as sum } from './sum-44e7480e.js';
 import { t as treemap } from './index-c76c1b89.js';

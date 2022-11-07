@@ -1,6 +1,4 @@
 import { N as Node } from './stratify-7050dfd9.js';
-import { t as transformer, c as copy, v as identity, u as linearish } from './linear-5abb5706.js';
-import { i as initRange } from './ordinal-84566185.js';
 
 function min(values, valueof) {
   let min;
@@ -344,52 +342,5 @@ function tree() {
   return tree;
 }
 
-function transformPow(exponent) {
-  return function(x) {
-    return x < 0 ? -Math.pow(-x, exponent) : Math.pow(x, exponent);
-  };
-}
-
-function transformSqrt(x) {
-  return x < 0 ? -Math.sqrt(-x) : Math.sqrt(x);
-}
-
-function transformSquare(x) {
-  return x < 0 ? -x * x : x * x;
-}
-
-function powish(transform) {
-  var scale = transform(identity, identity),
-      exponent = 1;
-
-  function rescale() {
-    return exponent === 1 ? transform(identity, identity)
-        : exponent === 0.5 ? transform(transformSqrt, transformSquare)
-        : transform(transformPow(exponent), transformPow(1 / exponent));
-  }
-
-  scale.exponent = function(_) {
-    return arguments.length ? (exponent = +_, rescale()) : exponent;
-  };
-
-  return linearish(scale);
-}
-
-function pow() {
-  var scale = powish(transformer());
-
-  scale.copy = function() {
-    return copy(scale, pow()).exponent(scale.exponent());
-  };
-
-  initRange.apply(scale, arguments);
-
-  return scale;
-}
-
-function sqrt() {
-  return pow.apply(null, arguments).exponent(0.5);
-}
-
-export { powish as a, cluster as c, min as m, pow as p, sqrt as s, tree as t };
-//# sourceMappingURL=pow-382b495a.js.map
+export { cluster as c, min as m, tree as t };
+//# sourceMappingURL=tree-0236e2eb.js.map

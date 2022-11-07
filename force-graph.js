@@ -1,16 +1,69 @@
 import { s as select, S as Stanza, d as defineStanzaElement } from './transform-53a3c950.js';
 import { l as loadData } from './load-data-aabde340.js';
 import { T as ToolTip } from './ToolTip-3832c908.js';
+import { l as line$2 } from './line-5ff356a1.js';
 import { f as forceSimulation, a as forceManyBody, b as forceCenter, c as forceLink, d as forceCollide } from './manyBody-aa7dabf5.js';
 import { d as drag } from './drag-4c22837d.js';
-import { p as prepareGraphData } from './prepareGraphData-ca066b8c.js';
+import { p as prepareGraphData } from './prepareGraphData-f01c21ad.js';
 import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-6a951c08.js';
 import { o as ordinal } from './ordinal-84566185.js';
 import './dsv-ac31b097.js';
+import './array-80a7907a.js';
+import './constant-c49047a5.js';
+import './point-7945b9d0.js';
+import './path-a78af922.js';
 import './nodrag-e8158784.js';
-import './linear-5abb5706.js';
 import './extent-14a1e8e9.js';
 import './v4-1d7bfe79.js';
+import './linear-3b3000d7.js';
+import './log-40c1d486.js';
+import './pow-f5d87a07.js';
+
+function straightLink(d) {
+  const start = { x: d.source.x, y: d.source.y };
+  const end = { x: d.target.x, y: d.target.y };
+  return `M ${start.x} ${start.y}, L ${end.x} ${end.y}`;
+}
+
+function rotatePoint(pivot, point, angle) {
+  const cos = Math.cos(angle);
+  const sin = Math.sin(angle);
+
+  point.x -= pivot.x;
+  point.y -= pivot.y;
+
+  const newX = point.x * cos - point.y * sin;
+  const newY = point.x * sin + point.y * cos;
+
+  point.x = pivot.x + newX;
+  point.y = pivot.y + newY;
+}
+
+function curvedLink(d, curveDir) {
+  const start = { x: d.source.x, y: d.source.y };
+  const end = { x: d.target.x, y: d.target.y };
+
+  const L = Math.sqrt(
+    (start.y - end.y) * (start.y - end.y) +
+      (start.x - end.x) * (start.x - end.x)
+  );
+
+  const theta = Math.atan((end.y - start.y) / (end.x - start.x));
+
+  const p1 = {
+    x: (start.x + end.x) / 2,
+    y: (start.y + end.y) / 2,
+  };
+
+  rotatePoint(start, p1, -theta);
+
+  p1.y += (L / 5) * curveDir;
+
+  rotatePoint(start, p1, theta);
+
+  return `M ${start.x} ${start.y}
+            S ${p1.x} ${p1.y}, ${end.x} ${end.y}`;
+}
 
 function drawForceLayout (
   svg,
@@ -20,14 +73,67 @@ function drawForceLayout (
     width,
     height,
     MARGIN,
-    symbols,
     labelsParams,
     tooltipParams,
     highlightAdjEdges,
+    edgeWidthParams,
+    symbols,
   }
 ) {
   const HEIGHT = height - MARGIN.TOP - MARGIN.BOTTOM;
   const WIDTH = width - MARGIN.LEFT - MARGIN.RIGHT;
+
+  function drawLink(d) {
+    if (d[symbols.isPairEdge]) {
+      return curvedLink(d, d[symbols.isPairEdge]);
+    } else {
+      return straightLink(d);
+    }
+  }
+
+  const markerBoxWidth = 8;
+  const markerBoxHeight = 4;
+  const refX = markerBoxWidth;
+  const refY = markerBoxHeight / 2;
+
+  const arrowPoints = [
+    [0, 0],
+    [0, markerBoxHeight],
+    [markerBoxWidth, markerBoxHeight / 2],
+  ];
+
+  if (edgeWidthParams.showArrows) {
+    const defs = svg.append("defs");
+
+    const defsD = defs.selectAll("marker").data(edges);
+
+    defsD
+      .enter()
+      .append("marker")
+      .attr(
+        "id",
+        (d) => d[symbols.idSym] // edge id
+      )
+      .attr("viewBox", [0, 0, markerBoxWidth, markerBoxHeight])
+      .attr(
+        "refX",
+        (d) =>
+          refX +
+          d[symbols.targetNodeSym][symbols.nodeSizeSym] /
+            d[symbols.edgeWidthSym]
+      )
+      .attr("refY", refY)
+      .attr("markerWidth", markerBoxWidth)
+      .attr("markerHeight", markerBoxHeight)
+      .attr("orient", "auto-start-reverse")
+      .append("path")
+      .attr("d", line$2()(arrowPoints))
+      .attr("stroke", "none")
+      .attr("style", (d) =>
+        d[symbols.edgeColorSym] ? `fill: ${d[symbols.edgeColorSym]}` : null
+      )
+      .attr("fill-opacity", 1);
+  }
 
   const forceG = svg
     .append("g")
@@ -58,19 +164,17 @@ function drawForceLayout (
     .on("tick", ticked);
 
   const links = gLinks
-    .selectAll("line")
+    .selectAll("path")
     .data(edges)
-    .join("line")
+    .join("path")
+    .attr("d", drawLink)
     .style("stroke-width", (d) => d[symbols.edgeWidthSym])
     .style("stroke", (d) => d[symbols.edgeColorSym])
-    .attr("class", "link");
+    .attr("class", "link")
+    .attr("marker-end", (d) => `url(#${d[symbols.idSym] || "default"})`);
 
   function updateLinks() {
-    links
-      .attr("x1", (d) => d.source.x)
-      .attr("y1", (d) => d.source.y)
-      .attr("x2", (d) => d.target.x)
-      .attr("y2", (d) => d.target.y);
+    links.attr("d", drawLink);
   }
   function updateNodes() {
     nodeGroups.attr("transform", (d) => {
@@ -200,27 +304,35 @@ function drawForceLayout (
 class ForceGraph extends Stanza {
   menu() {
     return [
-      downloadSvgMenuItem(this, "graph-2d-force"),
-      downloadPngMenuItem(this, "graph-2d-force"),
-      downloadJSONMenuItem(this, "graph-2d-force", this._data),
-      downloadCSVMenuItem(this, "graph-2d-force", this._data),
-      downloadTSVMenuItem(this, "graph-2d-force", this._data),
+      downloadSvgMenuItem(this, "force-graph"),
+      downloadPngMenuItem(this, "force-graph"),
+      downloadJSONMenuItem(this, "force-graph", this._data),
+      downloadCSVMenuItem(this, "force-graph", this._data),
+      downloadTSVMenuItem(this, "force-graph", this._data),
     ];
   }
 
   async render() {
-    appendCustomCss(this, this.params["custom-css-url"]);
+    appendCustomCss(this, this.params["misc-custom_css_url"]);
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
-    //data
-
-    const width = parseInt(this.params["width"]);
-    const height = parseInt(this.params["height"]);
+    const setFallbackVal = (param, defVal) => {
+      return isNaN(parseFloat(this.params[param]))
+        ? defVal
+        : this.params[param];
+    };
 
     this.renderTemplate({
       template: "stanza.html.hbs",
     });
+
+    const root = this.root.querySelector("main");
+    const el = this.root.getElementById("force-graph");
+
+    //data
+    const width = parseInt(css("--togostanza-outline-width"));
+    const height = parseInt(css("--togostanza-outline-height"));
 
     const values = await loadData(
       this.params["data-url"],
@@ -233,24 +345,64 @@ class ForceGraph extends Stanza {
     const nodes = values.nodes;
     const edges = values.links;
 
-    const MARGIN = {
-      TOP: this.params["padding"],
-      BOTTOM: this.params["padding"],
-      LEFT: this.params["padding"],
-      RIGHT: this.params["padding"],
+    const nodeSizeParams = {
+      dataKey: this.params["node-size-key"] || "",
+      minSize: setFallbackVal("node-size-min", 0),
+      maxSize: this.params["node-size-max"],
+      scale: this.params["node-size-scale"] || "linear",
+    };
+
+    const nodeColorParams = {
+      dataKey: this.params["node-color-key"] || "",
+    };
+
+    const edgeWidthParams = {
+      dataKey: this.params["edge-width-key"] || "",
+      minWidth: setFallbackVal("edge-width-min", 1),
+      maxWidth: this.params["edge-width-max"],
+      scale: this.params["edge-width-scale"] || "linear",
+      showArrows: this.params["edge-show_arrows"],
+    };
+
+    const edgeColorParams = {
+      basedOn: "data key",
+      dataKey: Symbol(),
+    };
+
+    const labelsParams = {
+      margin: 3,
+      dataKey: this.params["node-label-key"],
+    };
+
+    const highlightAdjEdges = true;
+
+    const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
+
+    const tooltipParams = {
+      dataKey: this.params["node-tooltip-key"],
+      show: nodes.some((d) => d[this.params["node-tooltip-key"]]),
     };
 
     // Setting color scale
     const togostanzaColors = [];
-    for (let i = 0; i < 6; i++) {
-      togostanzaColors.push(css(`--togostanza-series-${i}-color`));
+
+    let i = 0;
+
+    let togoColor = css(`--togostanza-theme-series_${i}_color`)
+      .trim()
+      .toUpperCase();
+
+    while (togoColor) {
+      togostanzaColors.push(togoColor);
+      i++;
+      togoColor = css(`--togostanza-theme-series_${i}_color`)
+        .trim()
+        .toUpperCase();
     }
+
     const color = function () {
       return ordinal().range(togostanzaColors);
     };
-
-    const root = this.root.querySelector("main");
-    const el = this.root.getElementById("graph-2d-force");
 
     const existingSvg = root.getElementsByTagName("svg")[0];
     if (existingSvg) {
@@ -263,43 +415,6 @@ class ForceGraph extends Stanza {
 
     this.tooltip = new ToolTip();
     root.append(this.tooltip);
-
-    const nodeSizeParams = {
-      basedOn: this.params["node-size-based-on"] || "fixed",
-      dataKey: this.params["node-size-data-key"] || "",
-      fixedSize: this.params["node-fixed-size"] || 3,
-      minSize: this.params["node-min-size"],
-      maxSize: this.params["node-max-size"],
-    };
-    const nodeColorParams = {
-      basedOn: this.params["node-color-based-on"] || "fixed",
-      dataKey: this.params["node-color-data-key"] || "",
-    };
-
-    const edgeWidthParams = {
-      basedOn: this.params["edge-width-based-on"] || "fixed",
-      dataKey: this.params["edge-width-data-key"] || "",
-      fixedWidth: this.params["edge-fixed-width"] || 1,
-      minWidth: this.params["edge-min-width"],
-      maxWidth: this.params["edge-max-width"],
-    };
-
-    const edgeColorParams = {
-      basedOn: this.params["edge-color-based-on"] || "fixed",
-      dataKey: this.params["edge-color-data-key"] || "",
-    };
-
-    const labelsParams = {
-      margin: this.params["labels-margin"],
-      dataKey: this.params["labels-data-key"],
-    };
-
-    const tooltipParams = {
-      dataKey: this.params["nodes-tooltip-data-key"],
-      show: nodes.some((d) => d[this.params["nodes-tooltip-data-key"]]),
-    };
-
-    const highlightAdjEdges = this.params["highlight-adjacent-edges"] || false;
 
     const params = {
       MARGIN,
@@ -322,12 +437,49 @@ class ForceGraph extends Stanza {
       params
     );
 
-    drawForceLayout(svg, prepNodes, prepEdges, { ...params, symbols });
+    drawForceLayout(svg, prepNodes, prepEdges, {
+      ...params,
+      symbols,
+    });
 
     if (tooltipParams.show) {
       this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
     }
   }
+}
+
+function getMarginsFromCSSString(str) {
+  const splitted = str.trim().split(/\W+/);
+
+  const res = {
+    TOP: 0,
+    RIGHT: 0,
+    BOTTOM: 0,
+    LEFT: 0,
+  };
+
+  switch (splitted.length) {
+    case 1:
+      res.TOP = res.RIGHT = res.BOTTOM = res.LEFT = parseInt(splitted[0]);
+      break;
+    case 2:
+      res.TOP = res.BOTTOM = parseInt(splitted[0]);
+      res.LEFT = res.RIGHT = parseInt(splitted[1]);
+      break;
+    case 3:
+      res.TOP = parseInt(splitted[0]);
+      res.LEFT = res.RIGHT = parseInt(splitted[1]);
+      res.BOTTOM = parseInt(splitted[2]);
+      break;
+    case 4:
+      res.TOP = parseInt(splitted[0]);
+      res.RIGHT = parseInt(splitted[1]);
+      res.BOTTOM = parseInt(splitted[2]);
+      res.LEFT = parseInt(splitted[3]);
+      break;
+  }
+
+  return res;
 }
 
 var stanzaModule = /*#__PURE__*/Object.freeze({
@@ -339,9 +491,9 @@ var metadata = {
 	"@context": {
 	stanza: "http://togostanza.org/resource/stanza#"
 },
-	"@id": "graph-2d-force",
-	"stanza:label": "Graph 2D force layout",
-	"stanza:definition": "Graph 2D Force Layout MetaStanza",
+	"@id": "force-graph",
+	"stanza:label": "Force graph",
+	"stanza:definition": "Force graph MetaStanza",
 	"stanza:license": "MIT",
 	"stanza:author": "DBCLS",
 	"stanza:address": "https://github.com/togostanza/metastanza",
@@ -350,7 +502,7 @@ var metadata = {
 	"Einishi Tech"
 ],
 	"stanza:created": "2022-03-28",
-	"stanza:updated": "2022-03-28",
+	"stanza:updated": "2022-10-21",
 	"stanza:parameter": [
 	{
 		"stanza:key": "data-url",
@@ -372,146 +524,89 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "width",
-		"stanza:type": "number",
-		"stanza:example": 600,
-		"stanza:description": "Width in px"
+		"stanza:key": "misc-custom_css_url",
+		"stanza:example": "",
+		"stanza:description": "Stylesheet(scss file) URL to override current style",
+		"stanza:required": false
 	},
 	{
-		"stanza:key": "height",
-		"stanza:type": "number",
-		"stanza:example": 800,
-		"stanza:description": "Height in px"
-	},
-	{
-		"stanza:key": "padding",
-		"stanza:type": "number",
-		"stanza:example": 20,
-		"stanza:description": "Inner padding in px"
-	},
-	{
-		"stanza:key": "node-size-based-on",
-		"stanza:type": "single-choice",
-		"stanza:choice": [
-			"data key",
-			"fixed"
-		],
-		"stanza:example": "fixed",
-		"stanza:required": true,
-		"stanza:description": "Set size of the node  data key"
-	},
-	{
-		"stanza:key": "node-size-data-key",
+		"stanza:key": "node-size-key",
 		"stanza:type": "string",
 		"stanza:example": "",
-		"stanza:description": "Set size on the node based on data key"
+		"stanza:description": "Set size on the node based on data key, or fallback to value of node-size-min"
 	},
 	{
-		"stanza:key": "node-min-size",
+		"stanza:key": "node-size-min",
 		"stanza:type": "number",
 		"stanza:example": 3,
-		"stanza:description": "Minimum node radius in px"
+		"stanza:description": "Minimum node radius in px (fallback to 0)"
 	},
 	{
-		"stanza:key": "node-max-size",
+		"stanza:key": "node-size-max",
 		"stanza:type": "number",
 		"stanza:example": 6,
 		"stanza:description": "Maximum node radius in px"
 	},
 	{
-		"stanza:key": "node-fixed-size",
-		"stanza:type": "number",
-		"stanza:example": 3,
-		"stanza:description": "Fixed node radius in px"
-	},
-	{
-		"stanza:key": "node-color-based-on",
+		"stanza:key": "node-size-scale",
 		"stanza:type": "single-choice",
 		"stanza:choice": [
-			"data key",
-			"fixed"
+			"linear",
+			"sqrt",
+			"log10"
 		],
-		"stanza:example": "data key",
-		"stanza:description": "Set color of the node  data key"
+		"stanza:example": "sqrt",
+		"stanza:description": "Node radius scale"
 	},
 	{
-		"stanza:key": "node-color-data-key",
+		"stanza:key": "node-color-key",
 		"stanza:type": "string",
 		"stanza:example": "group",
 		"stanza:description": "Set color of the node based on data key"
 	},
 	{
-		"stanza:key": "edge-width-based-on",
-		"stanza:type": "single-choice",
-		"stanza:choice": [
-			"data key",
-			"fixed"
-		],
-		"stanza:example": "fixed",
-		"stanza:description": "Set edge width  data key"
-	},
-	{
-		"stanza:key": "edge-width-data-key",
+		"stanza:key": "edge-width-key",
 		"stanza:type": "string",
 		"stanza:example": "value",
 		"stanza:description": "Set width of the edge  data key"
 	},
 	{
-		"stanza:key": "edge-min-width",
+		"stanza:key": "edge-width-min",
 		"stanza:type": "number",
-		"stanza:example": 0.5,
+		"stanza:example": 1,
 		"stanza:description": "Minimum edge width in px"
 	},
 	{
-		"stanza:key": "edge-max-width",
+		"stanza:key": "edge-width-max",
 		"stanza:type": "number",
-		"stanza:example": 3,
+		"stanza:example": 1,
 		"stanza:description": "Maximum edge width in px"
 	},
 	{
-		"stanza:key": "edge-fixed-width",
-		"stanza:type": "number",
-		"stanza:example": 0.5,
-		"stanza:description": "Fixed edge width in px"
-	},
-	{
-		"stanza:key": "edge-color-based-on",
+		"stanza:key": "edge-width-scale",
 		"stanza:type": "single-choice",
 		"stanza:choice": [
-			"data key",
-			"source color",
-			"target color",
-			"fixed"
+			"linear",
+			"sqrt",
+			"log10"
 		],
-		"stanza:example": "source color",
-		"stanza:description": "Set color of the edge based on this"
+		"stanza:example": "linear",
+		"stanza:description": "Edge width scale"
 	},
 	{
-		"stanza:key": "edge-color-data-key",
-		"stanza:type": "string",
-		"stanza:example": "value",
-		"stanza:description": "Set color of the edge based on this data key"
-	},
-	{
-		"stanza:key": "highlight-adjacent-edges",
+		"stanza:key": "edge-show_arrows",
 		"stanza:type": "boolean",
-		"stanza:example": true,
-		"stanza:description": "Highlight adjacent edges on node mouse hover"
+		"stanza:example": "true",
+		"stanza:description": "Show arrows"
 	},
 	{
-		"stanza:key": "labels-data-key",
+		"stanza:key": "node-label-key",
 		"stanza:type": "string",
 		"stanza:example": "id",
 		"stanza:description": "Node labels data key. If empty, no labels will be shown"
 	},
 	{
-		"stanza:key": "labels-margin",
-		"stanza:type": "number",
-		"stanza:example": 3,
-		"stanza:description": "Node labels offset from node center, in px."
-	},
-	{
-		"stanza:key": "nodes-tooltip-data-key",
+		"stanza:key": "node-tooltip-key",
 		"stanza:type": "string",
 		"stanza:example": "id",
 		"stanza:description": "Node tooltips data key. If empty, no tooltips will be shown"
@@ -520,51 +615,45 @@ var metadata = {
 	"stanza:menu-placement": "bottom-right",
 	"stanza:style": [
 	{
-		"stanza:key": "--togostanza-series-0-color",
+		"stanza:key": "--togostanza-theme-series_0_color",
 		"stanza:type": "color",
 		"stanza:default": "#6590e6",
 		"stanza:description": "Group color 0"
 	},
 	{
-		"stanza:key": "--togostanza-series-1-color",
+		"stanza:key": "--togostanza-theme-series_1_color",
 		"stanza:type": "color",
 		"stanza:default": "#3ac9b6",
 		"stanza:description": "Group color 1"
 	},
 	{
-		"stanza:key": "--togostanza-series-2-color",
+		"stanza:key": "--togostanza-theme-series_2_color",
 		"stanza:type": "color",
 		"stanza:default": "#9ede2f",
 		"stanza:description": "Group color 2"
 	},
 	{
-		"stanza:key": "--togostanza-series-3-color",
+		"stanza:key": "--togostanza-theme-series_3_color",
 		"stanza:type": "color",
 		"stanza:default": "#E6BB1A",
 		"stanza:description": "Group color 3"
 	},
 	{
-		"stanza:key": "--togostanza-series-4-color",
+		"stanza:key": "--togostanza-theme-series_4_color",
 		"stanza:type": "color",
 		"stanza:default": "#F57F5B",
 		"stanza:description": "Group color 4"
 	},
 	{
-		"stanza:key": "--togostanza-series-5-color",
+		"stanza:key": "--togostanza-theme-series_5_color",
 		"stanza:type": "color",
 		"stanza:default": "#F75976",
 		"stanza:description": "Group color 5"
 	},
 	{
-		"stanza:key": "--togostanza-default-node-color",
+		"stanza:key": "--togostanza-edge-default_color",
 		"stanza:type": "color",
-		"stanza:default": "#6590e6",
-		"stanza:description": "Nodes default color"
-	},
-	{
-		"stanza:key": "--togostanza-default-edge-color",
-		"stanza:type": "color",
-		"stanza:default": "#6590e6",
+		"stanza:default": "#bdbdbd",
 		"stanza:description": "Egdes default color"
 	},
 	{
@@ -574,21 +663,21 @@ var metadata = {
 		"stanza:description": "Edge default opacity"
 	},
 	{
-		"stanza:key": "--togostanza-font-family",
+		"stanza:key": "--togostanza-fonts-font_family",
 		"stanza:type": "text",
 		"stanza:default": "Helvetica Neue",
 		"stanza:description": "Font family"
 	},
 	{
-		"stanza:key": "--togostanza-label-font-color",
+		"stanza:key": "--togostanza-fonts-font_color",
 		"stanza:type": "color",
 		"stanza:default": "#4E5059",
 		"stanza:description": "Label font color"
 	},
 	{
-		"stanza:key": "--togostanza-label-font-size",
+		"stanza:key": "--togostanza-fonts-font_size_primary",
 		"stanza:type": "number",
-		"stanza:default": 7,
+		"stanza:default": 9,
 		"stanza:description": "Label font size"
 	},
 	{
@@ -604,7 +693,25 @@ var metadata = {
 		"stanza:description": "Border width"
 	},
 	{
-		"stanza:key": "--togostanza-background-color",
+		"stanza:key": "--togostanza-outline-width",
+		"stanza:type": "number",
+		"stanza:default": 600,
+		"stanza:description": "Metastanza width in px"
+	},
+	{
+		"stanza:key": "--togostanza-outline-height",
+		"stanza:type": "number",
+		"stanza:default": 800,
+		"stanza:description": "Metastanza height in px"
+	},
+	{
+		"stanza:key": "--togostanza-outline-padding",
+		"stanza:type": "text",
+		"stanza:default": "20 30",
+		"stanza:description": "Metastanza padding"
+	},
+	{
+		"stanza:key": "--togostanza-theme-background-color",
 		"stanza:type": "color",
 		"stanza:default": "rgba(255,255,255,0)",
 		"stanza:description": "Background color"
@@ -614,11 +721,11 @@ var metadata = {
 
 var templates = [
   ["stanza.html.hbs", {"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<div id=\"graph-2d-force\"></div>";
+    return "<div id=\"force-graph\"></div>";
 },"useData":true}]
 ];
 
 const url = import.meta.url.replace(/\?.*$/, '');
 
 defineStanzaElement({stanzaModule, metadata, templates, url});
-//# sourceMappingURL=graph-2d-force.js.map
+//# sourceMappingURL=force-graph.js.map

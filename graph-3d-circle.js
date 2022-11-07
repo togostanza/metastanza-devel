@@ -2,16 +2,18 @@ import { S as Stanza, s as select, d as defineStanzaElement } from './transform-
 import { _ as _3d } from './3d-7f166d8e.js';
 import { l as loadData } from './load-data-aabde340.js';
 import { T as ToolTip } from './ToolTip-3832c908.js';
-import { p as prepareGraphData, g as get3DEdges, a as getGroupPlanes } from './prepareGraphData-ca066b8c.js';
+import { p as prepareGraphData, g as get3DEdges, a as getGroupPlanes } from './prepareGraphData-f01c21ad.js';
 import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-6a951c08.js';
 import { m as max } from './max-2c042256.js';
 import { d as drag } from './drag-4c22837d.js';
 import { p as point } from './band-48d6be98.js';
 import { o as ordinal } from './ordinal-84566185.js';
 import './dsv-ac31b097.js';
-import './linear-5abb5706.js';
 import './extent-14a1e8e9.js';
 import './v4-1d7bfe79.js';
+import './linear-3b3000d7.js';
+import './log-40c1d486.js';
+import './pow-f5d87a07.js';
 import './nodrag-e8158784.js';
 import './range-e15c6861.js';
 

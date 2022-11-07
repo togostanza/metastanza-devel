@@ -6,7 +6,7 @@ import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMe
 import { m as max } from './max-2c042256.js';
 import { o as ordinal, f as format } from './ordinal-84566185.js';
 import { b as band } from './band-48d6be98.js';
-import { l as linear } from './linear-5abb5706.js';
+import { l as linear } from './linear-3b3000d7.js';
 import { a as axisBottom, b as axisLeft } from './axis-3dba94d9.js';
 import { s as stack, g as group } from './stack-d0cd4bce.js';
 import { e as extent } from './extent-14a1e8e9.js';

@@ -1,7 +1,9 @@
 import { b as color } from './transform-53a3c950.js';
-import { l as linear } from './linear-5abb5706.js';
 import { e as extent } from './extent-14a1e8e9.js';
 import { v as v4 } from './v4-1d7bfe79.js';
+import { l as linear } from './linear-3b3000d7.js';
+import { l as log } from './log-40c1d486.js';
+import { s as sqrt } from './pow-f5d87a07.js';
 
 const edgeSym = Symbol("nodeAdjEdges");
 const groupSym = Symbol("nodeGroup");
@@ -14,6 +16,7 @@ const nodeLabelSym = Symbol("nodeLabel");
 const nodeBorderColorSym = Symbol("nodeBorderColor");
 const edgeColorSym = Symbol("edgeColor");
 const idSym = Symbol("id");
+const isPairEdge = Symbol("pairEdge");
 
 const symbols = {
   edgeSym,
@@ -27,11 +30,14 @@ const symbols = {
   nodeLabelSym,
   idSym,
   nodeBorderColorSym,
+  isPairEdge,
 };
 
 function prepareGraphData (nodesC, edgesC, params) {
   nodesC = JSON.parse(JSON.stringify(nodesC));
   edgesC = JSON.parse(JSON.stringify(edgesC));
+
+  // find edges wich are pairs and mark them
 
   const {
     color: color$1,
@@ -59,36 +65,29 @@ function prepareGraphData (nodesC, edgesC, params) {
   const nodeHash = {};
 
   const groupHash = {};
+
   nodesC.forEach((node) => {
     const groupName = "" + node.group;
-    groupHash[groupName]
-      ? groupHash[groupName].push(node)
-      : (groupHash[groupName] = [node]);
+    if (groupHash[groupName]) {
+      groupHash[groupName].push(node);
+    } else {
+      groupHash[groupName] = [node];
+    }
+
     nodeHash[node.id] = node;
   });
 
   // Edges width
-  let edgeWidthScale;
-  if (
-    edgeWidthParams.basedOn === "data key" &&
-    edgesC.some(
-      (edge) =>
-        edge[edgeWidthParams.dataKey] &&
-        edgeWidthParams.minWidth &&
-        edgeWidthParams.maxWidth
-    )
-  ) {
-    edgeWidthScale = linear()
-      .domain(extent(edgesC, (d) => d[edgeWidthParams.dataKey]))
-      .range([edgeWidthParams.minWidth, edgeWidthParams.maxWidth]);
-  } else {
-    edgeWidthScale = () => edgeWidthParams.fixedWidth;
-  }
+  const edgeWidthScale = getScaleFunc(edgeWidthParams.scale);
+  edgeWidthScale
+    .domain(extent(edgesC, (d) => d[edgeWidthParams.dataKey]))
+    .range([edgeWidthParams.minWidth, edgeWidthParams.maxWidth]);
 
   edgesC.forEach((edge) => {
     edge[symbols.edgeWidthSym] = edgeWidthScale(
-      parseFloat(edge[edgeWidthParams.dataKey]) || edgeWidthParams.minWidth || 1
+      parseFloat(edge[edgeWidthParams.dataKey])
     );
+
     edge[symbols.sourceNodeSym] = nodeHash[edge.source];
     edge[symbols.targetNodeSym] = nodeHash[edge.target];
     edge[symbols.idSym] = v4();
@@ -107,10 +106,7 @@ function prepareGraphData (nodesC, edgesC, params) {
   });
 
   // Nodes color
-  if (
-    nodeColorParams.basedOn === "data key" &&
-    nodesC.some((d) => d[nodeColorParams.dataKey])
-  ) {
+  if (nodesC.some((d) => d[nodeColorParams.dataKey])) {
     const nodeColorFunc = color$1().domain(
       [...new Set(nodesC.map((d) => "" + d[nodeColorParams.dataKey]))].sort()
     );
@@ -119,11 +115,12 @@ function prepareGraphData (nodesC, edgesC, params) {
     nodesC.forEach((node) => {
       // if data key value is a hex color, use it, else use color ordinal scale provided
       if (regex.test(node[nodeColorParams.dataKey])) {
-        node[symbols.nodeColorSym] = node[nodeColorParams.dataKey];
+        node[symbols.nodeColorSym] =
+          node[nodeColorParams.dataKey].toUpperCase();
       } else if (typeof node[nodeColorParams.dataKey] !== "undefined") {
         node[symbols.nodeColorSym] = nodeColorFunc(
           "" + node[nodeColorParams.dataKey]
-        );
+        ).toUpperCase();
       } else {
         node[symbols.nodeColorSym] = "black";
       }
@@ -148,47 +145,63 @@ function prepareGraphData (nodesC, edgesC, params) {
     edgesC.forEach((edge) => {
       // if data key value is a hex color, use it, else use color ordinal scale provided
       if (regex.test(edge[edgeColorParams.dataKey])) {
-        edge[symbols.edgeColorSym] = edge[edgeColorParams.dataKey];
+        edge[symbols.edgeColorSym] =
+          edge[edgeColorParams.dataKey].toUpperCase();
       } else if (edge[edgeColorParams.dataKey]) {
         edge[symbols.edgeColorSym] = edgeColorFunc(
           edge[edgeColorParams.dataKey]
-        );
-      } else {
-        edge[symbols.edgeColorSym] = null;
+        ).toUpperCase();
       }
     });
   } else if (edgeColorParams.basedOn.match(/source|target/i)) {
     const wichColor = edgeColorParams.basedOn.match(/source|target/i)[0];
     edgesC.forEach((edge) => {
       edge[symbols.edgeColorSym] =
-        edge[symbols[`${wichColor}NodeSym`]][symbols.nodeColorSym];
-    });
-  } else {
-    edgesC.forEach((edge) => {
-      edge[symbols.edgeColorSym] = null;
+        edge[symbols[`${wichColor}NodeSym`]][
+          symbols.nodeColorSym
+        ]?.toUpperCase() || null;
     });
   }
 
   // ===
 
-  // Nodes size
-  let nodeSizeScale;
-  if (
-    nodeSizeParams.basedOn === "data key" &&
-    nodesC.some((d) => d[nodeSizeParams.dataKey]) &&
-    nodeSizeParams.minSize &&
-    nodeSizeParams.maxSize
-  ) {
-    nodeSizeScale = linear()
-      .domain(extent(nodesC, (d) => d[nodeSizeParams.dataKey]))
-      .range([nodeSizeParams.minSize, nodeSizeParams.maxSize]);
-    nodesC.forEach((node) => {
-      node[symbols.nodeSizeSym] = nodeSizeScale(node[nodeSizeParams.dataKey]);
-    });
-  } else {
-    nodesC.forEach((node) => {
-      node[symbols.nodeSizeSym] = nodeSizeParams.fixedSize || 4;
-    });
+  const nodeSizeScale = getScaleFunc(nodeSizeParams.scale);
+
+  nodeSizeScale
+    .domain(extent(nodesC, (d) => d[nodeSizeParams.dataKey]))
+    .range([nodeSizeParams.minSize, nodeSizeParams.maxSize]);
+
+  nodesC.forEach((node) => {
+    if (node[nodeSizeParams.dataKey]) {
+      node[symbols.nodeSizeSym] =
+        nodeSizeScale(node[nodeSizeParams.dataKey]) || nodeSizeParams.minSize;
+    } else {
+      node[symbols.nodeSizeSym] = nodeSizeParams.minSize || 3;
+    }
+  });
+
+  // Double edges
+  const checkedIndexes = [];
+  for (let i = 0; i < edgesC.length; i++) {
+    if (checkedIndexes.includes(i)) {
+      continue;
+    }
+    const edgeA = edgesC[i];
+    edgeA[symbols.isPairEdge] = 0;
+
+    for (let j = i + 1; j < edgesC.length; j++) {
+      if (checkedIndexes.includes(j)) {
+        continue;
+      }
+      const edgeB = edgesC[j];
+
+      if (edgeB.source === edgeA.target && edgeB.target === edgeA.source) {
+        // mark that edge as double
+        edgeA[symbols.isPairEdge] = 1;
+        edgeB[symbols.isPairEdge] = -1;
+        checkedIndexes.push(i, j);
+      }
+    }
   }
 
   return { prepNodes: nodesC, prepEdges: edgesC, nodeHash, groupHash, symbols };
@@ -245,5 +258,16 @@ const getGroupPlanes = (groupHash, planeParams) => {
   return groupIds.map(getGroupPlane);
 };
 
+function getScaleFunc(scaleStr) {
+  switch (scaleStr) {
+    case "sqrt":
+      return sqrt();
+    case "log10":
+      return log();
+    default:
+      return linear();
+  }
+}
+
 export { getGroupPlanes as a, get3DEdges as g, prepareGraphData as p };
-//# sourceMappingURL=prepareGraphData-ca066b8c.js.map
+//# sourceMappingURL=prepareGraphData-f01c21ad.js.map
