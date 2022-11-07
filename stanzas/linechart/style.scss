@@ -1,0 +1,136 @@
+// Load the repository-wide global style here. The actual file is located at ../common.scss for details.
+@use "@/common.scss";
+
+:scope main {
+  box-sizing: border-box;
+  display: flex;
+  gap: 1rem;
+  width: var(--togostanza-outline-width);
+  height: var(--togostanza-outline-height);
+  padding: var(--togostanza-outline-padding);
+  background-color: var(--togostanza-background-color);
+}
+
+.legend-right {
+  flex-direction: row;
+}
+.legend-left {
+  flex-direction: row-reverse;
+}
+.legend-top {
+  flex-direction: column-reverse;
+}
+.legend-bottom {
+  flex-direction: column;
+}
+
+.error {
+  color: var(--togostanza-theme-series_5_color);
+  box-sizing: border-box;
+  width: var(--togostanza-outline-width);
+  height: var(--togostanza-outline-height);
+  padding: var(--togostanza-outline-padding);
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(var(--togostanza-theme-background_color), 0.3);
+  backdrop-filter: blur(5px);
+}
+
+svg {
+  .error-bar {
+    opacity: var(--togostanza-error_bars-opacity);
+  }
+
+  font-family: var(--togostanza-fonts-font_family);
+  background-color: var(--togostanza-background-color);
+
+  .error-bars > line {
+    stroke: var(--togostanza-theme-primary_color);
+    stroke-width: calc(var(--togostanza-error_bars-width) * 1px);
+  }
+
+  .zoom {
+    cursor: move;
+    fill: none;
+    pointer-events: all;
+  }
+
+  .grid {
+    stroke: var(--togostanza-theme-series_5_color);
+    stroke-width: 1px;
+    stroke-dasharray: 2, 2;
+    opacity: 0.5;
+    .domain {
+      stroke: none;
+    }
+  }
+
+  rect.selection {
+    fill: none;
+  }
+  rect.non-selection {
+    fill: #777;
+    fill-opacity: 0.2;
+    stroke: none;
+  }
+
+  rect.handle {
+    fill: rgb(161, 161, 161);
+  }
+
+  .gridlines {
+    > .tick > line {
+      stroke: var(--togostanza-grid-color);
+      opacity: var(--togostanza-grid-opacity);
+      stroke-width: var(--togostanza-grid-width);
+      stroke-dasharray: var(--togostanza-grid-dash-length),
+        var(--togostanza-grid-dash-length);
+    }
+    > path.domain {
+      display: none;
+    }
+  }
+
+  .axis {
+    > .tick > line {
+      stroke: var(--togostanza-border-color);
+      stroke-width: var(--togostanza-axis-stroke_width);
+    }
+
+    > path {
+      stroke: var(--togostanza-border-color);
+      stroke-width: var(--togostanza-axis-stroke_width);
+    }
+
+    > .tick > text {
+      font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+      fill: var(--togostanza-fonts-font_color);
+    }
+  }
+
+  .axis-title-group {
+    text.title {
+      font-family: var(--togostanza-fonts-font_family);
+      font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+
+      text-anchor: middle;
+    }
+  }
+
+  path.line {
+    stroke-width: var(--togostanza-line-width);
+    opacity: var(--togostanza-line-opacity);
+    fill: none;
+  }
+
+  line.errorbar {
+    stroke: var(--togostanza-errorbar-line-color);
+    stroke-width: calc(var(--togostanza-errorbar-line-width) * 1px);
+    opacity: var(--togostanza-errorbar-line-opacity);
+  }
+}
+
+.-off {
+  opacity: 0.5;
+}
