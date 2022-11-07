@@ -1,14 +1,15 @@
-import { S as Stanza, s as select, d as defineStanzaElement } from './transform-6201f181.js';
-import { l as loadData } from './load-data-891812c8.js';
-import { g as getStanzaInterpolateColor } from './ColorGenerator-0cb22741.js';
-import { d as descending } from './linear-7ab34a85.js';
+import { S as Stanza, s as select, d as defineStanzaElement } from './transform-53a3c950.js';
+import { l as loadData } from './load-data-aabde340.js';
+import { g as getStanzaInterpolateColor } from './ColorGenerator-eccfa8db.js';
+import { d as descending } from './linear-5abb5706.js';
 import { s as sum } from './sum-44e7480e.js';
 import { r as ribbonArrow, c as chordDirected } from './ribbon-bbaf0468.js';
-import { a as arc$2 } from './arc-06a68a59.js';
+import { a as arc$2 } from './arc-8a3c109f.js';
 import './dsv-ac31b097.js';
-import './ordinal-b8a60008.js';
+import './ordinal-84566185.js';
 import './path-a78af922.js';
 import './constant-c49047a5.js';
+import './math-24162d65.js';
 
 class ChordDiagram extends Stanza {
   async render() {

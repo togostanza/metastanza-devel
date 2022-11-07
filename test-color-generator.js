@@ -1,35 +1,37 @@
-import { K as Selection, M as root$1, N as array$2, O as SCHEDULED, P as Transition, h as dispatch, Q as interrupt, s as select, r as rgbBasis, o as rgb, U as identity$3, V as Transform, b as color, p as hsl, W as cubicInOut, X as cubicIn, Y as cubicOut, j as basis, k as basisClosed, i as interpolateNumber, f as interpolateString, l as interpolateTransformCss, m as interpolateTransformSvg, e as interpolateRgb, n as rgbBasisClosed, g as creator, Z as matcher, _ as namespace, $ as namespaces, a0 as selection, a1 as selector, a2 as selectorAll, a3 as styleValue, a4 as defaultView, B as now, t as timer, a5 as timerFlush, a6 as timeout, a7 as transition, a8 as transform$1, S as Stanza, d as defineStanzaElement } from './transform-6201f181.js';
-import { I as InternMap, l as InternSet, a as interpolate$1, i as initRange, m as initInterpolator, p as defaultLocale, f as format, c as formatPrefix, j as formatLocale, b as formatSpecifier, F as FormatSpecifier, d as array$4, g as date, n as numberArray, h as object$1, o as ordinal, k as implicit } from './ordinal-b8a60008.js';
-import { s as sourceEvent, p as pointer, a as dragDisable, y as yesdrag, d as drag } from './drag-86fe27db.js';
-import { aP as sort, H as quantile, G as deviation, aQ as ascendingDefined, aR as compareDefined, aS as minIndex, aT as maxIndex, aU as clipRectangle, aV as Adder, aW as geoStream, aX as noop$1, aY as atan2, aZ as sqrt, a_ as sin, a$ as cos, b0 as radians, b1 as abs$1, b2 as epsilon2, b3 as polygonContains, b4 as asin, b5 as haversin, b6 as degrees, C as utcFormat, D as utcParse, g as cubehelixLong, b7 as cubehelix$1, a0 as area$2, i as interpolateZoom, b8 as fsum, b9 as fcumsum, J as mean, I as median, ba as medianIndex, bb as merge, aI as permute, bc as quantileIndex, F as quantileSorted, bd as quickselect, be as greatest, bf as variance, aJ as lab, aK as hcl, bg as lch, bh as gray, aH as Delaunay, bi as Voronoi, aB as forceX, aC as forceY, aL as geoArea$1, aM as geoBounds$1, aN as geoCentroid$1, bj as geoCircle, bk as clipAntimeridian, bl as clipCircle, aA as graticule, bm as graticule10, aj as geoPath, ak as geoAlbers, al as geoAlbersUsa, am as geoAzimuthalEqualArea, bn as azimuthalEqualAreaRaw, an as geoAzimuthalEquidistant, bo as azimuthalEquidistantRaw, ao as geoConicConformal, bp as conicConformalRaw, ap as geoConicEqualArea, bq as conicEqualAreaRaw, aq as geoConicEquidistant, br as conicEquidistantRaw, ar as geoEqualEarth, bs as equalEarthRaw, as as geoEquirectangular, bt as equirectangularRaw, at as geoGnomonic, bu as gnomonicRaw, au as geoIdentity, ai as projection, bv as projectionMutator, av as geoMercator, bw as mercatorRaw, aw as geoNaturalEarth1, bx as naturalEarth1Raw, ax as geoOrthographic, by as orthographicRaw, ay as geoStereographic, bz as stereographicRaw, az as geoTransverseMercator, bA as transverseMercatorRaw, bB as rotation, bC as transform, aD as pack, bD as siblings, bE as enclose, aE as treemapBinary, aF as treemapSliceDice, aG as treemapResquarify, d as discrete, h as hue, a as hsl$1, b as hslLong, l as lab$1, c as hcl$1, e as hclLong, f as cubehelix$2, p as piecewise, q as quantize, K as identity$4, L as log, M as symlog, Z as quantile$1, _ as quantize$1, $ as threshold, N as time, O as utcTime, P as sequential, Q as sequentialLog, R as sequentialPow, S as sequentialSqrt, T as sequentialSymlog, U as diverging$1, V as divergingLog, W as divergingPow, X as divergingSqrt, Y as divergingSymlog, a1 as Symbol$1, bF as symbolsStroke, bG as symbolsFill, bH as asterisk, bI as circle, bJ as cross$2, bK as diamond, bL as diamond2, bM as plus, bN as square$1, bO as square2, bP as star, bQ as triangle, bR as triangle2, bS as wye, bT as x, a2 as curveBasisClosed, a3 as curveBasisOpen, a4 as curveBundle, a7 as curveCardinalClosed, a6 as curveCardinalOpen, a5 as curveCardinal, a9 as curveCatmullRomClosed, aa as curveCatmullRomOpen, a8 as curveCatmullRom, ab as curveLinearClosed, ad as monotoneX, ac as monotoneY, ae as curveNatural, af as curveStep, ag as stepAfter, ah as stepBefore, bU as newInterval, o as utcMillisecond, bV as milliseconds, u as utcSecond, bW as seconds, n as timeMinute, bX as minutes, m as timeHour, bY as hours, k as timeDay, bZ as days, s as sunday, b_ as sundays, b$ as monday, c0 as mondays, c1 as tuesday, c2 as tuesdays, c3 as wednesday, c4 as wednesdays, c5 as thursday, c6 as thursdays, c7 as friday, c8 as fridays, c9 as saturday, ca as saturdays, j as timeMonth, cb as months, t as timeYear, cc as years, z as utcMinute, cd as utcMinutes, y as utcHour, ce as utcHours, x as utcDay, cf as utcDays, w as utcSunday, cg as utcSundays, ch as utcMonday, ci as utcMondays, cj as utcTuesday, ck as utcTuesdays, cl as utcWednesday, cm as utcWednesdays, cn as utcThursday, co as utcThursdays, cp as utcFriday, cq as utcFridays, cr as utcSaturday, cs as utcSaturdays, v as utcMonth, ct as utcMonths, r as utcYear, cu as utcYears, cv as utcTicks, cw as utcTickInterval, cx as timeTicks, cy as timeTickInterval, cz as defaultLocale$1, A as timeFormat, B as timeParse, E as formatLocale$1, aO as interval } from './step-06b878dd.js';
-import { e as ascending$2, w as tickIncrement, s as ticks, h as bisect, t as tickStep, u as continuous, m as number, o as linearish, v as identity$2, f as bisectRight, j as bisectLeft, x as bisectCenter, b as bisector, d as descending$2, p as precisionFixed, c as precisionPrefix, a as precisionRound, i as interpolateRound, l as linear$1, g as tickFormat } from './linear-7ab34a85.js';
-import { r as rollup, g as group, i as identity$1, f as flatGroup, a as flatRollup, b as groups, c as index, d as indexes, e as rollups } from './group-0239ab56.js';
+import { M as Selection, N as root$1, O as array$2, P as SCHEDULED, Q as Transition, r as rgbBasis, q as rgb, h as dispatch, U as identity$3, V as Transform, s as select, k as interrupt, b as color, u as hsl, W as cubicInOut, X as cubicIn, Y as cubicOut, l as basis, m as basisClosed, i as interpolateNumber, f as interpolateString, n as interpolateTransformCss, o as interpolateTransformSvg, e as interpolateRgb, p as rgbBasisClosed, g as creator, Z as matcher, _ as namespace, $ as namespaces, a0 as selection, a1 as selector, a2 as selectorAll, a3 as styleValue, a4 as defaultView, E as now, t as timer, a5 as timerFlush, a6 as timeout, a7 as transition, a8 as transform$1, S as Stanza, d as defineStanzaElement } from './transform-53a3c950.js';
+import { c as brush, b as brushX, a as brushY, d as brushSelection } from './brush-4b9fd440.js';
+import { at as sort, m as quantile, k as deviation, au as ascendingDefined, av as compareDefined, aw as minIndex, ax as maxIndex, ay as clipRectangle, az as Adder, aA as geoStream, aB as noop$1, aC as atan2, aD as sqrt, aE as sin, aF as cos, aG as radians, aH as abs, aI as epsilon2, aJ as polygonContains, aK as asin, aL as haversin, aM as degrees, g as cubehelixLong, aN as cubehelix$1, H as area$2, i as interpolateZoom, aO as fsum, aP as fcumsum, o as mean, n as median, aQ as medianIndex, aR as merge, am as permute, aS as quantileIndex, j as quantileSorted, aT as quickselect, aU as greatest, aV as variance, an as lab, ao as hcl, aW as lch, aX as gray, al as Delaunay, aY as Voronoi, af as forceX, ag as forceY, ap as geoArea$1, aq as geoBounds$1, ar as geoCentroid$1, aZ as geoCircle, a_ as clipAntimeridian, a$ as clipCircle, ae as graticule, b0 as graticule10, Z as geoPath, _ as geoAlbers, $ as geoAlbersUsa, a0 as geoAzimuthalEqualArea, b1 as azimuthalEqualAreaRaw, a1 as geoAzimuthalEquidistant, b2 as azimuthalEquidistantRaw, a2 as geoConicConformal, b3 as conicConformalRaw, a3 as geoConicEqualArea, b4 as conicEqualAreaRaw, a4 as geoConicEquidistant, b5 as conicEquidistantRaw, a5 as geoEqualEarth, b6 as equalEarthRaw, a6 as geoEquirectangular, b7 as equirectangularRaw, a7 as geoGnomonic, b8 as gnomonicRaw, a8 as geoIdentity, Y as projection, b9 as projectionMutator, a9 as geoMercator, ba as mercatorRaw, aa as geoNaturalEarth1, bb as naturalEarth1Raw, ab as geoOrthographic, bc as orthographicRaw, ac as geoStereographic, bd as stereographicRaw, ad as geoTransverseMercator, be as transverseMercatorRaw, bf as rotation, bg as transform, ah as pack, bh as siblings, bi as enclose, ai as treemapBinary, aj as treemapSliceDice, ak as treemapResquarify, d as discrete, h as hue, a as hsl$1, b as hslLong, l as lab$1, c as hcl$1, e as hclLong, f as cubehelix$2, p as piecewise, q as quantize, r as identity$4, s as symlog, E as quantile$1, F as quantize$1, G as threshold, u as utcTime, t as sequential, v as sequentialLog, w as sequentialPow, x as sequentialSqrt, y as sequentialSymlog, z as diverging$1, A as divergingLog, B as divergingPow, C as divergingSqrt, D as divergingSymlog, I as curveBasisClosed, J as curveBasisOpen, K as curveBundle, N as curveCardinalClosed, M as curveCardinalOpen, L as curveCardinal, P as curveCatmullRomClosed, Q as curveCatmullRomOpen, O as curveCatmullRom, R as curveLinearClosed, T as monotoneX, S as monotoneY, U as curveNatural, V as curveStep, W as stepAfter, X as stepBefore, as as interval } from './step-13031b43.js';
+import { s as sourceEvent, p as pointer, d as dragDisable, y as yesdrag } from './nodrag-e8158784.js';
+import { r as rollup, g as group, i as identity$1, n as none, a as none$1, f as flatGroup, b as flatRollup, c as groups, d as index, e as indexes, h as rollups, s as stack } from './stack-d0cd4bce.js';
+import { j as ascending$2, w as tickIncrement, a as ticks, n as bisect, e as tickStep, f as continuous, s as number, u as linearish, v as identity$2, k as bisectRight, o as bisectLeft, x as bisectCenter, b as bisector, d as descending$2, p as precisionFixed, h as precisionPrefix, g as precisionRound, i as interpolateRound, l as linear$1, m as tickFormat } from './linear-5abb5706.js';
 import { e as extent$1 } from './extent-14a1e8e9.js';
-import { m as min$1 } from './min-4a3f8e4e.js';
+import { I as InternMap, l as InternSet, i as initRange, m as initInterpolator, p as defaultLocale, f as format, c as formatPrefix, j as formatLocale, b as formatSpecifier, F as FormatSpecifier, a as interpolate$1, d as array$4, g as date, n as numberArray, h as object$1, o as ordinal, k as implicit } from './ordinal-84566185.js';
+import { m as min, c as cluster, t as tree, p as pow, s as sqrt$1 } from './pow-382b495a.js';
 import { a as text, d as dsvFormat, b as csvParse, e as csvParseRows, f as csvFormat, g as csvFormatBody, h as csvFormatRows, i as csvFormatRow, j as csvFormatValue, k as tsvParse, l as tsvParseRows, m as tsvFormat, n as tsvFormatBody, o as tsvFormatRows, p as tsvFormatRow, q as tsvFormatValue, r as dsv, c as csv, t as tsv } from './dsv-ac31b097.js';
-import { m as max$1 } from './max-2c042256.js';
+import { q as utcFormat, r as utcParse, l as log, a as time, S as Symbol$1, A as symbolsStroke, B as symbolsFill, C as asterisk, c as circle, D as cross$2, E as diamond, F as diamond2, G as plus, H as square$1, I as square2, J as star, K as triangle, L as triangle2, M as wye, N as x, O as newInterval, o as utcMillisecond, P as milliseconds, u as utcSecond, Q as seconds, n as timeMinute, R as minutes, m as timeHour, T as hours, k as timeDay, U as days, s as sunday, V as sundays, W as monday, X as mondays, Y as tuesday, Z as tuesdays, _ as wednesday, $ as wednesdays, a0 as thursday, a1 as thursdays, a2 as friday, a3 as fridays, a4 as saturday, a5 as saturdays, j as timeMonth, a6 as months, i as timeYear, a7 as years, b as utcMinute, a8 as utcMinutes, d as utcHour, a9 as utcHours, e as utcDay, aa as utcDays, f as utcSunday, ab as utcSundays, ac as utcMonday, ad as utcMondays, ae as utcTuesday, af as utcTuesdays, ag as utcWednesday, ah as utcWednesdays, ai as utcThursday, aj as utcThursdays, ak as utcFriday, al as utcFridays, am as utcSaturday, an as utcSaturdays, g as utcMonth, ao as utcMonths, h as utcYear, ap as utcYears, y as utcTicks, x as utcTickInterval, aq as timeTicks, ar as timeTickInterval, as as defaultLocale$1, t as timeFormat, p as timeParse, v as formatLocale$1 } from './symbol-e7396b1c.js';
+import { m as max } from './max-2c042256.js';
 import { r as range } from './range-e15c6861.js';
 import { s as sum$1 } from './sum-44e7480e.js';
 import { c as axisTop, d as axisRight, a as axisBottom, b as axisLeft } from './axis-3dba94d9.js';
 import { a as chord, b as chordTranspose, c as chordDirected, d as ribbon, r as ribbonArrow } from './ribbon-bbaf0468.js';
-import { e as constant$4, b as forceCenter, d as forceCollide, c as forceLink, a as forceManyBody, f as forceSimulation, q as quadtree } from './manyBody-14464908.js';
-import { c as cluster, t as tree, p as pow, s as sqrt$1 } from './pow-ad73c63f.js';
+import { d as drag } from './drag-4c22837d.js';
+import { e as constant$3, b as forceCenter, d as forceCollide, c as forceLink, a as forceManyBody, f as forceSimulation, q as quadtree } from './manyBody-aa7dabf5.js';
 import { h as hierarchy, N as Node, s as stratify } from './stratify-7050dfd9.js';
 import { p as partition } from './partition-e955ad6c.js';
 import { t as treemap, a as treemapSlice, b as treemapSquarify } from './index-c76c1b89.js';
 import { t as treemapDice } from './dice-7bdb0652.js';
 import { p as path } from './path-a78af922.js';
-import { b as band, p as point } from './band-d6b4025b.js';
-import { c as create } from './create-98e85ec4.js';
-import { t as tau$1, a as arc$2 } from './arc-06a68a59.js';
+import { b as band, p as point } from './band-48d6be98.js';
+import { c as create } from './create-863c6a23.js';
+import { a as arc$2 } from './arc-8a3c109f.js';
 import { c as curveLinear, l as line$2 } from './line-5ff356a1.js';
 import { a as array$3 } from './array-80a7907a.js';
-import { c as constant$5 } from './constant-c49047a5.js';
+import { c as constant$4 } from './constant-c49047a5.js';
+import { t as tau$1 } from './math-24162d65.js';
 import { p as pointRadial, l as link, a as linkHorizontal, b as linkVertical, c as linkRadial, d as bumpX, e as bumpY } from './link-3796f00e.js';
 import { c as curveBasis } from './basis-0dde91c7.js';
-import { n as none, a as none$1, s as stack } from './stack-322237e7.js';
-import { S as StanzaColorGenerator, I as InterpolateColorGenerator, C as CirculateColorGenerator } from './ColorGenerator-0cb22741.js';
-import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-f02ddcd0.js';
+import { S as StanzaColorGenerator, I as InterpolateColorGenerator, C as CirculateColorGenerator } from './ColorGenerator-eccfa8db.js';
+import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-6a951c08.js';
 import './point-7945b9d0.js';
 
 function blur(values, r) {
@@ -171,7 +173,7 @@ function length$3(array) {
   return array.length | 0;
 }
 
-function empty$1(length) {
+function empty(length) {
   return !(length > 0);
 }
 
@@ -190,7 +192,7 @@ function cross$1(...values) {
   const j = values.length - 1;
   const index = new Array(j + 1).fill(0);
   const product = [];
-  if (j < 0 || lengths.some(empty$1)) return product;
+  if (j < 0 || lengths.some(empty)) return product;
   while (true) {
     product.push(index.map((j, i) => values[i][j]));
     let i = j;
@@ -219,7 +221,7 @@ var array$1 = Array.prototype;
 
 var slice$1 = array$1.slice;
 
-function constant$3(x) {
+function constant$2(x) {
   return () => x;
 }
 
@@ -345,15 +347,15 @@ function bin() {
   }
 
   histogram.value = function(_) {
-    return arguments.length ? (value = typeof _ === "function" ? _ : constant$3(_), histogram) : value;
+    return arguments.length ? (value = typeof _ === "function" ? _ : constant$2(_), histogram) : value;
   };
 
   histogram.domain = function(_) {
-    return arguments.length ? (domain = typeof _ === "function" ? _ : constant$3([_[0], _[1]]), histogram) : domain;
+    return arguments.length ? (domain = typeof _ === "function" ? _ : constant$2([_[0], _[1]]), histogram) : domain;
   };
 
   histogram.thresholds = function(_) {
-    return arguments.length ? (threshold = typeof _ === "function" ? _ : Array.isArray(_) ? constant$3(slice$1.call(_)) : constant$3(_), histogram) : threshold;
+    return arguments.length ? (threshold = typeof _ === "function" ? _ : Array.isArray(_) ? constant$2(slice$1.call(_)) : constant$2(_), histogram) : threshold;
   };
 
   return histogram;
@@ -515,7 +517,7 @@ function shuffler(random) {
 
 function transpose(matrix) {
   if (!(n = matrix.length)) return [];
-  for (var i = -1, m = min$1(matrix, length$2), transpose = new Array(m); ++i < m;) {
+  for (var i = -1, m = min(matrix, length$2), transpose = new Array(m); ++i < m;) {
     for (var j = -1, n, row = transpose[i] = new Array(n); ++j < n;) {
       row[j] = matrix[j][i];
     }
@@ -669,7 +671,7 @@ function union(...others) {
 
 var nextId = 0;
 
-function local$1() {
+function local() {
   return new Local;
 }
 
@@ -677,7 +679,7 @@ function Local() {
   this._ = "@" + (++nextId).toString(36);
 }
 
-Local.prototype = local$1.prototype = {
+Local.prototype = local.prototype = {
   constructor: Local,
   get: function(node) {
     var id = this._;
@@ -929,647 +931,6 @@ function active(node, name) {
   }
 
   return null;
-}
-
-var constant$2 = x => () => x;
-
-function BrushEvent(type, {
-  sourceEvent,
-  target,
-  selection,
-  mode,
-  dispatch
-}) {
-  Object.defineProperties(this, {
-    type: {value: type, enumerable: true, configurable: true},
-    sourceEvent: {value: sourceEvent, enumerable: true, configurable: true},
-    target: {value: target, enumerable: true, configurable: true},
-    selection: {value: selection, enumerable: true, configurable: true},
-    mode: {value: mode, enumerable: true, configurable: true},
-    _: {value: dispatch}
-  });
-}
-
-function nopropagation$1(event) {
-  event.stopImmediatePropagation();
-}
-
-function noevent$1(event) {
-  event.preventDefault();
-  event.stopImmediatePropagation();
-}
-
-var MODE_DRAG = {name: "drag"},
-    MODE_SPACE = {name: "space"},
-    MODE_HANDLE = {name: "handle"},
-    MODE_CENTER = {name: "center"};
-
-const {abs, max, min} = Math;
-
-function number1(e) {
-  return [+e[0], +e[1]];
-}
-
-function number2(e) {
-  return [number1(e[0]), number1(e[1])];
-}
-
-var X = {
-  name: "x",
-  handles: ["w", "e"].map(type),
-  input: function(x, e) { return x == null ? null : [[+x[0], e[0][1]], [+x[1], e[1][1]]]; },
-  output: function(xy) { return xy && [xy[0][0], xy[1][0]]; }
-};
-
-var Y = {
-  name: "y",
-  handles: ["n", "s"].map(type),
-  input: function(y, e) { return y == null ? null : [[e[0][0], +y[0]], [e[1][0], +y[1]]]; },
-  output: function(xy) { return xy && [xy[0][1], xy[1][1]]; }
-};
-
-var XY = {
-  name: "xy",
-  handles: ["n", "w", "e", "s", "nw", "ne", "sw", "se"].map(type),
-  input: function(xy) { return xy == null ? null : number2(xy); },
-  output: function(xy) { return xy; }
-};
-
-var cursors = {
-  overlay: "crosshair",
-  selection: "move",
-  n: "ns-resize",
-  e: "ew-resize",
-  s: "ns-resize",
-  w: "ew-resize",
-  nw: "nwse-resize",
-  ne: "nesw-resize",
-  se: "nwse-resize",
-  sw: "nesw-resize"
-};
-
-var flipX = {
-  e: "w",
-  w: "e",
-  nw: "ne",
-  ne: "nw",
-  se: "sw",
-  sw: "se"
-};
-
-var flipY = {
-  n: "s",
-  s: "n",
-  nw: "sw",
-  ne: "se",
-  se: "ne",
-  sw: "nw"
-};
-
-var signsX = {
-  overlay: +1,
-  selection: +1,
-  n: null,
-  e: +1,
-  s: null,
-  w: -1,
-  nw: -1,
-  ne: +1,
-  se: +1,
-  sw: -1
-};
-
-var signsY = {
-  overlay: +1,
-  selection: +1,
-  n: -1,
-  e: null,
-  s: +1,
-  w: null,
-  nw: -1,
-  ne: -1,
-  se: +1,
-  sw: +1
-};
-
-function type(t) {
-  return {type: t};
-}
-
-// Ignore right-click, since that should open the context menu.
-function defaultFilter$1(event) {
-  return !event.ctrlKey && !event.button;
-}
-
-function defaultExtent$1() {
-  var svg = this.ownerSVGElement || this;
-  if (svg.hasAttribute("viewBox")) {
-    svg = svg.viewBox.baseVal;
-    return [[svg.x, svg.y], [svg.x + svg.width, svg.y + svg.height]];
-  }
-  return [[0, 0], [svg.width.baseVal.value, svg.height.baseVal.value]];
-}
-
-function defaultTouchable$1() {
-  return navigator.maxTouchPoints || ("ontouchstart" in this);
-}
-
-// Like d3.local, but with the name “__brush” rather than auto-generated.
-function local(node) {
-  while (!node.__brush) if (!(node = node.parentNode)) return;
-  return node.__brush;
-}
-
-function empty(extent) {
-  return extent[0][0] === extent[1][0]
-      || extent[0][1] === extent[1][1];
-}
-
-function brushSelection(node) {
-  var state = node.__brush;
-  return state ? state.dim.output(state.selection) : null;
-}
-
-function brushX() {
-  return brush$1(X);
-}
-
-function brushY() {
-  return brush$1(Y);
-}
-
-function brush() {
-  return brush$1(XY);
-}
-
-function brush$1(dim) {
-  var extent = defaultExtent$1,
-      filter = defaultFilter$1,
-      touchable = defaultTouchable$1,
-      keys = true,
-      listeners = dispatch("start", "brush", "end"),
-      handleSize = 6,
-      touchending;
-
-  function brush(group) {
-    var overlay = group
-        .property("__brush", initialize)
-      .selectAll(".overlay")
-      .data([type("overlay")]);
-
-    overlay.enter().append("rect")
-        .attr("class", "overlay")
-        .attr("pointer-events", "all")
-        .attr("cursor", cursors.overlay)
-      .merge(overlay)
-        .each(function() {
-          var extent = local(this).extent;
-          select(this)
-              .attr("x", extent[0][0])
-              .attr("y", extent[0][1])
-              .attr("width", extent[1][0] - extent[0][0])
-              .attr("height", extent[1][1] - extent[0][1]);
-        });
-
-    group.selectAll(".selection")
-      .data([type("selection")])
-      .enter().append("rect")
-        .attr("class", "selection")
-        .attr("cursor", cursors.selection)
-        .attr("fill", "#777")
-        .attr("fill-opacity", 0.3)
-        .attr("stroke", "#fff")
-        .attr("shape-rendering", "crispEdges");
-
-    var handle = group.selectAll(".handle")
-      .data(dim.handles, function(d) { return d.type; });
-
-    handle.exit().remove();
-
-    handle.enter().append("rect")
-        .attr("class", function(d) { return "handle handle--" + d.type; })
-        .attr("cursor", function(d) { return cursors[d.type]; });
-
-    group
-        .each(redraw)
-        .attr("fill", "none")
-        .attr("pointer-events", "all")
-        .on("mousedown.brush", started)
-      .filter(touchable)
-        .on("touchstart.brush", started)
-        .on("touchmove.brush", touchmoved)
-        .on("touchend.brush touchcancel.brush", touchended)
-        .style("touch-action", "none")
-        .style("-webkit-tap-highlight-color", "rgba(0,0,0,0)");
-  }
-
-  brush.move = function(group, selection, event) {
-    if (group.tween) {
-      group
-          .on("start.brush", function(event) { emitter(this, arguments).beforestart().start(event); })
-          .on("interrupt.brush end.brush", function(event) { emitter(this, arguments).end(event); })
-          .tween("brush", function() {
-            var that = this,
-                state = that.__brush,
-                emit = emitter(that, arguments),
-                selection0 = state.selection,
-                selection1 = dim.input(typeof selection === "function" ? selection.apply(this, arguments) : selection, state.extent),
-                i = interpolate$1(selection0, selection1);
-
-            function tween(t) {
-              state.selection = t === 1 && selection1 === null ? null : i(t);
-              redraw.call(that);
-              emit.brush();
-            }
-
-            return selection0 !== null && selection1 !== null ? tween : tween(1);
-          });
-    } else {
-      group
-          .each(function() {
-            var that = this,
-                args = arguments,
-                state = that.__brush,
-                selection1 = dim.input(typeof selection === "function" ? selection.apply(that, args) : selection, state.extent),
-                emit = emitter(that, args).beforestart();
-
-            interrupt(that);
-            state.selection = selection1 === null ? null : selection1;
-            redraw.call(that);
-            emit.start(event).brush(event).end(event);
-          });
-    }
-  };
-
-  brush.clear = function(group, event) {
-    brush.move(group, null, event);
-  };
-
-  function redraw() {
-    var group = select(this),
-        selection = local(this).selection;
-
-    if (selection) {
-      group.selectAll(".selection")
-          .style("display", null)
-          .attr("x", selection[0][0])
-          .attr("y", selection[0][1])
-          .attr("width", selection[1][0] - selection[0][0])
-          .attr("height", selection[1][1] - selection[0][1]);
-
-      group.selectAll(".handle")
-          .style("display", null)
-          .attr("x", function(d) { return d.type[d.type.length - 1] === "e" ? selection[1][0] - handleSize / 2 : selection[0][0] - handleSize / 2; })
-          .attr("y", function(d) { return d.type[0] === "s" ? selection[1][1] - handleSize / 2 : selection[0][1] - handleSize / 2; })
-          .attr("width", function(d) { return d.type === "n" || d.type === "s" ? selection[1][0] - selection[0][0] + handleSize : handleSize; })
-          .attr("height", function(d) { return d.type === "e" || d.type === "w" ? selection[1][1] - selection[0][1] + handleSize : handleSize; });
-    }
-
-    else {
-      group.selectAll(".selection,.handle")
-          .style("display", "none")
-          .attr("x", null)
-          .attr("y", null)
-          .attr("width", null)
-          .attr("height", null);
-    }
-  }
-
-  function emitter(that, args, clean) {
-    var emit = that.__brush.emitter;
-    return emit && (!clean || !emit.clean) ? emit : new Emitter(that, args, clean);
-  }
-
-  function Emitter(that, args, clean) {
-    this.that = that;
-    this.args = args;
-    this.state = that.__brush;
-    this.active = 0;
-    this.clean = clean;
-  }
-
-  Emitter.prototype = {
-    beforestart: function() {
-      if (++this.active === 1) this.state.emitter = this, this.starting = true;
-      return this;
-    },
-    start: function(event, mode) {
-      if (this.starting) this.starting = false, this.emit("start", event, mode);
-      else this.emit("brush", event);
-      return this;
-    },
-    brush: function(event, mode) {
-      this.emit("brush", event, mode);
-      return this;
-    },
-    end: function(event, mode) {
-      if (--this.active === 0) delete this.state.emitter, this.emit("end", event, mode);
-      return this;
-    },
-    emit: function(type, event, mode) {
-      var d = select(this.that).datum();
-      listeners.call(
-        type,
-        this.that,
-        new BrushEvent(type, {
-          sourceEvent: event,
-          target: brush,
-          selection: dim.output(this.state.selection),
-          mode,
-          dispatch: listeners
-        }),
-        d
-      );
-    }
-  };
-
-  function started(event) {
-    if (touchending && !event.touches) return;
-    if (!filter.apply(this, arguments)) return;
-
-    var that = this,
-        type = event.target.__data__.type,
-        mode = (keys && event.metaKey ? type = "overlay" : type) === "selection" ? MODE_DRAG : (keys && event.altKey ? MODE_CENTER : MODE_HANDLE),
-        signX = dim === Y ? null : signsX[type],
-        signY = dim === X ? null : signsY[type],
-        state = local(that),
-        extent = state.extent,
-        selection = state.selection,
-        W = extent[0][0], w0, w1,
-        N = extent[0][1], n0, n1,
-        E = extent[1][0], e0, e1,
-        S = extent[1][1], s0, s1,
-        dx = 0,
-        dy = 0,
-        moving,
-        shifting = signX && signY && keys && event.shiftKey,
-        lockX,
-        lockY,
-        points = Array.from(event.touches || [event], t => {
-          const i = t.identifier;
-          t = pointer(t, that);
-          t.point0 = t.slice();
-          t.identifier = i;
-          return t;
-        });
-
-    interrupt(that);
-    var emit = emitter(that, arguments, true).beforestart();
-
-    if (type === "overlay") {
-      if (selection) moving = true;
-      const pts = [points[0], points[1] || points[0]];
-      state.selection = selection = [[
-          w0 = dim === Y ? W : min(pts[0][0], pts[1][0]),
-          n0 = dim === X ? N : min(pts[0][1], pts[1][1])
-        ], [
-          e0 = dim === Y ? E : max(pts[0][0], pts[1][0]),
-          s0 = dim === X ? S : max(pts[0][1], pts[1][1])
-        ]];
-      if (points.length > 1) move(event);
-    } else {
-      w0 = selection[0][0];
-      n0 = selection[0][1];
-      e0 = selection[1][0];
-      s0 = selection[1][1];
-    }
-
-    w1 = w0;
-    n1 = n0;
-    e1 = e0;
-    s1 = s0;
-
-    var group = select(that)
-        .attr("pointer-events", "none");
-
-    var overlay = group.selectAll(".overlay")
-        .attr("cursor", cursors[type]);
-
-    if (event.touches) {
-      emit.moved = moved;
-      emit.ended = ended;
-    } else {
-      var view = select(event.view)
-          .on("mousemove.brush", moved, true)
-          .on("mouseup.brush", ended, true);
-      if (keys) view
-          .on("keydown.brush", keydowned, true)
-          .on("keyup.brush", keyupped, true);
-
-      dragDisable(event.view);
-    }
-
-    redraw.call(that);
-    emit.start(event, mode.name);
-
-    function moved(event) {
-      for (const p of event.changedTouches || [event]) {
-        for (const d of points)
-          if (d.identifier === p.identifier) d.cur = pointer(p, that);
-      }
-      if (shifting && !lockX && !lockY && points.length === 1) {
-        const point = points[0];
-        if (abs(point.cur[0] - point[0]) > abs(point.cur[1] - point[1]))
-          lockY = true;
-        else
-          lockX = true;
-      }
-      for (const point of points)
-        if (point.cur) point[0] = point.cur[0], point[1] = point.cur[1];
-      moving = true;
-      noevent$1(event);
-      move(event);
-    }
-
-    function move(event) {
-      const point = points[0], point0 = point.point0;
-      var t;
-
-      dx = point[0] - point0[0];
-      dy = point[1] - point0[1];
-
-      switch (mode) {
-        case MODE_SPACE:
-        case MODE_DRAG: {
-          if (signX) dx = max(W - w0, min(E - e0, dx)), w1 = w0 + dx, e1 = e0 + dx;
-          if (signY) dy = max(N - n0, min(S - s0, dy)), n1 = n0 + dy, s1 = s0 + dy;
-          break;
-        }
-        case MODE_HANDLE: {
-          if (points[1]) {
-            if (signX) w1 = max(W, min(E, points[0][0])), e1 = max(W, min(E, points[1][0])), signX = 1;
-            if (signY) n1 = max(N, min(S, points[0][1])), s1 = max(N, min(S, points[1][1])), signY = 1;
-          } else {
-            if (signX < 0) dx = max(W - w0, min(E - w0, dx)), w1 = w0 + dx, e1 = e0;
-            else if (signX > 0) dx = max(W - e0, min(E - e0, dx)), w1 = w0, e1 = e0 + dx;
-            if (signY < 0) dy = max(N - n0, min(S - n0, dy)), n1 = n0 + dy, s1 = s0;
-            else if (signY > 0) dy = max(N - s0, min(S - s0, dy)), n1 = n0, s1 = s0 + dy;
-          }
-          break;
-        }
-        case MODE_CENTER: {
-          if (signX) w1 = max(W, min(E, w0 - dx * signX)), e1 = max(W, min(E, e0 + dx * signX));
-          if (signY) n1 = max(N, min(S, n0 - dy * signY)), s1 = max(N, min(S, s0 + dy * signY));
-          break;
-        }
-      }
-
-      if (e1 < w1) {
-        signX *= -1;
-        t = w0, w0 = e0, e0 = t;
-        t = w1, w1 = e1, e1 = t;
-        if (type in flipX) overlay.attr("cursor", cursors[type = flipX[type]]);
-      }
-
-      if (s1 < n1) {
-        signY *= -1;
-        t = n0, n0 = s0, s0 = t;
-        t = n1, n1 = s1, s1 = t;
-        if (type in flipY) overlay.attr("cursor", cursors[type = flipY[type]]);
-      }
-
-      if (state.selection) selection = state.selection; // May be set by brush.move!
-      if (lockX) w1 = selection[0][0], e1 = selection[1][0];
-      if (lockY) n1 = selection[0][1], s1 = selection[1][1];
-
-      if (selection[0][0] !== w1
-          || selection[0][1] !== n1
-          || selection[1][0] !== e1
-          || selection[1][1] !== s1) {
-        state.selection = [[w1, n1], [e1, s1]];
-        redraw.call(that);
-        emit.brush(event, mode.name);
-      }
-    }
-
-    function ended(event) {
-      nopropagation$1(event);
-      if (event.touches) {
-        if (event.touches.length) return;
-        if (touchending) clearTimeout(touchending);
-        touchending = setTimeout(function() { touchending = null; }, 500); // Ghost clicks are delayed!
-      } else {
-        yesdrag(event.view, moving);
-        view.on("keydown.brush keyup.brush mousemove.brush mouseup.brush", null);
-      }
-      group.attr("pointer-events", "all");
-      overlay.attr("cursor", cursors.overlay);
-      if (state.selection) selection = state.selection; // May be set by brush.move (on start)!
-      if (empty(selection)) state.selection = null, redraw.call(that);
-      emit.end(event, mode.name);
-    }
-
-    function keydowned(event) {
-      switch (event.keyCode) {
-        case 16: { // SHIFT
-          shifting = signX && signY;
-          break;
-        }
-        case 18: { // ALT
-          if (mode === MODE_HANDLE) {
-            if (signX) e0 = e1 - dx * signX, w0 = w1 + dx * signX;
-            if (signY) s0 = s1 - dy * signY, n0 = n1 + dy * signY;
-            mode = MODE_CENTER;
-            move(event);
-          }
-          break;
-        }
-        case 32: { // SPACE; takes priority over ALT
-          if (mode === MODE_HANDLE || mode === MODE_CENTER) {
-            if (signX < 0) e0 = e1 - dx; else if (signX > 0) w0 = w1 - dx;
-            if (signY < 0) s0 = s1 - dy; else if (signY > 0) n0 = n1 - dy;
-            mode = MODE_SPACE;
-            overlay.attr("cursor", cursors.selection);
-            move(event);
-          }
-          break;
-        }
-        default: return;
-      }
-      noevent$1(event);
-    }
-
-    function keyupped(event) {
-      switch (event.keyCode) {
-        case 16: { // SHIFT
-          if (shifting) {
-            lockX = lockY = shifting = false;
-            move(event);
-          }
-          break;
-        }
-        case 18: { // ALT
-          if (mode === MODE_CENTER) {
-            if (signX < 0) e0 = e1; else if (signX > 0) w0 = w1;
-            if (signY < 0) s0 = s1; else if (signY > 0) n0 = n1;
-            mode = MODE_HANDLE;
-            move(event);
-          }
-          break;
-        }
-        case 32: { // SPACE
-          if (mode === MODE_SPACE) {
-            if (event.altKey) {
-              if (signX) e0 = e1 - dx * signX, w0 = w1 + dx * signX;
-              if (signY) s0 = s1 - dy * signY, n0 = n1 + dy * signY;
-              mode = MODE_CENTER;
-            } else {
-              if (signX < 0) e0 = e1; else if (signX > 0) w0 = w1;
-              if (signY < 0) s0 = s1; else if (signY > 0) n0 = n1;
-              mode = MODE_HANDLE;
-            }
-            overlay.attr("cursor", cursors[type]);
-            move(event);
-          }
-          break;
-        }
-        default: return;
-      }
-      noevent$1(event);
-    }
-  }
-
-  function touchmoved(event) {
-    emitter(this, arguments).moved(event);
-  }
-
-  function touchended(event) {
-    emitter(this, arguments).ended(event);
-  }
-
-  function initialize() {
-    var state = this.__brush || {selection: null};
-    state.extent = number2(extent.apply(this, arguments));
-    state.dim = dim;
-    return state;
-  }
-
-  brush.extent = function(_) {
-    return arguments.length ? (extent = typeof _ === "function" ? _ : constant$2(number2(_)), brush) : extent;
-  };
-
-  brush.filter = function(_) {
-    return arguments.length ? (filter = typeof _ === "function" ? _ : constant$2(!!_), brush) : filter;
-  };
-
-  brush.touchable = function(_) {
-    return arguments.length ? (touchable = typeof _ === "function" ? _ : constant$2(!!_), brush) : touchable;
-  };
-
-  brush.handleSize = function(_) {
-    return arguments.length ? (handleSize = +_, brush) : handleSize;
-  };
-
-  brush.keyModifiers = function(_) {
-    return arguments.length ? (keys = !!_, brush) : keys;
-  };
-
-  brush.on = function() {
-    var value = listeners.on.apply(listeners, arguments);
-    return value === listeners ? brush : value;
-  };
-
-  return brush;
 }
 
 var array = Array.prototype;
@@ -1868,7 +1229,7 @@ function density() {
 
     // Convert number of thresholds into uniform thresholds.
     if (!Array.isArray(tz)) {
-      tz = ticks(Number.MIN_VALUE, max$1(values) / pow4k, tz);
+      tz = ticks(Number.MIN_VALUE, max(values) / pow4k, tz);
     }
 
     return Contours()
@@ -1888,7 +1249,7 @@ function density() {
           c.value = value; // preserve exact threshold value
           return c;
         };
-    Object.defineProperty(contour, "max", {get: () => max$1(values) / pow4k});
+    Object.defineProperty(contour, "max", {get: () => max(values) / pow4k});
     return contour;
   };
 
@@ -2028,11 +1389,11 @@ var svg = parser("image/svg+xml");
 
 function radial$1(radius, x, y) {
   var nodes,
-      strength = constant$4(0.1),
+      strength = constant$3(0.1),
       strengths,
       radiuses;
 
-  if (typeof radius !== "function") radius = constant$4(+radius);
+  if (typeof radius !== "function") radius = constant$3(+radius);
   if (x == null) x = 0;
   if (y == null) y = 0;
 
@@ -2064,11 +1425,11 @@ function radial$1(radius, x, y) {
   };
 
   force.strength = function(_) {
-    return arguments.length ? (strength = typeof _ === "function" ? _ : constant$4(+_), initialize(), force) : strength;
+    return arguments.length ? (strength = typeof _ === "function" ? _ : constant$3(+_), initialize(), force) : strength;
   };
 
   force.radius = function(_) {
-    return arguments.length ? (radius = typeof _ === "function" ? _ : constant$4(+_), initialize(), force) : radius;
+    return arguments.length ? (radius = typeof _ === "function" ? _ : constant$3(+_), initialize(), force) : radius;
   };
 
   force.x = function(_) {
@@ -2134,7 +1495,7 @@ function lengthPoint(lambda, phi) {
   lambda *= radians, phi *= radians;
   var sinPhi = sin(phi),
       cosPhi = cos(phi),
-      delta = abs$1(lambda - lambda0),
+      delta = abs(lambda - lambda0),
       cosDelta = cos(delta),
       sinDelta = sin(delta),
       x = cosPhi * sinDelta,
@@ -3313,9 +2674,9 @@ function pie() {
   var value = identity,
       sortValues = descending$1,
       sort = null,
-      startAngle = constant$5(0),
-      endAngle = constant$5(tau$1),
-      padAngle = constant$5(0);
+      startAngle = constant$4(0),
+      endAngle = constant$4(tau$1),
+      padAngle = constant$4(0);
 
   function pie(data) {
     var i,
@@ -3358,7 +2719,7 @@ function pie() {
   }
 
   pie.value = function(_) {
-    return arguments.length ? (value = typeof _ === "function" ? _ : constant$5(+_), pie) : value;
+    return arguments.length ? (value = typeof _ === "function" ? _ : constant$4(+_), pie) : value;
   };
 
   pie.sortValues = function(_) {
@@ -3370,15 +2731,15 @@ function pie() {
   };
 
   pie.startAngle = function(_) {
-    return arguments.length ? (startAngle = typeof _ === "function" ? _ : constant$5(+_), pie) : startAngle;
+    return arguments.length ? (startAngle = typeof _ === "function" ? _ : constant$4(+_), pie) : startAngle;
   };
 
   pie.endAngle = function(_) {
-    return arguments.length ? (endAngle = typeof _ === "function" ? _ : constant$5(+_), pie) : endAngle;
+    return arguments.length ? (endAngle = typeof _ === "function" ? _ : constant$4(+_), pie) : endAngle;
   };
 
   pie.padAngle = function(_) {
-    return arguments.length ? (padAngle = typeof _ === "function" ? _ : constant$5(+_), pie) : padAngle;
+    return arguments.length ? (padAngle = typeof _ === "function" ? _ : constant$4(+_), pie) : padAngle;
   };
 
   return pie;
@@ -4071,13 +3432,13 @@ var d3 = /*#__PURE__*/Object.freeze({
   thresholdFreedmanDiaconis: thresholdFreedmanDiaconis,
   thresholdScott: thresholdScott,
   thresholdSturges: thresholdSturges,
-  max: max$1,
+  max: max,
   maxIndex: maxIndex,
   mean: mean,
   median: median,
   medianIndex: medianIndex,
   merge: merge,
-  min: min$1,
+  min: min,
   minIndex: minIndex,
   mode: mode,
   nice: nice,
@@ -4450,7 +3811,7 @@ var d3 = /*#__PURE__*/Object.freeze({
   interpolatePlasma: plasma,
   create: create,
   creator: creator,
-  local: local$1,
+  local: local,
   matcher: matcher,
   namespace: namespace,
   namespaces: namespaces,

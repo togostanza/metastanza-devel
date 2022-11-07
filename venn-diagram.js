@@ -1,8 +1,8 @@
-import { S as Stanza, d as defineStanzaElement } from './transform-6201f181.js';
-import { l as loadData } from './load-data-891812c8.js';
-import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-f02ddcd0.js';
-import { T as ToolTip } from './ToolTip-2d2051c6.js';
-import { L as Legend } from './Legend-03de143d.js';
+import { S as Stanza, d as defineStanzaElement } from './transform-53a3c950.js';
+import { l as loadData } from './load-data-aabde340.js';
+import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-6a951c08.js';
+import { T as ToolTip } from './ToolTip-3832c908.js';
+import { L as Legend } from './Legend-a8673173.js';
 import './dsv-ac31b097.js';
 
 var colorString$1 = {exports: {}};
