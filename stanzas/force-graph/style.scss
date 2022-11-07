@@ -1,8 +1,16 @@
 // Load the repository-wide global style here. The actual file is located at ../common.scss for details.
 @use "@/common.scss";
 
+main {
+  background-color: var(--togostanza-theme-background-color);
+}
+
 svg {
   background-color: var(--togostanza-background-color);
+}
+
+svg > defs > marker > path {
+  fill: var(--togostanza-edge-default_color);
 }
 
 .label,
@@ -16,13 +24,13 @@ svg {
 }
 
 .label {
-  font-size: calc(var(--togostanza-label-font-size) * 1px);
-  font-family: var(--togostanza-font-family);
-  fill: var(--togostanza-label-font-color);
+  font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+  font-family: var(--togostanza-fonts-font_family);
+  fill: var(--togostanza-fonts-font_color);
 }
 
 .node {
-  fill: var(--togostanza-default-node-color);
+  fill: var(--togostanza-theme-series_0_color);
   stroke: var(--togostanza-border-color);
   stroke-width: var(--togostanza-border-width);
 }
@@ -31,37 +39,37 @@ svg {
   stroke-opacity: var(--togostanza-edge-opacity);
   stroke-linecap: round;
   fill: none;
-  stroke: var(--togostanza-default-edge-color);
+  stroke: var(--togostanza-edge-default_color);
 }
 
 .active {
-  & > .node {
+  > .node {
     stroke-width: calc(var(--togostanza-border-width) * 2.5px);
     stroke-opacity: 1;
   }
-  & > .link {
+  > .link {
     stroke-opacity: 1;
   }
-  & > .label {
+  > .label {
     opacity: 1;
   }
 }
 
 .fadeout {
   opacity: 0.05;
-  & > .link {
+  > .link {
     stroke-opacity: 0.05;
   }
 }
 
 .half-active {
   opacity: 0.8;
-  & > .node {
+  > .node {
     stroke-width: calc(var(--togostanza-border-width) * 1.6px);
     stroke-opacity: 0.8;
   }
 
-  & > .label {
+  > .label {
     opacity: 0.6;
   }
 }
