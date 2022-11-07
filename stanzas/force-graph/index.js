@@ -14,10 +14,6 @@ import {
   appendCustomCss,
 } from "togostanza-utils";
 
-// import * as jsonData from "./assets/lesMiserables.json";
-
-// const { default: json } = jsonData;
-
 export default class ForceGraph extends Stanza {
   menu() {
     return [
@@ -82,8 +78,8 @@ export default class ForceGraph extends Stanza {
     };
 
     const edgeColorParams = {
-      basedOn: this.params["edge-color-based_on"],
-      dataKey: this.params["edge-color-key"] || "",
+      basedOn: "data key",
+      dataKey: Symbol(),
     };
 
     const labelsParams = {
@@ -91,7 +87,7 @@ export default class ForceGraph extends Stanza {
       dataKey: this.params["node-label-key"],
     };
 
-    const highlightAdjEdges = this.params["highlight_adjacent_edges"];
+    const highlightAdjEdges = true;
 
     const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
 
