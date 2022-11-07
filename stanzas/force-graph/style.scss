@@ -9,8 +9,8 @@ svg {
   background-color: var(--togostanza-background-color);
 }
 
-svg > defs > #arrow-default > path {
-  fill: var(--togostanza-default-edge-color);
+svg > defs > marker > path {
+  fill: var(--togostanza-edge-default_color);
 }
 
 .label,

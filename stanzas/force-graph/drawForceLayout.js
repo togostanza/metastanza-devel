@@ -83,10 +83,6 @@ export default function (
     [markerBoxWidth, markerBoxHeight / 2],
   ];
 
-  //const edgesColorsArr = edges.map((d) => d[symbols.edgeColorSym]);
-
-  //const edgeColors = [...new Set(edgesColorsArr)];
-
   if (edgeWidthParams.showArrows) {
     const defs = svg.append("defs");
 
@@ -114,20 +110,10 @@ export default function (
       .append("path")
       .attr("d", d3.line()(arrowPoints))
       .attr("stroke", "none")
-      .attr("fill", (d) => d[symbols.edgeColorSym]);
-
-    defs
-      .append("marker")
-      .attr("id", "arrow-default")
-      .attr("viewBox", [0, 0, markerBoxWidth, markerBoxHeight])
-      .attr("refX", refX)
-      .attr("refY", refY)
-      .attr("markerWidth", markerBoxWidth)
-      .attr("markerHeight", markerBoxHeight)
-      .attr("orient", "auto-start-reverse")
-      .append("path")
-      .attr("d", d3.line()(arrowPoints))
-      .attr("stroke", "none");
+      .attr("style", (d) =>
+        d[symbols.edgeColorSym] ? `fill: ${d[symbols.edgeColorSym]}` : null
+      )
+      .attr("fill-opacity", 1);
   }
 
   const forceG = svg
