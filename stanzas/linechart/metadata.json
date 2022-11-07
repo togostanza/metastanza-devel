@@ -29,7 +29,6 @@
       "stanza:description": "Data type",
       "stanza:required": true
     },
-
     {
       "stanza:key": "misc-custom_css_url",
       "stanza:type": "text",
