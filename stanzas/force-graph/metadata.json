@@ -48,7 +48,7 @@
       "stanza:key": "node-size-scale",
       "stanza:type": "single-choice",
       "stanza:choice": ["linear", "sqrt", "log10"],
-      "stanza:example": "linear",
+      "stanza:example": "sqrt",
       "stanza:description": "Node radius scale"
     },
     {
