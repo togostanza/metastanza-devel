@@ -46,11 +46,11 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "axis-x-hide",
+      "stanza:key": "axis-x-visible",
       "stanza:type": "boolean",
       "stanza:example": false,
       "stanza:default": false,
-      "stanza:description": "Hide the axis",
+      "stanza:description": "Show the axis",
       "stanza:required": false
     },
     {
@@ -152,7 +152,7 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "axis-y-hide",
+      "stanza:key": "axis-y-visible",
       "stanza:type": "boolean",
       "stanza:example": false,
       "stanza:default": false,
