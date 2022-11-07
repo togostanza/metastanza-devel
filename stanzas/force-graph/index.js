@@ -87,7 +87,7 @@ export default class ForceGraph extends Stanza {
     };
 
     const labelsParams = {
-      margin: this.params["node-label-margin"],
+      margin: 3,
       dataKey: this.params["node-label-key"],
     };
 

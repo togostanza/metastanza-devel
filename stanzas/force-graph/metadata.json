@@ -115,12 +115,6 @@
       "stanza:description": "Node labels data key. If empty, no labels will be shown"
     },
     {
-      "stanza:key": "node-label-margin",
-      "stanza:type": "number",
-      "stanza:example": 3,
-      "stanza:description": "Node labels offset from node center, in px."
-    },
-    {
       "stanza:key": "node-tooltip-key",
       "stanza:type": "string",
       "stanza:example": "id",
