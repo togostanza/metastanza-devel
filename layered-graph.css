@@ -1,0 +1,79 @@
+svg {
+  background-color: var(--togostanza-theme-background_color);
+  cursor: grab;
+}
+
+svg > defs > marker > path {
+  fill: var(--togostanza-edge-color);
+}
+
+.node,
+.link,
+.group-plane,
+.active,
+.fadeout,
+.half-active {
+  transition: all 0.1s ease-in-out;
+  transition-property: opacity, stroke-width, stroke-opacity;
+}
+
+.node {
+  fill: var(--togostanza-theme-series_0_color);
+  stroke-width: calc(var(--togostanza-border-width) * 1px);
+  stroke: var(--togostanza-border-color);
+  cursor: pointer;
+}
+.node.active {
+  opacity: 1;
+  stroke-width: calc(var(--togostanza-border-width) * 2.5px);
+}
+.node.half-active {
+  stroke-opacity: 0.5;
+  stroke-width: calc(var(--togostanza-border-width) * 1.5px);
+}
+.node.fadeout {
+  opacity: 0.1;
+}
+
+.link {
+  stroke-linecap: round;
+  stroke-width: 1px;
+  fill: none;
+  stroke: var(--togostanza-edge-color);
+  pointer-events: none;
+  opacity: 0.8;
+}
+.link.dashed {
+  stroke-dasharray: 2;
+}
+.link.active {
+  opacity: 1;
+}
+.link.half-active {
+  opacity: 1;
+}
+.link.fadeout {
+  opacity: 0.01;
+}
+
+.group-plane {
+  opacity: 0.05;
+  stroke: var(--togostanza-outline-color);
+  stroke-linejoin: round;
+  stroke-width: calc(var(--togostanza-border-width) * 1.5px);
+  fill: var(--togostanza-group_plane-color);
+  stroke-opacity: 0.2;
+}
+.group-plane.active {
+  stroke-opacity: 0.1;
+  opacity: 0.1;
+  stroke-width: calc(var(--togostanza-border-width) * 4px);
+}
+.group-plane.half-active {
+  stroke-opacity: 0.05;
+  opacity: 0.05;
+  stroke-width: calc(var(--togostanza-border-width) * 2.5px);
+}
+.group-plane.fadeout {
+  opacity: 0.01;
+}
