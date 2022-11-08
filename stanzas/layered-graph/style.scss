@@ -2,19 +2,18 @@
 @use "@/common.scss";
 
 main {
-  font-family: var(--togostanza-font-family);
+  font-family: var(--togostanza-fonts-font_family);
 }
 
 svg {
-  background-color: var(--togostanza-background-color);
+  background-color: var(--togostanza-theme-background_color);
   cursor: grab;
 }
 
 svg > defs > marker > path {
-  fill: var(--togostanza-edge-default_color);
+  fill: var(--togostanza-edge-color);
 }
 
-.label,
 .node,
 .link,
 .group-plane,
@@ -25,15 +24,9 @@ svg > defs > marker > path {
   transition-property: opacity, stroke-width, stroke-opacity;
 }
 
-.label {
-  font-size: calc(var(--togostanza-label-font-size) * 1px);
-  fill: var(--togostanza-label-font-color);
-}
-
 .node {
   fill: var(--togostanza-theme-series_0_color);
-  stroke: var(--togostanza-border-color);
-  stroke-width: var(--togostanza-border-width);
+  stroke-width: calc(var(--togostanza-border-width) * 1px);
   cursor: pointer;
   &.active {
     opacity: 1;
@@ -52,7 +45,7 @@ svg > defs > marker > path {
   stroke-linecap: round;
   stroke-width: 1px;
   fill: none;
-  stroke: var(--togostanza-edge-default_color);
+  stroke: var(--togostanza-edge-color);
   pointer-events: none;
   opacity: var(--togostanza-edge-opacity);
 
@@ -72,10 +65,10 @@ svg > defs > marker > path {
 
 .group-plane {
   opacity: 0.05;
-  stroke: var(--togostanza-border-color);
+  stroke: var(--togostanza-outline-color);
   stroke-linejoin: round;
   stroke-width: calc(var(--togostanza-border-width) * 1.5px);
-  fill: var(--togostanza-default-plane-color);
+  fill: var(--togostanza-group_plane-color);
   stroke-opacity: 0.2;
   &.active {
     stroke-opacity: 0.1;

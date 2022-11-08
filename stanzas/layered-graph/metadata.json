@@ -204,7 +204,13 @@
       "stanza:description": "Inner padding in px"
     },
     {
-      "stanza:key": "--togostanza-edge-default_color",
+      "stanza:key": "--togostanza-border-width",
+      "stanza:type": "number",
+      "stanza:default": 1,
+      "stanza:description": "Inner padding in px"
+    },
+    {
+      "stanza:key": "--togostanza-edge-color",
       "stanza:type": "color",
       "stanza:default": "#bdbdbd",
       "stanza:description": "Egdes default color"
@@ -216,7 +222,7 @@
       "stanza:description": "Edge default opacity"
     },
     {
-      "stanza:key": "--togostanza-group_plane-default_color",
+      "stanza:key": "--togostanza-group_plane-color",
       "stanza:type": "color",
       "stanza:default": "#333333",
       "stanza:description": "Egdes default color"
@@ -238,12 +244,6 @@
       "stanza:type": "number",
       "stanza:default": 12,
       "stanza:description": "Font family"
-    },
-    {
-      "stanza:key": "--togostanza-border-width",
-      "stanza:type": "number",
-      "stanza:default": 0,
-      "stanza:description": "Border width"
     },
     {
       "stanza:key": "--togostanza-theme-background_color",
