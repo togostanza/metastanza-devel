@@ -122,14 +122,6 @@
       "stanza:example": "true",
       "stanza:description": "Show arrows"
     },
-
-    {
-      "stanza:key": "group_planes-color_plane",
-      "stanza:type": "boolean",
-      "stanza:example": false,
-      "stanza:description": "Set color of the group planes based on this data key"
-    },
-
     {
       "stanza:key": "group_planes-constant_radius",
       "stanza:type": "boolean",

@@ -92,8 +92,7 @@ export default class ForceGraph extends Stanza {
     const constRarius = !!this.params["group_planes-constant_radius"];
 
     const groupPlaneColorParams = {
-      colorPlane: this.params["group_planes-color_plane"],
-      // default fixed color by css
+      colorPlane: false,
     };
 
     const groupsSortParams = {
