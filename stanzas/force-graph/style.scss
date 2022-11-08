@@ -24,7 +24,7 @@ svg > defs > marker > path {
 }
 
 .label {
-  font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+  font-size: calc(var(--togostanza-fonts-font_size_primary) * 2px);
   font-family: var(--togostanza-fonts-font_family);
   fill: var(--togostanza-fonts-font_color);
 }
