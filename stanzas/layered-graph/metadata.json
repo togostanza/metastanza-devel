@@ -117,19 +117,7 @@
       "stanza:example": "true",
       "stanza:description": "Show/hide arrows"
     },
-    {
-      "stanza:key": "edge-color-based_on",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["data key", "source color", "target color", "fixed"],
-      "stanza:example": "source color",
-      "stanza:description": "Set color of the edge based on this"
-    },
-    {
-      "stanza:key": "edge-color-key",
-      "stanza:type": "string",
-      "stanza:example": "value",
-      "stanza:description": "Set color of the edge based on this data key"
-    },
+
     {
       "stanza:key": "group_planes-color_plane",
       "stanza:type": "boolean",
@@ -142,12 +130,6 @@
       "stanza:type": "boolean",
       "stanza:example": true,
       "stanza:description": "Constant radius for all groups"
-    },
-    {
-      "stanza:key": "highlight-adjacent_edges",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:description": "Highlight adjacent edges on node mouse hover"
     },
     {
       "stanza:key": "highlight-group_planes",
@@ -201,6 +183,12 @@
       "stanza:description": "Group color 5"
     },
     {
+      "stanza:key": "--togostanza-edge-default_color",
+      "stanza:type": "color",
+      "stanza:default": "#bdbdbd",
+      "stanza:description": "Egdes default color"
+    },
+    {
       "stanza:key": "--togostanza-outline-width",
       "stanza:type": "number",
       "stanza:default": 600,
@@ -219,15 +207,9 @@
       "stanza:description": "Inner padding in px"
     },
     {
-      "stanza:key": "--togostanza-node-default_color",
-      "stanza:type": "color",
-      "stanza:default": "#6590e6",
-      "stanza:description": "Nodes default color"
-    },
-    {
       "stanza:key": "--togostanza-edge-default_color",
       "stanza:type": "color",
-      "stanza:default": "#6590e6",
+      "stanza:default": "#bdbdbd",
       "stanza:description": "Egdes default color"
     },
     {

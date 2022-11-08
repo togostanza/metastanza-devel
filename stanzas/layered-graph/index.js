@@ -128,19 +128,17 @@ export default class ForceGraph extends Stanza {
       showArrows: this.params["edge-show_arrows"],
     };
 
-    console.log("edgeWidthParams.minWidth", edgeWidthParams.minWidth);
-
     const edgeColorParams = {
-      basedOn: this.params["edge-color-based_on"],
-      dataKey: this.params["edge-color-key"] || "",
+      basedOn: "data key",
+      dataKey: Symbol(),
     };
 
     const tooltipParams = {
       dataKey: this.params["tooltips-key"],
-      show: nodes.some((d) => d[this.params["nodes-tooltip-data-key"]]),
+      show: nodes.some((d) => d[this.params["tooltips-key"]]),
     };
 
-    const highlightAdjEdges = this.params["highlight-adjacent_edges"] || false;
+    const highlightAdjEdges = true;
     const highlightGroupPlanes = this.params["highlight-group_planes"] || false;
 
     const params = {
@@ -219,20 +217,10 @@ export default class ForceGraph extends Stanza {
         .append("path")
         .attr("d", d3.line()(arrowPoints))
         .attr("stroke", "none")
-        .attr("fill", (d) => d[symbols.edgeColorSym]);
-
-      defs
-        .append("marker")
-        .attr("id", "arrow-default")
-        .attr("viewBox", [0, 0, markerBoxWidth, markerBoxHeight])
-        .attr("refX", refX)
-        .attr("refY", refY)
-        .attr("markerWidth", markerBoxWidth)
-        .attr("markerHeight", markerBoxHeight)
-        .attr("orient", "auto-start-reverse")
-        .append("path")
-        .attr("d", d3.line()(arrowPoints))
-        .attr("stroke", "none");
+        .attr("style", (d) =>
+          d[symbols.edgeColorSym] ? `fill: ${d[symbols.edgeColorSym]}` : null
+        )
+        .attr("fill-opacity", 1);
     }
 
     const maxNodesInGroup = d3.max(
@@ -286,7 +274,7 @@ export default class ForceGraph extends Stanza {
       .rotateX(-startAngle);
 
     const plane3d = _3d()
-      .shape("PLANE")
+      .shape("LINE_STRIP")
       .origin(origin)
       .rotateY(startAngle)
       .rotateX(-startAngle)
@@ -407,14 +395,20 @@ export default class ForceGraph extends Stanza {
         });
       });
 
-      groupPlanes = getGroupPlanes(groupHash, {
-        WIDTH,
-        HEIGHT,
-        DEPTH,
-        color,
-        yPointScale,
-        groupPlaneColorParams,
-      });
+      groupPlanes = getGroupPlanes(
+        groupHash,
+        {
+          WIDTH,
+          HEIGHT,
+          DEPTH,
+          color,
+          yPointScale,
+          groupPlaneColorParams,
+        },
+        true
+      );
+
+      console.log(groupPlanes);
 
       const data = [
         point3d(prepNodes),
