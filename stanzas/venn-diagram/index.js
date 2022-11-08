@@ -85,8 +85,8 @@ export default class VennStanza extends Stanza {
     const selectedDiagram = this.root.querySelector(
       `.venn-diagram[data-number-of-data="${this.numberOfData}"]`
     );
-    const padding = getPropertyValue(`--togostanza-outline-padding`);
-    selectedDiagram.style.transform = `translate(${padding}px, ${padding}px)`;
+    const padding = +getPropertyValue(`--togostanza-outline-padding`);
+    // selectedDiagram.style.transform = `translate(${padding}px, ${padding}px)`;
     if (!selectedDiagram) {
       console.error(
         "Venn diagrams with more than six elements are not supported. Please try using Euler diagrams."
@@ -106,7 +106,7 @@ export default class VennStanza extends Stanza {
       svgWidth / (rect.width + margin * 2),
       svgHeight / (rect.height + margin * 2)
     );
-    selectedDiagram.setAttribute("transform", `scale(${scale})`);
+    selectedDiagram.style.transform = `translate(${padding}px, ${padding}px) scale(${scale})`;
     const labelFontSize = +window
       .getComputedStyle(this.element)
       .getPropertyValue("--togostanza-fonts-font_size_primary")
@@ -188,16 +188,18 @@ export default class VennStanza extends Stanza {
         );
       }
     });
-    const ratio = (targets.length - 1) / (this.numberOfData - 1);
-    switch (this.params["blend-mode"]) {
-      case "multiply":
-        blendedColor = blendedColor.saturate(ratio);
-        blendedColor = blendedColor.darken(ratio * 0.5);
-        break;
-      case "screen":
-        blendedColor = blendedColor.saturate(ratio);
-        blendedColor = blendedColor.lighten(ratio * 0.5);
-        break;
+    if (targets.length > 1) {
+      const ratio = (targets.length - 1) / (this.numberOfData - 1);
+      switch (this.params["blend-mode"]) {
+        case "multiply":
+          blendedColor = blendedColor.saturate(ratio);
+          blendedColor = blendedColor.darken(ratio * 0.5);
+          break;
+        case "screen":
+          blendedColor = blendedColor.saturate(ratio);
+          blendedColor = blendedColor.lighten(ratio * 0.5);
+          break;
+      }
     }
     return blendedColor;
   }
