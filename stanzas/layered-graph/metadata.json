@@ -220,7 +220,7 @@
     {
       "stanza:key": "--togostanza-edge-opacity",
       "stanza:type": "number",
-      "stanza:default": 0.25,
+      "stanza:default": 0.8,
       "stanza:description": "Edge default opacity"
     },
     {

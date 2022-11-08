@@ -49,21 +49,21 @@ svg > defs > marker > path {
 }
 
 .link {
-  stroke-opacity: 0.25;
   stroke-linecap: round;
   stroke-width: 1px;
   fill: none;
   stroke: var(--togostanza-edge-default_color);
   pointer-events: none;
+  opacity: var(--togostanza-edge-opacity);
 
   &.dashed {
     stroke-dasharray: 2;
   }
   &.active {
-    stroke-opacity: 1;
+    opacity: 1;
   }
   &.half-active {
-    stroke-opacity: 1;
+    opacity: 1;
   }
   &.fadeout {
     opacity: 0.01;
