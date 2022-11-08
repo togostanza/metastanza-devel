@@ -201,19 +201,19 @@
       "stanza:key": "--togostanza-border-width",
       "stanza:type": "number",
       "stanza:default": 0,
-      "stanza:description": "Inner padding in px"
+      "stanza:description": "Nodes border width"
+    },
+    {
+      "stanza:key": "--togostanza-border-color",
+      "stanza:type": "color",
+      "stanza:default": 0,
+      "stanza:description": "Nodes border color"
     },
     {
       "stanza:key": "--togostanza-edge-color",
       "stanza:type": "color",
       "stanza:default": "#bdbdbd",
       "stanza:description": "Egdes default color"
-    },
-    {
-      "stanza:key": "--togostanza-edge-opacity",
-      "stanza:type": "number",
-      "stanza:default": 0.8,
-      "stanza:description": "Edge default opacity"
     },
     {
       "stanza:key": "--togostanza-group_plane-color",

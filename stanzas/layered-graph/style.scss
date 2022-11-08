@@ -23,6 +23,7 @@ svg > defs > marker > path {
 .node {
   fill: var(--togostanza-theme-series_0_color);
   stroke-width: calc(var(--togostanza-border-width) * 1px);
+  stroke: var(--togostanza-border-color);
   cursor: pointer;
   &.active {
     opacity: 1;
@@ -43,7 +44,7 @@ svg > defs > marker > path {
   fill: none;
   stroke: var(--togostanza-edge-color);
   pointer-events: none;
-  opacity: var(--togostanza-edge-opacity);
+  opacity: 0.8;
 
   &.dashed {
     stroke-dasharray: 2;

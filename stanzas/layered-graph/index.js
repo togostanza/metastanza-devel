@@ -323,7 +323,6 @@ export default class ForceGraph extends Stanza {
         .attr("cx", posPointX)
         .attr("cy", posPointY)
         .attr("r", (d) => d[symbols.nodeSizeSym])
-        .style("stroke", (d) => d[symbols.nodeBorderColorSym])
         .style("fill", (d) => d[symbols.nodeColorSym])
         .sort(point3d.sort);
 
