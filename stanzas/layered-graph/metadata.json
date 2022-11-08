@@ -26,7 +26,12 @@
       "stanza:description": "Data type",
       "stanza:required": true
     },
-
+    {
+      "stanza:key": "misc-custom_css_url",
+      "stanza:example": "",
+      "stanza:description": "Stylesheet(scss file) URL to override current style",
+      "stanza:required": false
+    },
     {
       "stanza:key": "group_planes-sort-key",
       "stanza:type": "string",
@@ -76,7 +81,7 @@
       "stanza:key": "node-size-scale",
       "stanza:type": "single-choice",
       "stanza:choice": ["linear", "sqrt", "log10"],
-      "stanza:example": "linear",
+      "stanza:example": "sqrt",
       "stanza:description": "Node size scale"
     },
     {
@@ -115,7 +120,7 @@
       "stanza:key": "edge-show_arrows",
       "stanza:type": "boolean",
       "stanza:example": "true",
-      "stanza:description": "Show/hide arrows"
+      "stanza:description": "Show arrows"
     },
 
     {

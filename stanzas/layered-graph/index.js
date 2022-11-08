@@ -19,8 +19,6 @@ import {
   appendCustomCss,
 } from "togostanza-utils";
 
-import { default as json } from "./assets/lesMiserables.json";
-
 export default class ForceGraph extends Stanza {
   menu() {
     return [
@@ -33,7 +31,7 @@ export default class ForceGraph extends Stanza {
   }
 
   async render() {
-    appendCustomCss(this, this.params["custom-css-url"]);
+    appendCustomCss(this, this.params["misc-custom_css_url"]);
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
@@ -53,12 +51,11 @@ export default class ForceGraph extends Stanza {
 
     const cg = new StanzaColorGenerator(this);
 
-    const values = json;
-    //  await loadData(
-    //   this.params["data-url"],
-    //   this.params["data-type"],
-    //   this.root.querySelector("main")
-    // );
+    const values = await loadData(
+      this.params["data-url"],
+      this.params["data-type"],
+      this.root.querySelector("main")
+    );
 
     this._data = values;
 
@@ -407,8 +404,6 @@ export default class ForceGraph extends Stanza {
         },
         true
       );
-
-      console.log(groupPlanes);
 
       const data = [
         point3d(prepNodes),
