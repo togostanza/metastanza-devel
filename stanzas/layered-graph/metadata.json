@@ -180,12 +180,6 @@
       "stanza:description": "Group color 5"
     },
     {
-      "stanza:key": "--togostanza-edge-default_color",
-      "stanza:type": "color",
-      "stanza:default": "#bdbdbd",
-      "stanza:description": "Egdes default color"
-    },
-    {
       "stanza:key": "--togostanza-outline-width",
       "stanza:type": "number",
       "stanza:default": 600,
@@ -206,7 +200,7 @@
     {
       "stanza:key": "--togostanza-border-width",
       "stanza:type": "number",
-      "stanza:default": 1,
+      "stanza:default": 0,
       "stanza:description": "Inner padding in px"
     },
     {
