@@ -155,6 +155,9 @@ export default class VennStanza extends Stanza {
       // set label
       group.querySelector(":scope .text > text.label").textContent = labels.join(",");
       group.querySelector(":scope .text > text.value").textContent = count;
+      // interaction
+      group.addEventListener("mouseenter", () => selectedDiagram.classList.add("-hovering"));
+      group.addEventListener("mouseleave", () => selectedDiagram.classList.remove("-hovering"));
       // tooltip
       group.dataset.tooltip = `<strong>${labels.join("∩")}</strong>: ${count}`;
       group.dataset.tooltipHtml = true;

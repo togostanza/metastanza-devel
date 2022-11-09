@@ -21,6 +21,11 @@
       }
     }
   }
+  &.-hovering {
+    > g:not(:hover) {
+      opacity: var(--togostanza-fadeout-opacity);
+    }
+  }
 }
 
 .part {
