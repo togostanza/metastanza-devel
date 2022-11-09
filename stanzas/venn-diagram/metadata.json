@@ -132,6 +132,12 @@
       "stanza:type": "color",
       "stanza:default": "#F75976",
       "stanza:description": "Group color 5"
+    },
+    {
+      "stanza:key": "--togostanza-theme-background_color",
+      "stanza:type": "color",
+      "stanza:default": "transparent",
+      "stanza:description": "Background color"
     }
   ],
   "stanza:incomingEvent": [],

@@ -1,9 +1,5 @@
 //TogoGenome Venn diagram
-
-text {
-  font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
-  fill: var(--togostanza-fonts-font_color);
-}
+@use "@/common.scss";
 
 #drawArea {
   font-family: var(--togostanza-fonts-font_family);
