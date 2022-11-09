@@ -3,6 +3,9 @@ import * as d3 from "d3";
 import { _3d } from "d3-3d";
 import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
+import { StanzaColorGenerator } from "@/lib/ColorGenerator";
+
+import { curvedLink, straightLink } from "./curvedLink";
 import prepareGraphData, {
   get3DEdges,
   getGroupPlanes,
@@ -28,18 +31,25 @@ export default class ForceGraph extends Stanza {
   }
 
   async render() {
-    appendCustomCss(this, this.params["custom-css-url"]);
+    appendCustomCss(this, this.params["misc-custom_css_url"]);
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
+    const setFallbackNumVal = (value, defVal) => {
+      return isNaN(parseFloat(value)) ? defVal : parseFloat(value);
+    };
+
     //data
 
-    const width = parseInt(this.params["width"]);
-    const height = parseInt(this.params["height"]);
+    const width = setFallbackNumVal(css("--togostanza-outline-width"), 200);
+    const height = setFallbackNumVal(css("--togostanza-outline-height"), 200);
+    const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
 
     this.renderTemplate({
       template: "stanza.html.hbs",
     });
+
+    const cg = new StanzaColorGenerator(this);
 
     const values = await loadData(
       this.params["data-url"],
@@ -52,31 +62,24 @@ export default class ForceGraph extends Stanza {
     const nodes = values.nodes;
     const edges = values.links;
 
-    const MARGIN = {
-      TOP: this.params["padding"],
-      BOTTOM: this.params["padding"],
-      LEFT: this.params["padding"],
-      RIGHT: this.params["padding"],
-    };
     const HEIGHT = height - MARGIN.TOP - MARGIN.BOTTOM;
     const WIDTH = width - MARGIN.LEFT - MARGIN.RIGHT;
 
     // Setting color scale
-    const togostanzaColors = [];
-    for (let i = 0; i < 6; i++) {
-      togostanzaColors.push(css(`--togostanza-series-${i}-color`));
-    }
-    const color = function () {
-      return d3.scaleOrdinal().range(togostanzaColors);
+    const togostanzaColors = cg.stanzaColor;
+
+    const color = function (type = "scaleOrdinal") {
+      return d3[type]().range(togostanzaColors);
     };
 
     const root = this.root.querySelector("main");
-    const el = this.root.getElementById("graph-3d-circle");
+    const el = this.root.getElementById("layered-graph");
 
     const existingSvg = root.getElementsByTagName("svg")[0];
     if (existingSvg) {
       existingSvg.remove();
     }
+
     const svg = d3
       .select(el)
       .append("svg")
@@ -86,55 +89,53 @@ export default class ForceGraph extends Stanza {
     this.tooltip = new ToolTip();
     root.append(this.tooltip);
 
-    const constRarius = !!this.params["constant-radius"];
+    const constRarius = !!this.params["group_planes-constant_radius"];
 
     const groupPlaneColorParams = {
-      basedOn: this.params["group-plane-color-based-on"],
-      // default fixed color by css
+      colorPlane: false,
     };
 
     const groupsSortParams = {
-      sortBy: this.params["group-planes-sort-by"],
-      sortOrder: this.params["group-planes-sort-order"] || "ascending",
+      sortBy: this.params["group_planes-sort-key"],
+      sortOrder: this.params["group_planes-sort-order"] || "ascending",
     };
 
     const nodesSortParams = {
-      sortBy: this.params["nodes-sort-by"],
+      sortBy: this.params["nodes-sort-key"],
       sortOrder: this.params["nodes-sort-order"] || "ascending",
     };
 
     const nodeSizeParams = {
-      basedOn: this.params["node-size-based-on"] || "fixed",
-      dataKey: this.params["node-size-data-key"] || "",
-      fixedSize: this.params["node-fixed-size"] || 3,
-      minSize: this.params["node-min-size"],
-      maxSize: this.params["node-max-size"],
+      dataKey: this.params["node-size-key"] || "",
+      minSize: setFallbackNumVal(this.params["node-size-min"], 3),
+      maxSize: this.params["node-size-max"],
+      scale: this.params["node-size-scale"] || "linear",
     };
+
     const nodeColorParams = {
-      basedOn: this.params["node-color-based-on"] || "fixed",
-      dataKey: this.params["node-color-data-key"] || "",
+      dataKey: this.params["node-color-key"] || "",
     };
 
     const edgeWidthParams = {
-      basedOn: this.params["edge-width-based-on"] || "fixed",
-      dataKey: this.params["edge-width-data-key"] || "",
-      fixedWidth: this.params["edge-fixed-width"] || 1,
-      minWidth: this.params["edge-min-width"],
-      maxWidth: this.params["edge-max-width"],
+      dataKey: this.params["edge-width-key"] || "",
+      minWidth: setFallbackNumVal(this.params["edge-width-min"], 1),
+      maxWidth: this.params["edge-width-max"],
+      scale: this.params["edge-width-scale"] || "linear",
+      showArrows: this.params["edge-show_arrows"],
     };
 
     const edgeColorParams = {
-      basedOn: this.params["edge-color-based-on"] || "fixed",
-      dataKey: this.params["edge-color-data-key"] || "",
+      basedOn: "data key",
+      dataKey: Symbol(),
     };
 
     const tooltipParams = {
-      dataKey: this.params["nodes-tooltip-data-key"],
-      show: nodes.some((d) => d[this.params["nodes-tooltip-data-key"]]),
+      dataKey: this.params["tooltips-key"],
+      show: nodes.some((d) => d[this.params["tooltips-key"]]),
     };
 
-    const highlightAdjEdges = this.params["highlight-adjacent-edges"] || false;
-    const highlightGroupPlanes = this.params["highlight-group-planes"] || false;
+    const highlightAdjEdges = true;
+    const highlightGroupPlanes = this.params["highlight-group_planes"] || false;
 
     const params = {
       MARGIN,
@@ -157,6 +158,66 @@ export default class ForceGraph extends Stanza {
       edges,
       params
     );
+
+    const targetAccessor = (d) => d.edge[symbols.targetNodeSym].projected;
+    const sourceAccessor = (d) => d.edge[symbols.sourceNodeSym].projected;
+
+    function drawLink(d) {
+      if (d.edge[symbols.isPairEdge]) {
+        return curvedLink(
+          d,
+          d.edge[symbols.isPairEdge],
+          targetAccessor,
+          sourceAccessor
+        );
+      } else {
+        return straightLink(d, targetAccessor, sourceAccessor);
+      }
+    }
+
+    const markerBoxWidth = 8;
+    const markerBoxHeight = 4;
+    const refX = markerBoxWidth;
+    const refY = markerBoxHeight / 2;
+
+    const arrowPoints = [
+      [0, 0],
+      [0, markerBoxHeight],
+      [markerBoxWidth, markerBoxHeight / 2],
+    ];
+
+    if (edgeWidthParams.showArrows) {
+      const defs = svg.append("defs");
+
+      const defsD = defs.selectAll("marker").data(prepEdges);
+
+      defsD
+        .enter()
+        .append("marker")
+        .attr(
+          "id",
+          (d) => d[symbols.idSym] // edge id
+        )
+        .attr("viewBox", [0, 0, markerBoxWidth, markerBoxHeight])
+        .attr("refX", (d) => {
+          return (
+            refX +
+            d[symbols.targetNodeSym][symbols.nodeSizeSym] /
+              d[symbols.edgeWidthSym]
+          );
+        })
+        .attr("refY", refY)
+        .attr("markerWidth", markerBoxWidth)
+        .attr("markerHeight", markerBoxHeight)
+        .attr("orient", "auto-start-reverse")
+        .append("path")
+        .attr("d", d3.line()(arrowPoints))
+        .attr("stroke", "none")
+        .attr("style", (d) =>
+          d[symbols.edgeColorSym] ? `fill: ${d[symbols.edgeColorSym]}` : null
+        )
+        .attr("fill-opacity", 1);
+    }
 
     const maxNodesInGroup = d3.max(
       Object.entries(groupHash),
@@ -209,14 +270,16 @@ export default class ForceGraph extends Stanza {
       .rotateX(-startAngle);
 
     const plane3d = _3d()
-      .shape("PLANE")
+      .shape("LINE_STRIP")
       .origin(origin)
       .rotateY(startAngle)
       .rotateX(-startAngle)
       .scale(scale);
 
     function processData(data) {
-      const planes = svgG.selectAll("path").data(data[2], (d) => d.groupId);
+      const planes = svgG
+        .selectAll("path.group-plane")
+        .data(data[2], (d) => d.groupId);
 
       planes
         .enter()
@@ -229,23 +292,23 @@ export default class ForceGraph extends Stanza {
         .sort(plane3d.sort);
 
       planes.exit().remove();
-      const linesStrip = svgG
-        .selectAll("line")
-        .data(data[1], (d) => d.edge[symbols.idSym]);
+
+      const linesStrip = svgG.selectAll("path.link").data(data[1]);
 
       linesStrip
         .enter()
-        .append("line")
+        .append("path")
         .attr("class", "_3d")
         .classed("link", true)
         .merge(linesStrip)
         .style("stroke", (d) => d.edge[symbols.edgeColorSym])
         .style("stroke-width", (d) => d.edge[symbols.edgeWidthSym])
-        .attr("x1", (d) => d.edge[symbols.sourceNodeSym].projected.x)
-        .attr("y1", (d) => d.edge[symbols.sourceNodeSym].projected.y)
-        .attr("x2", (d) => d.edge[symbols.targetNodeSym].projected.x)
-        .attr("y2", (d) => d.edge[symbols.targetNodeSym].projected.y)
-        .sort(edge3d.sort);
+        .attr("d", drawLink)
+        .sort(edge3d.sort)
+        .attr(
+          "marker-end",
+          (d) => `url(#${d.edge[symbols.idSym] || "default"})`
+        );
 
       linesStrip.exit().remove();
 
@@ -260,7 +323,6 @@ export default class ForceGraph extends Stanza {
         .attr("cx", posPointX)
         .attr("cy", posPointY)
         .attr("r", (d) => d[symbols.nodeSizeSym])
-        .style("stroke", (d) => d[symbols.nodeBorderColorSym])
         .style("fill", (d) => d[symbols.nodeColorSym])
         .sort(point3d.sort);
 
@@ -328,14 +390,18 @@ export default class ForceGraph extends Stanza {
         });
       });
 
-      groupPlanes = getGroupPlanes(groupHash, {
-        WIDTH,
-        HEIGHT,
-        DEPTH,
-        color,
-        yPointScale,
-        groupPlaneColorParams,
-      });
+      groupPlanes = getGroupPlanes(
+        groupHash,
+        {
+          WIDTH,
+          HEIGHT,
+          DEPTH,
+          color,
+          yPointScale,
+          groupPlaneColorParams,
+        },
+        true
+      );
 
       const data = [
         point3d(prepNodes),
@@ -347,7 +413,7 @@ export default class ForceGraph extends Stanza {
 
       const planes = svgG.selectAll("path.group-plane");
       const points = svgG.selectAll("circle.node");
-      const links = svgG.selectAll("line.link");
+      const links = svgG.selectAll("path.link");
 
       if (highlightGroupPlanes) {
         addPlanesHighlight(planes, points, links);
@@ -572,4 +638,40 @@ export default class ForceGraph extends Stanza {
       this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
     }
   }
+}
+
+function getMarginsFromCSSString(str) {
+  const splitted = str.trim().split(/\W+/);
+
+  const res = {
+    TOP: 0,
+    RIGHT: 0,
+    BOTTOM: 0,
+    LEFT: 0,
+  };
+
+  switch (splitted.length) {
+    case 1:
+      res.TOP = res.RIGHT = res.BOTTOM = res.LEFT = parseInt(splitted[0]);
+      break;
+    case 2:
+      res.TOP = res.BOTTOM = parseInt(splitted[0]);
+      res.LEFT = res.RIGHT = parseInt(splitted[1]);
+      break;
+    case 3:
+      res.TOP = parseInt(splitted[0]);
+      res.LEFT = res.RIGHT = parseInt(splitted[1]);
+      res.BOTTOM = parseInt(splitted[2]);
+      break;
+    case 4:
+      res.TOP = parseInt(splitted[0]);
+      res.RIGHT = parseInt(splitted[1]);
+      res.BOTTOM = parseInt(splitted[2]);
+      res.LEFT = parseInt(splitted[3]);
+      break;
+    default:
+      break;
+  }
+
+  return res;
 }
