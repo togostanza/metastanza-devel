@@ -15,7 +15,7 @@
   &.-current {
     display: block;
     > g {
-      transition: opacity 0.2s;
+      transition: var(--togostanza-fadeout-transition);
       &:hover {
         opacity: 1;
       }

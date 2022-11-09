@@ -88,7 +88,6 @@ export default class VennStanza extends Stanza {
       `.venn-diagram[data-number-of-data="${this.numberOfData}"]`
     );
     const padding = +getPropertyValue(`--togostanza-outline-padding`);
-    // selectedDiagram.style.transform = `translate(${padding}px, ${padding}px)`;
     if (!selectedDiagram) {
       console.error(
         "Venn diagrams with more than six elements are not supported. Please try using Euler diagrams."
@@ -122,7 +121,7 @@ export default class VennStanza extends Stanza {
       },
     ].map(({className, varSuffix}) => {
       const fontSize = +window
-      .getComputedStyle(this.element)
+        .getComputedStyle(this.element)
         .getPropertyValue(`--togostanza-fonts-font_size_${varSuffix}`);
       const actualFontSize = fontSize / scale;
       selectedDiagram.querySelectorAll(`text.${className}`).forEach((text) => {
