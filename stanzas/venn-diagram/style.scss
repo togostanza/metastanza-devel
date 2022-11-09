@@ -27,6 +27,11 @@ text {
   }
 }
 
+.part {
+  stroke: var(--togostanza-border-color);
+  stroke-width: calc(var(--togostanza-border-width) * 1px);
+}
+
 #MetaStanzaLegend {
   padding: 3px 9px;
   position: absolute;
