@@ -107,13 +107,32 @@ export default class VennStanza extends Stanza {
       svgHeight / (rect.height + margin * 2)
     );
     selectedDiagram.style.transform = `translate(${padding}px, ${padding}px) scale(${scale})`;
-    const labelFontSize = +window
-      .getComputedStyle(this.element)
-      .getPropertyValue("--togostanza-fonts-font_size_primary")
-      .trim();
-    selectedDiagram.querySelectorAll("text").forEach((text) => {
-      text.style.fontSize = labelFontSize / scale + "px";
+    [
+      {
+        className: 'label',
+        varSuffix: 'primary'
+      },
+      {
+        className: 'value',
+        varSuffix: 'secondary'
+      },
+    ].forEach(item => {
+      const fontSize = +window
+        .getComputedStyle(this.element)
+        .getPropertyValue(`--togostanza-fonts-font_size_${item.varSuffix}`)
+        .trim();
+      console.log(fontSize);
+      selectedDiagram.querySelectorAll(`text.${item.className}`).forEach((text) => {
+        text.style.fontSize = fontSize / scale + "px";
+      });
     });
+    // const labelFontSize = +window
+    //   .getComputedStyle(this.element)
+    //   .getPropertyValue("--togostanza-fonts-font_size_primary")
+    //   .trim();
+    // selectedDiagram.querySelectorAll("text").forEach((text) => {
+    //   text.style.fontSize = labelFontSize / scale + "px";
+    // });
 
     // shapes
     selectedDiagram.querySelectorAll(":scope > g").forEach((group) => {
