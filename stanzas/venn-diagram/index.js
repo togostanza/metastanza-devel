@@ -15,14 +15,14 @@ import Legend from "@/lib/Legend";
 const LINE_HEIGHT = 1;
 
 export default class VennStanza extends Stanza {
-  // colorSeries;
-  // data;
-  // totals;
-  // dataLabels;
-  // numberOfData;
-  // venn;
-  // tooltip;
-  // legend;
+  colorSeries;
+  data;
+  totals;
+  dataLabels;
+  numberOfData;
+  venn;
+  tooltip;
+  legend;
 
   menu() {
     return [
@@ -35,7 +35,7 @@ export default class VennStanza extends Stanza {
   }
 
   async render() {
-    appendCustomCss(this, this.params["custom-css-url"]);
+    appendCustomCss(this, this.params["misc-custom_css_url"]);
     this.colorSeries = this.getColorSeries();
 
     this.renderTemplate({ template: "stanza.html.hbs" });
@@ -232,11 +232,6 @@ export default class VennStanza extends Stanza {
       this.params["data-type"],
       this.root.querySelector("main")
     );
-    // // processing
-    // for (const datum of data) {
-    //   datum.orgs = datum.orgs.split(', ');
-    //   datum.count = Number(datum.count);
-    // }
     return data;
   }
 }
