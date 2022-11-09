@@ -193,7 +193,7 @@ export default class VennStanza extends Stanza {
       window.getComputedStyle(this.element).getPropertyValue(key);
     const series = Array(6);
     for (let i = 0; i < series.length; i++) {
-      series[i] = `--togostanza-series-${i}-color`;
+      series[i] = `--togostanza-theme-series_${i}_color`;
     }
     return series.map((variable) => getPropertyValue(variable).trim());
   }
