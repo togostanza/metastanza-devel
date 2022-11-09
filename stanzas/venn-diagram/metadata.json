@@ -66,7 +66,7 @@
     {
       "stanza:key": "--togostanza-fonts-font_size_secondary",
       "stanza:type": "number",
-      "stanza:default": 12,
+      "stanza:default": 16,
       "stanza:description": "Value font size"
     },
     {

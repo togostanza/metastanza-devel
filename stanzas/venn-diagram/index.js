@@ -12,6 +12,8 @@ import {
 import ToolTip from "@/lib/ToolTip";
 import Legend from "@/lib/Legend";
 
+const LINE_HEIGHT = 1;
+
 export default class VennStanza extends Stanza {
   // colorSeries;
   // data;
@@ -107,7 +109,9 @@ export default class VennStanza extends Stanza {
       svgHeight / (rect.height + margin * 2)
     );
     selectedDiagram.style.transform = `translate(${padding}px, ${padding}px) scale(${scale})`;
-    [
+
+    // typography
+    const fontStyles = [
       {
         className: 'label',
         varSuffix: 'primary'
@@ -116,23 +120,20 @@ export default class VennStanza extends Stanza {
         className: 'value',
         varSuffix: 'secondary'
       },
-    ].forEach(item => {
+    ].map(({className, varSuffix}) => {
       const fontSize = +window
-        .getComputedStyle(this.element)
-        .getPropertyValue(`--togostanza-fonts-font_size_${item.varSuffix}`)
-        .trim();
-      console.log(fontSize);
-      selectedDiagram.querySelectorAll(`text.${item.className}`).forEach((text) => {
-        text.style.fontSize = fontSize / scale + "px";
+      .getComputedStyle(this.element)
+        .getPropertyValue(`--togostanza-fonts-font_size_${varSuffix}`);
+      const actualFontSize = fontSize / scale;
+      selectedDiagram.querySelectorAll(`text.${className}`).forEach((text) => {
+        text.style.fontSize = actualFontSize + "px";
       });
+      return {className, varSuffix, fontSize, actualFontSize}
     });
-    // const labelFontSize = +window
-    //   .getComputedStyle(this.element)
-    //   .getPropertyValue("--togostanza-fonts-font_size_primary")
-    //   .trim();
-    // selectedDiagram.querySelectorAll("text").forEach((text) => {
-    //   text.style.fontSize = labelFontSize / scale + "px";
-    // });
+    let textShiftY = (fontStyles.reduce((acc, style) => acc + style.fontSize, 0)) * LINE_HEIGHT * -.5;
+    selectedDiagram.querySelectorAll("text.label").forEach(text => text.setAttribute("dy", textShiftY));
+    textShiftY += fontStyles[1].actualFontSize * LINE_HEIGHT;
+    selectedDiagram.querySelectorAll("text.value").forEach(text => text.setAttribute("dy", textShiftY));
 
     // shapes
     selectedDiagram.querySelectorAll(":scope > g").forEach((group) => {
@@ -153,8 +154,8 @@ export default class VennStanza extends Stanza {
         .querySelector(":scope > .part")
         .setAttribute("fill", color.toString());
       // set label
-      group.querySelector(":scope > text.label").textContent = labels.join(",");
-      group.querySelector(":scope > text.value").textContent = count;
+      group.querySelector(":scope .text > text.label").textContent = labels.join(",");
+      group.querySelector(":scope .text > text.value").textContent = count;
       // tooltip
       group.dataset.tooltip = `<strong>${labels.join("∩")}</strong>: ${count}`;
       group.dataset.tooltipHtml = true;
