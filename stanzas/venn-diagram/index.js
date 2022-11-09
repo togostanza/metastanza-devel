@@ -15,14 +15,6 @@ import Legend from "@/lib/Legend";
 const LINE_HEIGHT = 1;
 
 export default class VennStanza extends Stanza {
-  colorSeries;
-  data;
-  totals;
-  dataLabels;
-  numberOfData;
-  venn;
-  tooltip;
-  legend;
 
   menu() {
     return [
