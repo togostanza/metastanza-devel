@@ -37,7 +37,12 @@ export default class Heatmap extends Stanza {
     }
 
     const legendShow = this.params["legend"];
-    if (legendShow !== "none" && !this.legend) {
+    const existingLegend = this.root.querySelector("togostanza--legend");
+    if (existingLegend) {
+      existingLegend.remove();
+    }
+
+    if (legendShow !== "none") {
       this.legend = new Legend();
       root.append(this.legend);
     }
@@ -221,20 +226,16 @@ export default class Heatmap extends Stanza {
 
     this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
 
-    const existingLegend = this.root.querySelector("togostanza--legend");
-
-    if (legendShow === "none") {
-      existingLegend.remove();
+    if (legendShow !== "none") {
+      this.legend.setup(
+        intervals(setColor),
+        {},
+        {
+          position: legendShow.split("-"),
+        },
+        legendTitle
+      );
     }
-    this.legend.setup(
-      intervals(setColor),
-      {},
-      {
-        position: legendShow.split("-"),
-      },
-      legendTitle
-    );
-    // }
 
     //Function of mouseover and mouse leave
     function mouseover() {
