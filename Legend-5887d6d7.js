@@ -115,6 +115,10 @@ class Legend extends s {
     // placement
     const legend = this.shadowRoot.querySelector(".legend");
 
+    const opacity = +window
+      .getComputedStyle(container)
+      .getPropertyValue("--togostanza-fadeout-opacity");
+
     ["top", "bottom", "left", "right"].forEach((pos) => {
       legend.style[pos] = "";
     });
@@ -141,7 +145,7 @@ class Legend extends s {
             }
             if (datum) {
               opt.fadeoutNodes.forEach((node) => {
-                node.style[fadeProp] = 0.2;
+                node.style[fadeProp] = opacity;
               });
 
               if (Array.isArray(datum.node) && datum.node.length !== 0) {
@@ -194,4 +198,4 @@ class Legend extends s {
 customElements.define("togostanza--legend", Legend);
 
 export { Legend as L };
-//# sourceMappingURL=Legend-22da2f35.js.map
+//# sourceMappingURL=Legend-5887d6d7.js.map

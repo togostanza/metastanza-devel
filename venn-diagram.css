@@ -1,10 +1,18 @@
+:host {
+  --togostanza-fadeout-opacity: .2;
+  --togostanza-fadeout-transition: opacity .2s ease-in;
+  display: block;
+  background-color: var(--togostanza-theme-background_color);
+  font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+  color: var(--togostanza-fonts-font_color);
+}
+
 text {
-  font-size: calc(var(--togostanza-label-font-size) * 1px);
-  fill: var(--togostanza-label-font-color);
+  fill: var(--togostanza-fonts-font_color);
 }
 
 #drawArea {
-  font-family: var(--togostanza-font-family);
+  font-family: var(--togostanza-fonts-font_family);
 }
 
 #venn-diagrams {
@@ -19,10 +27,18 @@ text {
   display: block;
 }
 .venn-diagram.-current > g {
-  transition: opacity 0.2s;
+  transition: var(--togostanza-fadeout-transition);
 }
 .venn-diagram.-current > g:hover {
   opacity: 1;
+}
+.venn-diagram.-hovering > g:not(:hover) {
+  opacity: var(--togostanza-fadeout-opacity);
+}
+
+.part {
+  stroke: var(--togostanza-border-color);
+  stroke-width: calc(var(--togostanza-border-width) * 1px);
 }
 
 #MetaStanzaLegend {
@@ -32,7 +48,7 @@ text {
   line-height: 1.5;
   max-height: 100%;
   overflow-y: auto;
-  color: var(--togostanza-label-font-color);
+  color: var(--togostanza-fonts-font_color);
   background-color: rgba(255, 255, 255, 0.8);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }

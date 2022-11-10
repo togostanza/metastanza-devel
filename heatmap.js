@@ -1,7 +1,7 @@
 import { S as Stanza, s as select, d as defineStanzaElement } from './transform-53933414.js';
 import { l as loadData } from './load-data-f2c8df7b.js';
 import { T as ToolTip } from './ToolTip-271f1a68.js';
-import { L as Legend } from './Legend-22da2f35.js';
+import { L as Legend } from './Legend-5887d6d7.js';
 import { a as getGradationColor } from './ColorGenerator-eaa87470.js';
 import { b as band } from './band-407353db.js';
 import { a as axisBottom, b as axisLeft } from './axis-3dba94d9.js';

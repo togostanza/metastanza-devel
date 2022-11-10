@@ -1,7 +1,7 @@
 import { S as Stanza, s as select, d as defineStanzaElement } from './transform-53933414.js';
 import { l as loadData } from './load-data-f2c8df7b.js';
 import { T as ToolTip } from './ToolTip-271f1a68.js';
-import { L as Legend } from './Legend-22da2f35.js';
+import { L as Legend } from './Legend-5887d6d7.js';
 import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-9bc9e50c.js';
 import { m as max } from './max-2c042256.js';
 import { o as ordinal, f as format } from './ordinal-90a3df9a.js';
