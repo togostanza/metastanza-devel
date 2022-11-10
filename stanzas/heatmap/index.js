@@ -116,7 +116,7 @@ export default class Heatmap extends Stanza {
     const height = +this.css("--togostanza-outline-height");
     const borderWidth = +this.css("--togostanza-border-width") || 0;
     const borderRadius = +this.css("--togostanza-border-radius");
-    const tickSize = +this.css("--togostanza-tick-size") || 0;
+    const tickSize = 2;
 
     // x-axis scale
     const rows = [...new Set(dataset.map((d) => d[xKey]))];

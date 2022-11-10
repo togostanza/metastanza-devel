@@ -21,9 +21,6 @@ main {
     font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
     color: var(--togostanza-fonts-font_color);
   }
-  .cell {
-    border-radius: var(--togostanza-border-radius);
-  }
   .highlighted {
     stroke: var(--togostanza-hover-border-color);
   }
