@@ -1,12 +1,8 @@
 //TogoGenome Venn diagram
-
-text {
-  font-size: calc(var(--togostanza-label-font-size) * 1px);
-  fill: var(--togostanza-label-font-color);
-}
+@use "@/common.scss";
 
 #drawArea {
-  font-family: var(--togostanza-font-family);
+  font-family: var(--togostanza-fonts-font_family);
 }
 
 #venn-diagrams {
@@ -19,12 +15,22 @@ text {
   &.-current {
     display: block;
     > g {
-      transition: opacity 0.2s;
+      transition: var(--togostanza-fadeout-transition);
       &:hover {
         opacity: 1;
       }
     }
   }
+  &.-hovering {
+    > g:not(:hover) {
+      opacity: var(--togostanza-fadeout-opacity);
+    }
+  }
+}
+
+.part {
+  stroke: var(--togostanza-border-color);
+  stroke-width: calc(var(--togostanza-border-width) * 1px);
 }
 
 #MetaStanzaLegend {
@@ -34,7 +40,7 @@ text {
   line-height: 1.5;
   max-height: 100%;
   overflow-y: auto;
-  color: var(--togostanza-label-font-color);
+  color: var(--togostanza-fonts-font_color);
   background-color: rgba(255, 255, 255, 0.8);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   > table {
