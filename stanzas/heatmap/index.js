@@ -80,13 +80,15 @@ export default class Heatmap extends Stanza {
     let cellDomainMax = parseFloat(this.params["cell-color-domain_max"]);
     // const values = [...new Set(dataset.map((d) => d[cellColorKey]))];
     let values = [...new Set(dataset.map((d) => d[cellColorKey]))];
-    const logScale = d3.scaleLog();
+    const logScale = d3.scaleLog().domain([0, 1]);
     switch (cellColorScale) {
       case "linear":
         values = [...new Set(dataset.map((d) => d[cellColorKey]))];
         break;
       case "log10":
-        values = values.map((value) => logScale(value));
+        values = values
+          .map((value) => logScale(value))
+          .filter((d) => !isNaN(d));
         break;
     }
     console.log(values);
@@ -97,18 +99,23 @@ export default class Heatmap extends Stanza {
     if (isNaN(parseFloat(cellDomainMin))) {
       cellDomainMin = minValue;
     }
+
+    console.log("cellDomainMin", cellDomainMin);
     if (isNaN(parseFloat(cellDomainMax))) {
       cellDomainMax = maxValue;
     }
     if (isNaN(parseFloat(cellDomainMid))) {
       cellDomainMid = (cellDomainMax + cellDomainMin) / 2;
     }
+    console.log("cellDomainMax", cellDomainMax);
 
     const setColor = getGradationColor(
       this,
       [cellColorMin, cellColorMid, cellColorMax],
       [cellDomainMin, cellDomainMid, cellDomainMax]
     );
+
+    console.log("colors log", values.map(setColor));
 
     //Styles
     const fontSize = +this.css("--togostanza-fonts-font_size_primary");
