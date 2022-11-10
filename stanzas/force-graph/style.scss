@@ -1,10 +1,6 @@
 // Load the repository-wide global style here. The actual file is located at ../common.scss for details.
 @use "@/common.scss";
 
-svg {
-  background-color: var(--togostanza-theme-background_color);
-}
-
 svg > defs > marker > path {
   fill: var(--togostanza-edge-default_color);
 }
@@ -21,8 +17,6 @@ svg > defs > marker > path {
 
 .label {
   font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
-  font-family: var(--togostanza-fonts-font_family);
-  fill: var(--togostanza-fonts-font_color);
 }
 
 .node {
