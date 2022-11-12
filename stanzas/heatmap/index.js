@@ -78,36 +78,62 @@ export default class Heatmap extends Stanza {
     let cellDomainMin = parseFloat(this.params["cell-color-domain_min"]);
     let cellDomainMid = parseFloat(this.params["cell-color-domain_mid"]);
     let cellDomainMax = parseFloat(this.params["cell-color-domain_max"]);
-    // const values = [...new Set(dataset.map((d) => d[cellColorKey]))];
-    let values = [...new Set(dataset.map((d) => d[cellColorKey]))];
-    const logScale = d3.scaleLog().domain([0, 1]);
-    switch (cellColorScale) {
-      case "linear":
-        values = [...new Set(dataset.map((d) => d[cellColorKey]))];
-        break;
-      case "log10":
-        values = values
-          .map((value) => logScale(value))
-          .filter((d) => !isNaN(d));
-        break;
+    let values = dataset.map((d) => parseFloat(d[cellColorKey]));
+
+    if (cellColorScale === "log10") {
+      values = values.filter((d) => d > 0).map(Math.log10);
     }
-    console.log(values);
 
     const minValue = Math.min(...values);
     const maxValue = Math.max(...values);
 
-    if (isNaN(parseFloat(cellDomainMin))) {
-      cellDomainMin = minValue;
+    function scaleWarn(param, fallback, fallbackValue) {
+      console.warn(
+        `Parameter ${param} is invalid for selected scale, fall back to ${fallback}, ${fallbackValue}`
+      );
     }
 
-    console.log("cellDomainMin", cellDomainMin);
-    if (isNaN(parseFloat(cellDomainMax))) {
-      cellDomainMax = maxValue;
+    if (cellColorScale === "linear") {
+      if (isNaN(parseFloat(cellDomainMin))) {
+        cellDomainMin = minValue;
+        scaleWarn("cell-color-domain_min", "data minimum value", cellDomainMin);
+      }
+      if (isNaN(parseFloat(cellDomainMax))) {
+        cellDomainMax = maxValue;
+        scaleWarn("cell-color-domain_max", "data maximum value", cellDomainMax);
+      }
+      if (isNaN(parseFloat(cellDomainMid))) {
+        cellDomainMid = (cellDomainMax + cellDomainMin) / 2;
+        scaleWarn(
+          "cell-color-domain_mid",
+          "data midrange value",
+          cellDomainMid
+        );
+      }
+    } else if (cellColorScale === "log10") {
+      if (isNaN(parseFloat(cellDomainMin)) || parseFloat(cellDomainMin) <= 0) {
+        cellDomainMin = minValue;
+        scaleWarn("cell-color-domain_min", "data minimum value", cellDomainMin);
+      } else {
+        cellDomainMin = Math.log(parseFloat(cellDomainMin));
+      }
+      if (isNaN(parseFloat(cellDomainMax)) || parseFloat(cellDomainMax) <= 0) {
+        cellDomainMax = maxValue;
+        scaleWarn("cell-color-domain_max", "data maximum value", cellDomainMax);
+      } else {
+        cellDomainMax = Math.log10(parseFloat(cellDomainMax));
+      }
+      if (isNaN(parseFloat(cellDomainMid)) || parseFloat(cellDomainMid) <= 0) {
+        cellDomainMid = (cellDomainMax + cellDomainMin) / 2;
+        scaleWarn(
+          "cell-color-domain_mid",
+          "data midrange value",
+          cellDomainMid
+        );
+      } else {
+        cellDomainMid = Math.log10(parseFloat(cellDomainMid));
+      }
     }
-    if (isNaN(parseFloat(cellDomainMid))) {
-      cellDomainMid = (cellDomainMax + cellDomainMin) / 2;
-    }
-    console.log("cellDomainMax", cellDomainMax);
 
     const setColor = getGradationColor(
       this,
@@ -115,7 +141,23 @@ export default class Heatmap extends Stanza {
       [cellDomainMin, cellDomainMid, cellDomainMax]
     );
 
-    console.log("colors log", values.map(setColor));
+    const colorSym = Symbol();
+
+    //prepare data
+    dataset.forEach((d) => {
+      const value = parseFloat(d[cellColorKey]);
+      if (cellColorScale === "log10") {
+        let val = value;
+        if (value <= 0) {
+          val = NaN;
+        } else {
+          val = Math.log10(value);
+        }
+        d[colorSym] = setColor(val);
+      } else {
+        d[colorSym] = setColor(value);
+      }
+    });
 
     //Styles
     const fontSize = +this.css("--togostanza-fonts-font_size_primary");
@@ -185,7 +227,7 @@ export default class Heatmap extends Stanza {
       .attr("height", y.bandwidth())
       .attr("rx", borderRadius)
       .attr("ry", borderRadius)
-      .style("fill", (d) => setColor(d[cellColorKey]))
+      .style("fill", (d) => d[colorSym])
       .on("mouseover", mouseover)
       .on("mouseleave", mouseleave);
 
@@ -268,9 +310,18 @@ export default class Heatmap extends Stanza {
     // create legend objects
     function intervals(color, steps = legendGroups >= 2 ? legendGroups : 2) {
       return [...Array(steps).keys()].map((i) => {
-        const legendSteps = Math.round(
-          maxValue - i * (Math.abs(maxValue - minValue) / (steps - 1))
-        );
+        let legendSteps;
+        if (cellColorScale === "linear") {
+          legendSteps = Math.round(
+            cellDomainMax -
+              i * (Math.abs(cellDomainMax - cellDomainMin) / (steps - 1))
+          );
+        } else {
+          legendSteps = (
+            cellDomainMax -
+            i * (Math.abs(cellDomainMax - cellDomainMin) / (steps - 1))
+          ).toFixed(3);
+        }
         return {
           label: legendSteps,
           color: color(legendSteps),
