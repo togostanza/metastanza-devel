@@ -16,6 +16,10 @@ export default class BreadcrumbsLit extends Stanza {
 
     const root = this.root.querySelector("main");
 
+    root.style = null;
+    const overflowEl = this.element.parentElement.parentElement;
+    overflowEl.classList.remove("overflow-auto");
+
     if (!this.breadcrumbs) {
       this.breadcrumbs = new Breadcrumbs(root);
     }

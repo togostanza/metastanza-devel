@@ -1,13 +1,15 @@
 import { LitElement, html, css } from "lit";
-import { repeat } from "lit/directives/repeat.js";
-
+import { map } from "lit/directives/map.js";
 import { applyConstructor } from "@/lib/utils";
 
 export class Breadcrumbs extends LitElement {
   static get styles() {
     return css`
       :host {
-        display: block;
+        display: flex;
+        flex-direction: row;
+        gap: 1em;
+        align-items: start;
         height: 100%;
         width: 100%;
       }
@@ -17,7 +19,6 @@ export class Breadcrumbs extends LitElement {
   static get properties() {
     return {
       currentId: { state: true },
-      error: { type: Object, state: true },
       data: { type: Array, state: true },
     };
   }
@@ -35,19 +36,20 @@ export class Breadcrumbs extends LitElement {
   }
 
   updateParams(params, data) {
-    try {
-      this.data = data;
-      applyConstructor.call(this, params);
+    this.data = data;
 
+    //check if node without
+
+    applyConstructor.call(this, params);
+
+    this.requestUpdate();
+
+    if (this.data.some((d) => d[this.nodeKey])) {
       this.data.forEach((d) => {
         this.nodesMap.set("" + d[this.nodeKey], d);
       });
 
-      this.error = { message: "", isError: false };
-
       this.currentId = this.nodeInitialId;
-    } catch (error) {
-      this.error = { message: error.message, isError: true };
     }
   }
 
@@ -91,26 +93,27 @@ export class Breadcrumbs extends LitElement {
   }
 
   render() {
-    return html`${repeat(
-      this.pathToShow,
-      (node) => node[this.nodeKey],
-      (node) => {
-        return html`
-          <breadcrumbs-node
-            @click=${() => {
-              this.currentId = "" + node[this.nodeKey];
-            }}
-            @node-hover=${this._handleNodeHover}
-            data-id="${node[this.nodeKey]}"
-            .node="${{
-              label: node[this.nodeLabelKey],
-              id: node[this.nodeKey],
-            }}"
-            .menuItems="${this._getByParent(node.parent)}"
-          />
-        `;
-      }
-    )}`;
+    return html`${map(this.pathToShow, (node) => {
+      return html`
+        <breadcrumbs-node
+          @click=${() => {
+            this.currentId = "" + node[this.nodeKey];
+          }}
+          @node-hover=${this._handleNodeHover}
+          @menu-item-clicked=${({ detail }) =>
+            (this.currentId = "" + detail.id)}
+          data-id="${node[this.nodeKey]}"
+          .node="${{
+            label: node[this.nodeLabelKey],
+            id: node[this.nodeKey],
+          }}"
+          .menuItems=${this._getByParent(node.parent).filter(
+            (d) => d[this.nodeKey] !== node[this.nodeKey]
+          )}
+          .showDropdown=${this.nodeShowDropdown}
+        />
+      `;
+    })}`;
   }
 }
 

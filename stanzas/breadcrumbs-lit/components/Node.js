@@ -7,6 +7,10 @@ class Node extends LitElement {
     return {
       node: { type: Object, state: true },
       menuItems: { type: Array, state: true },
+      showDropdown: {
+        type: Boolean,
+        state: true,
+      },
     };
   }
 
@@ -14,7 +18,7 @@ class Node extends LitElement {
     return css`
       :host {
         position: relative;
-        display: inline-block;
+        display: block;
       }
 
       svg {
@@ -45,6 +49,7 @@ class Node extends LitElement {
     super();
     this.node = { label: "", id: "" };
     this.menuItems = [];
+    this.showDropdown = false;
 
     this.svg = createRef();
 
@@ -89,12 +94,13 @@ class Node extends LitElement {
 
     const WIDTH = this.width - 2 * strokeWidth;
     const HEIGHT = this.height - 2 * strokeWidth;
+    const arrowLength = 10;
 
     const points = [
       [0, 0],
-      [WIDTH - 20, 0],
+      [WIDTH - arrowLength, 0],
       [WIDTH, HEIGHT / 2],
-      [WIDTH - 20, HEIGHT],
+      [WIDTH - arrowLength, HEIGHT],
       [0, HEIGHT],
     ];
 
@@ -155,8 +161,8 @@ class Node extends LitElement {
 
     return html`
       <svg
-        @mouseenter=${this._handleMouseEnter}
-        @mouseleave=${this._handleMouseLeave}
+        @mouseover=${this._handleMouseEnter}
+        @mouseout=${this._handleMouseLeave}
         xmlns="http://www.w3.org/2000/svg"
         width="${this.width}"
         height="${this.height}"
@@ -165,7 +171,7 @@ class Node extends LitElement {
         ${nodeG}
       </svg>
 
-      ${this.showMenu
+      ${this.showMenu && this.showDropdown
         ? html`<node-menu
             @menu-hover=${this._handleMenuHover}
             @menu-leave=${this._handleMenuLeave}
