@@ -72,12 +72,12 @@ export default class Heatmap extends Stanza {
       `<span><strong>${d[xKey]},${d[yKey]}: </strong>${d[tooltipKey]}</span>`;
 
     // Color scale
-    const cellColorMin = this.params["cell-color-range_min"];
-    const cellColorMid = this.params["cell-color-range_mid"];
-    const cellColorMax = this.params["cell-color-range_max"];
-    let cellDomainMin = parseFloat(this.params["cell-color-domain_min"]);
-    let cellDomainMid = parseFloat(this.params["cell-color-domain_mid"]);
-    let cellDomainMax = parseFloat(this.params["cell-color-domain_max"]);
+    const cellColorMin = this.params["cell-color_min"];
+    const cellColorMid = this.params["cell-color_mid"];
+    const cellColorMax = this.params["cell-color_max"];
+    let cellDomainMin = parseFloat(this.params["cell--value_min"]);
+    let cellDomainMid = parseFloat(this.params["cell--value_mid"]);
+    let cellDomainMax = parseFloat(this.params["cell--value_max"]);
     let values = dataset.map((d) => parseFloat(d[cellColorKey]));
 
     if (cellColorScale === "log10") {

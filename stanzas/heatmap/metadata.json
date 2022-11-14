@@ -122,38 +122,38 @@
       "stanza:description": "If value to be mapped to color is a number"
     },
     {
-      "stanza:key": "cell-color-range_min",
+      "stanza:key": "cell-color_min",
       "stanza:type": "text",
       "stanza:example": "#6590e6",
       "stanza:description": "Cell color range min"
     },
     {
-      "stanza:key": "cell-color-range_mid",
+      "stanza:key": "cell-color_mid",
       "stanza:type": "text",
       "stanza:example": "#ffffff",
       "stanza:description": "Cell color range mid"
     },
     {
-      "stanza:key": "cell-color-range_max",
+      "stanza:key": "cell-color_max",
       "stanza:type": "text",
       "stanza:example": "#F75976",
       "stanza:description": "Cell color range max"
     },
     {
-      "stanza:key": "cell-color-domain_min",
-      "stanza:type": "text",
+      "stanza:key": "cell-value_min",
+      "stanza:type": "number",
       "stanza:example": -50,
       "stanza:description": "Cell color domain min"
     },
     {
-      "stanza:key": "cell-color-domain_mid",
-      "stanza:type": "text",
+      "stanza:key": "cell-value_mid",
+      "stanza:type": "number",
       "stanza:example": 0,
       "stanza:description": "Cell color domain mid"
     },
     {
-      "stanza:key": "cell-color-domain_max",
-      "stanza:type": "text",
+      "stanza:key": "cell-value_max",
+      "stanza:type": "number",
       "stanza:example": 100,
       "stanza:description": "Cell color domain max"
     },
