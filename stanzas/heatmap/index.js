@@ -75,9 +75,9 @@ export default class Heatmap extends Stanza {
     const cellColorMin = this.params["cell-color_min"];
     const cellColorMid = this.params["cell-color_mid"];
     const cellColorMax = this.params["cell-color_max"];
-    let cellDomainMin = parseFloat(this.params["cell--value_min"]);
-    let cellDomainMid = parseFloat(this.params["cell--value_mid"]);
-    let cellDomainMax = parseFloat(this.params["cell--value_max"]);
+    let cellDomainMin = parseFloat(this.params["cell-value_min"]);
+    let cellDomainMid = parseFloat(this.params["cell-value_mid"]);
+    let cellDomainMax = parseFloat(this.params["cell-value_max"]);
     let values = dataset.map((d) => parseFloat(d[cellColorKey]));
 
     if (cellColorScale === "log10") {
@@ -93,46 +93,52 @@ export default class Heatmap extends Stanza {
       );
     }
 
-    if (cellColorScale === "linear") {
-      if (isNaN(parseFloat(cellDomainMin))) {
-        cellDomainMin = minValue;
-        scaleWarn("cell-color-domain_min", "data minimum value", cellDomainMin);
-      }
-      if (isNaN(parseFloat(cellDomainMax))) {
-        cellDomainMax = maxValue;
-        scaleWarn("cell-color-domain_max", "data maximum value", cellDomainMax);
-      }
-      if (isNaN(parseFloat(cellDomainMid))) {
-        cellDomainMid = (cellDomainMax + cellDomainMin) / 2;
-        scaleWarn(
-          "cell-color-domain_mid",
-          "data midrange value",
-          cellDomainMid
-        );
-      }
-    } else if (cellColorScale === "log10") {
-      if (isNaN(parseFloat(cellDomainMin)) || parseFloat(cellDomainMin) <= 0) {
-        cellDomainMin = minValue;
-        scaleWarn("cell-color-domain_min", "data minimum value", cellDomainMin);
-      } else {
-        cellDomainMin = Math.log(parseFloat(cellDomainMin));
-      }
-      if (isNaN(parseFloat(cellDomainMax)) || parseFloat(cellDomainMax) <= 0) {
-        cellDomainMax = maxValue;
-        scaleWarn("cell-color-domain_max", "data maximum value", cellDomainMax);
-      } else {
-        cellDomainMax = Math.log10(parseFloat(cellDomainMax));
-      }
-      if (isNaN(parseFloat(cellDomainMid)) || parseFloat(cellDomainMid) <= 0) {
-        cellDomainMid = (cellDomainMax + cellDomainMin) / 2;
-        scaleWarn(
-          "cell-color-domain_mid",
-          "data midrange value",
-          cellDomainMid
-        );
-      } else {
-        cellDomainMid = Math.log10(parseFloat(cellDomainMid));
-      }
+    const [LINEAR, LOG10] = ["linear", "log10"];
+    switch (cellColorScale) {
+      case LINEAR:
+        if (isNaN(parseFloat(cellDomainMin))) {
+          cellDomainMin = minValue;
+          scaleWarn("cell-value_min", "data minimum value", cellDomainMin);
+        }
+        if (isNaN(parseFloat(cellDomainMax))) {
+          cellDomainMax = maxValue;
+          scaleWarn("cell-value_max", "data maximum value", cellDomainMax);
+        }
+        if (isNaN(parseFloat(cellDomainMid))) {
+          cellDomainMid = (cellDomainMax + cellDomainMin) / 2;
+          scaleWarn("cell-value_mid", "data midrange value", cellDomainMid);
+        }
+        break;
+
+      case LOG10:
+        if (
+          isNaN(parseFloat(cellDomainMin)) ||
+          parseFloat(cellDomainMin) <= 0
+        ) {
+          cellDomainMin = minValue;
+          scaleWarn("cell-value_min", "data minimum value", cellDomainMin);
+        } else {
+          cellDomainMin = Math.log(parseFloat(cellDomainMin));
+        }
+        if (
+          isNaN(parseFloat(cellDomainMax)) ||
+          parseFloat(cellDomainMax) <= 0
+        ) {
+          cellDomainMax = maxValue;
+          scaleWarn("cell-value_max", "data maximum value", cellDomainMax);
+        } else {
+          cellDomainMax = Math.log10(parseFloat(cellDomainMax));
+        }
+        if (
+          isNaN(parseFloat(cellDomainMid)) ||
+          parseFloat(cellDomainMid) <= 0
+        ) {
+          cellDomainMid = (cellDomainMax + cellDomainMin) / 2;
+          scaleWarn("cell-value_mid", "data midrange value", cellDomainMid);
+        } else {
+          cellDomainMid = Math.log10(parseFloat(cellDomainMid));
+        }
+        break;
     }
 
     const setColor = getGradationColor(
@@ -146,16 +152,19 @@ export default class Heatmap extends Stanza {
     //prepare data
     dataset.forEach((d) => {
       const value = parseFloat(d[cellColorKey]);
-      if (cellColorScale === "log10") {
-        let val = value;
-        if (value <= 0) {
-          val = NaN;
-        } else {
-          val = Math.log10(value);
-        }
-        d[colorSym] = setColor(val);
-      } else {
-        d[colorSym] = setColor(value);
+
+      switch (cellColorScale) {
+        case LINEAR:
+          d[colorSym] = setColor(value);
+          break;
+
+        case LOG10:
+          {
+            let val = value;
+            val = value <= 0 ? NaN : Math.log10(value);
+            d[colorSym] = setColor(val);
+          }
+          break;
       }
     });
 
@@ -311,17 +320,22 @@ export default class Heatmap extends Stanza {
     function intervals(color, steps = legendGroups >= 2 ? legendGroups : 2) {
       return [...Array(steps).keys()].map((i) => {
         let legendSteps;
-        if (cellColorScale === "linear") {
-          legendSteps = Math.round(
-            cellDomainMax -
+        switch (cellColorScale) {
+          case LINEAR:
+            legendSteps = Math.round(
+              cellDomainMax -
+                i * (Math.abs(cellDomainMax - cellDomainMin) / (steps - 1))
+            );
+            break;
+
+          case LOG10:
+            legendSteps = (
+              cellDomainMax -
               i * (Math.abs(cellDomainMax - cellDomainMin) / (steps - 1))
-          );
-        } else {
-          legendSteps = (
-            cellDomainMax -
-            i * (Math.abs(cellDomainMax - cellDomainMin) / (steps - 1))
-          ).toFixed(3);
+            ).toFixed(3);
+            break;
         }
+
         return {
           label: legendSteps,
           color: color(legendSteps),
