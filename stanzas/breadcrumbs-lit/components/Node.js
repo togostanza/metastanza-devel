@@ -129,25 +129,24 @@ class Node extends LitElement {
     return { textWidth, textHeight };
   }
 
-  _handleMouseEnter() {
+  _handleMouseOver() {
     this.svg.value.classList.add("-hover");
     this.showMenu = true;
     this.requestUpdate();
   }
-  _handleMouseLeave() {
-    if (!this.menuShowing) {
-      this.svg.value.classList.remove("-hover");
-      this.showMenu = false;
-      this.requestUpdate();
+
+  _unhover() {
+    this.svg.value.classList.remove("-hover");
+    this.showMenu = false;
+    this.requestUpdate();
+  }
+  _handleMouseOut(e) {
+    if (e.relatedTarget.nodeName !== "NODE-MENU") {
+      this._unhover();
     }
   }
-
-  _handleMenuHover() {
-    this.menuShowing = true;
-  }
   _handleMenuLeave() {
-    this.menuShowing = false;
-    this._handleMouseLeave();
+    this._unhover();
   }
 
   render() {
@@ -161,8 +160,8 @@ class Node extends LitElement {
 
     return html`
       <svg
-        @mouseover=${this._handleMouseEnter}
-        @mouseout=${this._handleMouseLeave}
+        @mouseover=${this._handleMouseOver}
+        @mouseout=${this._handleMouseOut}
         xmlns="http://www.w3.org/2000/svg"
         width="${this.width}"
         height="${this.height}"
@@ -173,7 +172,6 @@ class Node extends LitElement {
 
       ${this.showMenu && this.showDropdown
         ? html`<node-menu
-            @menu-hover=${this._handleMenuHover}
             @menu-leave=${this._handleMenuLeave}
             style="top: ${this.height}px;"
             .menuItems=${this.menuItems}

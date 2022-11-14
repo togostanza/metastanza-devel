@@ -16,7 +16,6 @@ class Menu extends LitElement {
       :host {
         position: absolute;
         left: 0;
-        bottom: -1px;
       }
 
       .menu-wrapper {
@@ -84,11 +83,10 @@ class Menu extends LitElement {
     this.menuItems = [];
   }
 
-  _handleMouseEnter() {
-    this.dispatchEvent(new CustomEvent("menu-hover"));
-  }
   _handleMouseLeave() {
-    this.dispatchEvent(new CustomEvent("menu-leave"));
+    this.dispatchEvent(
+      new CustomEvent("menu-leave", { composed: true, bubbles: true })
+    );
   }
   _handleClick(id) {
     this.dispatchEvent(
@@ -104,8 +102,8 @@ class Menu extends LitElement {
     return html`
       <div
         class="menu-wrapper"
-        @mouseover=${this._handleMouseEnter}
-        @mouseout=${this._handleMouseLeave}
+        @mouseenter=${this._handleMouseEnter}
+        @mouseleave=${this._handleMouseLeave}
       >
         <div class="menu-triangle"></div>
         <div class="menu-triangle-overlay"></div>
