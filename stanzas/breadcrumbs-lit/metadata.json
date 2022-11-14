@@ -1,0 +1,190 @@
+{
+  "@context": {
+    "stanza": "http://togostanza.org/resource/stanza#"
+  },
+  "@id": "breadcrumbs-lit",
+  "stanza:label": "Breadcrumbs Lit",
+  "stanza:definition": "Breadcrumbs MetaStanza ",
+  "stanza:type": "Stanza",
+  "stanza:provider": "TogoStanza",
+  "stanza:license": "MIT",
+  "stanza:author": "DBCLS",
+  "stanza:address": "https://github.com/togostanza/metastanza",
+  "stanza:contributor": ["PENQE", "Enishi Tech"],
+  "stanza:created": "2022-04-07",
+  "stanza:updated": "2022-04-07",
+  "stanza:parameter": [
+    {
+      "stanza:key": "data-url",
+      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/main/samples/json/tree-data.json",
+      "stanza:description": "Data source URL",
+      "stanza:required": true
+    },
+    {
+      "stanza:key": "data-type",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
+      "stanza:example": "json",
+      "stanza:description": "Data type",
+      "stanza:required": true
+    },
+    {
+      "stanza:key": "node-key",
+      "stanza:type": "string",
+      "stanza:description": "Key of node unique id",
+      "stanza:example": "id",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "node-initial_id",
+      "stanza:type": "string",
+      "stanza:description": "Initial node id",
+      "stanza:example": "6",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "node-label_key",
+      "stanza:type": "string",
+      "stanza:description": "Initial node id",
+      "stanza:example": "label",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "node-show_dropdown",
+      "stanza:type": "boolean",
+      "stanza:description": "Show node dropdown (neighbour nodes)",
+      "stanza:example": false,
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "root_node-label_text",
+      "stanza:type": "string",
+      "stanza:description": "Text to show on root node",
+      "stanza:example": false,
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "root_node-label_icon",
+      "stanza:type": "string",
+      "stanza:description": "Icon to use on root node (Font-awesome icon names)",
+      "stanza:example": false,
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "show_copy_button",
+      "stanza:type": "boolean",
+      "stanza:description": "Show coppy path button",
+      "stanza:example": false,
+      "stanza:required": false
+    }
+  ],
+  "stanza:menu-placement": "bottom-right",
+  "stanza:style": [
+    {
+      "stanza:key": "--togostanza-fonts-font_family",
+      "stanza:type": "text",
+      "stanza:default": "Helvetica Neue",
+      "stanza:description": "Font family"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_color",
+      "stanza:type": "color",
+      "stanza:default": "#4E5059",
+      "stanza:description": "Label font color"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_size_primary",
+      "stanza:type": "number",
+      "stanza:default": 9,
+      "stanza:description": "Label font size"
+    },
+    {
+      "stanza:key": "--togostanza-outline-width",
+      "stanza:type": "number",
+      "stanza:default": 300,
+      "stanza:description": "Metastanza width in px"
+    },
+    {
+      "stanza:key": "--togostanza-outline-height",
+      "stanza:type": "number",
+      "stanza:default": 50,
+      "stanza:description": "Metastanza height in px"
+    },
+    {
+      "stanza:key": "--togostanza-border-color",
+      "stanza:type": "color",
+      "stanza:default": "#4E5059",
+      "stanza:description": "Border color"
+    },
+    {
+      "stanza:key": "--togostanza-border-width",
+      "stanza:type": "number",
+      "stanza:default": 0,
+      "stanza:description": "Border width"
+    },
+
+    {
+      "stanza:key": "--togostanza-theme-series_0_color",
+      "stanza:type": "color",
+      "stanza:default": "#000000",
+      "stanza:description": "Home icon color"
+    },
+
+    {
+      "stanza:key": "--togostanza-background-color",
+      "stanza:type": "color",
+      "stanza:default": "#f9f9fa",
+      "stanza:description": "Background color"
+    },
+    {
+      "stanza:key": "--togostanza-border-color",
+      "stanza:type": "color",
+      "stanza:default": "#e0e0e1",
+      "stanza:description": "Border color"
+    },
+    {
+      "stanza:key": "--togostanza-scrollbar-color",
+      "stanza:type": "color",
+      "stanza:default": "#e0e0e1",
+      "stanza:description": "Border color"
+    },
+    {
+      "stanza:key": "--togostanza-scrollbar-color-hover",
+      "stanza:type": "color",
+      "stanza:default": "#d0d0d1",
+      "stanza:description": "Border color"
+    },
+    {
+      "stanza:key": "--togostanza-label-background-color-hover",
+      "stanza:type": "color",
+      "stanza:default": "#16ADE3",
+      "stanza:description": "Color the labels on mouseover"
+    },
+    {
+      "stanza:key": "--togostanza-label-font-color-hover",
+      "stanza:type": "color",
+      "stanza:default": "#f9f9fa",
+      "stanza:description": "Label font color on hover"
+    },
+
+    {
+      "stanza:key": "--togostanza-theme-background-color",
+      "stanza:type": "color",
+      "stanza:default": "rgba(255,255,255,0)",
+      "stanza:description": "Background color"
+    }
+  ],
+
+  "stanza:incomingEvent": [
+    {
+      "stanza:key": "selectedDatumChanged",
+      "stanza:description": "An event, wich dispatches when user selects some node in other stanza"
+    }
+  ],
+  "stanza:outgoingEvent": [
+    {
+      "stanza:key": "selectedDatumChanged",
+      "stanza:description": "An event, wich dispatches when user selects some node in this stanza"
+    }
+  ]
+}
