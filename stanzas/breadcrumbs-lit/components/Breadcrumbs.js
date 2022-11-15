@@ -8,7 +8,7 @@ export class Breadcrumbs extends LitElement {
       :host {
         display: flex;
         flex-direction: row;
-        gap: 1em;
+        gap: 0.2em;
         align-items: start;
         height: 100%;
         width: 100%;
@@ -33,16 +33,16 @@ export class Breadcrumbs extends LitElement {
     this.nodesMap = new Map();
     this.currentMenuItems = [];
     this.hoverNodeId = "";
+
+    this.rootNodeId = null;
   }
 
   updateParams(params, data) {
-    this.data = data;
-
-    //check if node without
+    this.data = structuredClone(data);
 
     applyConstructor.call(this, params);
 
-    this.requestUpdate();
+    //check if nodes without parents are present
 
     if (this.data.some((d) => d[this.nodeKey])) {
       this.data.forEach((d) => {
@@ -50,7 +50,40 @@ export class Breadcrumbs extends LitElement {
       });
 
       this.currentId = this.nodeInitialId;
+    } else {
+      throw new Error("Key not found");
     }
+
+    const idsWithoutParent = [];
+
+    this.nodesMap.forEach((d) => {
+      if (!d.parent) {
+        idsWithoutParent.push("" + d[this.nodeKey]);
+      }
+    });
+
+    if (idsWithoutParent.length > 1) {
+      this.rootNodeId = "root";
+    } else if (idsWithoutParent.length === 1) {
+      this.rootNodeId = idsWithoutParent[0];
+    } else {
+      throw new Error("Root node not found");
+    }
+
+    const rootNode = {
+      [this.nodeKey]: this.rootNodeId,
+      [this.nodeLabelKey]: this.rootNodeLabelText,
+    };
+
+    this.nodesMap.set(this.rootNodeId, rootNode);
+    this.data.push(rootNode);
+
+    idsWithoutParent.forEach((id) => {
+      const itemWithoutParent = this.nodesMap.get("" + id);
+      itemWithoutParent.parent = this.rootNodeId;
+    });
+
+    this.requestUpdate();
   }
 
   willUpdate(changed) {
@@ -92,6 +125,10 @@ export class Breadcrumbs extends LitElement {
     }));
   }
 
+  disconnectedCallback() {
+    this.data = [];
+  }
+
   render() {
     return html`${map(this.pathToShow, (node) => {
       return html`
@@ -111,6 +148,9 @@ export class Breadcrumbs extends LitElement {
             (d) => d[this.nodeKey] !== node[this.nodeKey]
           )}
           .showDropdown=${this.nodeShowDropdown}
+          .iconName=${node[this.nodeKey] === this.rootNodeId
+            ? this.rootNodeLabelIcon
+            : null}
         />
       `;
     })}`;

@@ -48,7 +48,7 @@ class Menu extends LitElement {
 
       .menu-container {
         position: relative;
-        max-width: 10em;
+        max-width: 15em;
         max-height: 20em;
         overflow-y: auto;
         list-style-type: none;
@@ -58,20 +58,17 @@ class Menu extends LitElement {
         border-radius: 0.5em;
         background-color: white;
         z-index: 3;
-        display: flex;
-        flex-direction: column;
-        align-items: start;
-        justify-content: start;
-        gap: 0.2em;
         cursor: pointer;
       }
 
-      .menu-container > li {
+      li {
+        display: block;
         line-height: 1.2;
-        width: 100%;
-        padding: 0.2em 0.5em;
+        padding: 0.5em;
+        word-wrap: break-word;
       }
-      .menu-container > li:hover {
+
+      li:hover {
         background-color: blue;
         color: white;
       }

@@ -1,6 +1,7 @@
 import { LitElement, css, html, nothing, svg } from "lit";
 import { ref, createRef } from "lit/directives/ref.js";
 import roundPathCorners from "../rounding.js";
+import * as FAIcons from "@fortawesome/free-solid-svg-icons";
 
 class Node extends LitElement {
   static get properties() {
@@ -11,6 +12,7 @@ class Node extends LitElement {
         type: Boolean,
         state: true,
       },
+      iconName: { type: String, state: true },
     };
   }
 
@@ -42,6 +44,9 @@ class Node extends LitElement {
       .-hover .node-outline {
         fill: green;
       }
+      .home-icon {
+        height: 10px;
+      }
     `;
   }
 
@@ -50,18 +55,24 @@ class Node extends LitElement {
     this.node = { label: "", id: "" };
     this.menuItems = [];
     this.showDropdown = false;
+    this.iconName = "";
+    this.icon = null;
 
     this.svg = createRef();
 
     this.width = 0;
     this.height = 0;
+    this.iconMarginLeft = 0;
+    this.iconWidth = 0;
     this.emW = 0;
     this.emH = 0;
+    this.textMargin = { left: 0, right: 0, top: 0, bottom: 0 };
 
     this.pathD = "";
 
     this.showMenu = false;
-    this.menuShowing = false;
+
+    this.arrowWidth = 2;
   }
 
   firstUpdated() {
@@ -71,13 +82,22 @@ class Node extends LitElement {
     this.emH = emH;
     this.textWidth = textWidth;
     this.textHeight = textHeight;
+    const textMarginLeft = 1 * this.emW;
+
+    if (this.icon) {
+      this.iconMarginLeft = 1 * this.emW;
+      this.iconWidth = (this.emH * this.icon[0]) / this.icon[1];
+    }
+
     this.textMargin = {
-      left: 1 * this.emW,
+      left: textMarginLeft + this.iconMarginLeft + this.iconWidth,
       right: 3 * this.emW,
       top: 0.5 * this.emH,
       bottom: 0.5 * this.emH,
     };
+
     this.width = this.textWidth + this.textMargin.left + this.textMargin.right;
+
     this.height =
       this.textHeight + this.textMargin.top + this.textMargin.bottom;
     this.pathD = roundPathCorners(this._getPolygon(), this.emW / 2, 0);
@@ -86,7 +106,7 @@ class Node extends LitElement {
   }
 
   _getPolygon() {
-    if (this.width < 20) {
+    if (this.width < this.emW * 2) {
       throw new Error("Width must be greater than arrow length");
     }
 
@@ -94,7 +114,7 @@ class Node extends LitElement {
 
     const WIDTH = this.width - 2 * strokeWidth;
     const HEIGHT = this.height - 2 * strokeWidth;
-    const arrowLength = 10;
+    const arrowLength = this.emW * 2;
 
     const points = [
       [0, 0],
@@ -129,6 +149,21 @@ class Node extends LitElement {
     return { textWidth, textHeight };
   }
 
+  _getIcon() {
+    if (!this.icon) {
+      return nothing;
+    } else {
+      return html`
+        <svg viewBox="0 0 ${this.icon[0]} ${this.icon[1]}" height="${this.emH}">
+          ${svg`
+        
+        <path d="${this.icon[4]}"  ></path>
+
+    `}
+        </svg>
+      `;
+    }
+  }
   _handleMouseOver() {
     this.svg.value.classList.add("-hover");
     this.showMenu = true;
@@ -149,10 +184,23 @@ class Node extends LitElement {
     this._unhover();
   }
 
+  willUpdate() {
+    this.icon = FAIcons[`fa${this.iconName}`]?.icon;
+  }
+
   render() {
     const nodeG = svg`<g transform="translate(1,1)">
     <path class="node-outline" d="${this.pathD}"></path>
-    <text class="node-label" transform="translate(${this.emW},${
+    ${
+      this.icon
+        ? svg`<g transform="translate(${
+            -this.width / 2 + this.iconWidth / 2 + this.iconMarginLeft
+          },${this.height / 2 - 0.7 * this.emH})">
+    ${this._getIcon()}
+    </g>`
+        : nothing
+    }
+    <text class="node-label" transform="translate(${this.textMargin.left},${
       this.height / 2
     })">${this.node.label}</text>
     
@@ -170,7 +218,7 @@ class Node extends LitElement {
         ${nodeG}
       </svg>
 
-      ${this.showMenu && this.showDropdown
+      ${this.showMenu && this.showDropdown && this.menuItems.length > 0
         ? html`<node-menu
             @menu-leave=${this._handleMenuLeave}
             style="top: ${this.height}px;"

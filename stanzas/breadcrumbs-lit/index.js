@@ -16,13 +16,16 @@ export default class BreadcrumbsLit extends Stanza {
 
     const root = this.root.querySelector("main");
 
+    // TODO make this only for example page
     root.style = null;
     const overflowEl = this.element.parentElement.parentElement;
     overflowEl.classList.remove("overflow-auto");
 
-    if (!this.breadcrumbs) {
-      this.breadcrumbs = new Breadcrumbs(root);
+    if (this.breadcrumbs) {
+      this.breadcrumbs.remove();
     }
+
+    this.breadcrumbs = new Breadcrumbs(root);
 
     const data = await loadData(
       this.params["data-url"],
