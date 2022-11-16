@@ -1,9 +1,10 @@
 :host {
-  --togostanza-fadeout-opacity: .2;
-  --togostanza-fadeout-transition: opacity .2s ease-in;
+  --togostanza-fadeout-opacity: 0.2;
+  --togostanza-fadeout-transition: opacity 0.2s ease-in;
 
   display: block;
   background-color: var(--togostanza-theme-background_color);
+  font-family: var(--togostanza-fonts-font_family);
   font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
   color: var(--togostanza-fonts-font_color);
 }
