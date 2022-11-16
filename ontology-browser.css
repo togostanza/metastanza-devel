@@ -11,7 +11,11 @@ text {
   fill: var(--togostanza-fonts-font_color);
 }
 
+:host {
+  --history-height: 15em;
+}
+
 main {
-  background-color: var(--togostanza-background-color);
+  background-color: var(--togostanza-theme-background_color);
   height: var(--togostanza-outline-height);
 }

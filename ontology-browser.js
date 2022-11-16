@@ -2996,14 +2996,6 @@ class cachedAxios {
   }
 }
 
-function debounce(func, ms = 1000) {
-  let timeout;
-  return function () {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func.apply(this, arguments), ms);
-  };
-}
-
 function getByPath(object, path) {
   if (!path) {
     return object;
@@ -3022,7 +3014,7 @@ function getByPath(object, path) {
 }
 
 function camelize(s) {
-  return s.replace(/-./g, (x) => x[1].toUpperCase());
+  return s.replace(/[-_]./g, (x) => x[1].toUpperCase());
 }
 
 function applyConstructor(params) {
@@ -3041,13 +3033,13 @@ function applyConstructor(params) {
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */const s=(i,t)=>{var e,o;const r=i._$AN;if(void 0===r)return !1;for(const i of r)null===(o=(e=i)._$AO)||void 0===o||o.call(e,t,!1),s(i,t);return !0},o$1=i=>{let t,e;do{if(void 0===(t=i._$AM))break;e=t._$AN,e.delete(i),i=t;}while(0===(null==e?void 0:e.size))},r=i=>{for(let t;t=i._$AM;i=t){let e=t._$AN;if(void 0===e)t._$AN=e=new Set;else if(e.has(i))break;e.add(i),l(t);}};function n$1(i){void 0!==this._$AN?(o$1(this),this._$AM=i,r(this)):this._$AM=i;}function h$1(i,t=!1,e=0){const r=this._$AH,n=this._$AN;if(void 0!==n&&0!==n.size)if(t)if(Array.isArray(r))for(let i=e;i<r.length;i++)s(r[i],!1),o$1(r[i]);else null!=r&&(s(r,!1),o$1(r));else s(this,i);}const l=i=>{var t$1,s,o,r;i.type==t.CHILD&&(null!==(t$1=(o=i)._$AP)&&void 0!==t$1||(o._$AP=h$1),null!==(s=(r=i)._$AQ)&&void 0!==s||(r._$AQ=n$1));};class c$1 extends i{constructor(){super(...arguments),this._$AN=void 0;}_$AT(i,t,e){super._$AT(i,t,e),r(this),this.isConnected=i._$AU;}_$AO(i,t=!0){var e,r;i!==this.isConnected&&(this.isConnected=i,i?null===(e=this.reconnected)||void 0===e||e.call(this):null===(r=this.disconnected)||void 0===r||r.call(this)),t&&(s(this,i),o$1(this));}setValue(t){if(e$1(this._$Ct))this._$Ct._$AI(t,this);else {const i=[...this._$Ct._$AH];i[this._$Ci]=t,this._$Ct._$AI(i,this,0);}}disconnected(){}reconnected(){}}
+ */const s=(i,t)=>{var e,o;const r=i._$AN;if(void 0===r)return !1;for(const i of r)null===(o=(e=i)._$AO)||void 0===o||o.call(e,t,!1),s(i,t);return !0},o$2=i=>{let t,e;do{if(void 0===(t=i._$AM))break;e=t._$AN,e.delete(i),i=t;}while(0===(null==e?void 0:e.size))},r=i=>{for(let t;t=i._$AM;i=t){let e=t._$AN;if(void 0===e)t._$AN=e=new Set;else if(e.has(i))break;e.add(i),l(t);}};function n$1(i){void 0!==this._$AN?(o$2(this),this._$AM=i,r(this)):this._$AM=i;}function h$1(i,t=!1,e=0){const r=this._$AH,n=this._$AN;if(void 0!==n&&0!==n.size)if(t)if(Array.isArray(r))for(let i=e;i<r.length;i++)s(r[i],!1),o$2(r[i]);else null!=r&&(s(r,!1),o$2(r));else s(this,i);}const l=i=>{var t$1,s,o,r;i.type==t.CHILD&&(null!==(t$1=(o=i)._$AP)&&void 0!==t$1||(o._$AP=h$1),null!==(s=(r=i)._$AQ)&&void 0!==s||(r._$AQ=n$1));};class c$1 extends i{constructor(){super(...arguments),this._$AN=void 0;}_$AT(i,t,e){super._$AT(i,t,e),r(this),this.isConnected=i._$AU;}_$AO(i,t=!0){var e,r;i!==this.isConnected&&(this.isConnected=i,i?null===(e=this.reconnected)||void 0===e||e.call(this):null===(r=this.disconnected)||void 0===r||r.call(this)),t&&(s(this,i),o$2(this));}setValue(t){if(e$1(this._$Ct))this._$Ct._$AI(t,this);else {const i=[...this._$Ct._$AH];i[this._$Ci]=t,this._$Ct._$AI(i,this,0);}}disconnected(){}reconnected(){}}
 
 /**
  * @license
  * Copyright 2020 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */const e=()=>new o;class o{}const h=new WeakMap,n=e$2(class extends c$1{render(t){return b}update(t,[s]){var e;const o=s!==this.Y;return o&&void 0!==this.Y&&this.rt(void 0),(o||this.lt!==this.ct)&&(this.Y=s,this.dt=null===(e=t.options)||void 0===e?void 0:e.host,this.rt(this.ct=t.element)),b}rt(i){var t;if("function"==typeof this.Y){const s=null!==(t=this.dt)&&void 0!==t?t:globalThis;let e=h.get(s);void 0===e&&(e=new WeakMap,h.set(s,e)),void 0!==e.get(this.Y)&&this.Y.call(this.dt,void 0),e.set(this.Y,i),void 0!==i&&this.Y.call(this.dt,i);}else this.Y.value=i;}get lt(){var i,t,s;return "function"==typeof this.Y?null===(t=h.get(null!==(i=this.dt)&&void 0!==i?i:globalThis))||void 0===t?void 0:t.get(this.Y):null===(s=this.Y)||void 0===s?void 0:s.value}disconnected(){this.lt===this.ct&&this.rt(void 0);}reconnected(){this.rt(this.ct);}});
+ */const e=()=>new o$1;class o$1{}const h=new WeakMap,n=e$2(class extends c$1{render(t){return b}update(t,[s]){var e;const o=s!==this.Y;return o&&void 0!==this.Y&&this.rt(void 0),(o||this.lt!==this.ct)&&(this.Y=s,this.dt=null===(e=t.options)||void 0===e?void 0:e.host,this.rt(this.ct=t.element)),b}rt(i){var t;if("function"==typeof this.Y){const s=null!==(t=this.dt)&&void 0!==t?t:globalThis;let e=h.get(s);void 0===e&&(e=new WeakMap,h.set(s,e)),void 0!==e.get(this.Y)&&this.Y.call(this.dt,void 0),e.set(this.Y,i),void 0!==i&&this.Y.call(this.dt,i);}else this.Y.value=i;}get lt(){var i,t,s;return "function"==typeof this.Y?null===(t=h.get(null!==(i=this.dt)&&void 0!==i?i:globalThis))||void 0===t?void 0:t.get(this.Y):null===(s=this.Y)||void 0===s?void 0:s.value}disconnected(){this.lt===this.ct&&this.rt(void 0);}reconnected(){this.rt(this.ct);}});
 
 /**
  * @license
@@ -3088,16 +3080,21 @@ class Flip extends c$1 {
     this.id = id;
     this.role = role;
     this.heroId = heroId;
+
     this.scrolledHeroRect = scrolledHeroRect;
 
-    if (this.role === "hero" && this.id !== this.heroId) {
-      // then remove the element from the DOM with animation
-      requestAnimationFrame(() => {
-        this.boundingRect = { y: 0, x: 0, width: 0, height: 0 };
-        this.remove();
-      });
+    // for column wich became hero, remove all other nodes from it
+    // TODO not working for now (deleting nodes with animation)
+    if (
+      this.role === "hero" &&
+      this.id !== this.heroId &&
+      this.id !== "dummy"
+    ) {
+      disconnectedRects.set(this.id, part.getBoundingClientRect());
+      this.remove();
     }
 
+    // for new nodes in non-hero columns, slide them from 0 to their positions
     if (this.role !== "hero" && !disconnectedRects.has(this.id)) {
       disconnectedRects.set(this.id, { y: 0, x: 0, width: 0, height: 0 });
     }
@@ -3114,6 +3111,7 @@ class Flip extends c$1 {
         this.element.parentElement ||
         this.element.getRootNode().querySelector(".column");
     }
+
     // memorize boundingRect before element updates
     if (this.boundingRect) {
       this.boundingRect = this.element.getBoundingClientRect();
@@ -3139,11 +3137,12 @@ class Flip extends c$1 {
 
     if (this.id === this.heroId) {
       previous = this.scrolledHeroRect;
-
       this.boundingRect = this.element.parentElement.getBoundingClientRect();
     } else {
       this.boundingRect = this.element.getBoundingClientRect();
     }
+
+    this.boundingRect = this.element.getBoundingClientRect();
 
     const deltaY = (previous?.y || 0) - (this.boundingRect?.y || 0);
 
@@ -3164,18 +3163,13 @@ class Flip extends c$1 {
       [
         {
           transform: `translate(0, ${deltaY}px)`,
-          position: this.id === this.heroId ? "absolute" : "relative",
-          width: `${this.boundingRect.width}px`,
         },
         {
           transform: `translate(0,0)`,
-          position: this.id === this.heroId ? "absolute" : "relative",
-          width: `${this.boundingRect.width}px`,
         },
       ],
       this.options
     );
-    // }
   }
 
   remove() {
@@ -3204,6 +3198,10 @@ class Flip extends c$1 {
   }
 
   disconnected() {
+    if (this.role === "hero") {
+      this.remove();
+      return;
+    }
     this.boundingRect = this.element.getBoundingClientRect();
     if (typeof this.id !== "undefined") {
       disconnectedRects.set(this.id, this.boundingRect);
@@ -3225,6 +3223,9 @@ class OntologyCard extends s$2 {
       display: block;
       position: relative;
       --default-bg-color: white;
+      font-family: var(--togostanza-fonts-font_family);
+      font-size: var(--togostanza-fonts-font_size_primary);
+      color: var(--togostanza-fonts-font_color);
     }
 
     .-hero-right:before {
@@ -3233,7 +3234,7 @@ class OntologyCard extends s$2 {
       content: "";
       width: 100%;
       height: 1px;
-      border-bottom: 1px solid var(--togostanza-node-border-color);
+      border-bottom: 1px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       box-sizing: border-box;
     }
@@ -3244,18 +3245,18 @@ class OntologyCard extends s$2 {
       content: "";
       width: 100%;
       height: 1px;
-      border-bottom: 1px solid var(--togostanza-node-border-color);
+      border-bottom: 1px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       box-sizing: border-box;
     }
 
-    .-hero-left:after {
+    .-hero-left-1:after {
       position: absolute;
       content: "";
       width: 0px;
       height: 0px;
       border: 8px solid transparent;
-      border-left: 8px solid var(--togostanza-node-border-color);
+      border-left: 8px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       right: 0;
       transform: translate(50%, -50%) scaleY(0.5);
@@ -3269,7 +3270,7 @@ class OntologyCard extends s$2 {
       content: "";
       width: 1px;
       height: calc(100% - min(50%, 15px) + 5px);
-      border-left: 1px solid var(--togostanza-node-border-color);
+      border-left: 1px solid var(--togostanza-border-color);
       bottom: -6px;
       box-sizing: border-box;
     }
@@ -3280,7 +3281,7 @@ class OntologyCard extends s$2 {
       content: "";
       width: 100%;
       height: 1px;
-      border-bottom: 1px solid var(--togostanza-node-border-color);
+      border-bottom: 1px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       box-sizing: border-box;
     }
@@ -3291,7 +3292,7 @@ class OntologyCard extends s$2 {
       content: "";
       width: 1px;
       height: calc(min(50%, 15px) + 6px);
-      border-left: 1px solid var(--togostanza-node-border-color);
+      border-left: 1px solid var(--togostanza-border-color);
       top: -6px;
       box-sizing: border-box;
     }
@@ -3302,7 +3303,7 @@ class OntologyCard extends s$2 {
       content: "";
       width: 100%;
       height: 1px;
-      border-top:  1px solid var(--togostanza-node-border-color);
+      border-top:  1px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       box-sizing: border-box;
     }
@@ -3313,7 +3314,7 @@ class OntologyCard extends s$2 {
       content: "";
       width: 1px;
       height: calc(100% + 14px);
-      border-left: 1px solid var(--togostanza-node-border-color);
+      border-left: 1px solid var(--togostanza-border-color);
       top: -6px;
       box-sizing: border-box;
     }
@@ -3324,7 +3325,7 @@ class OntologyCard extends s$2 {
       content: "";
       width: 100%;
       height: 1px;
-      border-bottom: 1px solid var(--togostanza-node-border-color);
+      border-bottom: 1px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       box-sizing: border-box;
     }
@@ -3335,7 +3336,7 @@ class OntologyCard extends s$2 {
       content: "";
       width: 1px;
       height: calc(100% - min(50%, 15px) + 5px);
-      border-right: 1px solid var(--togostanza-node-border-color);
+      border-right: 1px solid var(--togostanza-border-color);
       bottom: -6px;
       right: 0;
       box-sizing: border-box;
@@ -3347,7 +3348,7 @@ class OntologyCard extends s$2 {
       content: "";
       width: 100%;
       height: 1px;
-      border-bottom: 1px solid var(--togostanza-node-border-color);
+      border-bottom: 1px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       box-sizing: border-box;
     }
@@ -3358,7 +3359,7 @@ class OntologyCard extends s$2 {
       content: "";
       width: 1px;
       height: calc(min(50%, 15px) + 6px);
-      border-right: 1px solid var(--togostanza-node-border-color);
+      border-right: 1px solid var(--togostanza-border-color);
       top: -6px;
       right: 0;
       box-sizing: border-box;
@@ -3370,7 +3371,7 @@ class OntologyCard extends s$2 {
       content: "";
       width: 100%;
       height: 1px;
-      border-top: 1px solid var(--togostanza-node-border-color);
+      border-top: 1px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       box-sizing: border-box;
     }
@@ -3381,7 +3382,7 @@ class OntologyCard extends s$2 {
       content: "";
       width: 1px;
       height: calc(100% + 14px);
-      border-right: 1px solid var(--togostanza-node-border-color);
+      border-right: 1px solid var(--togostanza-border-color);
       top: -6px;
       right: 0;
       box-sizing: border-box;
@@ -3393,7 +3394,7 @@ class OntologyCard extends s$2 {
       content: "";
       width: 100%;
       height: 1px;
-      border-bottom: 1px solid var(--togostanza-node-border-color);
+      border-bottom: 1px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       box-sizing: border-box;
     }
@@ -3404,7 +3405,7 @@ class OntologyCard extends s$2 {
       content: "";
       width: 100%;
       height: 1px;
-      border-bottom: 1px solid var(--togostanza-node-border-color);
+      border-bottom: 1px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       box-sizing: border-box;
     }
@@ -3415,35 +3416,41 @@ class OntologyCard extends s$2 {
       content: "";
       width: 100%;
       height: 1px;
-      border-bottom: 1px solid var(--togostanza-node-border-color);
+      border-bottom: 1px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       box-sizing: border-box;
     }
 
     .ontology-card {
-      padding: 6px;
+      padding: 10px;
       font-family: var(--togostanza-font-family);
-      border: 1px solid var(--togostanza-node-border-color);
+      border: 1px solid var(--togostanza-border-color);
       border-radius: 8px;
       background-color: var(--togostanza-node-bg-color);
       cursor: pointer;
       position: relative;
-      width: min(90%, 20rem);
+      width: min(85%, 20rem);
       max-width: 30rem;
       box-sizing: border-box;
+      overflow: hidden;
+      margin-bottom: 6px;
     }
 
     .ontology-card:hover {
       filter: brightness(0.98)
     }
 
-    .children-arrow:before {
+    .children-arrow {
+      overflow: visible;
+    }
+
+    .children-arrow-1:before {
       position: absolute;
       content: "";
       width: 0px;
       height: 0px;
       border: 8px solid transparent;
-      border-left: 8px solid var(--togostanza-node-border-color);
+      border-left: 8px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       left: 0;
       transform: translate(-50%, -50%) scaleY(0.5);
@@ -3454,7 +3461,7 @@ class OntologyCard extends s$2 {
     h3 {
       display: inline;
       margin: 0;
-      color: var(--togostanza-label-font-color);
+      font-size: var(--togostanza-fonts-font_size_primary);
     }
 
     .card-container {
@@ -3469,20 +3476,12 @@ class OntologyCard extends s$2 {
     }
 
     .selected {
-      background-color: var(--togostanza-node-bg-color-selected);
-      border-color: var(--togostanza-node-border-color-selected);
-      padding-left: 10px;
-      padding-right: 10px;
-      max-height: 100%;
+      background-color: var(--togostanza-node-bg-color_selected);
+      border-color: var(--togostanza-border-color_selected);
     }
 
     .hidden {
       visibility: hidden;
-    }
-
-    p.note {
-      margin: 0;
-      color: #94928d;
     }
 
     .table-container {
@@ -3494,19 +3493,19 @@ class OntologyCard extends s$2 {
     }
 
     .hero-list li {
-      font-size: 0.6rem;
       margin-left: 0.5rem;
     }
 
     table {
       width: 100%
       max-width: 10rem;
+      table-layout: fixed;
+      font-size: var(--togostanza-fonts-font_size_secondary)
     }
 
     table td.key {
       vertical-align: top;
       font-style: italic;
-      font-size: 0.5rem;
     }
 
     table td.data {
@@ -3681,18 +3680,12 @@ class OntologyBrowserColumn extends s$2 {
 
       .column {
         height: 100%;
-        flex-direction: column;
         position: relative;
         overflow-y: auto;
         overflow-x: hidden;
-      }
-
-      ontology-card {
-        margin-top: 6px;
-      }
-
-      ontology-card:last-child {
-        margin-bottom: 10px;
+        max-height: calc(
+          var(--togostanza-outline-height) - var(--history-height)
+        );
       }
     `;
   }
@@ -3724,6 +3717,9 @@ class OntologyBrowserColumn extends s$2 {
       this.nodes.forEach((node) => {
         this.idNodeMap.set(node.id, node);
       });
+    }
+    if (changed.has("heroId")) {
+      this.previousHeroId = changed.get("heroId");
     }
   }
 
@@ -3775,6 +3771,7 @@ class OntologyBrowserColumn extends s$2 {
                     ${flip({
                       id: node.id,
                       heroId: this.heroId,
+                      previousHeroId: this.previousHeroId,
                       role: this.role,
                       scrolledHeroRect: this.scrolledHeroRect,
                       options: this.animationOptions,
@@ -3859,13 +3856,13 @@ class OntologyBrowserView extends s$2 {
       if (changedProperties.get("data")) {
         if (
           this.data.details.id &&
-          changedProperties.get("data").id !== this.data.details.id
+          changedProperties.get("data").details?.id !== this.data.details.id
         ) {
           // parents before update
-          this.dataColumns._parents = changedProperties.get("data")
+          this.dataColumns._parents = changedProperties.get("data").relations
             ?.parents || [{ id: "dummy", label: "dummy" }];
           // children before update
-          this.dataColumns._children = changedProperties.get("data")
+          this.dataColumns._children = changedProperties.get("data").relations
             ?.children || [{ id: "dummy", label: "dummy" }];
 
           if (this._columns.length === 4) {
@@ -3996,9 +3993,7 @@ class OntologyBrowserView extends s$2 {
                     ? this.dataColumns[column]
                     : [{ id: "dummy", label: "dummy" }]}"
                   ${n(this.nodeRef)}
-                  .heroId="${column === "hero"
-                    ? this.data.details?.id
-                    : undefined}"
+                  .heroId="${this.data.details?.id}"
                   .scrolledHeroRect="${this.scrolledRect}"
                   .animationOptions="${this.animationOptions}"
                 ></ontology-browser-column>
@@ -4070,6 +4065,161 @@ class OntologyError extends s$2 {
 
 customElements.define("ontology-error", OntologyError);
 
+/**
+ * @license
+ * Copyright 2021 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+function*o(o,f){if(void 0!==o){let i=0;for(const t of o)yield f(t,i++);}}
+
+class OntologyPath extends s$2 {
+  constructor() {
+    super();
+    this.path = [];
+    this._container = e();
+    this.selectedNodeId = "";
+  }
+
+  static get styles() {
+    return i$1`
+      .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        heigth: var(--history-height);
+      }
+
+      .path-header {
+        display: block;
+        font-size: var(--togostanza-fonts-font_size_primary);
+        margin: 0;
+        padding: 0;
+        width: calc(100% - (100% / 3 - min(85% / 3, 20rem)));
+        max-width: calc(100% - (100% / 3 - 30rem));
+      }
+
+      .path-container {
+        white-space: nowrap;
+        overflow-x: scroll;
+        display: flex;
+        gap: 0.2em;
+        align-items: center;
+        justify-content: flex-start;
+        height: 5rem;
+        max-width: calc(100% - (100% / 3 - 30rem));
+        width: calc(100% - (100% / 3 - min(85% / 3, 20rem)));
+      }
+
+      .node {
+        cursor: pointer;
+        display: inline-block;
+        font-size: var(--togostanza-fonts-font_size_secondary);
+        padding: 0 0.6em;
+        width: 10em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .node-container {
+        display: block;
+        position: relative;
+        margin-right: -3em;
+        transform: rotate(340deg);
+      }
+
+      .node-container:before {
+        content: "";
+        display: block;
+        width: 5px;
+        height: 5px;
+        border: 1px solid var(--togostanza-border-color);
+        position: absolute;
+        border-radius: 50%;
+        bottom: 0;
+      }
+
+      .node-container + .node-container:after {
+        content: "";
+        display: block;
+        width: 2.35em;
+        height: 1px;
+        border-bottom: 1px solid var(--togostanza-border-color);
+        transform: rotate(200deg);
+        transform-origin: left bottom;
+        box-sizing: border-box;
+        position: absolute;
+        bottom: 0.25em;
+      }
+
+      .node:hover {
+        filter: brightness(1.05);
+      }
+
+      .-active {
+        font-weight: bold;
+      }
+    `;
+  }
+
+  static get properties() {
+    return {
+      path: { type: Array, state: true },
+      selectedNodeId: { type: String, state: true },
+    };
+  }
+
+  _nodeClickHandler(e) {
+    if (e.target.classList.contains("node")) {
+      this.selectedNodeId = e.target.id;
+      const selectedNodeId = e.target.id.match(/(^.+(?=-))/g)[0];
+
+      this.dispatchEvent(
+        new CustomEvent("history-clicked", {
+          detail: {
+            id: selectedNodeId,
+          },
+          composed: true,
+        })
+      );
+    }
+  }
+
+  updated(changed) {
+    if (changed.get("path")) {
+      this._container.value.scrollLeft = this._container.value.scrollWidth;
+    }
+  }
+
+  render() {
+    return y`
+      <div class="container">
+        <h2 class="path-header">History</h2>
+        <div
+          class="path-container"
+          @click="${this._nodeClickHandler}"
+          ${n(this._container)}
+        >
+          ${o(this.path, (node, i) => {
+            const id = `${node.id}-${i}`;
+            return y`<span class="node-container">
+              <span
+                id="${id}"
+                class="node ${id === this.selectedNodeId ? "-active" : ""}"
+                title="${node.label}"
+                >${node.label}</span
+              >
+            </span>`;
+          })}
+        </div>
+      </div>
+    `;
+  }
+}
+
+customElements.define("ontology-browser-path", OntologyPath);
+
 class OntologyBrowser extends s$2 {
   static get styles() {
     return i$1`
@@ -4080,7 +4230,9 @@ class OntologyBrowser extends s$2 {
       }
 
       .container {
-        height: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
       }
 
       .spinner {
@@ -4126,6 +4278,14 @@ class OntologyBrowser extends s$2 {
         type: Array,
         state: true,
       },
+      pathArray: {
+        type: Array,
+        state: true,
+      },
+      activeNode: {
+        type: Object,
+        state: true,
+      },
     };
   }
 
@@ -4142,6 +4302,10 @@ class OntologyBrowser extends s$2 {
     this.apiEndpoint = "";
     this.error = { message: "", isError: false };
     this.showKeys = ["id", "label"];
+    this.pathArray = [];
+    this.activeNode = {};
+
+    this.historyClicked = false;
 
     this.API = new cachedAxios();
   }
@@ -4152,8 +4316,8 @@ class OntologyBrowser extends s$2 {
 
       applyConstructor.call(this, params);
 
-      this.showKeys = this.nodeDetails_show_keys
-        ? this.nodeDetails_show_keys.split(",").map((key) => key.trim())
+      this.showKeys = this.nodeDetailsShowKeys
+        ? this.nodeDetailsShowKeys.split(",").map((key) => key.trim())
         : [];
 
       this.error = { message: "", isError: false };
@@ -4181,6 +4345,15 @@ class OntologyBrowser extends s$2 {
           role: this.clickedRole,
           ...this._getDataObject(data),
         };
+
+        this.activeNode = {
+          id: this.data.details.id,
+          label: this.data.details.label,
+        };
+
+        if (!this.historyClicked) {
+          this.pathArray = [...this.pathArray, this.activeNode];
+        }
       })
       .catch((e) => {
         console.error(e);
@@ -4192,6 +4365,7 @@ class OntologyBrowser extends s$2 {
   }
 
   willUpdate(changed) {
+    console.log("this.historyClicked", this.historyClicked);
     if (
       (changed.has("diseaseId") || changed.has("apiEndpoint")) &&
       this.diseaseId
@@ -4199,34 +4373,40 @@ class OntologyBrowser extends s$2 {
       this.error = { message: "", isError: false };
       this._loadData();
     }
+    if (changed.has("pathArray")) {
+      if (this.pathArray.length > 10) {
+        this.pathArray = this.pathArray.slice(1);
+      }
+    }
   }
 
   firstUpdated() {
     this._loadingStarted();
     this.diseaseId = this.initialId;
   }
+  _handleHistoryClick({ detail: { id } }) {
+    this.historyClicked = true;
+    this.diseaseId = id;
+  }
 
   _getDataObject(incomingData) {
     //validate
-    const nodeIdVal = getByPath(incomingData, this.nodeId_path);
+    const nodeIdVal = getByPath(incomingData, this.nodeIdPath);
     if (!nodeIdVal) {
       throw new Error("Node id path is not valid");
     }
-    const nodeLabelVal = getByPath(incomingData, this.nodeLabel_path);
+    const nodeLabelVal = getByPath(incomingData, this.nodeLabelPath);
     if (!nodeLabelVal) {
       throw new Error("Node label path is not valid");
     }
-    const childrenArr = getByPath(
-      incomingData,
-      this.nodeRelationsChildren_path
-    );
+    const childrenArr = getByPath(incomingData, this.nodeRelationsChildrenPath);
 
     if (childrenArr instanceof Array) {
       if (childrenArr.length > 0) {
-        if (!childrenArr.some((item) => item[this.nodeRelationsId_key])) {
+        if (!childrenArr.some((item) => item[this.nodeRelationsIdKey])) {
           throw new Error("Path to node children id is not valid ");
         }
-        if (!childrenArr.some((item) => item[this.nodeRelationsLabel_key])) {
+        if (!childrenArr.some((item) => item[this.nodeRelationsLabelKey])) {
           throw new Error("Path to node children label is not valid ");
         }
       }
@@ -4234,14 +4414,14 @@ class OntologyBrowser extends s$2 {
       throw new Error("Path to node children is not valid ");
     }
 
-    const parentsArr = getByPath(incomingData, this.nodeRelationsParents_path);
+    const parentsArr = getByPath(incomingData, this.nodeRelationsParentsPath);
 
     if (parentsArr instanceof Array) {
       if (parentsArr.length > 0) {
-        if (!parentsArr.some((item) => item[this.nodeRelationsId_key])) {
+        if (!parentsArr.some((item) => item[this.nodeRelationsIdKey])) {
           throw new Error("Path to node children id is not valid ");
         }
-        if (!parentsArr.some((item) => item[this.nodeRelationsLabel_key])) {
+        if (!parentsArr.some((item) => item[this.nodeRelationsLabelKey])) {
           throw new Error("Path to node children label is not valid ");
         }
       }
@@ -4251,7 +4431,7 @@ class OntologyBrowser extends s$2 {
 
     return {
       details: {
-        ...getByPath(incomingData, this.nodeDetails_path),
+        ...getByPath(incomingData, this.nodeDetailsPath),
         id: nodeIdVal,
         label: nodeLabelVal,
         showDetailsKeys: this.showKeys,
@@ -4259,13 +4439,13 @@ class OntologyBrowser extends s$2 {
       relations: {
         children: childrenArr.map((item) => ({
           ...item,
-          id: item[this.nodeRelationsId_key],
-          label: item[this.nodeRelationsLabel_key],
+          id: item[this.nodeRelationsIdKey],
+          label: item[this.nodeRelationsLabelKey],
         })),
         parents: parentsArr.map((item) => ({
           ...item,
-          id: item[this.nodeRelationsId_key],
-          label: item[this.nodeRelationsLabel_key],
+          id: item[this.nodeRelationsIdKey],
+          label: item[this.nodeRelationsLabelKey],
         })),
       },
     };
@@ -4277,13 +4457,14 @@ class OntologyBrowser extends s$2 {
 
   _changeDiseaseEventHadnler(e) {
     e.stopPropagation();
+    this.historyClicked = false;
     this.diseaseId = e.detail.id;
     this.clickedRole = e.detail.role;
     this._loadingStarted();
 
     this.updateComplete.then(() => {
       this.dispatchEvent(
-        new CustomEvent("disease-selected", {
+        new CustomEvent("ontology-node-changed", {
           // here we can pass any data to the event through this.data
           detail: {
             id: e.detail.id,
@@ -4313,10 +4494,14 @@ class OntologyBrowser extends s$2 {
 
   render() {
     return y`
-      <!-- <ontology-browser-text-search
-        @input="${debounce(this._keyup, 300)}"
-      ></ontology-browser-text-search> -->
       <div class="container">
+        ${this.showHistory
+          ? y`<ontology-browser-path
+              @history-clicked="${this._handleHistoryClick}"
+              .path=${this.pathArray}
+            >
+            </ontology-browser-path>`
+          : b}
         ${this.loading
           ? y`<div class="spinner">
               <img src="${spinner}"></img>
@@ -4344,7 +4529,7 @@ class Linechart extends Stanza {
   }
 
   render() {
-    appendCustomCss(this, this.params["custom-css-url"]);
+    appendCustomCss(this, this.params["misc-custom_css_url"]);
 
     const root = this.root.querySelector("main");
 
@@ -4378,7 +4563,7 @@ var metadata = {
 	"stanza:updated": "2022-09-06",
 	"stanza:parameter": [
 	{
-		"stanza:key": "api-endpoint",
+		"stanza:key": "api_endpoint",
 		type: "string",
 		"stanza:example_old": "https://togovar.biosciencedbc.jp/api/inspect/disease?node=<>",
 		"stanza:example": "https://hpo.jax.org/api/hpo/term/<>",
@@ -4386,7 +4571,14 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "initial-id",
+		"stanza:key": "misc-custom_css_url",
+		type: "string",
+		"stanza:example": "",
+		"stanza:description": "URL of custom CSS",
+		"stanza:required": false
+	},
+	{
+		"stanza:key": "initial_id",
 		type: "string",
 		"stanza:example_old": "MONDO_0005709",
 		"stanza:example": "HP:0001168",
@@ -4445,7 +4637,7 @@ var metadata = {
 		"stanza:type": "string",
 		"stanza:example_old": "id",
 		"stanza:example": "ontologyId",
-		"stanza:description": "JSON path to node children array,  separated by dot '.' (e.g. 'data.relations.children')",
+		"stanza:description": "JSON path to id key of parent or child node,  separated by dot '.' (e.g. 'path.to.id')",
 		"stanza:required": false
 	},
 	{
@@ -4453,86 +4645,57 @@ var metadata = {
 		"stanza:type": "string",
 		"stanza:example_old": "label",
 		"stanza:example": "name",
-		"stanza:description": "JSON path to node children array,  separated by dot '.' (e.g. 'data.relations.children')",
+		"stanza:description": "JSON path to label key of parent or child node,  separated by dot '.' (e.g. 'path.to.label')",
+		"stanza:required": false
+	},
+	{
+		"stanza:key": "show_history",
+		"stanza:type": "boolean",
+		"stanza:example": true,
+		"stanza:description": "Whether to show history of navigation",
 		"stanza:required": false
 	}
 ],
 	"stanza:menu-placement": "bottom-right",
 	"stanza:style": [
 	{
-		"stanza:key": "--togostanza-series-0-color",
-		"stanza:type": "color",
-		"stanza:default": "#6590e6",
-		"stanza:description": "Group color 0"
-	},
-	{
-		"stanza:key": "--togostanza-series-1-color",
-		"stanza:type": "color",
-		"stanza:default": "#3ac9b6",
-		"stanza:description": "Group color 1"
-	},
-	{
-		"stanza:key": "--togostanza-series-2-color",
-		"stanza:type": "color",
-		"stanza:default": "#9ede2f",
-		"stanza:description": "Group color 2"
-	},
-	{
-		"stanza:key": "--togostanza-series-3-color",
-		"stanza:type": "color",
-		"stanza:default": "#F5DA64",
-		"stanza:description": "Group color 3"
-	},
-	{
-		"stanza:key": "--togostanza-series-4-color",
-		"stanza:type": "color",
-		"stanza:default": "#F57F5B",
-		"stanza:description": "Group color 4"
-	},
-	{
-		"stanza:key": "--togostanza-series-5-color",
-		"stanza:type": "color",
-		"stanza:default": "#F75976",
-		"stanza:description": "Group color 5"
-	},
-	{
-		"stanza:key": "--togostanza-font-family",
+		"stanza:key": "--togostanza-fonts-font_family",
 		"stanza:type": "text",
 		"stanza:default": "Helvetica Neue",
 		"stanza:description": "Font family"
 	},
 	{
-		"stanza:key": "--togostanza-font-size",
-		"stanza:type": "text",
-		"stanza:default": "12px",
-		"stanza:description": "Font Size"
-	},
-	{
-		"stanza:key": "--togostanza-label-font-color",
+		"stanza:key": "--togostanza-fonts-font_color",
 		"stanza:type": "color",
 		"stanza:default": "#4E5059",
-		"stanza:description": "Label font color"
+		"stanza:description": "Card font color"
 	},
 	{
-		"stanza:key": "--togostanza-label-font-size",
-		"stanza:type": "number",
-		"stanza:default": 10,
-		"stanza:description": "Label font size"
+		"stanza:key": "--togostanza-fonts-font_size_primary",
+		"stanza:type": "text",
+		"stanza:default": "10px",
+		"stanza:description": "Card title font size"
+	},
+	{
+		"stanza:key": "--togostanza-fonts-font_size_secondary",
+		"stanza:type": "text",
+		"stanza:default": "8px",
+		"stanza:description": "Card contents font size"
 	},
 	{
 		"stanza:key": "--togostanza-outline-height",
 		"stanza:type": "text",
 		"stanza:default": "500px",
-		"stanza:description": "Stanza height"
+		"stanza:description": "Stanza height. Width is always 100%, a la div with `display: block`"
 	},
 	{
-		"stanza:key": "--togostanza-node-border-color",
+		"stanza:key": "--togostanza-border-color",
 		"stanza:type": "color",
 		"stanza:default": "#9b9ca1",
 		"stanza:description": "Border color"
 	},
 	{
-		"stanza:key": "--togostanza-node-border-color-selected",
+		"stanza:key": "--togostanza-border-color_selected",
 		"stanza:type": "color",
 		"stanza:default": "#1f9dad",
 		"stanza:description": "Selected border color"
@@ -4544,13 +4707,13 @@ var metadata = {
 		"stanza:description": "Node background color"
 	},
 	{
-		"stanza:key": "--togostanza-node-bg-color-selected",
+		"stanza:key": "--togostanza-node-bg-color_selected",
 		"stanza:type": "color",
 		"stanza:default": "#fff6e0",
 		"stanza:description": "Selected node background color"
 	},
 	{
-		"stanza:key": "--togostanza-background-color",
+		"stanza:key": "--togostanza-theme-background_color",
 		"stanza:type": "color",
 		"stanza:default": "rgba(255,255,255,0)",
 		"stanza:description": "Background color"
