@@ -1,52 +1,144 @@
 import Stanza from "togostanza/stanza";
+import * as d3 from "d3";
 import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
 import Legend from "@/lib/Legend";
 import { getGradationColor } from "@/lib/ColorGenerator";
-import * as d3 from "d3";
-const tooltipHTML = ({ group, variable, value }) =>
-  `<span><strong>${group},${variable}: </strong>${value}</span>`;
+import {
+  downloadSvgMenuItem,
+  downloadPngMenuItem,
+  downloadJSONMenuItem,
+  downloadCSVMenuItem,
+  downloadTSVMenuItem,
+  appendCustomCss,
+} from "togostanza-utils";
 
 export default class Heatmap extends Stanza {
+  menu() {
+    return [
+      downloadSvgMenuItem(this, "heatmap"),
+      downloadPngMenuItem(this, "heatmap"),
+      downloadJSONMenuItem(this, "heatmap", this._data),
+      downloadCSVMenuItem(this, "heatmap", this._data),
+      downloadTSVMenuItem(this, "heatmap", this._data),
+    ];
+  }
+
   css(key) {
     return getComputedStyle(this.element).getPropertyValue(key);
   }
+
   async render() {
     const root = this.root.querySelector("main");
+
     if (!this.tooltip) {
       this.tooltip = new ToolTip();
       root.append(this.tooltip);
+    }
+
+    const legendShow = this.params["legend"];
+    const existingLegend = this.root.querySelector("togostanza--legend");
+    if (existingLegend) {
+      existingLegend.remove();
+    }
+
+    if (legendShow !== "none") {
       this.legend = new Legend();
       root.append(this.legend);
     }
 
-    const data = await loadData(
+    // Parameters
+    const dataset = await loadData(
       this.params["data-url"],
       this.params["data-type"],
-      this.root.querySelector("main")
+      root
     );
 
-    this.draw(root, data);
-  }
-  async draw(el, dataset) {
-    // make colors
-    const cellColorMin = this.params["cell-color-range_min"];
-    const cellColorMid = this.params["cell-color-range_mid"];
-    const cellColorMax = this.params["cell-color-range_max"];
-    let cellDomainMin = parseFloat(this.params["cell-color-domain_min"]);
-    let cellDomainMid = parseFloat(this.params["cell-color-domain_mid"]);
-    let cellDomainMax = parseFloat(this.params["cell-color-domain_max"]);
-    const cellColorDataKey = this.params["cell-color-data_key"];
-    const values = [...new Set(dataset.map((d) => d[cellColorDataKey]))];
+    appendCustomCss(this, this.params["misc-custom_css_url"]);
+    const cellColorKey = this.params["cell-color-key"];
+    const xKey = this.params["axis-x-key"];
+    const yKey = this.params["axis-y-key"];
+    const xTitle = this.params["axis-x-title"] || xKey;
+    const yTitle = this.params["axis-y-title"] || yKey;
+    const xLabelAngle = this.params["x-ticks_labels_angle"];
+    const yLabelAngle = this.params["y-ticks_labels_angle"];
+    const axisTitlePadding = this.params["axis-title_padding"];
+    const isAxisHide = this.params["axis-hide"];
+    const legendTitle = this.params["legend-title"];
+    const legendGroups = this.params["legend-groups"];
+    const cellColorScale = this.params["cell-color-scale"];
+    const tooltipKey = this.params["tooltips-key"];
+    const tooltipHTML = (d) =>
+      `<span><strong>${d[xKey]},${d[yKey]}: </strong>${d[tooltipKey]}</span>`;
 
-    if (isNaN(parseFloat(cellDomainMin))) {
-      cellDomainMin = Math.min(...values);
+    // Color scale
+    const cellColorMin = this.params["cell-color_min"];
+    const cellColorMid = this.params["cell-color_mid"];
+    const cellColorMax = this.params["cell-color_max"];
+    let cellDomainMin = parseFloat(this.params["cell-value_min"]);
+    let cellDomainMid = parseFloat(this.params["cell-value_mid"]);
+    let cellDomainMax = parseFloat(this.params["cell-value_max"]);
+    let values = dataset.map((d) => parseFloat(d[cellColorKey]));
+
+    if (cellColorScale === "log10") {
+      values = values.filter((d) => d > 0).map(Math.log10);
     }
-    if (isNaN(parseFloat(cellDomainMax))) {
-      cellDomainMax = Math.max(...values);
+
+    const minValue = Math.min(...values);
+    const maxValue = Math.max(...values);
+
+    function scaleWarn(param, fallback, fallbackValue) {
+      console.warn(
+        `Parameter ${param} is invalid for selected scale, fall back to ${fallback}, ${fallbackValue}`
+      );
     }
-    if (isNaN(parseFloat(cellDomainMid))) {
-      cellDomainMid = (cellDomainMax + cellDomainMin) / 2;
+
+    const [LINEAR, LOG10] = ["linear", "log10"];
+    switch (cellColorScale) {
+      case LINEAR:
+        if (isNaN(parseFloat(cellDomainMin))) {
+          cellDomainMin = minValue;
+          scaleWarn("cell-value_min", "data minimum value", cellDomainMin);
+        }
+        if (isNaN(parseFloat(cellDomainMax))) {
+          cellDomainMax = maxValue;
+          scaleWarn("cell-value_max", "data maximum value", cellDomainMax);
+        }
+        if (isNaN(parseFloat(cellDomainMid))) {
+          cellDomainMid = (cellDomainMax + cellDomainMin) / 2;
+          scaleWarn("cell-value_mid", "data midrange value", cellDomainMid);
+        }
+        break;
+
+      case LOG10:
+        if (
+          isNaN(parseFloat(cellDomainMin)) ||
+          parseFloat(cellDomainMin) <= 0
+        ) {
+          cellDomainMin = minValue;
+          scaleWarn("cell-value_min", "data minimum value", cellDomainMin);
+        } else {
+          cellDomainMin = Math.log(parseFloat(cellDomainMin));
+        }
+        if (
+          isNaN(parseFloat(cellDomainMax)) ||
+          parseFloat(cellDomainMax) <= 0
+        ) {
+          cellDomainMax = maxValue;
+          scaleWarn("cell-value_max", "data maximum value", cellDomainMax);
+        } else {
+          cellDomainMax = Math.log10(parseFloat(cellDomainMax));
+        }
+        if (
+          isNaN(parseFloat(cellDomainMid)) ||
+          parseFloat(cellDomainMid) <= 0
+        ) {
+          cellDomainMid = (cellDomainMax + cellDomainMin) / 2;
+          scaleWarn("cell-value_mid", "data midrange value", cellDomainMid);
+        } else {
+          cellDomainMid = Math.log10(parseFloat(cellDomainMid));
+        }
+        break;
     }
 
     const setColor = getGradationColor(
@@ -55,170 +147,155 @@ export default class Heatmap extends Stanza {
       [cellDomainMin, cellDomainMid, cellDomainMax]
     );
 
-    const tickSize = +this.css("--togostanza-tick-size") || 0;
-    const xLabelAngle = this.params["x-ticks_labels_angle"] || 0;
-    const yLabelAngle = this.params["y-ticks_labels_angle"] || 0;
+    const colorSym = Symbol();
+
+    //prepare data
+    dataset.forEach((d) => {
+      const value = parseFloat(d[cellColorKey]);
+
+      switch (cellColorScale) {
+        case LINEAR:
+          d[colorSym] = setColor(value);
+          break;
+
+        case LOG10:
+          {
+            let val = value;
+            val = value <= 0 ? NaN : Math.log10(value);
+            d[colorSym] = setColor(val);
+          }
+          break;
+      }
+    });
+
+    //Styles
+    const fontSize = +this.css("--togostanza-fonts-font_size_primary");
+    const width = +this.css("--togostanza-outline-width");
+    const height = +this.css("--togostanza-outline-height");
     const borderWidth = +this.css("--togostanza-border-width") || 0;
+    const borderRadius = +this.css("--togostanza-border-radius");
+    const tickSize = 2;
 
-    // set the dimensions and margins of the graph
-    const margin = {
-      bottom: +this.css("--togostanza-fonts-font_size_primary") + tickSize + 10,
-      left: +this.css("--togostanza-fonts-font_size_primary") + tickSize + 10,
-    };
-    const width = +this.css("--togostanza-outline-width"),
-      height = +this.css("--togostanza-outline-height");
+    // x-axis scale
+    const rows = [...new Set(dataset.map((d) => d[xKey]))];
+    const x = d3.scaleBand().domain(rows).range([0, width]);
+    const xAxisGenerator = d3
+      .axisBottom(x)
+      .tickSizeInner(tickSize)
+      .tickSizeOuter(0);
 
-    // remove svg element whenthis.params updated
-    d3.select(el).select("svg").remove();
-    const titleSpace = 20;
-    const axisXTitlePadding = this.params["axis-x-title_padding"];
-    const axisYTitlePadding = this.params["axis-y-title_padding"];
+    // y-axis scale
+    const columns = [...new Set(dataset.map((d) => d[yKey]))];
+    const y = d3.scaleBand().domain(columns).range([height, 0]);
+    const yAxisGenerator = d3
+      .axisLeft(y)
+      .tickSizeInner(tickSize)
+      .tickSizeOuter(0);
 
-    const xDataKey = this.params["axis-x-data_key"];
-    const yDataKey = this.params["axis-y-data_key"];
+    d3.select(root).select("svg").remove();
+    //Drawing area
+    const svg = d3.select(root).append("svg");
 
-    const svg = d3
-      .select(el)
-      .append("svg")
-      .attr("width", width + margin.left + titleSpace + axisYTitlePadding)
-      .attr("height", height + margin.bottom + titleSpace + axisXTitlePadding);
+    //Get width of the largest column label
+    const maxColumnGroup = svg.append("g");
+    maxColumnGroup
+      .selectAll("text")
+      .data(columns)
+      .enter()
+      .append("text")
+      .text((d) => d);
+    const maxColumnWidth = maxColumnGroup.node().getBBox().width;
+    maxColumnGroup.remove();
+
+    //Margin between graph and title
+    const margin = axisTitlePadding + maxColumnWidth + tickSize;
+
+    //Graph area including title
+    svg
+      .attr("width", width + margin + fontSize)
+      .attr("height", height + margin + fontSize);
 
     const graphArea = svg
       .append("g")
-      .attr("class", "chart")
-      .attr(
-        "transform",
-        `translate(${margin.left + titleSpace + axisYTitlePadding}, 0)`
-      );
+      .attr("class", "graph")
+      .attr("transform", `translate(${margin + fontSize}, 0)`);
 
-    const rows = [...new Set(dataset.map((d) => d[xDataKey]))];
-    const columns = [...new Set(dataset.map((d) => d[yDataKey]))];
-
-    const x = d3
-      .scaleBand()
-      .domain(
-        rows.slice(
-          this.params["axis-x-range_min"],
-          this.params["axis-x-range_max"]
-        )
-      )
-      .range([0, width - 10]);
-    const xAxisGenerator = d3
-      .axisBottom(x)
-      .tickSizeOuter(0)
-      .tickSizeInner(tickSize);
-
-    const y = d3
-      .scaleBand()
-      .range([height, 0])
-      .domain(
-        columns.slice(
-          this.params["axis-y-range_min"],
-          this.params["axis-y-range_max"]
-        )
-      );
-    const yAxisGridGenerator = d3
-      .axisLeft(y)
-      .tickSizeOuter(0)
-      .tickSizeInner(tickSize);
-
-    // normalize
-
-    // console.log(values);
-    // const normalize = (num) => {
-    //   return (
-    //     (num - Math.min(...values)) /
-    //     (Math.max(...values) - Math.min(...values))
-    //   );
-    // };
-
+    //Set for each rect
     graphArea
+      .append("g")
+      .attr("class", "rect")
       .selectAll()
-      .data(dataset, function (d) {
-        return d[xDataKey] + ":" + d[yDataKey];
-      })
+      .data(dataset, (d) => `${d[xKey]}:${d[yKey]}`)
       .enter()
       .append("rect")
-      .attr("x", (d) => x(d[xDataKey]))
-      .attr("y", (d) => y(d[yDataKey]))
+      .attr("x", (d) => x(d[xKey]))
+      .attr("y", (d) => y(d[yKey]))
       .attr("data-tooltip-html", true)
       .attr("data-tooltip", (d) => tooltipHTML(d))
       .attr("width", x.bandwidth())
       .attr("height", y.bandwidth())
-      .attr("rx", this.css("--togostanza-border-radius"))
-      .attr("ry", this.css("--togostanza-border-radius"))
-      .style("fill", (d) => setColor(d[cellColorDataKey]))
+      .attr("rx", borderRadius)
+      .attr("ry", borderRadius)
+      .style("fill", (d) => d[colorSym])
       .on("mouseover", mouseover)
       .on("mouseleave", mouseleave);
 
-    graphArea
+    //Draw the x-axis
+    const xaxisArea = graphArea
       .append("g")
       .attr("class", "x-axis")
-      .attr("transform", `translate(0, ${height})`)
-      .transition()
-      .duration(200)
+      .attr("transform", `translate(0, ${height})`);
+    xaxisArea
+      .append("g")
       .call(xAxisGenerator)
       .selectAll("text")
       .attr("transform", `rotate(${xLabelAngle})`);
+    //Draw the x-axis title
+    xaxisArea
+      .append("text")
+      .attr("text-anchor", "middle")
+      .attr("transform", `translate(${width / 2}, ${margin})`)
+      .text(xTitle);
 
-    graphArea
+    //Draw the y-axis;
+    const yaxisArea = graphArea.append("g").attr("class", "y-axis");
+    yaxisArea
       .append("g")
-      .attr("class", "y-axis")
-      .transition()
-      .duration(200)
-      .call(yAxisGridGenerator)
+      .call(yAxisGenerator)
       .selectAll("text")
       .attr("transform", `rotate(${yLabelAngle})`);
+    //Draw the y-axis title
+    yaxisArea
+      .append("text")
+      .attr("text-anchor", "middle")
+      .attr("transform", `translate(-${margin}, ${height / 2}) rotate(-90)`)
+      .text(yTitle);
 
-    if (!this.params["axis-x-hide"]) {
+    //Hide axis lines and ticks
+    if (!isAxisHide) {
       svg.select(".x-axis path").remove();
-    }
-    if (!this.params["axis-y-hide"]) {
       svg.select(".y-axis path").remove();
-    }
-    if (!this.params["axis-x-ticks_hide"]) {
       svg.selectAll(".x-axis .tick line").remove();
-    }
-    if (!this.params["axis-y-ticks_hide"]) {
       svg.selectAll(".y-axis .tick line").remove();
     }
 
-    const axisXTitle = this.params["axis-x-title"]
-      ? this.params["axis-x-title"]
-      : xDataKey;
-    const axisYTitle = this.params["axis-y-title"]
-      ? this.params["axis-y-title"]
-      : yDataKey;
-
-    graphArea
-      .append("text")
-      .attr("text-anchor", "middle")
-      .attr(
-        "transform",
-        `translate(${width / 2}, ${height + margin.bottom + axisXTitlePadding})`
-      )
-      .text(axisXTitle);
-
-    graphArea
-      .append("text")
-      .attr("text-anchor", "middle")
-      .attr(
-        "transform",
-        `translate(-${margin.left + axisYTitlePadding}, ${
-          height / 2
-        })rotate(-90)`
-      )
-      .text(axisYTitle);
-
+    //Give text class to all text
     graphArea.selectAll("text").attr("class", "text");
 
-    this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
-    this.legend.setup(
-      this.intervals(values, setColor),
-      {},
-      this.root.querySelector("main")
-    );
+    this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
 
+    if (legendShow !== "none") {
+      this.legend.setup(
+        intervals(setColor),
+        {},
+        {
+          position: legendShow.split("-"),
+        },
+        legendTitle
+      );
+    }
+
+    //Function of mouseover and mouse leave
     function mouseover() {
       d3.select(this).classed("highlighted", true).raise();
       if (!borderWidth) {
@@ -238,20 +315,32 @@ export default class Heatmap extends Stanza {
         graphArea.selectAll(".y-axis").raise();
       }
     }
-  }
-  // create legend objects based on min and max data values with number of steps as set by user in this.params
-  intervals(
-    values,
-    color,
-    steps = this.params["legend-groups"] >= 2 ? this.params["legend-groups"] : 2
-  ) {
-    const [min, max] = [Math.min(...values), Math.max(...values)];
-    return [...Array(steps).keys()].map((i) => {
-      const n = Math.round(min + i * (Math.abs(max - min) / (steps - 1)));
-      return {
-        label: n,
-        color: color(n),
-      };
-    });
+
+    // create legend objects
+    function intervals(color, steps = legendGroups >= 2 ? legendGroups : 2) {
+      return [...Array(steps).keys()].map((i) => {
+        let legendSteps;
+        switch (cellColorScale) {
+          case LINEAR:
+            legendSteps = Math.round(
+              cellDomainMax -
+                i * (Math.abs(cellDomainMax - cellDomainMin) / (steps - 1))
+            );
+            break;
+
+          case LOG10:
+            legendSteps = (
+              cellDomainMax -
+              i * (Math.abs(cellDomainMax - cellDomainMin) / (steps - 1))
+            ).toFixed(3);
+            break;
+        }
+
+        return {
+          label: legendSteps,
+          color: color(legendSteps),
+        };
+      });
+    }
   }
 }
