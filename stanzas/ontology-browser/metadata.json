@@ -87,7 +87,7 @@
       "stanza:type": "string",
       "stanza:example_old": "id",
       "stanza:example": "ontologyId",
-      "stanza:description": "JSON path to node children array,  separated by dot '.' (e.g. 'data.relations.children')",
+      "stanza:description": "JSON path to id key of parent or child node,  separated by dot '.' (e.g. 'path.to.id')",
       "stanza:required": false
     },
     {
@@ -95,7 +95,7 @@
       "stanza:type": "string",
       "stanza:example_old": "label",
       "stanza:example": "name",
-      "stanza:description": "JSON path to node children array,  separated by dot '.' (e.g. 'data.relations.children')",
+      "stanza:description": "JSON path to label key of parent or child node,  separated by dot '.' (e.g. 'path.to.label')",
       "stanza:required": false
     },
     {
