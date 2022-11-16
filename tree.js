@@ -1,7 +1,7 @@
 import { S as Stanza, s as select, d as defineStanzaElement } from './transform-53933414.js';
 import { l as loadData } from './load-data-f2c8df7b.js';
 import { T as ToolTip } from './ToolTip-271f1a68.js';
-import { b as StanzaCirculateColorGenerator } from './ColorGenerator-eaa87470.js';
+import { b as StanzaCirculateColorGenerator } from './ColorGenerator-114acd5e.js';
 import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-9bc9e50c.js';
 import { m as min, t as tree, c as cluster } from './tree-0236e2eb.js';
 import { s as stratify } from './stratify-7050dfd9.js';

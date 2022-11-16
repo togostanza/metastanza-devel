@@ -162,7 +162,11 @@ function getGradationColor(self, colorRange, colorDomain) {
     );
   }
 
-  return linear().domain(domain).range(colors).clamp(true);
+  return linear()
+    .domain(domain)
+    .range(colors)
+    .clamp(true)
+    .unknown("#555");
 }
 
 //Generate color scheme for StanzaInterpolateColor pattern
@@ -182,4 +186,4 @@ function getStanzaInterpolateColor(self, colorNum) {
 }
 
 export { CirculateColorGenerator as C, InterpolateColorGenerator as I, StanzaColorGenerator as S, getGradationColor as a, StanzaCirculateColorGenerator as b, getStanzaInterpolateColor as g };
-//# sourceMappingURL=ColorGenerator-eaa87470.js.map
+//# sourceMappingURL=ColorGenerator-114acd5e.js.map

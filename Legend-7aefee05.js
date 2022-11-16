@@ -64,6 +64,9 @@ class Legend extends s {
       <div class="origin"></div>
       <div class="legend">
         <table>
+          <caption>
+            ${this.title}
+          </caption>
           <tbody>
             ${this.items.map((item) => {
               return y` <tr data-id="${item.id}">
@@ -100,9 +103,9 @@ class Legend extends s {
    * @param {NodeList?} opt.fadeoutNodes
    * @param {string?} opt.fadeProp
    */
-  setup(items, container, opt) {
+  setup(items, container, opt, title) {
     this.items = items;
-
+    this.title = title ? title : "";
     this.render();
 
     const positions = opt.position || ["top", "right"];
@@ -198,4 +201,4 @@ class Legend extends s {
 customElements.define("togostanza--legend", Legend);
 
 export { Legend as L };
-//# sourceMappingURL=Legend-5887d6d7.js.map
+//# sourceMappingURL=Legend-7aefee05.js.map

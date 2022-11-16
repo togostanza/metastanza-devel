@@ -19,19 +19,19 @@ main {
 main .titles {
   font-family: var(--togostanza-fonts-font_family);
 }
-main .domain {
-  color: var(--togostanza-domain-color);
-}
+main .domain,
 main .tick {
-  color: var(--togostanza-tick-color);
+  color: var(--togostanza-axis-color);
 }
 main .text {
   font-family: var(--togostanza-fonts-font_family);
   font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
   color: var(--togostanza-fonts-font_color);
 }
-main .cell {
-  border-radius: var(--togostanza-border-radius);
+main .x-axis {
+  font-family: var(--togostanza-fonts-font_family);
+  font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+  color: var(--togostanza-fonts-font_color);
 }
 main .highlighted {
   stroke: var(--togostanza-hover-border-color);

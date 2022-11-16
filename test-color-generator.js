@@ -1,6 +1,6 @@
 import { S as Stanza, d as defineStanzaElement } from './transform-53933414.js';
 import { d as d3 } from './index-6868dabb.js';
-import { S as StanzaColorGenerator, I as InterpolateColorGenerator, C as CirculateColorGenerator } from './ColorGenerator-eaa87470.js';
+import { S as StanzaColorGenerator, I as InterpolateColorGenerator, C as CirculateColorGenerator } from './ColorGenerator-114acd5e.js';
 import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-9bc9e50c.js';
 import './brush-f9fbbf81.js';
 import './ordinal-90a3df9a.js';

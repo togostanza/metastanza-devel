@@ -3,7 +3,7 @@ import { d as d3 } from './index-6868dabb.js';
 import { _ as _3d } from './3d-7f166d8e.js';
 import { l as loadData } from './load-data-f2c8df7b.js';
 import { T as ToolTip } from './ToolTip-271f1a68.js';
-import { S as StanzaColorGenerator } from './ColorGenerator-eaa87470.js';
+import { S as StanzaColorGenerator } from './ColorGenerator-114acd5e.js';
 import { p as prepareGraphData, g as get3DEdges, a as getGroupPlanes } from './prepareGraphData-11bba3c6.js';
 import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-9bc9e50c.js';
 import { l as line$2 } from './line-5ff356a1.js';

@@ -1,6 +1,6 @@
 import { S as Stanza, s as select, d as defineStanzaElement } from './transform-53933414.js';
 import { l as loadData } from './load-data-f2c8df7b.js';
-import { g as getStanzaInterpolateColor } from './ColorGenerator-eaa87470.js';
+import { g as getStanzaInterpolateColor } from './ColorGenerator-114acd5e.js';
 import { d as descending } from './linear-546377fb.js';
 import { s as sum } from './sum-44e7480e.js';
 import { r as ribbonArrow, c as chordDirected } from './ribbon-bbaf0468.js';
