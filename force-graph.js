@@ -711,7 +711,7 @@ var metadata = {
 		"stanza:description": "Metastanza padding"
 	},
 	{
-		"stanza:key": "--togostanza-theme-background-color",
+		"stanza:key": "--togostanza-theme-background_color",
 		"stanza:type": "color",
 		"stanza:default": "rgba(255,255,255,0)",
 		"stanza:description": "Background color"
