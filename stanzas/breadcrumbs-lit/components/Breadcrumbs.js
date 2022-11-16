@@ -8,9 +8,10 @@ export class Breadcrumbs extends LitElement {
       :host {
         display: flex;
         flex-direction: row;
-        gap: 0.2em;
+        flex-wrap: wrap;
+        column-gap: 0.2em;
+        row-gap: 0.3em;
         align-items: start;
-        height: 100%;
         width: 100%;
       }
     `;
@@ -35,6 +36,7 @@ export class Breadcrumbs extends LitElement {
     this.hoverNodeId = "";
 
     this.rootNodeId = null;
+    this.pathToCopy = "/";
   }
 
   updateParams(params, data) {
@@ -89,6 +91,9 @@ export class Breadcrumbs extends LitElement {
   willUpdate(changed) {
     if (changed.has("currentId")) {
       this.pathToShow = this._getPath(this.currentId);
+      this.pathToCopy = this.pathToShow
+        .map((p) => p[this.nodeLabelKey])
+        .join("/");
     }
   }
 
@@ -125,35 +130,55 @@ export class Breadcrumbs extends LitElement {
     }));
   }
 
-  disconnectedCallback() {
-    this.data = [];
+  _handleCopy() {
+    navigator.permissions.query({ name: "clipboard-write" }).then((result) => {
+      if (result.state === "granted" || result.state === "prompt") {
+        if (this.pathToCopy) {
+          navigator.clipboard.writeText(this.pathToCopy).then(() => {
+            console.log("Copied");
+          });
+        }
+      } else {
+        console.error("Browser is not permitted to copy text to clipboard");
+      }
+    });
   }
 
   render() {
-    return html`${map(this.pathToShow, (node) => {
-      return html`
-        <breadcrumbs-node
-          @click=${() => {
-            this.currentId = "" + node[this.nodeKey];
-          }}
-          @node-hover=${this._handleNodeHover}
-          @menu-item-clicked=${({ detail }) =>
-            (this.currentId = "" + detail.id)}
-          data-id="${node[this.nodeKey]}"
-          .node="${{
-            label: node[this.nodeLabelKey],
-            id: node[this.nodeKey],
-          }}"
-          .menuItems=${this._getByParent(node.parent).filter(
-            (d) => d[this.nodeKey] !== node[this.nodeKey]
-          )}
-          .showDropdown=${this.nodeShowDropdown}
-          .iconName=${node[this.nodeKey] === this.rootNodeId
-            ? this.rootNodeLabelIcon
-            : null}
-        />
-      `;
-    })}`;
+    return html` <breadcrumbs-node
+        .node="${{
+          label: "",
+          id: "copy",
+        }}"
+        .iconName=${"Copy"}
+        .menuItems="${[]}"
+        mode="copy"
+        @click=${this._handleCopy}
+      ></breadcrumbs-node>
+      ${map(this.pathToShow, (node) => {
+        return html`
+          <breadcrumbs-node
+            @click=${() => {
+              this.currentId = "" + node[this.nodeKey];
+            }}
+            @node-hover=${this._handleNodeHover}
+            @menu-item-clicked=${({ detail }) =>
+              (this.currentId = "" + detail.id)}
+            data-id="${node[this.nodeKey]}"
+            .node="${{
+              label: node[this.nodeLabelKey],
+              id: node[this.nodeKey],
+            }}"
+            .menuItems=${this._getByParent(node.parent).filter(
+              (d) => d[this.nodeKey] !== node[this.nodeKey]
+            )}
+            .showDropdown=${this.nodeShowDropdown}
+            .iconName=${node[this.nodeKey] === this.rootNodeId
+              ? this.rootNodeLabelIcon
+              : null}
+          />
+        `;
+      })}`;
   }
 }
 

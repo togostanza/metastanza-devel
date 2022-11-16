@@ -13,6 +13,7 @@ class Node extends LitElement {
         state: true,
       },
       iconName: { type: String, state: true },
+      mode: { type: String },
     };
   }
 
@@ -31,6 +32,7 @@ class Node extends LitElement {
         stroke: var(--togostanza-border-color);
         stroke-width: 1px;
         fill: transparent;
+        transition: var(--togostanza-fadeout-transition);
       }
 
       .node-label {
@@ -38,14 +40,13 @@ class Node extends LitElement {
         font-size: calc(var(--togostanza-fonts-font_size_primary));
       }
 
-      .-hover .node-label {
+      .-hover .node-label,
+      .-hover .home-icon {
         fill: white;
       }
       .-hover .node-outline {
-        fill: green;
-      }
-      .home-icon {
-        height: 10px;
+        fill: var(--togostanza-node-background_color_hover);
+        transition: var(--togostanza-fadeout-transition);
       }
     `;
   }
@@ -57,6 +58,7 @@ class Node extends LitElement {
     this.showDropdown = false;
     this.iconName = "";
     this.icon = null;
+    this.mode = "node";
 
     this.svg = createRef();
 
@@ -76,7 +78,7 @@ class Node extends LitElement {
   }
 
   firstUpdated() {
-    const { textWidth, textHeight } = this._getTextRect(this.node.label);
+    const { textWidth, textHeight } = this._getTextRect(this.node.label || "W");
     const { textWidth: emW, textHeight: emH } = this._getTextRect("a");
     this.emW = emW;
     this.emH = emH;
@@ -96,7 +98,12 @@ class Node extends LitElement {
       bottom: 0.5 * this.emH,
     };
 
-    this.width = this.textWidth + this.textMargin.left + this.textMargin.right;
+    if (this.mode === "node") {
+      this.width =
+        this.textWidth + this.textMargin.left + this.textMargin.right;
+    } else {
+      this.width = this.iconWidth + this.iconMarginLeft * 2;
+    }
 
     this.height =
       this.textHeight + this.textMargin.top + this.textMargin.bottom;
@@ -114,19 +121,28 @@ class Node extends LitElement {
 
     const WIDTH = this.width - 2 * strokeWidth;
     const HEIGHT = this.height - 2 * strokeWidth;
-    const arrowLength = this.emW * 2;
 
-    const points = [
-      [0, 0],
-      [WIDTH - arrowLength, 0],
-      [WIDTH, HEIGHT / 2],
-      [WIDTH - arrowLength, HEIGHT],
-      [0, HEIGHT],
-    ];
+    let points;
+    if (this.mode === "node") {
+      const arrowLength = this.emW * 2;
 
-    const path = `M 0,0 L ${points[1].join(",")} L ${points[2].join(
-      ","
-    )} L ${points[3].join(",")} L ${points[4].join(",")} Z`;
+      points = [
+        [WIDTH - arrowLength, 0],
+        [WIDTH, HEIGHT / 2],
+        [WIDTH - arrowLength, HEIGHT],
+        [0, HEIGHT],
+      ];
+    } else {
+      points = [
+        [WIDTH, 0],
+        [WIDTH, HEIGHT],
+        [0, HEIGHT],
+      ];
+    }
+
+    const Lpath = points.map((p) => `L ${p.join(",")}`);
+
+    const path = `M 0,0 ${Lpath} Z`;
 
     return path;
   }
@@ -193,7 +209,7 @@ class Node extends LitElement {
     <path class="node-outline" d="${this.pathD}"></path>
     ${
       this.icon
-        ? svg`<g transform="translate(${
+        ? svg`<g class="home-icon" transform="translate(${
             -this.width / 2 + this.iconWidth / 2 + this.iconMarginLeft
           },${this.height / 2 - 0.7 * this.emH})">
     ${this._getIcon()}

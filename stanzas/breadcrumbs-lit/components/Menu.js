@@ -69,7 +69,7 @@ class Menu extends LitElement {
       }
 
       li:hover {
-        background-color: blue;
+        background-color: var(--togostanza-node-background_color_hover);
         color: white;
       }
     `;
