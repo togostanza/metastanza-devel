@@ -115,13 +115,6 @@
       "stanza:description": "Amount of groups for legend"
     },
     {
-      "stanza:key": "cell-color-scale",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["linear", "log10"],
-      "stanza:example": "linear",
-      "stanza:description": "If value to be mapped to color is a number"
-    },
-    {
       "stanza:key": "cell-color_min",
       "stanza:type": "text",
       "stanza:example": "#6590e6",
