@@ -3,7 +3,7 @@ import { l as loadData } from './load-data-16d018a3.js';
 import { T as ToolTip } from './ToolTip-271f1a68.js';
 import { L as Legend } from './Legend-7aefee05.js';
 import { a as getGradationColor } from './ColorGenerator-769dc7a1.js';
-import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-9bc9e50c.js';
+import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-4fce94e6.js';
 import { b as band } from './band-407353db.js';
 import { a as axisBottom, b as axisLeft } from './axis-3dba94d9.js';
 import './ordinal-90a3df9a.js';

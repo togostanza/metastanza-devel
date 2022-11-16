@@ -34,7 +34,7 @@ import { c as curveBasis } from './basis-0dde91c7.js';
 import { T as ToolTip } from './ToolTip-271f1a68.js';
 import { S as StanzaColorGenerator } from './ColorGenerator-769dc7a1.js';
 import { p as prepareGraphData, g as get3DEdges, a as getGroupPlanes } from './prepareGraphData-b601bfcf.js';
-import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-9bc9e50c.js';
+import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-4fce94e6.js';
 import './point-7945b9d0.js';
 import './v4-1d7bfe79.js';
 

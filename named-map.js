@@ -18,7 +18,7 @@ import { h as hierarchy, s as stratify } from './stratify-7050dfd9.js';
 import { p as partition$4 } from './partition-e955ad6c.js';
 import { t as treemap, a as treemapSlice, b as treemapSquarify } from './index-c76c1b89.js';
 import { t as treemapDice } from './dice-7bdb0652.js';
-import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem } from './index-9bc9e50c.js';
+import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem } from './index-4fce94e6.js';
 import './constant-c49047a5.js';
 import './math-24162d65.js';
 import './array-80a7907a.js';

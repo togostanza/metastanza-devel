@@ -3,7 +3,7 @@ import { d as defineComponent, c as createElementBlock, F as Fragment, r as rend
 import { l as loadData } from './load-data-16d018a3.js';
 import { l as library$1, F as FontAwesomeIcon } from './index.es-7f8ef021.js';
 import { f as faChevronRight, a as faClipboard } from './index-c774cef2.js';
-import { f as appendCustomCss } from './index-9bc9e50c.js';
+import { f as appendCustomCss } from './index-4fce94e6.js';
 
 var metadata = {
 	"@context": {

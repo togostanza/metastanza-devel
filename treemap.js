@@ -1,6 +1,6 @@
 import { S as Stanza, s as select, d as defineStanzaElement } from './transform-53933414.js';
 import { l as loadData } from './load-data-16d018a3.js';
-import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-9bc9e50c.js';
+import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-4fce94e6.js';
 import { s as stratify, h as hierarchy } from './stratify-7050dfd9.js';
 import { l as linear } from './linear-546377fb.js';
 import { f as format, o as ordinal, a as interpolate$1 } from './ordinal-90a3df9a.js';
