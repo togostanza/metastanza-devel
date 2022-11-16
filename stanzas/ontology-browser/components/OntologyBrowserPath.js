@@ -21,8 +21,10 @@ class OntologyPath extends LitElement {
       }
 
       .path-header {
+        display: block;
         font-size: var(--togostanza-fonts-font_size_primary);
         margin: 0;
+        padding: 0;
         width: calc(100% - (100% / 3 - min(85% / 3, 20rem)));
         max-width: calc(100% - (100% / 3 - 30rem));
       }
@@ -34,7 +36,7 @@ class OntologyPath extends LitElement {
         gap: 0.2em;
         align-items: center;
         justify-content: flex-start;
-        height: 4rem;
+        height: 5rem;
         max-width: calc(100% - (100% / 3 - 30rem));
         width: calc(100% - (100% / 3 - min(85% / 3, 20rem)));
       }

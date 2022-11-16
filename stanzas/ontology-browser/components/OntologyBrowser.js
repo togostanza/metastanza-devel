@@ -2,12 +2,7 @@ import { LitElement, html, css, nothing } from "lit";
 
 import loaderPNG from "togostanza-utils/spinner.png";
 
-import {
-  applyConstructor,
-  cachedAxios,
-  debounce,
-  getByPath,
-} from "../utils.js";
+import { applyConstructor, cachedAxios, getByPath } from "../utils.js";
 
 import "./OntologyBrowserOntologyView";
 import "./OntologyBrowserError";
