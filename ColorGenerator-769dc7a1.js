@@ -1,85 +1,6 @@
 import './transform-53933414.js';
-import { l as linear } from './linear-546377fb.js';
 import { o as ordinal } from './ordinal-90a3df9a.js';
-
-//Convert domain values between 0 and 1
-const clamp = (num) => Math.min(Math.max(num, 0), 1);
-
-//Parent class
-class ColorGenerator {
-  /**
-   * @param {array} range - Params "color-range"
-   * @param {array} domain - Params "color-domain"
-   * @return {function} - Color generation function
-   */
-  constructor(range, domain) {
-    this.colors = range;
-    if (domain) {
-      domain = domain.map((num) => clamp(num));
-    }
-  }
-
-  // get length() {
-  //   return this.colors.length;
-  // }
-}
-
-//When params "type-of-color-circulation" is "circulate"
-class CirculateColorGenerator extends ColorGenerator {
-  /**
-   * @param {number} numberOfMakeColor - Params "number-of-make-color"
-   */
-  constructor(range, domain, numberOfMakeColor) {
-    super(range, domain);
-
-    //Set the color scale with reference to the value of "domain" and the color of "range"
-    if (domain) {
-      //Create colors for params"number-of-make-color" values by params "color-range" "color-domain values"
-      this.colorScale = linear().domain(domain).range(this.colors);
-      this.colors = [...Array(numberOfMakeColor)].map((_, index) => {
-        return this.colorScale(index / (numberOfMakeColor - 1));
-      });
-    } else {
-      //Repeat the color of params "color-range"
-      this.colorScale = ordinal().range(this.colors);
-    }
-  }
-
-  //Get each index number for repeated drawings
-  get(index) {
-    return this.colors[index % this.colors.length];
-  }
-
-  //Get data and assign id
-  // getById(data, id) {
-  //   const uniqueData = Array.from(new Set(data));
-  //   const colorMap = new Map();
-  //   uniqueData.forEach((element, index) => {
-  //     colorMap.set(element, this.colors[index % this.colors.length]);
-  //   });
-  //   return colorMap.get(id);
-  // }
-}
-
-//When params "type-of-color-circulation" is "interpolate"
-class InterpolateColorGenerator extends ColorGenerator {
-  constructor(range, domain) {
-    super(range, domain);
-
-    //Set the color scale with reference to the value of "domain" and the color of "range"
-    const unit = 1 / (this.colors.length - 1);
-    this.colorScale = linear()
-      .domain(
-        domain ?? [...Array(this.colors.length)].map((_, index) => index * unit)
-      )
-      .range(this.colors);
-  }
-
-  //Get color for each position
-  get(position) {
-    return this.colorScale(position);
-  }
-}
+import { l as linear } from './linear-546377fb.js';
 
 //Parent class for stanza
 class StanzaColorGenerator {
@@ -185,5 +106,5 @@ function getStanzaInterpolateColor(self, colorNum) {
   return linear().domain(domains).range(stazaColors);
 }
 
-export { CirculateColorGenerator as C, InterpolateColorGenerator as I, StanzaColorGenerator as S, getGradationColor as a, StanzaCirculateColorGenerator as b, getStanzaInterpolateColor as g };
-//# sourceMappingURL=ColorGenerator-114acd5e.js.map
+export { StanzaColorGenerator as S, getGradationColor as a, StanzaCirculateColorGenerator as b, getStanzaInterpolateColor as g };
+//# sourceMappingURL=ColorGenerator-769dc7a1.js.map

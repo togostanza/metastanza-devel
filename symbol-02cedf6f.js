@@ -1,6 +1,6 @@
 import { p as bisector, h as tickStep, j as continuous, c as copy } from './linear-546377fb.js';
 import { i as initRange } from './ordinal-90a3df9a.js';
-import { n as nice } from './log-17aebfea.js';
+import { n as nice } from './line-845ce362.js';
 import { c as constant } from './constant-c49047a5.js';
 import { a as sqrt, m as min, t as tau, p as pi, s as sin, c as cos } from './math-24162d65.js';
 import { p as path } from './path-a78af922.js';
@@ -1384,4 +1384,4 @@ function Symbol(type, size) {
 }
 
 export { utcDays as $, hours as A, timeDay as B, days as C, sunday as D, sundays as E, monday as F, mondays as G, tuesday as H, tuesdays as I, wednesday as J, wednesdays as K, thursday as L, thursdays as M, friday as N, fridays as O, saturday as P, saturdays as Q, timeMonth as R, Symbol as S, months as T, timeYear as U, years as V, utcMinute$1 as W, utcMinutes as X, utcHour$1 as Y, utcHours as Z, utcDay$1 as _, utcParse as a, utcSunday as a0, utcSundays as a1, utcMonday as a2, utcMondays as a3, utcTuesday as a4, utcTuesdays as a5, utcWednesday as a6, utcWednesdays as a7, utcThursday as a8, utcThursdays as a9, utcFriday as aa, utcFridays as ab, utcSaturday as ac, utcSaturdays as ad, utcMonth$1 as ae, utcMonths as af, utcYear$1 as ag, utcYears as ah, utcTicks as ai, utcTickInterval as aj, timeTicks as ak, timeTickInterval as al, defaultLocale as am, timeFormat as an, timeParse as ao, formatLocale as ap, calendar as aq, symbolsFill as b, asterisk as c, circle as d, cross as e, diamond as f, diamond2 as g, square as h, square2 as i, star as j, triangle as k, triangle2 as l, utcMillisecond as m, newInterval as n, milliseconds as o, plus as p, utcSecond as q, seconds as r, symbolsStroke as s, time as t, utcFormat as u, timeMinute as v, wye as w, x, minutes as y, timeHour as z };
-//# sourceMappingURL=symbol-6a0b2d8d.js.map
+//# sourceMappingURL=symbol-02cedf6f.js.map

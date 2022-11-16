@@ -1,14 +1,13 @@
 import { S as Stanza, s as select, d as defineStanzaElement } from './transform-53933414.js';
-import { l as loadData } from './load-data-f2c8df7b.js';
+import { l as loadData } from './load-data-16d018a3.js';
 import { T as ToolTip } from './ToolTip-271f1a68.js';
 import { L as Legend } from './Legend-7aefee05.js';
-import { a as getGradationColor } from './ColorGenerator-114acd5e.js';
+import { a as getGradationColor } from './ColorGenerator-769dc7a1.js';
 import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-9bc9e50c.js';
 import { b as band } from './band-407353db.js';
 import { a as axisBottom, b as axisLeft } from './axis-3dba94d9.js';
-import './dsv-ac31b097.js';
-import './linear-546377fb.js';
 import './ordinal-90a3df9a.js';
+import './linear-546377fb.js';
 import './range-e15c6861.js';
 
 class Heatmap extends Stanza {

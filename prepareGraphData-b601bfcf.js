@@ -2,7 +2,7 @@ import { b as color } from './transform-53933414.js';
 import { e as extent } from './extent-14a1e8e9.js';
 import { v as v4 } from './v4-1d7bfe79.js';
 import { l as linear } from './linear-546377fb.js';
-import { l as log } from './log-17aebfea.js';
+import { a as log } from './line-845ce362.js';
 import { s as sqrt } from './pow-e5124b28.js';
 
 const edgeSym = Symbol("nodeAdjEdges");
@@ -303,4 +303,4 @@ function getScaleFunc(scaleStr) {
 }
 
 export { getGroupPlanes as a, get3DEdges as g, prepareGraphData as p };
-//# sourceMappingURL=prepareGraphData-11bba3c6.js.map
+//# sourceMappingURL=prepareGraphData-b601bfcf.js.map

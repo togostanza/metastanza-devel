@@ -1,19 +1,18 @@
 import { S as Stanza, s as select, d as defineStanzaElement } from './transform-53933414.js';
-import { l as loadData } from './load-data-f2c8df7b.js';
+import { l as loadData } from './load-data-16d018a3.js';
 import { T as ToolTip } from './ToolTip-271f1a68.js';
 import { L as Legend } from './Legend-7aefee05.js';
 import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-9bc9e50c.js';
 import { m as max } from './max-2c042256.js';
+import { s as stack, g as group } from './stack-a283014a.js';
 import { o as ordinal, f as format } from './ordinal-90a3df9a.js';
 import { b as band } from './band-407353db.js';
 import { l as linear } from './linear-546377fb.js';
 import { a as axisBottom, b as axisLeft } from './axis-3dba94d9.js';
-import { s as stack, g as group } from './stack-a283014a.js';
 import { e as extent } from './extent-14a1e8e9.js';
-import './dsv-ac31b097.js';
-import './range-e15c6861.js';
 import './array-80a7907a.js';
 import './constant-c49047a5.js';
+import './range-e15c6861.js';
 
 function getXTextLabelProps(
   angle,
