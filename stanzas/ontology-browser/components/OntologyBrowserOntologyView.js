@@ -73,13 +73,13 @@ export class OntologyBrowserView extends LitElement {
       if (changedProperties.get("data")) {
         if (
           this.data.details.id &&
-          changedProperties.get("data").id !== this.data.details.id
+          changedProperties.get("data").details?.id !== this.data.details.id
         ) {
           // parents before update
-          this.dataColumns._parents = changedProperties.get("data")
+          this.dataColumns._parents = changedProperties.get("data").relations
             ?.parents || [{ id: "dummy", label: "dummy" }];
           // children before update
-          this.dataColumns._children = changedProperties.get("data")
+          this.dataColumns._children = changedProperties.get("data").relations
             ?.children || [{ id: "dummy", label: "dummy" }];
 
           if (this._columns.length === 4) {
@@ -210,9 +210,7 @@ export class OntologyBrowserView extends LitElement {
                     ? this.dataColumns[column]
                     : [{ id: "dummy", label: "dummy" }]}"
                   ${ref(this.nodeRef)}
-                  .heroId="${column === "hero"
-                    ? this.data.details?.id
-                    : undefined}"
+                  .heroId="${this.data.details?.id}"
                   .scrolledHeroRect="${this.scrolledRect}"
                   .animationOptions="${this.animationOptions}"
                 ></ontology-browser-column>
