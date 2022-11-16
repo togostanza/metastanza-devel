@@ -15,13 +15,11 @@ The data should be hierarchy tree-like data of the format:
     "id": 1,
     "value": "some_value",
     "label": "Some label",
-    "children": [2, 19, 25, 29, 30],
   },
   {
     "id": 2,
     "value": "some_value",
     "label": "Some another label",
-    "children": [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
     "parent": 1,
   },
   ...
@@ -32,12 +30,12 @@ The data should be hierarchy tree-like data of the format:
 
 ### Dropdown menu display
 
-In order to display dropdown menu for the nodes on top of other elements, container element of the breadcrumbs stanza should have `overflow: visible !important;` CSS property
+In order to display dropdown menu for the nodes on top of other elements, container element of the breadcrumbs stanza should have `overflow: visible;` CSS property
 
 ### Copying current path
 
 The path to current node can be copied in clipboard by clicking the Copy button. The copied path will be in the format:
-`{Node1 label} > {Node2 label} > {Node3 label} > ....`
+`{Node1 label} / {Node2 label} / {Node3 label} / ....`
 
 ### Coupling with another stanza
 
@@ -65,6 +63,6 @@ To change currently showing hierarchy node, Breadcrumbs stanza need to receive e
 
 as event payload.
 
-Initially showing path could be defined by passing `initial-data-id` parameter, referring to id of the node, path to which should be shown at first loading.
+Initially showing path could be defined by passing `node-initial_id` parameter, referring to id of the node, path to which should be shown at first loading.
 
 Also, when clicking on the node inside the Breadcrumbs stanza, will dispatch same `selectedDatumChanged` event with payload containing the `id` of clicked node in same manner.

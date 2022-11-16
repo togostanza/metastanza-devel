@@ -160,6 +160,13 @@ export class Breadcrumbs extends LitElement {
           <breadcrumbs-node
             @click=${() => {
               this.currentId = "" + node[this.nodeKey];
+              this.dispatchEvent(
+                new CustomEvent("selectedDatumChanged", {
+                  detail: { id: "" + node[this.nodeKey] },
+                  bubbles: true,
+                  composed: true,
+                })
+              );
             }}
             @node-hover=${this._handleNodeHover}
             @menu-item-clicked=${({ detail }) =>
