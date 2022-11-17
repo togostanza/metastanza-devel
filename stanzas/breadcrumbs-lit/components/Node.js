@@ -81,7 +81,13 @@ class Node extends LitElement {
   }
 
   firstUpdated() {
-    const { textWidth, textHeight } = this._getTextRect(this.node.label || "W");
+    let { textWidth, textHeight } = this._getTextRect(this.node.label);
+
+    if (textHeight === 0) {
+      textHeight = this._getTextRect("W").textHeight;
+      textWidth = 0;
+    }
+
     const { textWidth: emW, textHeight: emH } = this._getTextRect("a");
     this.emW = emW;
     this.emH = emH;
@@ -151,6 +157,9 @@ class Node extends LitElement {
   }
 
   _getTextRect(text) {
+    if (!text) {
+      return { textWidth: 0, textHeight: 0 };
+    }
     const svg = this.svg.value;
     const textEl = document.createElementNS(
       "http://www.w3.org/2000/svg",

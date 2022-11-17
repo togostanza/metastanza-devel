@@ -145,47 +145,48 @@ export class Breadcrumbs extends LitElement {
   }
 
   render() {
-    return html` <breadcrumbs-node
-        .node="${{
-          label: "",
-          id: "copy",
-        }}"
-        .iconName=${"Copy"}
-        .menuItems="${[]}"
-        mode="copy"
-        @click=${this._handleCopy}
-      ></breadcrumbs-node>
-      ${map(this.pathToShow, (node) => {
-        return html`
-          <breadcrumbs-node
-            @click=${() => {
-              this.currentId = "" + node[this.nodeKey];
-              this.dispatchEvent(
-                new CustomEvent("selectedDatumChanged", {
-                  detail: { id: "" + node[this.nodeKey] },
-                  bubbles: true,
-                  composed: true,
-                })
-              );
-            }}
-            @node-hover=${this._handleNodeHover}
-            @menu-item-clicked=${({ detail }) =>
-              (this.currentId = "" + detail.id)}
-            data-id="${node[this.nodeKey]}"
-            .node="${{
-              label: node[this.nodeLabelKey],
-              id: node[this.nodeKey],
-            }}"
-            .menuItems=${this._getByParent(node.parent).filter(
-              (d) => d[this.nodeKey] !== node[this.nodeKey]
-            )}
-            .showDropdown=${this.nodeShowDropdown}
-            .iconName=${node[this.nodeKey] === this.rootNodeId
-              ? this.rootNodeLabelIcon
-              : null}
-          />
-        `;
-      })}`;
+    return html` ${this.showCopyButton &&
+    html`<breadcrumbs-node
+      .node="${{
+        label: "",
+        id: "copy",
+      }}"
+      .iconName=${"Copy"}
+      .menuItems="${[]}"
+      mode="copy"
+      @click=${this._handleCopy}
+    ></breadcrumbs-node>`}
+    ${map(this.pathToShow, (node) => {
+      return html`
+        <breadcrumbs-node
+          @click=${() => {
+            this.currentId = "" + node[this.nodeKey];
+            this.dispatchEvent(
+              new CustomEvent("selectedDatumChanged", {
+                detail: { id: "" + node[this.nodeKey] },
+                bubbles: true,
+                composed: true,
+              })
+            );
+          }}
+          @node-hover=${this._handleNodeHover}
+          @menu-item-clicked=${({ detail }) =>
+            (this.currentId = "" + detail.id)}
+          data-id="${node[this.nodeKey]}"
+          .node="${{
+            label: node[this.nodeLabelKey],
+            id: node[this.nodeKey],
+          }}"
+          .menuItems=${this._getByParent(node.parent).filter(
+            (d) => d[this.nodeKey] !== node[this.nodeKey]
+          )}
+          .showDropdown=${this.nodeShowDropdown}
+          .iconName=${node[this.nodeKey] === this.rootNodeId
+            ? this.rootNodeLabelIcon
+            : null}
+        />
+      `;
+    })}`;
   }
 }
 
