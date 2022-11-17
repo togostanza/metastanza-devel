@@ -40,6 +40,11 @@ class Node extends LitElement {
         font-size: calc(var(--togostanza-fonts-font_size_primary));
       }
 
+      .node-label,
+      .home-icon {
+        fill: var(--togostanza-fonts-font_color);
+      }
+
       .-hover .node-label,
       .-hover .home-icon {
         fill: var(--togostanza-node-label_color_hover);
