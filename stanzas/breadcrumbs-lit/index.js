@@ -16,10 +16,11 @@ export default class BreadcrumbsLit extends Stanza {
 
     const root = this.root.querySelector("main");
 
-    // TODO make this only for example page
-    root.style = null;
-    const overflowEl = this.element.parentElement.parentElement;
-    overflowEl.classList.remove("overflow-auto");
+    if (isExamplePage.apply(this)) {
+      root.style = null;
+      const overflowEl = this.element.parentElement.parentElement;
+      overflowEl.classList.remove("overflow-auto");
+    }
 
     if (this.breadcrumbs) {
       this.breadcrumbs.remove();
@@ -36,4 +37,24 @@ export default class BreadcrumbsLit extends Stanza {
 
     this.breadcrumbs.updateParams(this.params, data);
   }
+}
+
+/**
+ *
+ * @returns true if the page is example page, false otherwise
+ */
+
+function isExamplePage() {
+  const hostname = window.location.hostname;
+  const pageName = window.location.pathname.match(/([^/]+)(?=\.\w+$)/gi)[0];
+  const stanzaId = this.metadata["@id"];
+
+  if (
+    pageName === stanzaId &&
+    (hostname.includes("metastanza") || hostname.includes("localhost"))
+  ) {
+    return true;
+  }
+
+  return false;
 }
