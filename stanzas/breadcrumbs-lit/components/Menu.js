@@ -42,23 +42,28 @@ class Menu extends LitElement {
         position: absolute;
         left: 50%;
         transform: translate(-50%, 3px) rotate(45deg);
-        background-color: white;
+        background-color: var(--togostanza-node-background_color);
         z-index: 5;
+        clip-path: polygon(100% 0, 0 0, 0 100%);
       }
 
       .menu-container {
         position: relative;
         max-width: 15em;
-        max-height: 20em;
-        overflow-y: auto;
-        list-style-type: none;
-        padding: 1em 0;
         margin: 0;
         border: 1px solid var(--togostanza-border-color);
         border-radius: 0.5em;
-        background-color: white;
+        background-color: var(--togostanza-node-background_color);
         z-index: 3;
         cursor: pointer;
+      }
+
+      ul.menu-items {
+        max-height: 20em;
+        margin: 0.2em 0;
+        padding: 0;
+        overflow-y: auto;
+        list-style-type: none;
       }
 
       li {
@@ -70,7 +75,11 @@ class Menu extends LitElement {
 
       li:hover {
         background-color: var(--togostanza-node-background_color_hover);
-        color: white;
+        color: var(--togostanza-node-label_color_hover);
+      }
+
+      li:active {
+        filter: brightness(0.93);
       }
     `;
   }
@@ -104,23 +113,25 @@ class Menu extends LitElement {
       >
         <div class="menu-triangle"></div>
         <div class="menu-triangle-overlay"></div>
-        <ul class="menu-container">
-          ${map(
-            this.menuItems,
+        <div class="menu-container">
+          <ul class="menu-items">
+            ${map(
+              this.menuItems,
 
-            (d) =>
-              html`
-                <li
-                  @click=${(e) => {
-                    e.stopPropagation();
-                    this._handleClick(d.id);
-                  }}
-                >
-                  ${d.label}
-                </li>
-              `
-          )}
-        </ul>
+              (d) =>
+                html`
+                  <li
+                    @click=${(e) => {
+                      e.stopPropagation();
+                      this._handleClick(d.id);
+                    }}
+                  >
+                    ${d.label}
+                  </li>
+                `
+            )}
+          </ul>
+        </div>
       </div>
     `;
   }

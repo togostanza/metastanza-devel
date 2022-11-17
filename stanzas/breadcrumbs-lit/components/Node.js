@@ -31,7 +31,7 @@ class Node extends LitElement {
       .node-outline {
         stroke: var(--togostanza-border-color);
         stroke-width: 1px;
-        fill: transparent;
+        fill: var(--togostanza-node-background_color);
         transition: var(--togostanza-fadeout-transition);
       }
 
@@ -42,11 +42,14 @@ class Node extends LitElement {
 
       .-hover .node-label,
       .-hover .home-icon {
-        fill: white;
+        fill: var(--togostanza-node-label_color_hover);
       }
       .-hover .node-outline {
         fill: var(--togostanza-node-background_color_hover);
         transition: var(--togostanza-fadeout-transition);
+      }
+      .-hover:active {
+        filter: brightness(0.93);
       }
     `;
   }

@@ -101,7 +101,7 @@
     {
       "stanza:key": "--togostanza-border-color",
       "stanza:type": "color",
-      "stanza:default": "#4E5059",
+      "stanza:default": "#DDDCDA",
       "stanza:description": "Border color"
     },
     {
@@ -112,32 +112,19 @@
     },
 
     {
-      "stanza:key": "--togostanza-theme-series_0_color",
-      "stanza:type": "color",
-      "stanza:default": "#000000",
-      "stanza:description": "Home icon color"
-    },
-
-    {
-      "stanza:key": "--togostanza-background-color",
-      "stanza:type": "color",
-      "stanza:default": "#f9f9fa",
-      "stanza:description": "Background color"
-    },
-    {
-      "stanza:key": "--togostanza-border-color",
-      "stanza:type": "color",
-      "stanza:default": "#e0e0e1",
-      "stanza:description": "Border color"
-    },
-    {
       "stanza:key": "--togostanza-node-background_color_hover",
       "stanza:type": "color",
       "stanza:default": "#16ADE3",
-      "stanza:description": "Color the labels on mouseover"
+      "stanza:description": "Background color of the nodes on mouseover"
     },
     {
-      "stanza:key": "--togostanza-label-font-color-hover",
+      "stanza:key": "--togostanza-node-background_color",
+      "stanza:type": "color",
+      "stanza:default": "#F0F0EF",
+      "stanza:description": "Background color of the nodes"
+    },
+    {
+      "stanza:key": "--togostanza-node-label_color_hover",
       "stanza:type": "color",
       "stanza:default": "#f9f9fa",
       "stanza:description": "Label font color on hover"
