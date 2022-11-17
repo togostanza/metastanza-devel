@@ -75,7 +75,7 @@ class Menu extends LitElement {
 
       li:hover {
         background-color: var(--togostanza-node-background_color_hover);
-        color: var(--togostanza-node-label_color_hover);
+        color: var(--togostanza-fonts-font_color_hover);
       }
 
       li:active {

@@ -93,6 +93,12 @@
       "stanza:description": "Label font color"
     },
     {
+      "stanza:key": "--togostanza-fonts-font_color_hover",
+      "stanza:type": "color",
+      "stanza:default": "#f9f9fa",
+      "stanza:description": "Label font color on hover"
+    },
+    {
       "stanza:key": "--togostanza-fonts-font_size_primary",
       "stanza:type": "number",
       "stanza:default": 9,
@@ -110,7 +116,6 @@
       "stanza:default": 0,
       "stanza:description": "Border width"
     },
-
     {
       "stanza:key": "--togostanza-node-background_color_hover",
       "stanza:type": "color",
@@ -123,13 +128,6 @@
       "stanza:default": "#F0F0EF",
       "stanza:description": "Background color of the nodes"
     },
-    {
-      "stanza:key": "--togostanza-node-label_color_hover",
-      "stanza:type": "color",
-      "stanza:default": "#f9f9fa",
-      "stanza:description": "Label font color on hover"
-    },
-
     {
       "stanza:key": "--togostanza-theme-background-color",
       "stanza:type": "color",

@@ -47,7 +47,7 @@ class Node extends LitElement {
 
       .-hover .node-label,
       .-hover .home-icon {
-        fill: var(--togostanza-node-label_color_hover);
+        fill: var(--togostanza-fonts-font_color_hover);
       }
       .-hover .node-outline {
         fill: var(--togostanza-node-background_color_hover);
