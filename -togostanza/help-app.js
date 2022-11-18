@@ -1,4 +1,4 @@
-import { d as defineComponent, h as computed, a as createElementBlock, e as createBaseVNode, f as createCommentVNode, i as createTextVNode, t as toDisplayString, F as Fragment, b as renderList, n as normalizeClass, o as openBlock, j as ref, k as octicons, m as mergeProps, l as watch, p as createVNode, c as createBlock, q as normalizeProps, u as guardReactiveProps, v as resolveDynamicComponent, r as resolveComponent, s as script$4, w as withCtx, x as pushScopeId, y as popScopeId, z as n, g as createApp } from './Layout-58b40d5f.js';
+import { d as defineComponent, h as computed, a as createElementBlock, e as createBaseVNode, f as createCommentVNode, i as createTextVNode, t as toDisplayString, F as Fragment, b as renderList, n as normalizeClass, o as openBlock, j as ref, k as octicons, m as mergeProps, l as watch, c as createBlock, p as normalizeProps, q as guardReactiveProps, u as resolveDynamicComponent, v as createVNode, r as resolveComponent, s as script$4, w as withCtx, x as pushScopeId, y as popScopeId, z as n, g as createApp } from './Layout-bad56fb5.js';
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -1463,22 +1463,13 @@ function requireBaseComponent () {
 } (tab));
 
 var script$3 = defineComponent({
-  props: [
-    'choices',
-    'helpText',
-    'input',
-    'name',
-    'required',
-    'type',
-  ],
-
+  props: ['choices', 'helpText', 'input', 'name', 'required', 'type'],
   setup(props) {
     const formType = computed(() => {
-      return props.type === "datetime" ? "datetime-local" : props.type;
+      return props.type === 'datetime' ? 'datetime-local' : props.type;
     });
-
-    return {...props, formType};
-  }
+    return { ...props, formType };
+  },
 });
 
 const _hoisted_1$3 = { class: "form-label d-flex" };
@@ -1548,7 +1539,7 @@ function render$3(_ctx, _cache, $props, $setup, $data, $options) {
               type: _ctx.formType,
               value: _ctx.input.valueStr.value,
               onInput: _cache[2] || (_cache[2] = $event => (_ctx.input.setValueStr($event.target.value))),
-              class: normalizeClass(["form-control mw-100", {'form-control-color': _ctx.formType === 'color'}])
+              class: normalizeClass(["form-control mw-100", { 'form-control-color': _ctx.formType === 'color' }])
             }, null, 42 /* CLASS, PROPS, HYDRATE_EVENTS */, _hoisted_11$1)),
       (_ctx.input.hasDefault)
         ? (openBlock(), createElementBlock("button", {
@@ -1557,7 +1548,7 @@ function render$3(_ctx, _cache, $props, $setup, $data, $options) {
             disabled: _ctx.input.isDefault.value,
             type: "button",
             class: "btn btn-light border"
-          }, "Reset", 8 /* PROPS */, _hoisted_12$1))
+          }, " Reset ", 8 /* PROPS */, _hoisted_12$1))
         : createCommentVNode("v-if", true)
     ]),
     (_ctx.formType !== 'boolean')
@@ -3605,39 +3596,103 @@ var script$1 = defineComponent({
   },
 });
 
-const _hoisted_1$1 = { class: "bg-dark" };
-const _hoisted_2$1 = { class: "text-end p-2" };
-const _hoisted_3$1 = { class: "overflow-auto p-3 pt-0 text-white" };
-const _hoisted_4$1 = { class: "overflow-auto p-3 bg-light" };
-const _hoisted_5$1 = ["innerHTML"];
-const _hoisted_6$1 = { ref: "stanzaContainer" };
+const _hoisted_1$1 = { class: "overflow-auto p-3 bg-light" };
+const _hoisted_2$1 = ["innerHTML"];
+const _hoisted_3$1 = { ref: "stanzaContainer" };
+const _hoisted_4$1 = { class: "bg-dark mt-3" };
+const _hoisted_5$1 = { class: "text-end p-2" };
+const _hoisted_6$1 = { class: "overflow-auto p-3 pt-0 text-white" };
 
 function render$1(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_CopyButton = resolveComponent("CopyButton");
 
   return (openBlock(), createElementBlock(Fragment, null, [
     createBaseVNode("div", _hoisted_1$1, [
-      createBaseVNode("div", _hoisted_2$1, [
+      createBaseVNode("div", { innerHTML: _ctx.styleSnippet }, null, 8 /* PROPS */, _hoisted_2$1),
+      createBaseVNode("div", _hoisted_3$1, [
+        (openBlock(), createBlock(resolveDynamicComponent(_ctx.tagName), normalizeProps(guardReactiveProps(_ctx.props)), null, 16 /* FULL_PROPS */))
+      ], 512 /* NEED_PATCH */)
+    ]),
+    createBaseVNode("div", _hoisted_4$1, [
+      createBaseVNode("div", _hoisted_5$1, [
         createVNode(_component_CopyButton, {
           value: _ctx.combinedSnippet,
           class: "btn btn-sm btn-light"
         }, null, 8 /* PROPS */, ["value"])
       ]),
-      createBaseVNode("pre", _hoisted_3$1, [
+      createBaseVNode("pre", _hoisted_6$1, [
         createBaseVNode("code", null, toDisplayString(_ctx.combinedSnippet), 1 /* TEXT */)
       ])
-    ]),
-    createBaseVNode("div", _hoisted_4$1, [
-      createBaseVNode("div", { innerHTML: _ctx.styleSnippet }, null, 8 /* PROPS */, _hoisted_5$1),
-      createBaseVNode("div", _hoisted_6$1, [
-        (openBlock(), createBlock(resolveDynamicComponent(_ctx.tagName), normalizeProps(guardReactiveProps(_ctx.props)), null, 16 /* FULL_PROPS */))
-      ], 512 /* NEED_PATCH */)
     ])
   ], 64 /* STABLE_FRAGMENT */))
 }
 
 script$1.render = render$1;
 script$1.__file = "node_modules/togostanza/src/components/StanzaPreviewer.vue";
+
+function buildParameterTree(stanzaParameter) {
+  const tree = new Map();
+
+  for (const param of stanzaParameter) {
+    const key = param['stanza:key'];
+    const tmp = key.split('-', 3);
+    const k = tmp.slice(0, Math.max(tmp.length - 1, 1));
+
+    const a = tree.get(k[0]) || new Map();
+    tree.set(k[0], a);
+
+    if (k[1]) {
+      const b = a.get(k[1]) || new Map();
+      a.set(k[1], b);
+    }
+  }
+
+  return tree;
+}
+
+function commonPrefixLength(a, b) {
+  let i = 0;
+  while (i < a.length && i < b.length && a[i] === b[i]) {
+    i++;
+  }
+  return i;
+}
+
+function buildParamFieldGroups(tree, paramFields) {
+  const placements = new Map();
+  for (const param of paramFields) {
+    const key = param.param['stanza:key'];
+    const k = key.split('-', 3);
+    let max = -1;
+    let argmaxPath = null;
+
+    const paths = [];
+    for (const [a, ta] of tree.entries()) {
+      paths.push([a]);
+      for (const b of ta.keys()) {
+        paths.push([a, b]);
+      }
+    }
+
+    for (const path of paths) {
+      const l = commonPrefixLength(k, path);
+      if (l > max) {
+        max = l;
+        argmaxPath = path;
+      }
+    }
+
+    const placementKey = argmaxPath.join('-');
+    const placement = placements.get(placementKey);
+    if (placement) {
+      placement.push(param);
+    } else {
+      placements.set(placementKey, [param]);
+    }
+  }
+
+  return placements;
+}
 
 var script = defineComponent({
   components: {
@@ -3649,17 +3704,40 @@ var script = defineComponent({
   props: ['metadata', 'readme'],
 
   setup({ metadata, readme }) {
-    const paramFields = (metadata['stanza:parameter'] || []).map((param) => {
+    const stanzaParameter = metadata['stanza:parameter'] || [];
+    const paramFields = stanzaParameter.map((param) => {
       return {
         param,
         input: useInput(param['stanza:example'], param['stanza:type'], false),
       };
     });
-
     const menuPlacement = useInput(
       metadata['stanza:menu-placement'] || 'bottom-right',
       'string'
     );
+    paramFields.push({
+      param: {
+        'stanza:key': 'togostanza-menu-placement',
+        'stanza:type': 'single-choice',
+        'stanza:choice': [
+          'top-left',
+          'top-right',
+          'bottom-left',
+          'bottom-right',
+          'none',
+        ],
+        'stanza:description':
+          'Placement of the information icon which links to this page.',
+      },
+      input: menuPlacement,
+    });
+
+    const paramTree = buildParameterTree(stanzaParameter);
+    paramTree.set('togostanza', new Map());
+
+    const paramFieldGroups = buildParamFieldGroups(paramTree, paramFields);
+
+    const firstActiveParamFiledGroupPath = paramFieldGroups.keys().next().value;
 
     const params = computed(() => {
       return [
@@ -3670,10 +3748,6 @@ var script = defineComponent({
             input,
           };
         }),
-        {
-          name: 'togostanza-menu-placement',
-          input: menuPlacement,
-        },
       ]
         .filter(({ input }) => !input.isDefault.value)
         .map(({ name, input, type }) => {
@@ -3724,7 +3798,9 @@ var script = defineComponent({
     return {
       metadata,
       readme,
-      paramFields,
+      paramTree,
+      paramFieldGroups,
+      firstActiveParamFiledGroupPath,
       menuPlacement,
       params,
       styleFields,
@@ -3810,27 +3886,33 @@ const _hoisted_5 = /*#__PURE__*/ _withScopeId(() => /*#__PURE__*/createBaseVNode
 }, [
   /*#__PURE__*/createBaseVNode("a", {
     class: "nav-link active",
-    href: "#overview",
+    href: "#parameters",
     "data-bs-toggle": "tab",
     role: "tab"
-  }, "Overview"),
+  }, "Parameters"),
   /*#__PURE__*/createBaseVNode("a", {
     class: "nav-link",
-    href: "#customize",
+    href: "#styles",
     "data-bs-toggle": "tab",
     role: "tab"
-  }, "Customize"),
+  }, "Styles"),
   /*#__PURE__*/createBaseVNode("a", {
     class: "nav-link",
-    href: "#event",
+    href: "#events",
     "data-bs-toggle": "tab",
     role: "tab"
-  }, "Event")
+  }, "Events"),
+  /*#__PURE__*/createBaseVNode("a", {
+    class: "nav-link",
+    href: "#about",
+    "data-bs-toggle": "tab",
+    role: "tab"
+  }, "About")
 ], -1 /* HOISTED */));
 const _hoisted_6 = { class: "tab-content mt-3" };
 const _hoisted_7 = {
-  class: "tab-pane active px-lg-5",
-  id: "overview",
+  class: "tab-pane px-lg-5",
+  id: "about",
   role: "tabpanel"
 };
 const _hoisted_8 = { class: "table table-borderless border mb-1" };
@@ -3848,41 +3930,56 @@ const _hoisted_16 = { class: "text-end" };
 const _hoisted_17 = ["href"];
 const _hoisted_18 = ["innerHTML"];
 const _hoisted_19 = {
-  class: "tab-pane",
-  id: "customize",
+  class: "tab-pane active",
+  id: "parameters",
   role: "tabpanel"
 };
-const _hoisted_20 = /*#__PURE__*/ _withScopeId(() => /*#__PURE__*/createBaseVNode("h2", { class: "my-3" }, "Parameters", -1 /* HOISTED */));
-const _hoisted_21 = { class: "row row-cols-1 row-cols-sm-2 row-cols-lg-1 row-cols-xl-2 gx-4 gy-3" };
-const _hoisted_22 = { class: "col" };
-const _hoisted_23 = /*#__PURE__*/ _withScopeId(() => /*#__PURE__*/createBaseVNode("hr", { class: "mt-4 mb-3" }, null, -1 /* HOISTED */));
-const _hoisted_24 = /*#__PURE__*/ _withScopeId(() => /*#__PURE__*/createBaseVNode("h2", { class: "my-3" }, "Styles", -1 /* HOISTED */));
-const _hoisted_25 = { class: "row row-cols-1 row-cols-sm-2 row-cols-lg-1 row-cols-xl-2 gx-4 gy-3" };
-const _hoisted_26 = {
-  key: 0,
-  class: "fst-italic"
+const _hoisted_20 = { class: "d-flex align-items-start" };
+const _hoisted_21 = {
+  class: "nav flex-column nav-pills me-3",
+  id: "v-pills-tab",
+  role: "tablist",
+  "aria-orientation": "vertical"
 };
+const _hoisted_22 = ["data-bs-target"];
+const _hoisted_23 = ["data-bs-target"];
+const _hoisted_24 = {
+  class: "tab-content flex-grow-1",
+  id: "v-pills-tabContent"
+};
+const _hoisted_25 = ["id"];
+const _hoisted_26 = ["id"];
 const _hoisted_27 = {
   class: "tab-pane",
-  id: "event",
+  id: "styles",
   role: "tabpanel"
 };
-const _hoisted_28 = /*#__PURE__*/ _withScopeId(() => /*#__PURE__*/createBaseVNode("h2", { class: "my-3" }, "Outgoing Events", -1 /* HOISTED */));
-const _hoisted_29 = { class: "row row-cols-2" };
-const _hoisted_30 = { class: "text-muted" };
-const _hoisted_31 = {
+const _hoisted_28 = { class: "row row-cols-1 row-cols-sm-2 row-cols-lg-1 row-cols-xl-2 gx-4 gy-3" };
+const _hoisted_29 = {
   key: 0,
   class: "fst-italic"
 };
-const _hoisted_32 = /*#__PURE__*/ _withScopeId(() => /*#__PURE__*/createBaseVNode("h2", { class: "my-3" }, "Incoming Events", -1 /* HOISTED */));
-const _hoisted_33 = { class: "row row-cols-2" };
-const _hoisted_34 = { class: "text-muted" };
-const _hoisted_35 = {
+const _hoisted_30 = {
+  class: "tab-pane",
+  id: "events",
+  role: "tabpanel"
+};
+const _hoisted_31 = /*#__PURE__*/ _withScopeId(() => /*#__PURE__*/createBaseVNode("h2", { class: "my-3" }, "Outgoing Events", -1 /* HOISTED */));
+const _hoisted_32 = { class: "row row-cols-2" };
+const _hoisted_33 = { class: "text-muted" };
+const _hoisted_34 = {
+  key: 0,
+  class: "fst-italic"
+};
+const _hoisted_35 = /*#__PURE__*/ _withScopeId(() => /*#__PURE__*/createBaseVNode("h2", { class: "my-3" }, "Incoming Events", -1 /* HOISTED */));
+const _hoisted_36 = { class: "row row-cols-2" };
+const _hoisted_37 = { class: "text-muted" };
+const _hoisted_38 = {
   key: 1,
   class: "fst-italic"
 };
-const _hoisted_36 = { class: "col-lg-6" };
-const _hoisted_37 = /*#__PURE__*/ _withScopeId(() => /*#__PURE__*/createBaseVNode("hr", { class: "d-lg-none mb-4" }, null, -1 /* HOISTED */));
+const _hoisted_39 = { class: "col-lg-6" };
+const _hoisted_40 = /*#__PURE__*/ _withScopeId(() => /*#__PURE__*/createBaseVNode("hr", { class: "d-lg-none mb-4" }, null, -1 /* HOISTED */));
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_FormField = resolveComponent("FormField");
@@ -3948,101 +4045,165 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
               }, null, 8 /* PROPS */, _hoisted_18)
             ]),
             createBaseVNode("div", _hoisted_19, [
-              createBaseVNode("section", null, [
-                _hoisted_20,
+              createBaseVNode("div", _hoisted_20, [
                 createBaseVNode("div", _hoisted_21, [
-                  (openBlock(true), createElementBlock(Fragment, null, renderList(_ctx.paramFields, ({ param, input }) => {
-                    return (openBlock(), createElementBlock("div", {
-                      key: param['stanza:key'],
-                      class: "col"
-                    }, [
-                      createVNode(_component_FormField, {
-                        input: input,
-                        name: param['stanza:key'],
-                        type: param['stanza:type'],
-                        choices: param['stanza:choice'],
-                        required: param['stanza:required'],
-                        "help-text": param['stanza:description']
-                      }, null, 8 /* PROPS */, ["input", "name", "type", "choices", "required", "help-text"])
-                    ]))
-                  }), 128 /* KEYED_FRAGMENT */)),
-                  createBaseVNode("div", _hoisted_22, [
-                    createVNode(_component_FormField, {
-                      input: _ctx.menuPlacement,
-                      name: "togostanza-menu-placement",
-                      type: "single-choice",
-                      choices: [
-                      'top-left',
-                      'top-right',
-                      'bottom-left',
-                      'bottom-right',
-                      'none',
-                    ],
-                      "help-text": 'Placement of the information icon which links to this page.'
-                    }, null, 8 /* PROPS */, ["input", "help-text"])
-                  ])
-                ])
-              ]),
-              _hoisted_23,
-              createBaseVNode("section", null, [
-                _hoisted_24,
-                createBaseVNode("div", _hoisted_25, [
-                  (openBlock(true), createElementBlock(Fragment, null, renderList(_ctx.styleFields, ({ style, input }) => {
-                    return (openBlock(), createElementBlock("div", {
-                      key: style['stanza:key'],
-                      class: "col"
-                    }, [
-                      createVNode(_component_FormField, {
-                        input: input,
-                        name: style['stanza:key'],
-                        type: style['stanza:type'],
-                        choices: style['stanza:choice'],
-                        "help-text": style['stanza:description']
-                      }, null, 8 /* PROPS */, ["input", "name", "type", "choices", "help-text"])
-                    ]))
+                  (openBlock(true), createElementBlock(Fragment, null, renderList(_ctx.paramTree.entries(), ([a, ta], i) => {
+                    return (openBlock(), createElementBlock(Fragment, { key: a }, [
+                      createBaseVNode("button", {
+                        class: normalizeClass(
+                      `nav-link text-start` +
+                      (a === _ctx.firstActiveParamFiledGroupPath ? ' active' : '') +
+                      (_ctx.paramFieldGroups.has(a) ? '' : ' disabled')
+                    ),
+                        "data-bs-toggle": "pill",
+                        "data-bs-target": `#v-pills-${a}`,
+                        type: "button",
+                        role: "tab"
+                      }, toDisplayString(a), 11 /* TEXT, CLASS, PROPS */, _hoisted_22),
+                      (openBlock(true), createElementBlock(Fragment, null, renderList(ta.entries(), ([b, i]) => {
+                        return (openBlock(), createElementBlock("button", {
+                          key: b,
+                          class: normalizeClass(
+                        `nav-link text-start ps-4` +
+                        (`${a}-${b}` === _ctx.firstActiveParamFiledGroupPath
+                          ? ' active'
+                          : '')
+                      ),
+                          "data-bs-toggle": "pill",
+                          "data-bs-target": `#v-pills-${a}-${b}`,
+                          type: "button",
+                          role: "tab"
+                        }, toDisplayString(b), 11 /* TEXT, CLASS, PROPS */, _hoisted_23))
+                      }), 128 /* KEYED_FRAGMENT */))
+                    ], 64 /* STABLE_FRAGMENT */))
                   }), 128 /* KEYED_FRAGMENT */))
                 ]),
-                (_ctx.styleFields.length === 0)
-                  ? (openBlock(), createElementBlock("p", _hoisted_26, " No styles defined. "))
-                  : createCommentVNode("v-if", true)
+                createBaseVNode("div", _hoisted_24, [
+                  (openBlock(true), createElementBlock(Fragment, null, renderList(_ctx.paramTree.entries(), ([a, ta]) => {
+                    return (openBlock(), createElementBlock(Fragment, { key: a }, [
+                      createBaseVNode("div", {
+                        class: normalizeClass(
+                      `tab-pane` +
+                      (a === _ctx.firstActiveParamFiledGroupPath
+                        ? ' show active'
+                        : '')
+                    ),
+                        id: `v-pills-${a}`,
+                        role: "tabpanel",
+                        "aria-labelledby": "v-pills-home-tab",
+                        tabindex: "0"
+                      }, [
+                        (openBlock(true), createElementBlock(Fragment, null, renderList(_ctx.paramFieldGroups.get(a), ({ param, input }) => {
+                          return (openBlock(), createElementBlock("div", {
+                            key: param['stanza:key'],
+                            class: "col mb-2"
+                          }, [
+                            createVNode(_component_FormField, {
+                              input: input,
+                              name: param['stanza:key'],
+                              type: param['stanza:type'],
+                              choices: param['stanza:choice'],
+                              required: param['stanza:required'],
+                              "help-text": param['stanza:description']
+                            }, null, 8 /* PROPS */, ["input", "name", "type", "choices", "required", "help-text"])
+                          ]))
+                        }), 128 /* KEYED_FRAGMENT */))
+                      ], 10 /* CLASS, PROPS */, _hoisted_25),
+                      (openBlock(true), createElementBlock(Fragment, null, renderList(ta.keys(), (b) => {
+                        return (openBlock(), createElementBlock("div", {
+                          key: b,
+                          class: normalizeClass(
+                        'tab-pane' +
+                        (`${a}-${b}` === _ctx.firstActiveParamFiledGroupPath
+                          ? ' active'
+                          : '')
+                      ),
+                          id: `v-pills-${a}-${b}`,
+                          role: "tabpanel",
+                          "aria-labelledby": "v-pills-home-tab",
+                          tabindex: "0"
+                        }, [
+                          (openBlock(true), createElementBlock(Fragment, null, renderList(_ctx.paramFieldGroups.get(
+                          `${a}-${b}`
+                        ), ({ param, input }) => {
+                            return (openBlock(), createElementBlock("div", {
+                              key: param['stanza:key'],
+                              class: "col mb-2"
+                            }, [
+                              createVNode(_component_FormField, {
+                                input: input,
+                                name: param['stanza:key'],
+                                type: param['stanza:type'],
+                                choices: param['stanza:choice'],
+                                required: param['stanza:required'],
+                                "help-text": param['stanza:description']
+                              }, null, 8 /* PROPS */, ["input", "name", "type", "choices", "required", "help-text"])
+                            ]))
+                          }), 128 /* KEYED_FRAGMENT */))
+                        ], 10 /* CLASS, PROPS */, _hoisted_26))
+                      }), 128 /* KEYED_FRAGMENT */))
+                    ], 64 /* STABLE_FRAGMENT */))
+                  }), 128 /* KEYED_FRAGMENT */))
+                ])
               ])
             ]),
             createBaseVNode("div", _hoisted_27, [
-              _hoisted_28,
-              createBaseVNode("div", _hoisted_29, [
+              createBaseVNode("div", _hoisted_28, [
+                (openBlock(true), createElementBlock(Fragment, null, renderList(_ctx.styleFields, ({ style, input }) => {
+                  return (openBlock(), createElementBlock("div", {
+                    key: style['stanza:key'],
+                    class: "col"
+                  }, [
+                    createVNode(_component_FormField, {
+                      input: input,
+                      name: style['stanza:key'],
+                      type: style['stanza:type'],
+                      choices: style['stanza:choice'],
+                      "help-text": style['stanza:description']
+                    }, null, 8 /* PROPS */, ["input", "name", "type", "choices", "help-text"])
+                  ]))
+                }), 128 /* KEYED_FRAGMENT */))
+              ]),
+              (_ctx.styleFields.length === 0)
+                ? (openBlock(), createElementBlock("p", _hoisted_29, " No styles defined. "))
+                : createCommentVNode("v-if", true)
+            ]),
+            createBaseVNode("div", _hoisted_30, [
+              _hoisted_31,
+              createBaseVNode("div", _hoisted_32, [
                 (openBlock(true), createElementBlock(Fragment, null, renderList(_ctx.outgoingEvents, ({ name, description }) => {
                   return (openBlock(), createElementBlock("div", {
                     key: name,
                     class: "col"
                   }, [
                     createBaseVNode("div", null, toDisplayString(name), 1 /* TEXT */),
-                    createBaseVNode("div", _hoisted_30, toDisplayString(description), 1 /* TEXT */)
+                    createBaseVNode("div", _hoisted_33, toDisplayString(description), 1 /* TEXT */)
                   ]))
                 }), 128 /* KEYED_FRAGMENT */))
               ]),
               (_ctx.outgoingEvents.length === 0)
-                ? (openBlock(), createElementBlock("p", _hoisted_31, " No events defined. "))
+                ? (openBlock(), createElementBlock("p", _hoisted_34, " No events defined. "))
                 : createCommentVNode("v-if", true),
-              _hoisted_32,
-              createBaseVNode("div", _hoisted_33, [
+              _hoisted_35,
+              createBaseVNode("div", _hoisted_36, [
                 (openBlock(true), createElementBlock(Fragment, null, renderList(_ctx.incomingEvents, ({ name, description }) => {
                   return (openBlock(), createElementBlock("div", {
                     key: name,
                     class: "col"
                   }, [
                     createBaseVNode("div", null, toDisplayString(name), 1 /* TEXT */),
-                    createBaseVNode("div", _hoisted_34, toDisplayString(description), 1 /* TEXT */)
+                    createBaseVNode("div", _hoisted_37, toDisplayString(description), 1 /* TEXT */)
                   ]))
                 }), 128 /* KEYED_FRAGMENT */))
               ]),
               (_ctx.incomingEvents.length === 0)
-                ? (openBlock(), createElementBlock("p", _hoisted_35, " No events defined. "))
+                ? (openBlock(), createElementBlock("p", _hoisted_38, " No events defined. "))
                 : createCommentVNode("v-if", true)
             ])
           ])
         ]),
-        createBaseVNode("div", _hoisted_36, [
-          _hoisted_37,
+        createBaseVNode("div", _hoisted_39, [
+          _hoisted_40,
           createVNode(_component_StanzaPreviewer, {
             metadata: _ctx.metadata,
             params: _ctx.params,
