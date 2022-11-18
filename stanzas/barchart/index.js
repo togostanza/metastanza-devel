@@ -4,6 +4,8 @@ import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
 import Legend from "@/lib/Legend";
 import { getXTextLabelProps, getYTextLabelProps } from "@/lib/SetLabelsAngle";
+
+import { StanzaColorGenerator } from "@/lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -29,6 +31,7 @@ export default class Barchart extends Stanza {
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
+    const colorGenerator = new StanzaColorGenerator(this);
     //width、height、padding
 
     //data
@@ -162,10 +165,9 @@ export default class Barchart extends Stanza {
 
     this._data = values;
 
-    const togostanzaColors = [];
-    for (let i = 0; i < 6; i++) {
-      togostanzaColors.push(css(`--togostanza-series-${i}-color`));
-    }
+    const togostanzaColors = colorGenerator.stanzaColor;
+
+    console.log(togostanzaColors);
 
     let dataMax = d3.max(
       values,
