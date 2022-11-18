@@ -18,18 +18,12 @@ export default class OntologyBrowserColumn extends LitElement {
 
       .column {
         height: 100%;
-        flex-direction: column;
         position: relative;
         overflow-y: auto;
         overflow-x: hidden;
-      }
-
-      ontology-card {
-        margin-top: 6px;
-      }
-
-      ontology-card:last-child {
-        margin-bottom: 10px;
+        max-height: calc(
+          var(--togostanza-outline-height) - var(--history-height)
+        );
       }
     `;
   }
@@ -61,6 +55,9 @@ export default class OntologyBrowserColumn extends LitElement {
       this.nodes.forEach((node) => {
         this.idNodeMap.set(node.id, node);
       });
+    }
+    if (changed.has("heroId")) {
+      this.previousHeroId = changed.get("heroId");
     }
   }
 
@@ -112,6 +109,7 @@ export default class OntologyBrowserColumn extends LitElement {
                     ${flip({
                       id: node.id,
                       heroId: this.heroId,
+                      previousHeroId: this.previousHeroId,
                       role: this.role,
                       scrolledHeroRect: this.scrolledHeroRect,
                       options: this.animationOptions,

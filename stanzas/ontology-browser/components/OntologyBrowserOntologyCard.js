@@ -8,6 +8,9 @@ export class OntologyCard extends LitElement {
       display: block;
       position: relative;
       --default-bg-color: white;
+      font-family: var(--togostanza-fonts-font_family);
+      font-size: var(--togostanza-fonts-font_size_primary);
+      color: var(--togostanza-fonts-font_color);
     }
 
     .-hero-right:before {
@@ -16,7 +19,7 @@ export class OntologyCard extends LitElement {
       content: "";
       width: 100%;
       height: 1px;
-      border-bottom: 1px solid var(--togostanza-node-border-color);
+      border-bottom: 1px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       box-sizing: border-box;
     }
@@ -27,18 +30,18 @@ export class OntologyCard extends LitElement {
       content: "";
       width: 100%;
       height: 1px;
-      border-bottom: 1px solid var(--togostanza-node-border-color);
+      border-bottom: 1px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       box-sizing: border-box;
     }
 
-    .-hero-left:after {
+    .-hero-left-1:after {
       position: absolute;
       content: "";
       width: 0px;
       height: 0px;
       border: 8px solid transparent;
-      border-left: 8px solid var(--togostanza-node-border-color);
+      border-left: 8px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       right: 0;
       transform: translate(50%, -50%) scaleY(0.5);
@@ -52,7 +55,7 @@ export class OntologyCard extends LitElement {
       content: "";
       width: 1px;
       height: calc(100% - min(50%, 15px) + 5px);
-      border-left: 1px solid var(--togostanza-node-border-color);
+      border-left: 1px solid var(--togostanza-border-color);
       bottom: -6px;
       box-sizing: border-box;
     }
@@ -63,7 +66,7 @@ export class OntologyCard extends LitElement {
       content: "";
       width: 100%;
       height: 1px;
-      border-bottom: 1px solid var(--togostanza-node-border-color);
+      border-bottom: 1px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       box-sizing: border-box;
     }
@@ -74,7 +77,7 @@ export class OntologyCard extends LitElement {
       content: "";
       width: 1px;
       height: calc(min(50%, 15px) + 6px);
-      border-left: 1px solid var(--togostanza-node-border-color);
+      border-left: 1px solid var(--togostanza-border-color);
       top: -6px;
       box-sizing: border-box;
     }
@@ -85,7 +88,7 @@ export class OntologyCard extends LitElement {
       content: "";
       width: 100%;
       height: 1px;
-      border-top:  1px solid var(--togostanza-node-border-color);
+      border-top:  1px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       box-sizing: border-box;
     }
@@ -96,7 +99,7 @@ export class OntologyCard extends LitElement {
       content: "";
       width: 1px;
       height: calc(100% + 14px);
-      border-left: 1px solid var(--togostanza-node-border-color);
+      border-left: 1px solid var(--togostanza-border-color);
       top: -6px;
       box-sizing: border-box;
     }
@@ -107,7 +110,7 @@ export class OntologyCard extends LitElement {
       content: "";
       width: 100%;
       height: 1px;
-      border-bottom: 1px solid var(--togostanza-node-border-color);
+      border-bottom: 1px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       box-sizing: border-box;
     }
@@ -118,7 +121,7 @@ export class OntologyCard extends LitElement {
       content: "";
       width: 1px;
       height: calc(100% - min(50%, 15px) + 5px);
-      border-right: 1px solid var(--togostanza-node-border-color);
+      border-right: 1px solid var(--togostanza-border-color);
       bottom: -6px;
       right: 0;
       box-sizing: border-box;
@@ -130,7 +133,7 @@ export class OntologyCard extends LitElement {
       content: "";
       width: 100%;
       height: 1px;
-      border-bottom: 1px solid var(--togostanza-node-border-color);
+      border-bottom: 1px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       box-sizing: border-box;
     }
@@ -141,7 +144,7 @@ export class OntologyCard extends LitElement {
       content: "";
       width: 1px;
       height: calc(min(50%, 15px) + 6px);
-      border-right: 1px solid var(--togostanza-node-border-color);
+      border-right: 1px solid var(--togostanza-border-color);
       top: -6px;
       right: 0;
       box-sizing: border-box;
@@ -153,7 +156,7 @@ export class OntologyCard extends LitElement {
       content: "";
       width: 100%;
       height: 1px;
-      border-top: 1px solid var(--togostanza-node-border-color);
+      border-top: 1px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       box-sizing: border-box;
     }
@@ -164,7 +167,7 @@ export class OntologyCard extends LitElement {
       content: "";
       width: 1px;
       height: calc(100% + 14px);
-      border-right: 1px solid var(--togostanza-node-border-color);
+      border-right: 1px solid var(--togostanza-border-color);
       top: -6px;
       right: 0;
       box-sizing: border-box;
@@ -176,7 +179,7 @@ export class OntologyCard extends LitElement {
       content: "";
       width: 100%;
       height: 1px;
-      border-bottom: 1px solid var(--togostanza-node-border-color);
+      border-bottom: 1px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       box-sizing: border-box;
     }
@@ -187,7 +190,7 @@ export class OntologyCard extends LitElement {
       content: "";
       width: 100%;
       height: 1px;
-      border-bottom: 1px solid var(--togostanza-node-border-color);
+      border-bottom: 1px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       box-sizing: border-box;
     }
@@ -198,35 +201,41 @@ export class OntologyCard extends LitElement {
       content: "";
       width: 100%;
       height: 1px;
-      border-bottom: 1px solid var(--togostanza-node-border-color);
+      border-bottom: 1px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       box-sizing: border-box;
     }
 
     .ontology-card {
-      padding: 6px;
+      padding: 10px;
       font-family: var(--togostanza-font-family);
-      border: 1px solid var(--togostanza-node-border-color);
+      border: 1px solid var(--togostanza-border-color);
       border-radius: 8px;
       background-color: var(--togostanza-node-bg-color);
       cursor: pointer;
       position: relative;
-      width: min(90%, 20rem);
+      width: min(85%, 20rem);
       max-width: 30rem;
       box-sizing: border-box;
+      overflow: hidden;
+      margin-bottom: 6px;
     }
 
     .ontology-card:hover {
       filter: brightness(0.98)
     }
 
-    .children-arrow:before {
+    .children-arrow {
+      overflow: visible;
+    }
+
+    .children-arrow-1:before {
       position: absolute;
       content: "";
       width: 0px;
       height: 0px;
       border: 8px solid transparent;
-      border-left: 8px solid var(--togostanza-node-border-color);
+      border-left: 8px solid var(--togostanza-border-color);
       top: min(50%, 15px);
       left: 0;
       transform: translate(-50%, -50%) scaleY(0.5);
@@ -237,7 +246,7 @@ export class OntologyCard extends LitElement {
     h3 {
       display: inline;
       margin: 0;
-      color: var(--togostanza-label-font-color);
+      font-size: var(--togostanza-fonts-font_size_primary);
     }
 
     .card-container {
@@ -252,20 +261,12 @@ export class OntologyCard extends LitElement {
     }
 
     .selected {
-      background-color: var(--togostanza-node-bg-color-selected);
-      border-color: var(--togostanza-node-border-color-selected);
-      padding-left: 10px;
-      padding-right: 10px;
-      max-height: 100%;
+      background-color: var(--togostanza-node-bg-color_selected);
+      border-color: var(--togostanza-border-color_selected);
     }
 
     .hidden {
       visibility: hidden;
-    }
-
-    p.note {
-      margin: 0;
-      color: #94928d;
     }
 
     .table-container {
@@ -277,19 +278,19 @@ export class OntologyCard extends LitElement {
     }
 
     .hero-list li {
-      font-size: 0.6rem;
       margin-left: 0.5rem;
     }
 
     table {
       width: 100%
       max-width: 10rem;
+      table-layout: fixed;
+      font-size: var(--togostanza-fonts-font_size_secondary)
     }
 
     table td.key {
       vertical-align: top;
       font-style: italic;
-      font-size: 0.5rem;
     }
 
     table td.data {
