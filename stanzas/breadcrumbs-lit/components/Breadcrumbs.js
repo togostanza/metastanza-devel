@@ -19,7 +19,7 @@ export class Breadcrumbs extends LitElement {
 
   static get properties() {
     return {
-      currentId: { state: true },
+      currentId: { type: String, reflect: true },
       data: { type: Array, state: true },
     };
   }
@@ -51,7 +51,7 @@ export class Breadcrumbs extends LitElement {
         this.nodesMap.set("" + d[this.nodeKey], d);
       });
 
-      this.currentId = this.nodeInitialId;
+      this.currentId = "" + this.nodeInitialId;
     } else {
       throw new Error("Key not found");
     }

@@ -37,6 +37,12 @@ export default class BreadcrumbsLit extends Stanza {
 
     this.breadcrumbs.updateParams(this.params, data);
   }
+
+  handleEvent(e) {
+    if (e.details?.id) {
+      this.breadcrumbs.setAttribute("currendId", "" + e.details.id);
+    }
+  }
 }
 
 /**
