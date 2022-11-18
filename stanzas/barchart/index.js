@@ -27,7 +27,7 @@ export default class Barchart extends Stanza {
   }
 
   async render() {
-    appendCustomCss(this, this.params["custom-css-url"]);
+    appendCustomCss(this, this.params["misc-custom_css_url"]);
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
@@ -166,8 +166,6 @@ export default class Barchart extends Stanza {
     this._data = values;
 
     const togostanzaColors = colorGenerator.stanzaColor;
-
-    console.log(togostanzaColors);
 
     let dataMax = d3.max(
       values,
