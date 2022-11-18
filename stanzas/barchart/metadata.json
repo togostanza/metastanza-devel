@@ -116,18 +116,6 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "width",
-      "stanza:type": "number",
-      "stanza:example": 600,
-      "stanza:description": "Width"
-    },
-    {
-      "stanza:key": "height",
-      "stanza:type": "number",
-      "stanza:example": 400,
-      "stanza:description": "Height"
-    },
-    {
       "stanza:key": "padding",
       "stanza:type": "number",
       "stanza:example": 50,
@@ -294,6 +282,18 @@
       "stanza:type": "color",
       "stanza:default": "#F75976",
       "stanza:description": "Group color 5"
+    },
+    {
+      "stanza:key": "--togostanza-outline-width",
+      "stanza:type": "number",
+      "stanza:default": 500,
+      "stanza:description": "Metastanza width in px"
+    },
+    {
+      "stanza:key": "--togostanza-outline-height",
+      "stanza:type": "number",
+      "stanza:default": 400,
+      "stanza:description": "Metastanza height in px"
     },
     {
       "stanza:key": "--togostanza-font-family",

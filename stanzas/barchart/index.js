@@ -174,8 +174,8 @@ export default class Barchart extends Stanza {
       (d) => +d[yKeyName] + (parseFloat(d[errorKeyName]) || 0)
     );
 
-    const width = parseInt(this.params["width"]);
-    const height = parseInt(this.params["height"]);
+    const width = parseInt(css("--togostanza-outline-width"));
+    const height = parseInt(css("--togostanza-outline-height"));
 
     const svg = d3
       .select(el)
