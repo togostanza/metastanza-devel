@@ -1,11 +1,8 @@
 // Load the repository-wide global style here. The actual file is located at ../common.scss for details.
 @use "@/common.scss";
 
-main {
-  font-family: var(--togostanza-fonts-font_family);
-}
-
 svg {
+  font-family: var(--togostanza-fonts-font_family);
   background-color: var(--togostanza-theme-background_color);
 
   .link {
