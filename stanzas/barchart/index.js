@@ -14,6 +14,7 @@ import {
   downloadTSVMenuItem,
   appendCustomCss,
 } from "togostanza-utils";
+import { getMarginsFromCSSString } from "../../lib/utils";
 
 export default class Barchart extends Stanza {
   menu() {
@@ -95,6 +96,27 @@ export default class Barchart extends Stanza {
     const showXAxis = this.params["show-x-axis"] === "false" ? false : true;
     const showYAxis = this.params["show-y-axis"] === "false" ? false : true;
 
+    const width = parseInt(css("--togostanza-outline-width"));
+    const height = parseInt(css("--togostanza-outline-height"));
+
+    let inputMargin = getMarginsFromCSSString(
+      css("--togostanza-outline-padding")
+    );
+
+    inputMargin = {
+      TOP: Math.max(inputMargin.TOP, 10),
+      BOTTOM: Math.max(
+        inputMargin.BOTTOM,
+        xTitlePadding + xTickSize + 10 + axisTitleFontSize
+      ),
+      LEFT: Math.max(
+        inputMargin.LEFT,
+        yTitlePadding + yTickSize + 10 + axisTitleFontSize
+      ),
+
+      RIGHT: Math.max(inputMargin.RIGHT, 10),
+    };
+
     this.renderTemplate({
       template: "stanza.html.hbs",
     });
@@ -172,9 +194,6 @@ export default class Barchart extends Stanza {
       (d) => +d[yKeyName] + (parseFloat(d[errorKeyName]) || 0)
     );
 
-    const width = parseInt(css("--togostanza-outline-width"));
-    const height = parseInt(css("--togostanza-outline-height"));
-
     const svg = d3
       .select(el)
       .append("svg")
@@ -183,18 +202,7 @@ export default class Barchart extends Stanza {
 
     /// make below function to redraw with different margins if some labels are beyound the svg
 
-    const redrawSVG = (
-      MARGIN = {
-        TOP: 10,
-        BOTTOM: Math.max(
-          60,
-          xTitlePadding + xTickSize + 10 + axisTitleFontSize
-        ),
-        LEFT: Math.max(60, yTitlePadding + yTickSize + 10 + axisTitleFontSize),
-
-        RIGHT: 10,
-      }
-    ) => {
+    const redrawSVG = (MARGIN = inputMargin) => {
       const existingChart = svg.select("g.chart");
       if (!existingChart.empty()) {
         existingChart

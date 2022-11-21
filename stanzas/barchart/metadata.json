@@ -296,6 +296,13 @@
       "stanza:description": "Metastanza height in px"
     },
     {
+      "stanza:key": "--togostanza-outline-padding",
+      "stanza:type": "text",
+      "stanza:default": "10 20 60 20",
+      "stanza:description": "Metastanza padding CSS in px."
+    },
+
+    {
       "stanza:key": "--togostanza-font-family",
       "stanza:type": "text",
       "stanza:default": "Helvetica Neue",
