@@ -46,7 +46,7 @@ export default class Barchart extends Stanza {
     const xTickValues = xTicksHide ? [] : null;
 
     const showLegend = this.params["legend"] || "top-right";
-    const groupKeyName = this.params["group-by"];
+    const groupKeyName = this.params["group_by-key"];
     const showXGrid = this.params["xgrid"] === "true" ? true : false;
     const showYGrid = this.params["ygrid"] === "true" ? true : false;
     const xLabelAngle =
@@ -73,10 +73,7 @@ export default class Barchart extends Stanza {
     const showErrorBars =
       this.params["error-key"] !== "" || this.params["error-key"] !== undefined;
 
-    const errorBarWidth =
-      typeof this.params["error-bar-width"] !== "undefined"
-        ? this.params["error-bar-width"]
-        : 0.4;
+    const errorBarWidth = 0.4;
     const xLabelPadding =
       parseInt(this.params["xlabel-padding"]) === 0
         ? 0
@@ -770,40 +767,16 @@ export default class Barchart extends Stanza {
           errorBarGroup
             .append("line")
             .attr("class", "error-bar-line")
-            .attr(
-              "x1",
-              (d) =>
-                subXAxis(d[groupKeyName]) +
-                subXAxis.bandwidth() / 2 -
-                errorBarWidth / 2
-            )
-            .attr(
-              "x2",
-              (d) =>
-                subXAxis(d[groupKeyName]) +
-                subXAxis.bandwidth() / 2 +
-                errorBarWidth / 2
-            )
+            .attr("x1", (d) => subXAxis(d[groupKeyName]))
+            .attr("x2", (d) => subXAxis(d[groupKeyName]) + subXAxis.bandwidth())
             .attr("y1", (d) => yAxis(+d[yKeyName] - d[errorKeyName] / 2))
             .attr("y2", (d) => yAxis(+d[yKeyName] - d[errorKeyName] / 2));
           // lower stroke
           errorBarGroup
             .append("line")
             .attr("class", "error-bar-line")
-            .attr(
-              "x1",
-              (d) =>
-                subXAxis(d[groupKeyName]) +
-                subXAxis.bandwidth() / 2 -
-                errorBarWidth / 2
-            )
-            .attr(
-              "x2",
-              (d) =>
-                subXAxis(d[groupKeyName]) +
-                subXAxis.bandwidth() / 2 +
-                errorBarWidth / 2
-            )
+            .attr("x1", (d) => subXAxis(d[groupKeyName]))
+            .attr("x2", (d) => subXAxis(d[groupKeyName]) + subXAxis.bandwidth())
             .attr("y1", (d) => yAxis(+d[yKeyName] + d[errorKeyName] / 2))
             .attr("y2", (d) => yAxis(+d[yKeyName] + d[errorKeyName] / 2));
         });
