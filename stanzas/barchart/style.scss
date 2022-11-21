@@ -1,9 +1,8 @@
 // Load the repository-wide global style here. The actual file is located at ../common.scss for details.
 @use "@/common.scss";
 
-.legend .label text {
-  color: black;
-  font-size: 0.5em;
+.legend .title {
+  font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
 }
 
 svg {
@@ -32,19 +31,12 @@ svg {
     }
 
     & > .tick > text {
-      font-size: calc(var(--togostanza-label-font-size) * 1px);
-      fill: var(--togostanza-label-font-color);
+      font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
     }
 
     & > path {
       stroke: var(--togostanza-axis-color);
       stroke-width: var(--togostanza-axis-width);
-    }
-
-    &.title text {
-      font-size: calc(var(--togostanza-title-font-size) * 1px);
-      font-weight: var(--togostanza-title-font-weight);
-      fill: var(--togostanza-title-font-color);
     }
   }
 

@@ -303,11 +303,30 @@
     },
 
     {
-      "stanza:key": "--togostanza-font-family",
+      "stanza:key": "--togostanza-fonts-font_family",
       "stanza:type": "text",
       "stanza:default": "Helvetica Neue",
       "stanza:description": "Font family"
     },
+    {
+      "stanza:key": "--togostanza-fonts-font_color",
+      "stanza:type": "color",
+      "stanza:default": "#4E5059",
+      "stanza:description": "Font color"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_size_primary",
+      "stanza:type": "number",
+      "stanza:default": 12,
+      "stanza:description": "Primary font size in px"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_size_secondary",
+      "stanza:type": "number",
+      "stanza:default": 9,
+      "stanza:description": "Secondary font size in px"
+    },
+
     {
       "stanza:key": "--togostanza-axis-color",
       "stanza:type": "color",
