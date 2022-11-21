@@ -326,19 +326,6 @@
       "stanza:default": 9,
       "stanza:description": "Secondary font size in px"
     },
-
-    {
-      "stanza:key": "--togostanza-axis-color",
-      "stanza:type": "color",
-      "stanza:default": "#333333",
-      "stanza:description": "Axis color"
-    },
-    {
-      "stanza:key": "--togostanza-axis-width",
-      "stanza:type": "number",
-      "stanza:default": 1,
-      "stanza:description": "Axis width"
-    },
     {
       "stanza:key": "--togostanza-grid-color",
       "stanza:type": "color",
@@ -428,18 +415,6 @@
       "stanza:type": "number",
       "stanza:default": 10,
       "stanza:description": "Label font size"
-    },
-    {
-      "stanza:key": "--togostanza-bars-border-color",
-      "stanza:type": "color",
-      "stanza:default": "#4E5059",
-      "stanza:description": "Bars border color"
-    },
-    {
-      "stanza:key": "--togostanza-bars-border-width",
-      "stanza:type": "number",
-      "stanza:default": 0.5,
-      "stanza:description": "Bars border width"
     },
     {
       "stanza:key": "--togostanza-border-color",

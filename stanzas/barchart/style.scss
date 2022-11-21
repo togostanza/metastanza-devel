@@ -20,14 +20,14 @@ svg {
   }
 
   .bars rect {
-    stroke-width: var(--togostanza-bars-border-width);
-    stroke: var(--togostanza-bars-border-color);
+    stroke-width: 0.5px;
+    stroke: var(--togostanza-border-color);
   }
 
   .axis {
     & > .tick > line {
-      stroke: var(--togostanza-tick-color);
-      stroke-width: var(--togostanza-tick-width);
+      stroke: var(--togostanza-border-color);
+      stroke-width: 1px;
     }
 
     & > .tick > text {
@@ -35,15 +35,15 @@ svg {
     }
 
     & > path {
-      stroke: var(--togostanza-axis-color);
-      stroke-width: var(--togostanza-axis-width);
+      stroke: var(--togostanza-border-color);
+      stroke-width: 1px;
     }
   }
 
   line.error-bar-line {
-    stroke: var(--togostanza-errorbar-line-color);
-    stroke-width: calc(var(--togostanza-errorbar-line-width) * 1px);
-    opacity: var(--togostanza-errorbar-line-opacity);
+    stroke: var(--togostanza-border-color);
+    stroke-width: 1px;
+    opacity: 0.8;
   }
 }
 
