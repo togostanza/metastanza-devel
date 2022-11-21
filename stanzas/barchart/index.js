@@ -46,9 +46,10 @@ export default class Barchart extends Stanza {
     const xTickValues = xTicksHide ? [] : null;
 
     const showLegend = this.params["legend-show"];
+    const legendTitle = this.params["legend-title"];
+
     const groupKeyName = this.params["group_by-key"];
-    const showXGrid = this.params["xgrid"] === "true" ? true : false;
-    const showYGrid = this.params["ygrid"] === "true" ? true : false;
+
     const xLabelAngle =
       parseInt(this.params["axis-x-ticks_labels_angle"]) === 0
         ? 0
@@ -66,9 +67,15 @@ export default class Barchart extends Stanza {
       this.params["axis-y-gridlines_interval"]
     );
 
-    const yGridNumber = yGridLinesInterval ? null : 5;
+    console.log("yGridLinesInterval", yGridLinesInterval);
 
-    const barPlacement = this.params["bar-placement"];
+    const yGridNumber =
+      yGridLinesInterval === 0 ? null : isNaN(yGridLinesInterval) ? 5 : null;
+
+    const showXGrid = this.params["xgrid"] === "true" ? true : false;
+    const showYGrid = this.params["ygrid"] === "true" ? true : false;
+
+    const barPlacement = this.params["chart-bar_arrangement"] || "grouped";
     const errorKeyName = this.params["error_bars-key"];
     const showErrorBars = errorKeyName !== "" || errorKeyName !== undefined;
 
@@ -92,10 +99,8 @@ export default class Barchart extends Stanza {
       typeof this.params["bar-paddings"] === "undefined"
         ? 0.1
         : this.params["bar-paddings"];
-    const barSubPaddings =
-      typeof this.params["bar-sub-paddings"] === "undefined"
-        ? 0.1
-        : this.params["bar-sub-paddings"];
+
+    const barSubPaddings = 0.1;
 
     const xTickPlacement = barPlacement === "stacked" ? "center" : "in-between";
 
@@ -427,7 +432,8 @@ export default class Barchart extends Stanza {
               position: ["top", "right"],
               fadeProp: "opacity",
               showLeaders: false,
-            }
+            },
+            legendTitle
           );
         }
 
@@ -461,7 +467,10 @@ export default class Barchart extends Stanza {
             }
             yAxisGenerator.tickValues(ticks);
           }
-          if (yGridLinesInterval) {
+
+          if (isNaN(yGridLinesInterval)) {
+            yAxisGridGenerator.ticks(yGridNumber);
+          } else if (yGridLinesInterval !== 0) {
             const gridTicks = [];
             for (
               let i = 0;
@@ -471,6 +480,8 @@ export default class Barchart extends Stanza {
               gridTicks.push(i * yGridLinesInterval);
             }
             yAxisGridGenerator.tickValues(gridTicks);
+          } else {
+            yAxisGridGenerator.tickValues([]);
           }
 
           if (showYAxis) {

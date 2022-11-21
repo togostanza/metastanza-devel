@@ -63,7 +63,7 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "bar-placement",
+      "stanza:key": "chart-bar_arrangement",
       "stanza:type": "single-choice",
       "stanza:choice": ["stacked", "grouped"],
       "stanza:example": "grouped",
@@ -162,7 +162,7 @@
       "stanza:key": "axis-y-gridlines_interval",
       "stanza:type": "number",
       "stanza:example": 0,
-      "stanza:description": "Y axis grid lines interval. If not set, show 5 gridlines"
+      "stanza:description": "Y axis grid lines interval. If not set, show 5 gridlines. If set to 0, hide gridlines"
     },
 
     {
@@ -182,6 +182,12 @@
       "stanza:key": "legend-show",
       "stanza:type": "boolean",
       "stanza:example": true,
+      "stanza:description": "Whether to show the legend"
+    },
+    {
+      "stanza:key": "legend-title",
+      "stanza:type": "text",
+      "stanza:example": "Category",
       "stanza:description": "Whether to show the legend"
     },
     {
