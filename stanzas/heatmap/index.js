@@ -36,13 +36,13 @@ export default class Heatmap extends Stanza {
       root.append(this.tooltip);
     }
 
-    const legendShow = this.params["legend"];
+    const legendShow = this.params["legend-show"];
     const existingLegend = this.root.querySelector("togostanza--legend");
     if (existingLegend) {
       existingLegend.remove();
     }
 
-    if (legendShow !== "none") {
+    if (legendShow === true) {
       this.legend = new Legend();
       root.append(this.legend);
     }
@@ -209,12 +209,12 @@ export default class Heatmap extends Stanza {
 
     this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
 
-    if (legendShow !== "none") {
+    if (legendShow === true) {
       this.legend.setup(
         intervals(setColor),
         {},
         {
-          position: legendShow.split("-"),
+          position: ["top", "right"],
         },
         legendTitle
       );

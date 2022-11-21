@@ -90,17 +90,10 @@
       "stanza:description": "Show axis lines and ticks"
     },
     {
-      "stanza:key": "legend",
-      "stanza:type": "single-choice",
-      "stanza:choice": [
-        "none",
-        "top-left",
-        "top-right",
-        "bottom-left",
-        "bottom-right"
-      ],
-      "stanza:example": "top-right",
-      "stanza:description": "Where to show the legend. 'none' for no legend"
+      "stanza:key": "legend-show",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "whether show the legend"
     },
     {
       "stanza:key": "legend-title",
