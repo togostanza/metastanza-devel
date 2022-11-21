@@ -135,12 +135,6 @@
       "stanza:description": "Padding between Y title and label"
     },
     {
-      "stanza:key": "axis-y-ticks_hide",
-      "stanza:type": "boolean",
-      "stanza:example": false,
-      "stanza:description": "Hide Y ticks"
-    },
-    {
       "stanza:key": "axis-y-ticks_labels_angle",
       "stanza:type": "number",
       "stanza:example": 0,
@@ -149,8 +143,8 @@
     {
       "stanza:key": "axis-y-ticks_interval",
       "stanza:type": "number",
-      "stanza:example": 0,
-      "stanza:description": "Y axis ticks interval. If no interval is given, 5 ticks will be drawn at `neat` y-axis values."
+      "stanza:example": null,
+      "stanza:description": "Y axis ticks interval. If no interval is given, 5 ticks will be drawn at `neat` y-axis values. If set to 0, hide all ticks."
     },
     {
       "stanza:key": "axis-y-ticks_labels_format",
@@ -161,7 +155,7 @@
     {
       "stanza:key": "axis-y-gridlines_interval",
       "stanza:type": "number",
-      "stanza:example": 0,
+      "stanza:example": null,
       "stanza:description": "Y axis grid lines interval. If not set, show 5 gridlines. If set to 0, hide gridlines"
     },
 
