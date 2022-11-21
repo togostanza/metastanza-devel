@@ -98,6 +98,8 @@ export default class Barchart extends Stanza {
     const showXAxis = !this.params["axis-x-hide"];
     const showYAxis = !this.params["axis-y-hide"];
 
+    const axisYScale = this.params["axis-y-scale"] || "linear";
+
     const width = parseInt(css("--togostanza-outline-width"));
     const height = parseInt(css("--togostanza-outline-height"));
 
@@ -294,13 +296,28 @@ export default class Barchart extends Stanza {
         .range([0, WIDTH])
         .padding(barPaddings);
 
-      const y = d3.scaleLinear().range([HEIGHT, 0]);
+      let y;
+
+      if (barPlacement === "grouped") {
+        switch (axisYScale) {
+          case "log10":
+            y = d3.scaleLog().range([HEIGHT, 0]);
+
+            break;
+
+          default:
+            y = d3.scaleLinear().range([HEIGHT, 0]);
+
+            break;
+        }
+      } else {
+        y = d3.scaleLinear().range([HEIGHT, 0]);
+      }
 
       const xAxisGenerator = d3
         .axisBottom(x)
         .tickSizeOuter(0)
         .ticks(xTicksNumber);
-      console.log("xTicksNumber", xTicksNumber);
 
       const yAxisGenerator = d3
         .axisLeft(y)
@@ -504,9 +521,10 @@ export default class Barchart extends Stanza {
           )
             .attr("data-tooltip", (d) => `${d.key}: ${d[1] - d[0]}`)
             .attr("data-html", "true")
-            .attr("class", (d) => {
-              return `data-${gSubKeyNames.findIndex((item) => item === d.key)}`;
-            });
+            .attr(
+              "class",
+              (d) => `data-${gSubKeyNames.findIndex((item) => item === d.key)}`
+            );
         }
 
         function updateGroupedBars(values) {
@@ -517,7 +535,16 @@ export default class Barchart extends Stanza {
             (d) => +d[yKeyName] + (parseFloat(d[errorKeyName]) || 0) / 2
           );
 
-          y.domain([0, yMinMax[1] * 1.05]);
+          switch (axisYScale) {
+            case "log10":
+              y.domain([yMinMax[0] || 1, yMinMax[1]]);
+              break;
+
+            default:
+              y.domain(yMinMax);
+              break;
+          }
+
           if (showYAxis) {
             yAxisArea
               .transition()
@@ -547,25 +574,19 @@ export default class Barchart extends Stanza {
             .selectAll("g")
             .data(dataset, (d) => d[0])
             .join(
-              (enter) => {
-                return enter.append("g");
-              },
+              (enter) => enter.append("g"),
               (update) => update,
               (exit) => {
                 exit.remove();
               }
             )
-            .attr("transform", (d) => {
-              return `translate(${x(d[0])},0)`;
-            });
+            .attr("transform", (d) => `translate(${x(d[0])},0)`);
 
           // inside every g insert bars on its own x genertor
           barsGroup
             .selectAll("rect")
             .data(
-              (d) => {
-                return d[1];
-              },
+              (d) => d[1],
               (d) => `${d[xKeyName]}-${d[groupKeyName]}`
             )
             .join(
@@ -580,7 +601,7 @@ export default class Barchart extends Stanza {
             .attr("x", (d) => subX(d[groupKeyName]))
             .attr("y", (d) => y(+d[yKeyName]))
             .attr("width", subX.bandwidth())
-            .attr("height", (d) => y(0) - y(+d[yKeyName]))
+            .attr("height", (d) => y(y.domain()[0]) - y(+d[yKeyName]))
             .attr(
               "class",
               (d) =>
@@ -588,9 +609,7 @@ export default class Barchart extends Stanza {
                   (item) => item === d[groupKeyName]
                 )}`
             )
-            .attr("fill", (d) => {
-              return color(d[groupKeyName]);
-            });
+            .attr("fill", (d) => color(d[groupKeyName]));
 
           if (showErrorBars) {
             barsGroup.call(errorBars, y, subX, errorBarWidth);

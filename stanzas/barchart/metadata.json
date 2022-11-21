@@ -48,19 +48,6 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "axis-y-key",
-      "stanza:example": "count",
-      "stanza:description": "Y axis data key",
-      "stanza:required": true
-    },
-    {
-      "stanza:key": "axis-y-hide",
-      "stanza:type": "boolean",
-      "stanza:example": false,
-      "stanza:description": "Hide y axis",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "axis-x-title",
       "stanza:example": "chromosome",
       "stanza:description": "X axis title",
@@ -116,12 +103,50 @@
       "stanza:description": "Show bars tooltips",
       "stanza:required": false
     },
-
+    {
+      "stanza:key": "axis-y-key",
+      "stanza:example": "count",
+      "stanza:description": "Y axis data key",
+      "stanza:required": true
+    },
     {
       "stanza:key": "axis-y-title",
       "stanza:example": "count",
       "stanza:description": "Y axis title",
       "stanza:required": false
+    },
+    {
+      "stanza:key": "axis-y-hide",
+      "stanza:type": "boolean",
+      "stanza:example": false,
+      "stanza:description": "Hide y axis",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "axis-y-scale",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["linear", "log10"],
+      "stanza:example": "linear",
+      "stanza:description": "Y axis scale",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "axis-y-ticks_hide",
+      "stanza:type": "boolean",
+      "stanza:example": false,
+      "stanza:description": "Hide Y ticks"
+    },
+    {
+      "stanza:key": "axis-y-ticks_labels_angle",
+      "stanza:type": "number",
+      "stanza:example": 0,
+      "stanza:description": "Y label angle (in degree)"
+    },
+    {
+      "stanza:key": "axis-y-title_padding",
+      "stanza:type": "number",
+      "stanza:example": 40,
+      "stanza:description": "Padding between Y title and label"
     },
     {
       "stanza:key": "custom-css-url",
@@ -168,12 +193,7 @@
       "stanza:example": false,
       "stanza:description": "Hide X ticks"
     },
-    {
-      "stanza:key": "axis-y-ticks_hide",
-      "stanza:type": "boolean",
-      "stanza:example": false,
-      "stanza:description": "Hide Y ticks"
-    },
+
     {
       "stanza:key": "yticks-number",
       "stanza:example": 3,
@@ -186,12 +206,7 @@
       "stanza:example": -90,
       "stanza:description": "X label angle (in degree)"
     },
-    {
-      "stanza:key": "axis-y-ticks_labels_angle",
-      "stanza:type": "number",
-      "stanza:example": 0,
-      "stanza:description": "Y label angle (in degree)"
-    },
+
     {
       "stanza:key": "ylabel-format",
       "stanza:type": "string",
@@ -216,12 +231,7 @@
       "stanza:example": 20,
       "stanza:description": "Padding between X title and label"
     },
-    {
-      "stanza:key": "axis-y-title_padding",
-      "stanza:type": "number",
-      "stanza:example": 40,
-      "stanza:description": "Padding between Y title and label"
-    },
+
     {
       "stanza:key": "show-x-axis",
       "stanza:type": "single-choice",
