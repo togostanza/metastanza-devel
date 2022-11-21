@@ -40,10 +40,10 @@ export default class Barchart extends Stanza {
     const yKeyName = this.params["axis-y-key"];
     const xAxisTitle = this.params["axis-x-title"];
     const yAxisTitle = this.params["axis-y-title"];
-    const yTicksNumber = this.params["axis-y-ticks_hide"]
-      ? 0
-      : this.params["yticks-number"] || 3;
-    const xTicksNumber = this.params["axis-x-ticks_hide"] ? 0 : null;
+
+    const xTicksHide = this.params["axis-x-ticks_hide"];
+    const xTicksNumber = xTicksHide ? 0 : null;
+    const xTickValues = xTicksHide ? [] : null;
 
     const showLegend = this.params["legend"] || "top-right";
     const groupKeyName = this.params["group-by"];
@@ -57,6 +57,11 @@ export default class Barchart extends Stanza {
       parseInt(this.params["axis-y-ticks_labels_angle"]) === 0
         ? 0
         : parseInt(this.params["axis-y-ticks_labels_angle"]) || 0;
+
+    const yTicksInterval = parseInt(this.params["axis-y-ticks_interval"]);
+
+    const yTicksNumber = yTicksInterval ? null : 5;
+
     const barPlacement = this.params["bar-placement"];
     const errorKeyName = this.params["error-key"];
     const showErrorBars =
@@ -317,7 +322,8 @@ export default class Barchart extends Stanza {
       const xAxisGenerator = d3
         .axisBottom(x)
         .tickSizeOuter(0)
-        .ticks(xTicksNumber);
+        .ticks(xTicksNumber)
+        .tickValues(xTickValues);
 
       const yAxisGenerator = d3
         .axisLeft(y)
@@ -442,6 +448,18 @@ export default class Barchart extends Stanza {
 
           y.domain([0, dataMax * 1.05]);
 
+          if (yTicksInterval) {
+            const ticks = [];
+            for (
+              let i = 0;
+              i <= Math.floor((dataMax * 1.05) / yTicksInterval);
+              i++
+            ) {
+              ticks.push(i * yTicksInterval);
+            }
+            yAxisGenerator.tickValues(ticks);
+          }
+
           if (showYAxis) {
             yAxisArea
               .transition()
@@ -543,6 +561,18 @@ export default class Barchart extends Stanza {
             default:
               y.domain(yMinMax);
               break;
+          }
+
+          if (yTicksInterval) {
+            const ticks = [];
+            for (
+              let i = 0;
+              i <= Math.floor((yMinMax[1] - yMinMax[0]) / yTicksInterval);
+              i++
+            ) {
+              ticks.push(i * yTicksInterval);
+            }
+            yAxisGenerator.tickValues(ticks);
           }
 
           if (showYAxis) {

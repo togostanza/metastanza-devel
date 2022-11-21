@@ -125,10 +125,16 @@
     {
       "stanza:key": "axis-y-scale",
       "stanza:type": "single-choice",
-      "stanza:choice": ["linear", "log10"],
+      "stanza:choice": ["linear"],
       "stanza:example": "linear",
       "stanza:description": "Y axis scale",
       "stanza:required": false
+    },
+    {
+      "stanza:key": "axis-y-title_padding",
+      "stanza:type": "number",
+      "stanza:example": 40,
+      "stanza:description": "Padding between Y title and label"
     },
     {
       "stanza:key": "axis-y-ticks_hide",
@@ -143,10 +149,10 @@
       "stanza:description": "Y label angle (in degree)"
     },
     {
-      "stanza:key": "axis-y-title_padding",
+      "stanza:key": "axis-y-ticks_interval",
       "stanza:type": "number",
-      "stanza:example": 40,
-      "stanza:description": "Padding between Y title and label"
+      "stanza:example": 0,
+      "stanza:description": "Y axis ticks interval. If no interval is given, 5 ticks will be drawn at `neat` y-axis values."
     },
     {
       "stanza:key": "custom-css-url",
