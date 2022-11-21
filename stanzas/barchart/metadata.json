@@ -35,16 +35,36 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "category",
+      "stanza:key": "axis-x-key",
       "stanza:example": "chromosome",
-      "stanza:description": "Variable to be assigned as category",
+      "stanza:description": "X axis data key",
       "stanza:required": true
     },
     {
-      "stanza:key": "value",
+      "stanza:key": "axis-x-hide",
+      "stanza:type": "boolean",
+      "stanza:example": false,
+      "stanza:description": "Hide x axis",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "axis-y-key",
       "stanza:example": "count",
-      "stanza:description": "Variable to be assigned as value",
+      "stanza:description": "Y axis data key",
       "stanza:required": true
+    },
+    {
+      "stanza:key": "axis-y-hide",
+      "stanza:type": "boolean",
+      "stanza:example": false,
+      "stanza:description": "Hide y axis",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "axis-x-title",
+      "stanza:example": "chromosome",
+      "stanza:description": "X axis title",
+      "stanza:required": false
     },
     {
       "stanza:key": "group-by",
@@ -98,15 +118,9 @@
     },
 
     {
-      "stanza:key": "category-title",
-      "stanza:example": "chromosome",
-      "stanza:description": "Title for category variable (In case of blank, 'category' variable name will be assigned)",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "value-title",
+      "stanza:key": "axis-y-title",
       "stanza:example": "count",
-      "stanza:description": "Title for value variable (In case of blank, 'value' variable name will be assigned)",
+      "stanza:description": "Y axis title",
       "stanza:required": false
     },
     {
@@ -149,28 +163,17 @@
       "stanza:description": "Show Y grid"
     },
     {
-      "stanza:key": "xtick",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["true", "false"],
-      "stanza:example": true,
-      "stanza:description": "Show X tick"
+      "stanza:key": "axis-x-ticks_hide",
+      "stanza:type": "boolean",
+      "stanza:example": false,
+      "stanza:description": "Hide X ticks"
     },
     {
-      "stanza:key": "xtick-placement",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["center", "in-between"],
-      "stanza:example": "in-between",
-      "stanza:description": "Show X tick"
+      "stanza:key": "axis-y-ticks_hide",
+      "stanza:type": "boolean",
+      "stanza:example": false,
+      "stanza:description": "Hide Y ticks"
     },
-
-    {
-      "stanza:key": "ytick",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["true", "false"],
-      "stanza:example": true,
-      "stanza:description": "Show Y tick"
-    },
-
     {
       "stanza:key": "yticks-number",
       "stanza:example": 3,
@@ -178,24 +181,13 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "xtick-size",
+      "stanza:key": "axis-x-ticks_labels_angle",
       "stanza:type": "number",
-      "stanza:example": 5,
-      "stanza:description": "X axis tick size"
-    },
-    {
-      "stanza:key": "ytick-size",
-      "stanza:type": "number",
-      "stanza:example": 5,
-      "stanza:description": "Y axis tick size"
-    },
-    {
-      "stanza:key": "xlabel-angle",
       "stanza:example": -90,
       "stanza:description": "X label angle (in degree)"
     },
     {
-      "stanza:key": "ylabel-angle",
+      "stanza:key": "axis-y-ticks_labels_angle",
       "stanza:type": "number",
       "stanza:example": 0,
       "stanza:description": "Y label angle (in degree)"
@@ -219,13 +211,13 @@
       "stanza:description": "Padding between Y label and tick"
     },
     {
-      "stanza:key": "xtitle-padding",
+      "stanza:key": "axis-x-title_padding",
       "stanza:type": "number",
       "stanza:example": 20,
       "stanza:description": "Padding between X title and label"
     },
     {
-      "stanza:key": "ytitle-padding",
+      "stanza:key": "axis-y-title_padding",
       "stanza:type": "number",
       "stanza:example": 40,
       "stanza:description": "Padding between Y title and label"

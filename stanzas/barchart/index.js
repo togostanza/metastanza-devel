@@ -36,23 +36,27 @@ export default class Barchart extends Stanza {
     //width、height、padding
 
     //data
-    const xKeyName = this.params["category"];
-    const yKeyName = this.params["value"];
-    const xAxisTitle = this.params["category-title"];
-    const yAxisTitle = this.params["value-title"];
-    const yTicksNumber = this.params["yticks-number"] || 3;
+    const xKeyName = this.params["axis-x-key"];
+    const yKeyName = this.params["axis-y-key"];
+    const xAxisTitle = this.params["axis-x-title"];
+    const yAxisTitle = this.params["axis-y-title"];
+    const yTicksNumber = this.params["axis-y-ticks_hide"]
+      ? 0
+      : this.params["yticks-number"] || 3;
+    const xTicksNumber = this.params["axis-x-ticks_hide"] ? 0 : null;
+
     const showLegend = this.params["legend"] || "top-right";
     const groupKeyName = this.params["group-by"];
     const showXGrid = this.params["xgrid"] === "true" ? true : false;
     const showYGrid = this.params["ygrid"] === "true" ? true : false;
     const xLabelAngle =
-      parseInt(this.params["xlabel-angle"]) === 0
+      parseInt(this.params["axis-x-ticks_labels_angle"]) === 0
         ? 0
-        : parseInt(this.params["xlabel-angle"]) || -90;
+        : parseInt(this.params["axis-x-ticks_labels_angle"]) || -90;
     const yLabelAngle =
-      parseInt(this.params["ylabel-angle"]) === 0
+      parseInt(this.params["axis-y-ticks_labels_angle"]) === 0
         ? 0
-        : parseInt(this.params["ylabel-angle"]) || 0;
+        : parseInt(this.params["axis-y-ticks_labels_angle"]) || 0;
     const barPlacement = this.params["bar-placement"];
     const errorKeyName = this.params["error-key"];
     const showErrorBars =
@@ -71,14 +75,10 @@ export default class Barchart extends Stanza {
         ? 0
         : parseInt(this.params["ylabel-padding"]) || 10;
     const ylabelFormat = this.params["ylabel-format"] || null;
-    const xTitlePadding = this.params["xtitle-padding"] || 15;
-    const yTitlePadding = this.params["ytitle-padding"] || 25;
-    const xTickSize = parseInt(this.params["xtick-size"])
-      ? parseInt(this.params["xtick-size"])
-      : 0;
-    const yTickSize = parseInt(this.params["ytick-size"])
-      ? parseInt(this.params["ytick-size"])
-      : 0;
+    const xTitlePadding = this.params["axis-x-title_padding"] || 15;
+    const yTitlePadding = this.params["axis-y-title_padding"] || 25;
+    const xTickSize = this.params["axis-x-ticks_hide"] ? 0 : 4;
+    const yTickSize = this.params["axis-y-ticks_hide"] ? 0 : 4;
     const axisTitleFontSize =
       parseInt(css("--togostanza-title-font-size")) || 10;
     const barPaddings =
@@ -89,12 +89,14 @@ export default class Barchart extends Stanza {
       typeof this.params["bar-sub-paddings"] === "undefined"
         ? 0.1
         : this.params["bar-sub-paddings"];
-    const xTickPlacement = this.params["xtick-placement"] || "in-between";
+
+    const xTickPlacement = barPlacement === "stacked" ? "center" : "in-between";
+
     const showBarTooltips =
       this.params["bar-tooltips"] === "true" ? true : false;
 
-    const showXAxis = this.params["show-x-axis"] === "false" ? false : true;
-    const showYAxis = this.params["show-y-axis"] === "false" ? false : true;
+    const showXAxis = !this.params["axis-x-hide"];
+    const showYAxis = !this.params["axis-y-hide"];
 
     const width = parseInt(css("--togostanza-outline-width"));
     const height = parseInt(css("--togostanza-outline-height"));
@@ -294,7 +296,11 @@ export default class Barchart extends Stanza {
 
       const y = d3.scaleLinear().range([HEIGHT, 0]);
 
-      const xAxisGenerator = d3.axisBottom(x).tickSizeOuter(0);
+      const xAxisGenerator = d3
+        .axisBottom(x)
+        .tickSizeOuter(0)
+        .ticks(xTicksNumber);
+      console.log("xTicksNumber", xTicksNumber);
 
       const yAxisGenerator = d3
         .axisLeft(y)
