@@ -58,9 +58,15 @@ export default class Barchart extends Stanza {
         ? 0
         : parseInt(this.params["axis-y-ticks_labels_angle"]) || 0;
 
-    const yTicksInterval = parseInt(this.params["axis-y-ticks_interval"]);
+    const yTicksInterval = parseFloat(this.params["axis-y-ticks_interval"]);
 
     const yTicksNumber = yTicksInterval ? null : 5;
+
+    const yGridLinesInterval = parseFloat(
+      this.params["axis-y-gridlines_interval"]
+    );
+
+    const yGridNumber = yGridLinesInterval ? null : 5;
 
     const barPlacement = this.params["bar-placement"];
     const errorKeyName = this.params["error-key"];
@@ -79,7 +85,7 @@ export default class Barchart extends Stanza {
       parseInt(this.params["ylabel-padding"]) === 0
         ? 0
         : parseInt(this.params["ylabel-padding"]) || 10;
-    const ylabelFormat = this.params["ylabel-format"] || null;
+    const ylabelFormat = this.params["axis-y-ticks_labels_format"] || null;
     const xTitlePadding = this.params["axis-x-title_padding"] || 15;
     const yTitlePadding = this.params["axis-y-title_padding"] || 25;
     const xTickSize = this.params["axis-x-ticks_hide"] ? 0 : 4;
@@ -339,7 +345,7 @@ export default class Barchart extends Stanza {
         .axisLeft(y)
         .tickSize(-WIDTH)
         .tickFormat("")
-        .ticks(yTicksNumber);
+        .ticks(yGridNumber);
 
       const yGridLines = barsArea.append("g").attr("class", "y gridlines");
 
@@ -459,6 +465,17 @@ export default class Barchart extends Stanza {
             }
             yAxisGenerator.tickValues(ticks);
           }
+          if (yGridLinesInterval) {
+            const gridTicks = [];
+            for (
+              let i = 0;
+              i <= Math.floor((dataMax * 1.05) / yGridLinesInterval);
+              i++
+            ) {
+              gridTicks.push(i * yGridLinesInterval);
+            }
+            yAxisGridGenerator.tickValues(gridTicks);
+          }
 
           if (showYAxis) {
             yAxisArea
@@ -573,6 +590,18 @@ export default class Barchart extends Stanza {
               ticks.push(i * yTicksInterval);
             }
             yAxisGenerator.tickValues(ticks);
+          }
+
+          if (yGridLinesInterval) {
+            const gridTicks = [];
+            for (
+              let i = 0;
+              i <= Math.floor((yMinMax[1] - yMinMax[0]) / yGridLinesInterval);
+              i++
+            ) {
+              gridTicks.push(i * yGridLinesInterval);
+            }
+            yAxisGridGenerator.tickValues(gridTicks);
           }
 
           if (showYAxis) {

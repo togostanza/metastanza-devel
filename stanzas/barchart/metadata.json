@@ -155,6 +155,19 @@
       "stanza:description": "Y axis ticks interval. If no interval is given, 5 ticks will be drawn at `neat` y-axis values."
     },
     {
+      "stanza:key": "axis-y-ticks_labels_format",
+      "stanza:type": "string",
+      "stanza:example": ",.2r",
+      "stanza:description": "Y axis tick labels number format. See more format strings in d3.format() documentation"
+    },
+    {
+      "stanza:key": "axis-y-gridlines_interval",
+      "stanza:type": "number",
+      "stanza:example": 0,
+      "stanza:description": "Y axis grid lines interval. If not set, show 5 gridlines"
+    },
+
+    {
       "stanza:key": "custom-css-url",
       "stanza:example": "",
       "stanza:description": "Stylesheet(css file) URL to override current style",
@@ -213,12 +226,6 @@
       "stanza:description": "X label angle (in degree)"
     },
 
-    {
-      "stanza:key": "ylabel-format",
-      "stanza:type": "string",
-      "stanza:example": ",.2r",
-      "stanza:description": "Y axis tick labels number format. See more format strings in d3.format() documentation"
-    },
     {
       "stanza:key": "xlabel-padding",
       "stanza:type": "number",
