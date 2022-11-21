@@ -36,6 +36,7 @@
     },
     {
       "stanza:key": "axis-x-key",
+      "stanza:type": "text",
       "stanza:example": "chromosome",
       "stanza:description": "X axis data key",
       "stanza:required": true
@@ -49,14 +50,16 @@
     },
     {
       "stanza:key": "axis-x-title",
+      "stanza:type": "text",
       "stanza:example": "chromosome",
       "stanza:description": "X axis title",
       "stanza:required": false
     },
     {
-      "stanza:key": "group-by",
+      "stanza:key": "group_by-key",
+      "stanza:type": "text",
       "stanza:example": "category",
-      "stanza:description": "Variable to be assigned as group",
+      "stanza:description": "Group bars by this key",
       "stanza:required": false
     },
     {
@@ -68,17 +71,10 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "error-key",
+      "stanza:key": "error_bars-key",
       "stanza:type": "string",
       "stanza:example": "error",
       "stanza:description": "Show error bars",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "error-bar-width",
-      "stanza:type": "number",
-      "stanza:example": 10,
-      "stanza:description": "Error bar horizontal line width in px",
       "stanza:required": false
     },
     {
@@ -105,12 +101,14 @@
     },
     {
       "stanza:key": "axis-y-key",
+      "stanza:type": "text",
       "stanza:example": "count",
       "stanza:description": "Y axis data key",
       "stanza:required": true
     },
     {
       "stanza:key": "axis-y-title",
+      "stanza:type": "text",
       "stanza:example": "count",
       "stanza:description": "Y axis title",
       "stanza:required": false
@@ -169,6 +167,7 @@
 
     {
       "stanza:key": "custom-css-url",
+      "stanza:type": "text",
       "stanza:example": "",
       "stanza:description": "Stylesheet(css file) URL to override current style",
       "stanza:required": false
@@ -180,17 +179,10 @@
       "stanza:description": "Padding"
     },
     {
-      "stanza:key": "legend",
-      "stanza:type": "single-choice",
-      "stanza:choice": [
-        "none",
-        "top-left",
-        "top-right",
-        "bottom-left",
-        "bottom-right"
-      ],
-      "stanza:example": "top-right",
-      "stanza:description": "Where to show the legend. 'none' for no legend"
+      "stanza:key": "legend-show",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Whether to show the legend"
     },
     {
       "stanza:key": "xgrid",
@@ -382,24 +374,6 @@
       "stanza:type": "number",
       "stanza:default": 1,
       "stanza:description": "Tick width (in pixel)"
-    },
-    {
-      "stanza:key": "--togostanza-errorbar-line-width",
-      "stanza:type": "number",
-      "stanza:default": 1,
-      "stanza:description": "Errorbar line width"
-    },
-    {
-      "stanza:key": "--togostanza-errorbar-line-color",
-      "stanza:type": "color",
-      "stanza:default": "#333333",
-      "stanza:description": "Errorbar line color"
-    },
-    {
-      "stanza:key": "--togostanza-errorbar-line-opacity",
-      "stanza:type": "number",
-      "stanza:default": 0.4,
-      "stanza:description": "Errorbar line opacity"
     },
     {
       "stanza:key": "--togostanza-title-font-color",

@@ -45,7 +45,7 @@ export default class Barchart extends Stanza {
     const xTicksNumber = xTicksHide ? 0 : null;
     const xTickValues = xTicksHide ? [] : null;
 
-    const showLegend = this.params["legend"] || "top-right";
+    const showLegend = this.params["legend-show"];
     const groupKeyName = this.params["group_by-key"];
     const showXGrid = this.params["xgrid"] === "true" ? true : false;
     const showYGrid = this.params["ygrid"] === "true" ? true : false;
@@ -69,9 +69,8 @@ export default class Barchart extends Stanza {
     const yGridNumber = yGridLinesInterval ? null : 5;
 
     const barPlacement = this.params["bar-placement"];
-    const errorKeyName = this.params["error-key"];
-    const showErrorBars =
-      this.params["error-key"] !== "" || this.params["error-key"] !== undefined;
+    const errorKeyName = this.params["error_bars-key"];
+    const showErrorBars = errorKeyName !== "" || errorKeyName !== undefined;
 
     const errorBarWidth = 0.4;
     const xLabelPadding =
@@ -155,7 +154,7 @@ export default class Barchart extends Stanza {
 
     // Add legend
 
-    if (showLegend !== "none") {
+    if (showLegend) {
       this.legend = new Legend();
       root.append(this.legend);
     }
@@ -404,7 +403,7 @@ export default class Barchart extends Stanza {
           this.tooltip.setup(arr);
         }
 
-        if (showLegend !== "none") {
+        if (showLegend) {
           this.legend.setup(
             gSubKeyNames.map((item, index) => {
               return {
@@ -425,7 +424,7 @@ export default class Barchart extends Stanza {
             this.root.querySelector("main"),
             {
               fadeoutNodes: svg.selectAll("g.bars-group rect").nodes(),
-              position: showLegend.split("-"),
+              position: ["top", "right"],
               fadeProp: "opacity",
               showLeaders: false,
             }
@@ -709,7 +708,7 @@ export default class Barchart extends Stanza {
 
       update(values);
 
-      if (showLegend !== "none") {
+      if (showLegend) {
         const legend = this.root
           .querySelector("togostanza--legend")
           .shadowRoot.querySelector(".legend > table > tbody");
