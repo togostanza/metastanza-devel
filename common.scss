@@ -11,3 +11,10 @@
 text {
   fill: var(--togostanza-fonts-font_color);
 }
+.legend {
+  color: var(--togostanza-fonts-font_color);
+  font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+}
+.legend .title {
+  font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+}
