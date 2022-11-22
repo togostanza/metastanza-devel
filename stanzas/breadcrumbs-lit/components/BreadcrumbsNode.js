@@ -1,4 +1,4 @@
-import { LitElement, css, html, nothing, svg } from "lit";
+import { LitElement, html, nothing, svg } from "lit";
 import { ref, createRef } from "lit/directives/ref.js";
 import roundPathCorners from "../rounding.js";
 import * as FAIcons from "@fortawesome/free-solid-svg-icons";
@@ -15,48 +15,6 @@ class Node extends LitElement {
       iconName: { type: String, state: true },
       mode: { type: String },
     };
-  }
-
-  static get styles() {
-    return css`
-      :host {
-        position: relative;
-        display: block;
-      }
-
-      svg {
-        cursor: pointer;
-      }
-
-      .node-outline {
-        stroke: var(--togostanza-border-color);
-        stroke-width: 1px;
-        fill: var(--togostanza-node-background_color);
-        transition: var(--togostanza-fadeout-transition);
-      }
-
-      .node-label {
-        alignment-baseline: middle;
-        font-size: calc(var(--togostanza-fonts-font_size_primary));
-      }
-
-      .node-label,
-      .home-icon {
-        fill: var(--togostanza-fonts-font_color);
-      }
-
-      .-hover .node-label,
-      .-hover .home-icon {
-        fill: var(--togostanza-fonts-font_color_hover);
-      }
-      .-hover .node-outline {
-        fill: var(--togostanza-node-background_color_hover);
-        transition: var(--togostanza-fadeout-transition);
-      }
-      .-hover:active {
-        filter: brightness(0.93);
-      }
-    `;
   }
 
   createRenderRoot() {

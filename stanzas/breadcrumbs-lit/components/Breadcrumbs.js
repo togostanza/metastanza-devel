@@ -1,22 +1,8 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html } from "lit";
 import { map } from "lit/directives/map.js";
 import { applyConstructor } from "@/lib/utils";
 
 export class Breadcrumbs extends LitElement {
-  static get styles() {
-    return css`
-      :host {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        column-gap: 0.2em;
-        row-gap: 0.3em;
-        align-items: start;
-        width: 100%;
-      }
-    `;
-  }
-
   static get properties() {
     return {
       currentId: { type: String, reflect: true },

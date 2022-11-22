@@ -3,8 +3,8 @@ import Stanza from "togostanza/stanza";
 import { appendCustomCss } from "togostanza-utils";
 import { Breadcrumbs } from "./components/Breadcrumbs";
 import loadData from "togostanza-utils/load-data";
-import "./components/Menu";
-import "./components/Node";
+import "./components/BreadcrumbsNodeMenu";
+import "./components/BreadcrumbsNode";
 
 export default class BreadcrumbsLit extends Stanza {
   menu() {

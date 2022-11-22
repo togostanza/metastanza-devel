@@ -1,7 +1,7 @@
 // Load the repository-wide global style here. The actual file is located at ../common.scss for details.
 @use "@/common.scss";
 
-breadcrumbs {
+breadcrumbs-el {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -9,4 +9,103 @@ breadcrumbs {
   row-gap: 0.3em;
   align-items: start;
   width: 100%;
+  > breadcrumbs-node {
+    position: relative;
+    display: block;
+    > svg {
+      cursor: pointer;
+
+      .node-outline {
+        stroke: var(--togostanza-border-color);
+        stroke-width: 1px;
+        fill: var(--togostanza-node-background_color);
+        transition: var(--togostanza-fadeout-transition);
+      }
+
+      .node-label {
+        alignment-baseline: middle;
+        font-size: calc(var(--togostanza-fonts-font_size_primary));
+      }
+
+      .node-label,
+      .home-icon {
+        fill: var(--togostanza-fonts-font_color);
+      }
+
+      .-hover {
+        .node-label,
+        .home-icon {
+          fill: var(--togostanza-fonts-font_color_hover);
+        }
+        .node-outline {
+          fill: var(--togostanza-node-background_color_hover);
+          transition: var(--togostanza-fadeout-transition);
+        }
+        &:active {
+          filter: brightness(0.93);
+        }
+      }
+    }
+
+    > breadcrumbs-node-menu {
+      position: absolute;
+      left: 0;
+      .menu-wrapper {
+        padding-top: 5px;
+      }
+      .menu-triangle {
+        position: relative;
+        top: 0;
+        width: 7px;
+        height: 7px;
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, 2px) rotate(45deg);
+        border: 1px solid var(--togostanza-border-color);
+        z-index: 1;
+      }
+      .menu-triangle-overlay {
+        position: relative;
+        top: 0;
+        width: 7px;
+        height: 7px;
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, 3px) rotate(45deg);
+        background-color: var(--togostanza-node-background_color);
+        z-index: 5;
+        clip-path: polygon(100% 0, 0 0, 0 100%);
+      }
+      .menu-container {
+        position: relative;
+        max-width: 15em;
+        margin: 0;
+        border: 1px solid var(--togostanza-border-color);
+        border-radius: 0.5em;
+        background-color: var(--togostanza-node-background_color);
+        z-index: 3;
+        cursor: pointer;
+      }
+      ul.menu-items {
+        max-height: 20em;
+        margin: 0.2em 0;
+        padding: 0;
+        overflow-y: auto;
+        list-style-type: none;
+        > li {
+          display: block;
+          line-height: 1.2;
+          padding: 0.5em;
+          word-wrap: break-word;
+          &:hover {
+            background-color: var(--togostanza-node-background_color_hover);
+            color: var(--togostanza-fonts-font_color_hover);
+          }
+          &:active {
+            filter: brightness(0.93);
+          }
+        }
+      }
+    }
+  }
 }
