@@ -59,6 +59,10 @@ class Node extends LitElement {
     `;
   }
 
+  createRenderRoot() {
+    return this;
+  }
+
   constructor() {
     super();
     this.node = { label: "", id: "" };
@@ -252,11 +256,11 @@ class Node extends LitElement {
       </svg>
 
       ${this.showMenu && this.showDropdown && this.menuItems.length > 0
-        ? html`<node-menu
+        ? html`<breadcrumbs-node-menu
             @menu-leave=${this._handleMenuLeave}
             style="top: ${this.height}px;"
             .menuItems=${this.menuItems}
-          ></node-menu>`
+          ></breadcrumbs-node-menu>`
         : nothing}
     `;
   }

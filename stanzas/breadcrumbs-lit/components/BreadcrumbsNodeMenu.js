@@ -104,6 +104,10 @@ class Menu extends LitElement {
     );
   }
 
+  createRenderRoot() {
+    return this;
+  }
+
   render() {
     return html`
       <div
@@ -137,4 +141,4 @@ class Menu extends LitElement {
   }
 }
 
-customElements.define("node-menu", Menu);
+customElements.define("breadcrumbs-node-menu", Menu);

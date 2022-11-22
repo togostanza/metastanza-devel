@@ -144,6 +144,10 @@ export class Breadcrumbs extends LitElement {
     });
   }
 
+  createRenderRoot() {
+    return this;
+  }
+
   render() {
     return html` ${this.showCopyButton &&
     html`<breadcrumbs-node
@@ -190,4 +194,4 @@ export class Breadcrumbs extends LitElement {
   }
 }
 
-customElements.define("breadcrumbs-lit", Breadcrumbs);
+customElements.define("breadcrumbs-el", Breadcrumbs);
