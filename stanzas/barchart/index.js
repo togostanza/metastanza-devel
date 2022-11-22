@@ -169,8 +169,6 @@ export default class Barchart extends Stanza {
       });
     }
 
-    console.log(values);
-
     const showBarTooltips = values.some((d) => d[tooltipsKey]);
 
     if (!this.tooltip && showBarTooltips) {
@@ -661,7 +659,12 @@ export default class Barchart extends Stanza {
             .attr("x", (d) => subX(d[groupKeyName]))
             .attr("y", (d) => y(+d[yKeyName]))
             .attr("width", subX.bandwidth())
-            .attr("height", (d) => y(y.domain()[0]) - y(+d[yKeyName]))
+            .attr("height", (d) => {
+              if (y(y.domain()[0]) - y(+d[yKeyName]) >= 0) {
+                return y(y.domain()[0]) - y(+d[yKeyName]);
+              }
+              return 0;
+            })
             .attr(
               "class",
               (d) =>
