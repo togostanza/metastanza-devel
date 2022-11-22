@@ -26,6 +26,7 @@ export class Breadcrumbs extends LitElement {
   }
 
   updateParams(params, data) {
+    // eslint-disable-next-line no-undef
     this.data = structuredClone(data);
 
     applyConstructor.call(this, params);

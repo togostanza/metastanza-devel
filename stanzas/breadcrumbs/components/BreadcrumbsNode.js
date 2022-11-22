@@ -150,11 +150,7 @@ class Node extends LitElement {
     } else {
       return html`
         <svg viewBox="0 0 ${this.icon[0]} ${this.icon[1]}" height="${this.emH}">
-          ${svg`
-        
-        <path d="${this.icon[4]}"  ></path>
-
-    `}
+          ${svg`<path d="${this.icon[4]}"></path>`}
         </svg>
       `;
     }

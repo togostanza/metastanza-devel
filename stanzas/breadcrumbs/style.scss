@@ -56,22 +56,20 @@ breadcrumbs-el {
         padding-top: 5px;
       }
       .menu-triangle {
-        position: relative;
+        position: absolute;
         top: 0;
         width: 7px;
         height: 7px;
-        position: absolute;
         left: 50%;
         transform: translate(-50%, 2px) rotate(45deg);
         border: 1px solid var(--togostanza-border-color);
         z-index: 1;
       }
       .menu-triangle-overlay {
-        position: relative;
+        position: absolute;
         top: 0;
         width: 7px;
         height: 7px;
-        position: absolute;
         left: 50%;
         transform: translate(-50%, 3px) rotate(45deg);
         background-color: var(--togostanza-node-background_color);

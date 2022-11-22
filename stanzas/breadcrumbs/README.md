@@ -11,9 +11,9 @@ In square brackets there are stanza params to be mapped to these data keys, data
 ```js
 [
     {
-       [node-key-id]:  1,
-       [node-label_key]: "Transcript variant",
-       parent: [node.id]
+      [node-key-id]:  1,
+      [node-label_key]: "Transcript variant",
+      parent: [node.id]
     },
     ...
 ]
@@ -30,8 +30,8 @@ For example,
     "count": 18057,
     "description": "A sequence variant that changes the coding sequence",
     "parent": 2
-  },
-  ...
+    },
+    ...
 ]
 
 ```
