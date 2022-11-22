@@ -12,162 +12,104 @@ text {
   fill: var(--togostanza-fonts-font_color);
 }
 
-main {
-  padding: 1rem 2rem;
-  font-size: calc(var(--togostanza-label-font-size) * 1px);
-  font-family: var(--togostanza-label-font-family);
-}
-
-#breadcrumbs {
-  flex: 1;
+breadcrumbs-el {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  column-gap: 0.2em;
+  row-gap: 0.3em;
+  align-items: start;
+  width: 100%;
 }
-#breadcrumbs > .popup {
-  position: absolute;
-  text-align: center;
-  pointer-events: none;
-  opacity: 0.8;
-  height: 1rem;
-  width: 4rem;
-  font-size: 10px;
-  background-color: var(--togostanza-label-background-color-hover);
-  color: var(--togostanza-label-font-color-hover);
-}
-
-#app-breadcrumbs {
-  overflow-x: auto;
-  overflow-y: hidden;
-  display: inline-flex;
-  height: fit-content;
-  scrollbar-width: thin;
-}
-#app-breadcrumbs::-webkit-scrollbar {
-  height: 0.5em;
-}
-#app-breadcrumbs::-webkit-scrollbar-thumb {
-  background: var(--togostanza-scrollbar-color);
-  border-radius: 0.1em;
-}
-#app-breadcrumbs::-webkit-scrollbar-thumb:hover {
-  background: var(--togostanza-scrollbar-color-hover);
-}
-
-#app-copy-button {
-  cursor: pointer;
-  display: inline-flex;
-  background-color: var(--togostanza-background-color);
-  border: 1px solid var(--togostanza-border-color);
-  justify-content: center;
-  align-items: center;
+breadcrumbs-el > breadcrumbs-node {
   position: relative;
-  box-sizing: border-box;
+  display: block;
 }
-#app-copy-button > svg.copy-icon {
-  height: 0.75rem;
-}
-#app-copy-button:hover {
-  color: var(--togostanza-label-font-color-hover);
-  background-color: var(--togostanza-label-background-color-hover);
-}
-#app-copy-button:hover > svg.copy-icon {
-  fill: var(--togostanza-label-font-color-hover);
-}
-
-.breadcrumb > svg {
+breadcrumbs-el > breadcrumbs-node > svg {
   cursor: pointer;
 }
-.breadcrumb > svg text {
-  fill: var(--togostanza-label-font-color);
-}
-.breadcrumb > svg:hover path {
-  fill: var(--togostanza-label-background-color-hover);
-}
-.breadcrumb > svg:hover text {
-  fill: var(--togostanza-label-font-color-hover);
-}
-.breadcrumb > svg:hover svg path {
-  fill: var(--togostanza-label-font-color-hover);
-}
-
-.breadcrumb-path {
+breadcrumbs-el > breadcrumbs-node > svg .node-outline {
   stroke: var(--togostanza-border-color);
   stroke-width: calc(var(--togostanza-border-width) * 1px);
-  fill: var(--togostanza-background-color);
+  fill: var(--togostanza-node-background_color);
+  transition: var(--togostanza-fadeout-transition);
+  transition: fill 0.1s ease-in;
 }
-
-.breadcrumb-path-hover {
-  fill: var(--togostanza-label-background-color-hover);
+breadcrumbs-el > breadcrumbs-node > svg .node-label {
+  alignment-baseline: middle;
+  font-size: calc(var(--togostanza-fonts-font_size_primary));
 }
-
-.breadcrumb-label-hover {
-  fill: var(--togostanza-label-font-color-hover) !important;
+breadcrumbs-el > breadcrumbs-node > svg .node-label,
+breadcrumbs-el > breadcrumbs-node > svg .home-icon {
+  fill: var(--togostanza-fonts-font_color);
 }
-
-.menu-triangle {
-  width: 10px;
-  height: 10px;
-  margin-top: 5px;
+breadcrumbs-el > breadcrumbs-node > svg.-hover .node-label,
+breadcrumbs-el > breadcrumbs-node > svg.-hover .home-icon {
+  fill: var(--togostanza-fonts-font_color_hover);
+}
+breadcrumbs-el > breadcrumbs-node > svg.-hover .node-outline {
+  fill: var(--togostanza-node-background_color_hover);
+  transition: var(--togostanza-fadeout-transition);
+  transition: fill 0.1s ease-in;
+}
+breadcrumbs-el > breadcrumbs-node > svg.-hover:active {
+  filter: brightness(0.93);
+}
+breadcrumbs-el > breadcrumbs-node > breadcrumbs-node-menu {
   position: absolute;
-  transform: translateX(-50%) rotate(45deg);
-  background-color: var(--togostanza-background-color);
-  border: 1px solid var(--togostanza-border-color);
-  z-index: -1;
+  left: 0;
 }
-
-.menu-triangle-overlay {
-  margin-top: 6px;
+breadcrumbs-el > breadcrumbs-node > breadcrumbs-node-menu .menu-wrapper {
+  padding-top: 5px;
+}
+breadcrumbs-el > breadcrumbs-node > breadcrumbs-node-menu .menu-triangle {
+  position: absolute;
+  top: 0;
+  width: 7px;
+  height: 7px;
+  left: 50%;
+  transform: translate(-50%, 2px) rotate(45deg);
+  border: 1px solid var(--togostanza-border-color);
   z-index: 1;
-  border: none;
 }
-
-.breadcrumb-menu-container {
-  cursor: pointer;
-  justify-content: flex-end;
-  flex-direction: column;
+breadcrumbs-el > breadcrumbs-node > breadcrumbs-node-menu .menu-triangle-overlay {
   position: absolute;
-  top: calc(100% - 1px);
-  z-index: 999;
+  top: 0;
+  width: 7px;
+  height: 7px;
+  left: 50%;
+  transform: translate(-50%, 3px) rotate(45deg);
+  background-color: var(--togostanza-node-background_color);
+  z-index: 5;
+  clip-path: polygon(100% 0, 0 0, 0 100%);
 }
-
-.breadcrumb-menu {
-  margin-top: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  background-color: var(--togostanza-background-color);
-  border: 1px solid var(--togostanza-border-color);
-  max-height: 20rem;
-  min-width: 8rem;
-  max-width: 10rem;
+breadcrumbs-el > breadcrumbs-node > breadcrumbs-node-menu .menu-container {
+  position: relative;
+  max-width: 15em;
+  margin: 0;
+  border: calc(var(--togostanza-border-width) * 1px) solid var(--togostanza-border-color);
+  border-radius: 0.5em;
+  background-color: var(--togostanza-node-background_color);
+  z-index: 3;
+  cursor: pointer;
+}
+breadcrumbs-el > breadcrumbs-node > breadcrumbs-node-menu ul.menu-items {
+  max-height: 20em;
+  margin: 0.2em 0;
+  padding: 0;
   overflow-y: auto;
-  overflow-x: hidden;
-  padding: 0.5rem;
+  list-style-type: none;
 }
-.breadcrumb-menu::-webkit-scrollbar {
-  width: 0.3rem;
+breadcrumbs-el > breadcrumbs-node > breadcrumbs-node-menu ul.menu-items > li {
+  display: block;
+  line-height: 1.2;
+  padding: 0.5em;
+  word-wrap: break-word;
 }
-.breadcrumb-menu::-webkit-scrollbar-thumb {
-  background: var(--togostanza-scrollbar-color);
-  border-radius: 0.1rem;
+breadcrumbs-el > breadcrumbs-node > breadcrumbs-node-menu ul.menu-items > li:hover {
+  background-color: var(--togostanza-node-background_color_hover);
+  color: var(--togostanza-fonts-font_color_hover);
 }
-.breadcrumb-menu::-webkit-scrollbar-thumb:hover {
-  background: var(--togostanza-scrollbar-color-hover);
-}
-
-.breadcrumb-menu-item {
-  z-index: 2;
-  font-family: var(--togostanza-label-font-family);
-  font-size: calc(var(--togostanza-label-font-size) * 1px);
-  color: var(--togostanza-label-font-color);
-  padding: 0.2rem;
-  width: 100%;
-  line-height: 0.9rem;
-}
-
-.breadcrumb-menu-item:hover {
-  color: var(--togostanza-label-font-color-hover);
-  background-color: var(--togostanza-label-background-color-hover);
+breadcrumbs-el > breadcrumbs-node > breadcrumbs-node-menu ul.menu-items > li:active {
+  filter: brightness(0.93);
 }
