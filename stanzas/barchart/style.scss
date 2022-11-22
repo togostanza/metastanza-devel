@@ -9,8 +9,8 @@ svg {
   .gridlines {
     & > .tick > line {
       stroke: var(--togostanza-border-color);
-      opacity: 0.8;
-      stroke-width: 0.5px;
+      opacity: 0.4;
+      stroke-width: 1px;
     }
     & > path.domain {
       display: none;
@@ -20,6 +20,12 @@ svg {
   .bars rect {
     stroke-width: 0.5px;
     stroke: var(--togostanza-border-color);
+  }
+
+  @media (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {
+    .gridlines > .tick > line {
+      stroke-width: 0.5px;
+    }
   }
 
   .axis {
