@@ -157,6 +157,20 @@ export default class Barchart extends Stanza {
       this.root.querySelector("main")
     );
 
+    if (
+      this.params["data-type"] === "csv" ||
+      this.params["data-type"] === "tsv"
+    ) {
+      values.forEach((d) => {
+        d[errorKeyName] = [
+          parseFloat(d[`${errorKeyName}_q1`]),
+          parseFloat(d[`${errorKeyName}_q3`]),
+        ];
+      });
+    }
+
+    console.log(values);
+
     const showBarTooltips = values.some((d) => d[tooltipsKey]);
 
     if (!this.tooltip && showBarTooltips) {
@@ -746,12 +760,12 @@ export default class Barchart extends Stanza {
               "x1",
               (d) => subXAxis(d[groupKeyName]) + subXAxis.bandwidth() / 2
             )
-            .attr("y1", (d) => yAxis(+d[errorKeyName][0]))
+            .attr("y1", (d) => yAxis(d[errorKeyName][0]))
             .attr(
               "x2",
               (d) => subXAxis(d[groupKeyName]) + subXAxis.bandwidth() / 2
             )
-            .attr("y2", (d) => yAxis(+d[errorKeyName][1]));
+            .attr("y2", (d) => yAxis(d[errorKeyName][1]));
 
           // upper stroke
           errorBarGroup
@@ -759,16 +773,16 @@ export default class Barchart extends Stanza {
             .attr("class", "error-bar-line")
             .attr("x1", (d) => subXAxis(d[groupKeyName]))
             .attr("x2", (d) => subXAxis(d[groupKeyName]) + subXAxis.bandwidth())
-            .attr("y1", (d) => yAxis(+d[errorKeyName][0]))
-            .attr("y2", (d) => yAxis(+d[errorKeyName][1]));
+            .attr("y1", (d) => yAxis(d[errorKeyName][0]))
+            .attr("y2", (d) => yAxis(d[errorKeyName][0]));
           // lower stroke
           errorBarGroup
             .append("line")
             .attr("class", "error-bar-line")
             .attr("x1", (d) => subXAxis(d[groupKeyName]))
             .attr("x2", (d) => subXAxis(d[groupKeyName]) + subXAxis.bandwidth())
-            .attr("y1", (d) => yAxis(+d[errorKeyName][0]))
-            .attr("y2", (d) => yAxis(+d[errorKeyName][1]));
+            .attr("y1", (d) => yAxis(d[errorKeyName][1]))
+            .attr("y2", (d) => yAxis(d[errorKeyName][1]));
         });
       }
     };

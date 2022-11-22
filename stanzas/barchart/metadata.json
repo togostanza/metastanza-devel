@@ -46,37 +46,26 @@
       "stanza:key": "axis-x-title",
       "stanza:type": "text",
       "stanza:example": "chromosome",
-      "stanza:description": "X axis title",
+      "stanza:description": "X axis title. If set to empty string, no title will be shown. If not setting it at all, would show value of `axis-x-key`",
       "stanza:required": false
     },
     {
-      "stanza:key": "group_by-key",
-      "stanza:type": "text",
-      "stanza:example": "category",
-      "stanza:description": "Group bars by this key",
-      "stanza:required": false
+      "stanza:key": "axis-x-ticks_hide",
+      "stanza:type": "boolean",
+      "stanza:example": false,
+      "stanza:description": "Hide X ticks"
     },
     {
-      "stanza:key": "chart-bar_arrangement",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["stacked", "grouped"],
-      "stanza:example": "grouped",
-      "stanza:description": "Bars arrangement",
-      "stanza:required": true
+      "stanza:key": "axis-x-ticks_labels_angle",
+      "stanza:type": "number",
+      "stanza:example": -90,
+      "stanza:description": "X label angle (in degrees) in range [-90, +90]"
     },
     {
-      "stanza:key": "error_bars-key",
-      "stanza:type": "string",
-      "stanza:example": "error",
-      "stanza:description": "Show error bars",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "tooltips-key",
-      "stanza:type": "text",
-      "stanza:example": "count",
-      "stanza:description": "Bar tooltips data key. If the key not exists, tooltips are not showing.",
-      "stanza:required": false
+      "stanza:key": "axis-x-title_padding",
+      "stanza:type": "number",
+      "stanza:example": 20,
+      "stanza:description": "Padding between X title and label"
     },
     {
       "stanza:key": "axis-y-key",
@@ -89,7 +78,7 @@
       "stanza:key": "axis-y-title",
       "stanza:type": "text",
       "stanza:example": "count",
-      "stanza:description": "Y axis title",
+      "stanza:description": "Y axis title. If set to empty string, no title will be shown. If not setting it at all, would show value of `axis-y-key`",
       "stanza:required": false
     },
     {
@@ -117,13 +106,13 @@
       "stanza:key": "axis-y-ticks_labels_angle",
       "stanza:type": "number",
       "stanza:example": 0,
-      "stanza:description": "Y label angle (in degree)"
+      "stanza:description": "Y label angle (in degree) in range [-90, +90]"
     },
     {
       "stanza:key": "axis-y-ticks_interval",
       "stanza:type": "number",
       "stanza:example": null,
-      "stanza:description": "Y axis ticks interval. If no interval is given, 5 ticks will be drawn at `neat` y-axis values. If set to 0, hide all ticks."
+      "stanza:description": "Y axis ticks interval. If undefined, 5 ticks will be drawn at `neat` y-axis values. Setting it to 0, would hide all ticks."
     },
     {
       "stanza:key": "axis-y-ticks_labels_format",
@@ -135,7 +124,36 @@
       "stanza:key": "axis-y-gridlines_interval",
       "stanza:type": "number",
       "stanza:example": null,
-      "stanza:description": "Y axis grid lines interval. If not set, show 5 gridlines. If set to 0, hide gridlines"
+      "stanza:description": "Y axis grid lines interval. If undefined, 5 gridlines will be drawn at `neat` y-axis values. Setting it to 0, would hide all gridlines."
+    },
+    {
+      "stanza:key": "group_by-key",
+      "stanza:type": "text",
+      "stanza:example": "category",
+      "stanza:description": "Group bars by this key",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "chart-bar_arrangement",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["stacked", "grouped"],
+      "stanza:example": "grouped",
+      "stanza:description": "Bars arrangement",
+      "stanza:required": true
+    },
+    {
+      "stanza:key": "error_bars-key",
+      "stanza:type": "string",
+      "stanza:example": "error",
+      "stanza:description": "Show error bars. Data for error bars is array [minValue, maxValue]. If the key is not existing in data, no error bars would be shown",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "tooltips-key",
+      "stanza:type": "text",
+      "stanza:example": "count",
+      "stanza:description": "Bar tooltips data key. If the key not existing, tooltips are not showing.",
+      "stanza:required": false
     },
     {
       "stanza:key": "misc-custom_css_url",
@@ -154,27 +172,7 @@
       "stanza:key": "legend-title",
       "stanza:type": "text",
       "stanza:example": "Category",
-      "stanza:description": "Whether to show the legend"
-    },
-    {
-      "stanza:key": "axis-x-ticks_hide",
-      "stanza:type": "boolean",
-      "stanza:example": false,
-      "stanza:description": "Hide X ticks"
-    },
-
-    {
-      "stanza:key": "axis-x-ticks_labels_angle",
-      "stanza:type": "number",
-      "stanza:example": -90,
-      "stanza:description": "X label angle (in degree)"
-    },
-
-    {
-      "stanza:key": "axis-x-title_padding",
-      "stanza:type": "number",
-      "stanza:example": 20,
-      "stanza:description": "Padding between X title and label"
+      "stanza:description": "Legend title"
     }
   ],
   "stanza:menu-placement": "bottom-right",
