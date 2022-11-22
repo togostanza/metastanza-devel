@@ -2,6 +2,8 @@
 
 You can copy the current path by clicking `copy_button` (enabled by setting `show_copy_button` to `true`)
 
+## Data and parameters
+
 ### JSON/sparql-results-json data format
 
 In square brackets there are stanza params to be mapped to these data keys, data keys without brackets must be present in the data:
@@ -64,3 +66,15 @@ If multiple root nodes are found ( nodes with undefined `parent` ), a root node 
 ### Circular relations
 
 Circular relations, i.e. if two nodes reference each other as a `parent` are not suppotred.
+
+## Overflow menus
+
+If you want to display nodes dropdown menus to overlap with other elements on your page, add
+
+```css
+.stanza-parent-element {
+  overflow: visible;
+}
+```
+
+to the stanza parent element CSS.
