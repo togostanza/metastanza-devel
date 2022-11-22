@@ -197,7 +197,6 @@ class Node extends LitElement {
     <text class="node-label" transform="translate(${this.textMargin.left},${
       this.height / 2
     })">${this.node.label}</text>
-    
   </g>`;
 
     return html`
