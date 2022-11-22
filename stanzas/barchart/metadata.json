@@ -27,13 +27,7 @@
       "stanza:description": "Data type",
       "stanza:required": true
     },
-    {
-      "stanza:key": "misc-custom_url",
-      "stanza:type": "text",
-      "stanza:example": "",
-      "stanza:description": "Custom CSS URL",
-      "stanza:required": true
-    },
+
     {
       "stanza:key": "axis-x-key",
       "stanza:type": "text",
@@ -143,7 +137,6 @@
       "stanza:example": null,
       "stanza:description": "Y axis grid lines interval. If not set, show 5 gridlines. If set to 0, hide gridlines"
     },
-
     {
       "stanza:key": "misc-custom_css_url",
       "stanza:type": "text",

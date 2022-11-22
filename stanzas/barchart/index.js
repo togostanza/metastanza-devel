@@ -38,8 +38,14 @@ export default class Barchart extends Stanza {
     //data
     const xKeyName = this.params["axis-x-key"];
     const yKeyName = this.params["axis-y-key"];
-    const xAxisTitle = this.params["axis-x-title"];
-    const yAxisTitle = this.params["axis-y-title"];
+    const xAxisTitle =
+      typeof this.params["axis-x-title"] === "undefined"
+        ? xKeyName
+        : this.params["axis-x-title"];
+    const yAxisTitle =
+      typeof this.params["axis-y-title"] === "undefined"
+        ? yKeyName
+        : this.params["axis-y-title"];
 
     const xTicksHide = this.params["axis-x-ticks_hide"];
     const xTicksNumber = xTicksHide ? 0 : null;
