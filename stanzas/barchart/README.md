@@ -10,13 +10,13 @@ In square brackets there are stanza params to be mapped to these data keys:
 
 ```js
 [
-    {
-       [axis-x-key]:  "Evidence at protein level",
-       [axis-y-key]: "1859",
-       [error_bars-key]: [98.5, 102.3],
-       <... other optional data>
-    },
-    ...
+  {
+    [axis-x-key]:  "Evidence at protein level",
+    [axis-y-key]: "1859",
+    [error_bars-key]: [98.5, 102.3],
+    <... other optional data>
+  },
+  ...
 ]
 ```
 
@@ -25,12 +25,12 @@ For example,
 ```json
 [
   {
-    "category": "Evidence at protein level",
-    "category_order": 0,
-    "chromosome": "1",
-    "chromosome_order": 0,
-    "count": "1859",
-    "error": ["1850", "1865"]
+  "category": "Evidence at protein level",
+  "category_order": 0,
+  "chromosome": "1",
+  "chromosome_order": 0,
+  "count": "1859",
+  "error": ["1850", "1865"]
   },
   ...
 ]
