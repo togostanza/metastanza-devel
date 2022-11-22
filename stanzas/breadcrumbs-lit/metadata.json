@@ -73,7 +73,7 @@
     {
       "stanza:key": "show_copy_button",
       "stanza:type": "boolean",
-      "stanza:description": "Show coppy path button",
+      "stanza:description": "Show copy path button",
       "stanza:example": false,
       "stanza:required": false
     }
@@ -113,7 +113,7 @@
     {
       "stanza:key": "--togostanza-border-width",
       "stanza:type": "number",
-      "stanza:default": 0,
+      "stanza:default": 1,
       "stanza:description": "Border width"
     },
     {

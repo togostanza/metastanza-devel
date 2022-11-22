@@ -171,7 +171,10 @@ class Node extends LitElement {
     this.requestUpdate();
   }
   _handleMouseOut(e) {
-    if (e.relatedTarget.nodeName !== "NODE-MENU") {
+    if (
+      e.relatedTarget &&
+      e.relatedTarget.dataset["id"] !== "breadcrumbs-node-menu"
+    ) {
       this._unhover();
     }
   }

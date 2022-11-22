@@ -1,68 +1,66 @@
 # Breadcrumbs
 
-### Showing nodes
+You can copy the current path by clicking `copy_button` (enabled by setting `show_copy_button` to `true`)
 
-In order to visualise the data, Breadcrumbs stanza should receive:
+### JSON/sparql-results-json data format
 
-1. data with `data-url` as well as `data-type`.
-2. Inital data node id to show.
+In square brackets there are stanza params to be mapped to these data keys, data keys without brackets must be present in the data:
 
-The data should be hierarchy tree-like data of the format:
+```js
+[
+    {
+       [node-key-id]:  1,
+       [node-label_key]: "Transcript variant",
+       parent: [node.id]
+    },
+    ...
+]
+```
+
+For example,
 
 ```json
 [
   {
-    "id": 1,
-    "value": "some_value",
-    "label": "Some label",
-  },
-  {
-    "id": 2,
-    "value": "some_value",
-    "label": "Some another label",
-    "parent": 1,
+    "id": 3,
+    "value": "coding_sequence_variant",
+    "label": "Coding sequence variant",
+    "count": 18057,
+    "description": "A sequence variant that changes the coding sequence",
+    "parent": 2
   },
   ...
 ]
+
 ```
 
-`id` key in data is mandatory and its values should be uniqe for every node. Numbers as well as strings are accepted.
+### CSV/TSV data format
 
-### Dropdown menu display
-
-In order to display dropdown menu for the nodes on top of other elements, container element of the breadcrumbs stanza should have `overflow: visible;` CSS property
-
-### Copying current path
-
-The path to current node can be copied in clipboard by clicking the Copy button. The copied path will be in the format:
-`{Node1 label} / {Node2 label} / {Node3 label} / ....`
-
-### Coupling with another stanza
-
-Breadcrumbs should share the same data that have been passed to another stanza.
-Than could be done by using
-
-```html
-<togostanza--data-source
-  url="<url to data>"
-  receiver="name_of_first_stanza, name_of_second_stanza"
-  target-attribute="data-url"
-></togostanza--data-source>
+```csv
+[node-key-id],[node-label_key],parent,<other optional data>
+3,Coding sequence variant,1,<other optional data>
 ```
 
-To change currently showing hierarchy node, Breadcrumbs stanza need to receive event `selectedDatumChanged` with
+For example:
 
-```javascript
-{
-  details:
-  {
-    id: <id of the node to show>
-  }
-}
+```csv
+id,label,parent,<other optional data>
+3,Coding sequence variant,1,<other optional data>
 ```
 
-as event payload.
+### Expected data types
 
-Initially showing path could be defined by passing `node-initial_id` parameter, referring to id of the node, path to which should be shown at first loading.
+`[node-key-id]`,`[node-label-key]` are expecting String or Number
 
-Also, when clicking on the node inside the Breadcrumbs stanza, will dispatch same `selectedDatumChanged` event with payload containing the `id` of clicked node in same manner.
+`parent` is expencted to be reference to `[node-key-id]` of some node, therefore, it should be the same type. if id is a String, `parent` value must be also a string.
+
+> Note that `"parent"` key name should be present in the data
+
+### Multiple root nodes
+
+If multiple root nodes are found ( nodes with undefined `parent` ), a root node with id `root` will be created. In that case, one can specify its label by setting `root_node-label_text`.
+`root_node-label_icon` can be used to show icon on the root node. Icon name is FontAwesome 5.0 icon name, in PascalCase, without any prefixes (`fa`, `fas` etc.) (example: "Home", "ArrowUp" etc. For available icon names please refer to FontAwesome [website](https://fontawesome.com/icons/magnifying-glass?s=solid&f=classic)
+
+### Circular relations
+
+Circular relations, i.e. if two nodes reference each other as a `parent` are not suppotred.

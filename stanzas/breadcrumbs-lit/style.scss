@@ -17,9 +17,10 @@ breadcrumbs-el {
 
       .node-outline {
         stroke: var(--togostanza-border-color);
-        stroke-width: 1px;
+        stroke-width: calc(var(--togostanza-border-width) * 1px);
         fill: var(--togostanza-node-background_color);
         transition: var(--togostanza-fadeout-transition);
+        transition: fill 0.1s ease-in;
       }
 
       .node-label {
@@ -32,7 +33,7 @@ breadcrumbs-el {
         fill: var(--togostanza-fonts-font_color);
       }
 
-      .-hover {
+      &.-hover {
         .node-label,
         .home-icon {
           fill: var(--togostanza-fonts-font_color_hover);
@@ -40,6 +41,7 @@ breadcrumbs-el {
         .node-outline {
           fill: var(--togostanza-node-background_color_hover);
           transition: var(--togostanza-fadeout-transition);
+          transition: fill 0.1s ease-in;
         }
         &:active {
           filter: brightness(0.93);
@@ -80,7 +82,8 @@ breadcrumbs-el {
         position: relative;
         max-width: 15em;
         margin: 0;
-        border: 1px solid var(--togostanza-border-color);
+        border: calc(var(--togostanza-border-width) * 1px) solid
+          var(--togostanza-border-color);
         border-radius: 0.5em;
         background-color: var(--togostanza-node-background_color);
         z-index: 3;
