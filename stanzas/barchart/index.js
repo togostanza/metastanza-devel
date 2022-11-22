@@ -162,12 +162,14 @@ export default class Barchart extends Stanza {
       this.params["data-type"] === "tsv"
     ) {
       values.forEach((d) => {
-        d[errorKeyName] = [
-          parseFloat(d[`${errorKeyName}_q1`]),
-          parseFloat(d[`${errorKeyName}_q3`]),
-        ];
+        d[errorKeyName] = [d[`${errorKeyName}_q1`], d[`${errorKeyName}_q3`]];
       });
     }
+
+    values.forEach((d) => {
+      d[errorKeyName] = d[errorKeyName].map(parseFloat);
+      d[yKeyName] = parseFloat(d[yKeyName]);
+    });
 
     const showBarTooltips = values.some((d) => d[tooltipsKey]);
 
@@ -199,10 +201,7 @@ export default class Barchart extends Stanza {
 
     const togostanzaColors = colorGenerator.stanzaColor;
 
-    let dataMax = d3.max(
-      values,
-      (d) => +d[yKeyName] + (parseFloat(d[errorKeyName]) || 0)
-    );
+    let dataMax = d3.max(values, (d) => d[yKeyName] + (d[errorKeyName] || 0));
 
     const svg = d3
       .select(el)
@@ -429,7 +428,7 @@ export default class Barchart extends Stanza {
             dataset.push({
               x: entry[0],
               ...Object.fromEntries(
-                entry[1].map((d) => [d[groupKeyName], +d[yKeyName]])
+                entry[1].map((d) => [d[groupKeyName], d[yKeyName]])
               ),
             });
           }
@@ -560,7 +559,7 @@ export default class Barchart extends Stanza {
 
           const yMinMax = d3.extent(
             values,
-            (d) => +d[yKeyName] + (parseFloat(d[errorKeyName]) || 0) / 2
+            (d) => d[yKeyName] + (d[errorKeyName] || 0) / 2
           );
 
           switch (axisYScale) {
@@ -657,11 +656,11 @@ export default class Barchart extends Stanza {
             .transition(300)
             .attr("data-tooltip", (d) => `${d[groupKeyName]}: ${d[yKeyName]}`)
             .attr("x", (d) => subX(d[groupKeyName]))
-            .attr("y", (d) => y(+d[yKeyName]))
+            .attr("y", (d) => y(d[yKeyName]))
             .attr("width", subX.bandwidth())
             .attr("height", (d) => {
-              if (y(y.domain()[0]) - y(+d[yKeyName]) >= 0) {
-                return y(y.domain()[0]) - y(+d[yKeyName]);
+              if (y(y.domain()[0]) - y(d[yKeyName]) >= 0) {
+                return y(y.domain()[0]) - y(d[yKeyName]);
               }
               return 0;
             })
@@ -748,10 +747,7 @@ export default class Barchart extends Stanza {
             .data(d[1])
             .enter()
             .filter((d) => {
-              return (
-                d[errorKeyName] !== undefined &&
-                !isNaN(parseFloat(d[errorKeyName]))
-              );
+              return d[errorKeyName] !== undefined && !isNaN(d[errorKeyName]);
             })
             .append("g")
             .attr("class", "error-bar");
