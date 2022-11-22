@@ -368,10 +368,10 @@ export default class Barchart extends Stanza {
         }
 
         if (showBarTooltips) {
-          const arr = this.root.querySelectorAll("svg rect[data-tooltip]");
-
-          // TODO fix empty arr
-          this.tooltip.setup(arr);
+          requestAnimationFrame(() => {
+            const arr = this.root.querySelectorAll("svg rect[data-tooltip]");
+            this.tooltip.setup(arr);
+          });
         }
 
         if (showLegend) {
