@@ -29,150 +29,110 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "width",
-      "stanza:type": "number",
-      "stanza:example": 420,
-      "stanza:description": "Width in px",
-      "stanza:required": true
+      "stanza:key": "node-key",
+      "stanza:type": "string",
+      "stanza:description": "Key of node unique id",
+      "stanza:example": "id",
+      "stanza:required": false
     },
     {
-      "stanza:key": "height",
-      "stanza:type": "number",
-      "stanza:example": 20,
-      "stanza:description": "Height in px",
-      "stanza:required": true
-    },
-    {
-      "stanza:key": "initial-data-id",
+      "stanza:key": "node-initial_id",
       "stanza:type": "string",
       "stanza:description": "Initial node id",
       "stanza:example": "6",
       "stanza:required": false
     },
     {
-      "stanza:key": "root-node-label-text",
+      "stanza:key": "node-label_key",
       "stanza:type": "string",
-      "stanza:description": "Root node label text",
-      "stanza:example": "Home",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "root-node-label-icon",
-      "stanza:type": "string",
-      "stanza:description": "Root node label icon (Font Awesome icon name)",
-      "stanza:example": "Home",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "copy-icon",
-      "stanza:type": "string",
-      "stanza:description": "Copy icon (Font Awesome icon name)",
-      "stanza:example": "Copy",
-      "stanza:required": true
-    },
-    {
-      "stanza:key": "labels-data-key",
-      "stanza:type": "string",
-      "stanza:description": "Data key for labels",
+      "stanza:description": "Initial node id",
       "stanza:example": "label",
-      "stanza:required": true
-    },
-    {
-      "stanza:key": "breadcrumbs-corner-radius",
-      "stanza:type": "number",
-      "stanza:description": "Corner radius of breadcrumbs, in px",
-      "stanza:example": 3,
       "stanza:required": false
     },
     {
-      "stanza:key": "breadcrumbs-arrow-length",
-      "stanza:type": "number",
-      "stanza:description": "Corner radius of breadcrumbs, in px",
-      "stanza:example": 10,
-      "stanza:required": true
-    },
-    {
-      "stanza:key": "custom-css-url",
-      "stanza:example": "",
-      "stanza:description": "Stylesheet(css file) URL to override current style",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "show-dropdown",
+      "stanza:key": "node-show_dropdown",
       "stanza:type": "boolean",
-      "stanza:example": false,
-      "stanza:description": "Show dropdown menu for sibling nodes",
+      "stanza:description": "Show node dropdown (neighbour nodes)",
+      "stanza:example": true,
       "stanza:required": false
     },
     {
-      "stanza:key": "show-copy-button",
+      "stanza:key": "root_node-label_text",
+      "stanza:type": "string",
+      "stanza:description": "Text to show on root node",
+      "stanza:example": "Home",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "root_node-label_icon",
+      "stanza:type": "string",
+      "stanza:description": "Icon to use on root node (Font-awesome icon names)",
+      "stanza:example": "Home",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "show_copy_button",
       "stanza:type": "boolean",
+      "stanza:description": "Show copy path button",
       "stanza:example": false,
-      "stanza:description": "Show copy button",
       "stanza:required": false
     }
   ],
   "stanza:menu-placement": "bottom-right",
   "stanza:style": [
     {
-      "stanza:key": "--togostanza-home-icon-color",
-      "stanza:type": "color",
-      "stanza:default": "#000000",
-      "stanza:description": "Home icon color"
-    },
-    {
-      "stanza:key": "--togostanza-label-font-family",
+      "stanza:key": "--togostanza-fonts-font_family",
       "stanza:type": "text",
       "stanza:default": "Helvetica Neue",
-      "stanza:description": "Label font family"
+      "stanza:description": "Font family"
     },
     {
-      "stanza:key": "--togostanza-label-font-color",
+      "stanza:key": "--togostanza-fonts-font_color",
       "stanza:type": "color",
       "stanza:default": "#4E5059",
       "stanza:description": "Label font color"
     },
     {
-      "stanza:key": "--togostanza-label-font-size",
-      "stanza:type": "number",
-      "stanza:default": 11,
-      "stanza:description": "Label font size"
-    },
-    {
-      "stanza:key": "--togostanza-background-color",
+      "stanza:key": "--togostanza-fonts-font_color_hover",
       "stanza:type": "color",
       "stanza:default": "#f9f9fa",
-      "stanza:description": "Background color"
+      "stanza:description": "Label font color on hover"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_size_primary",
+      "stanza:type": "number",
+      "stanza:default": 9,
+      "stanza:description": "Label font size"
     },
     {
       "stanza:key": "--togostanza-border-color",
       "stanza:type": "color",
-      "stanza:default": "#e0e0e1",
+      "stanza:default": "#DDDCDA",
       "stanza:description": "Border color"
     },
     {
-      "stanza:key": "--togostanza-scrollbar-color",
-      "stanza:type": "color",
-      "stanza:default": "#e0e0e1",
-      "stanza:description": "Border color"
+      "stanza:key": "--togostanza-border-width",
+      "stanza:type": "number",
+      "stanza:default": 1,
+      "stanza:description": "Border width"
     },
     {
-      "stanza:key": "--togostanza-scrollbar-color-hover",
-      "stanza:type": "color",
-      "stanza:default": "#d0d0d1",
-      "stanza:description": "Border color"
-    },
-    {
-      "stanza:key": "--togostanza-label-background-color-hover",
+      "stanza:key": "--togostanza-node-background_color_hover",
       "stanza:type": "color",
       "stanza:default": "#16ADE3",
-      "stanza:description": "Color the labels on mouseover"
+      "stanza:description": "Background color of the nodes on mouseover"
     },
     {
-      "stanza:key": "--togostanza-label-font-color-hover",
+      "stanza:key": "--togostanza-node-background_color",
       "stanza:type": "color",
-      "stanza:default": "#f9f9fa",
-      "stanza:description": "Label font color on hover"
+      "stanza:default": "#F0F0EF",
+      "stanza:description": "Background color of the nodes"
+    },
+    {
+      "stanza:key": "--togostanza-theme-background-color",
+      "stanza:type": "color",
+      "stanza:default": "rgba(255,255,255,0)",
+      "stanza:description": "Background color"
     }
   ],
 
