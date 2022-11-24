@@ -55,7 +55,7 @@ export default class ForceGraph extends Stanza {
     this._data = values;
 
     const nodes = values[this.params["nodes-key"]];
-    const edges = values[this.params["edges-key"]];
+    const edges = values.links;
 
     const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
 
@@ -92,11 +92,12 @@ export default class ForceGraph extends Stanza {
     };
 
     const nodeSizeParams = {
-      basedOn: this.params["node-size-based_on"] || null,
+      basedOn: this.params["node-size-based_on"] || "fixed",
       dataKey: this.params["node-size-key"] || "",
-      minSize: setFallbackVal("node-size-min", 0),
-      maxSize: this.params["node-size-max"],
       scale: this.params["node-size-scale"] || "linear",
+      fixedSize: this.params["node-size-min"] || 3,
+      minSize: this.params["node-size-min"],
+      maxSize: this.params["node-size-max"],
     };
 
     const nodeColorParams = {

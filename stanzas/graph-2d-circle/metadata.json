@@ -29,27 +29,39 @@
     {
       "stanza:key": "misc-custom_css_url",
       "stanza:example": "",
-      "stanza:description": "Custom CSS URL",
-      "stanza:required": false
-    },
-
-    {
-      "stanza:key": "padding",
-      "stanza:type": "number",
-      "stanza:example": 60,
-      "stanza:description": "Inner padding in px"
+      "stanza:description": "Custom CSS URL"
     },
     {
-      "stanza:key": "nodes-sort-by",
+      "stanza:key": "nodes-key",
+      "stanza:type": "string",
+      "stanza:example": "nodes",
+      "stanza:description": "Where to find the nodes array",
+      "stanza:required": true
+    },
+    {
+      "stanza:key": "nodes-id_key",
+      "stanza:type": "string",
+      "stanza:example": "id",
+      "stanza:description": "Key of the unique node id"
+    },
+    {
+      "stanza:key": "node-label-key",
       "stanza:type": "string",
       "stanza:example": "id",
       "stanza:description": "Key of the node label"
     },
     {
+      "stanza:key": "node-label-margin",
+      "stanza:type": "number",
+      "stanza:default": 5,
+      "stanza:example": 5,
+      "stanza:description": "Node labels offset from node center, in px."
+    },
+    {
       "stanza:key": "node-size-based_on",
       "stanza:type": "single-choice",
-      "stanza:choice": ["data key", "sum of edge values"],
-      "stanza:example": "sum of edge values",
+      "stanza:choice": ["data key", "fixed", "sum of edges values"],
+      "stanza:example": "data key",
       "stanza:description": "What node size is based on"
     },
     {
@@ -76,6 +88,39 @@
       "stanza:choice": ["sqrt", "linear", "log10"],
       "stanza:example": "sqrt",
       "stanza:description": "Scaling function of node size"
+    },
+
+    {
+      "stanza:key": "nodes-sort-key",
+      "stanza:type": "string",
+      "stanza:example": "id",
+      "stanza:description": "Key of the node label"
+    },
+    {
+      "stanza:key": "node-size-based_on",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["data key", "sum of edge values"],
+      "stanza:example": "sum of edge values",
+      "stanza:description": "What node size is based on"
+    },
+    {
+      "stanza:key": "node-size-key",
+      "stanza:type": "text",
+      "stanza:example": "group",
+      "stanza:description": "Node size key. Valid only if `node-size-based_on` is set to `data key`"
+    },
+    {
+      "stanza:key": "node-size-data-key",
+      "stanza:type": "string",
+      "stanza:example": "",
+      "stanza:description": "Set size on the node based on data key"
+    },
+
+    {
+      "stanza:key": "node-fixed-size",
+      "stanza:type": "number",
+      "stanza:example": 3,
+      "stanza:description": "Fixed node radius in px"
     },
     {
       "stanza:key": "node-color-key",
@@ -129,6 +174,20 @@
 
     {
       "stanza:key": "tooltips-key",
+      "stanza:type": "string",
+      "stanza:example": "value",
+      "stanza:description": "Set color of the edge based on this data key"
+    },
+    {
+      "stanza:key": "highlight-adjacent-edges",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:default": false,
+      "stanza:description": "Highlight adjacent edges on node mouse hover"
+    },
+
+    {
+      "stanza:key": "nodes-tooltip-data-key",
       "stanza:type": "string",
       "stanza:default": "id",
       "stanza:example": "id",
