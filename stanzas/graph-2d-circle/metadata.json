@@ -183,7 +183,7 @@
       "stanza:key": "--togostanza-outline-padding",
       "stanza:type": "text",
       "stanza:default": "10 20",
-      "stanza:description": "Group color 5"
+      "stanza:description": "Stanza margins in px"
     },
     {
       "stanza:key": "--togostanza-border-color",
@@ -332,18 +332,6 @@
       "stanza:type": "color",
       "stanza:default": "#F57F5B",
       "stanza:description": "Group color 4"
-    },
-    {
-      "stanza:key": "--togostanza-outline-width",
-      "stanza:type": "number",
-      "stanza:default": "#F75976",
-      "stanza:description": "Group color 5"
-    },
-    {
-      "stanza:key": "--togostanza-outline-height",
-      "stanza:type": "number",
-      "stanza:default": "#F75976",
-      "stanza:description": "Group color 5"
     },
     {
       "stanza:key": "--togostanza-series-5-color",

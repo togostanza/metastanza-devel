@@ -14,7 +14,6 @@ import {
   appendCustomCss,
 } from "togostanza-utils";
 import { getMarginsFromCSSString } from "../../lib/utils";
-import { drawChordDiagram } from "./drawChordDiagram";
 
 export default class ForceGraph extends Stanza {
   menu() {
