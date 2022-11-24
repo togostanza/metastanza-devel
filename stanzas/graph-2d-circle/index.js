@@ -4,7 +4,7 @@ import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
 import prepareGraphData from "@/lib/prepareGraphData";
 import drawCircleLayout from "./drawCircleLayout";
-
+import { StanzaColorGenerator } from "@/lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -13,6 +13,7 @@ import {
   downloadTSVMenuItem,
   appendCustomCss,
 } from "togostanza-utils";
+import { getMarginsFromCSSString } from "../../lib/utils";
 
 export default class ForceGraph extends Stanza {
   menu() {
@@ -32,8 +33,8 @@ export default class ForceGraph extends Stanza {
 
     //data
 
-    const width = parseInt(this.params["width"]);
-    const height = parseInt(this.params["height"]);
+    const width = parseInt(css("--togostanza-outline-width"));
+    const height = parseInt(css("--togostanza-outline-height"));
 
     this.renderTemplate({
       template: "stanza.html.hbs",
@@ -50,18 +51,9 @@ export default class ForceGraph extends Stanza {
     const nodes = values.nodes;
     const edges = values.links;
 
-    const MARGIN = {
-      TOP: this.params["padding"],
-      BOTTOM: this.params["padding"],
-      LEFT: this.params["padding"],
-      RIGHT: this.params["padding"],
-    };
+    const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
 
-    // Setting color scale
-    const togostanzaColors = [];
-    for (let i = 0; i < 6; i++) {
-      togostanzaColors.push(css(`--togostanza-series-${i}-color`));
-    }
+    const togostanzaColors = new StanzaColorGenerator(this).stanzaColor;
 
     const color = function () {
       return d3.scaleOrdinal().range(togostanzaColors);
@@ -95,6 +87,7 @@ export default class ForceGraph extends Stanza {
       minSize: this.params["node-min-size"],
       maxSize: this.params["node-max-size"],
     };
+
     const nodeColorParams = {
       basedOn: this.params["node-color-based-on"] || "fixed",
       dataKey: this.params["node-color-data-key"] || "",
