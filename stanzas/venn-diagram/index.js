@@ -12,15 +12,9 @@ import {
 import ToolTip from "@/lib/ToolTip";
 import Legend from "@/lib/Legend";
 
+const LINE_HEIGHT = 1;
+
 export default class VennStanza extends Stanza {
-  // colorSeries;
-  // data;
-  // totals;
-  // dataLabels;
-  // numberOfData;
-  // venn;
-  // tooltip;
-  // legend;
 
   menu() {
     return [
@@ -33,7 +27,7 @@ export default class VennStanza extends Stanza {
   }
 
   async render() {
-    appendCustomCss(this, this.params["custom-css-url"]);
+    appendCustomCss(this, this.params["misc-custom_css_url"]);
     this.colorSeries = this.getColorSeries();
 
     this.renderTemplate({ template: "stanza.html.hbs" });
@@ -49,7 +43,6 @@ export default class VennStanza extends Stanza {
 
     // get data
     this.data = await this.getData();
-    console.log(this.data);
     this.totals = this.data.map((datum) => {
       const total = {
         set: datum.set,
@@ -74,8 +67,11 @@ export default class VennStanza extends Stanza {
   drawVennDiagram() {
     // set common parameters and styles
     const container = this.root.querySelector("#venn-diagrams");
-    const svgWidth = this.params["width"];
-    const svgHeight = this.params["height"];
+
+    const getPropertyValue = (key) =>
+      window.getComputedStyle(this.element).getPropertyValue(key);
+    const svgWidth = getPropertyValue(`--togostanza-outline-width`);
+    const svgHeight = getPropertyValue(`--togostanza-outline-height`);
     container.style.width = svgWidth + "px";
     container.style.height = svgHeight + "px";
 
@@ -83,6 +79,7 @@ export default class VennStanza extends Stanza {
     const selectedDiagram = this.root.querySelector(
       `.venn-diagram[data-number-of-data="${this.numberOfData}"]`
     );
+    const padding = +getPropertyValue(`--togostanza-outline-padding`);
     if (!selectedDiagram) {
       console.error(
         "Venn diagrams with more than six elements are not supported. Please try using Euler diagrams."
@@ -97,19 +94,37 @@ export default class VennStanza extends Stanza {
       .querySelector("main")
       .getBoundingClientRect();
     const rect = selectedDiagram.getBoundingClientRect();
-    const margin = Math.max(rect.x - containerRect.x, rect.y - containerRect.y);
+    const margin = Math.max(rect.x - containerRect.x, rect.y - containerRect.y) + padding;
     const scale = Math.min(
       svgWidth / (rect.width + margin * 2),
       svgHeight / (rect.height + margin * 2)
     );
-    selectedDiagram.setAttribute("transform", `scale(${scale})`);
-    const labelFontSize = +window
-      .getComputedStyle(this.element)
-      .getPropertyValue("--togostanza-label-font-size")
-      .trim();
-    selectedDiagram.querySelectorAll("text").forEach((text) => {
-      text.style.fontSize = labelFontSize / scale + "px";
+    selectedDiagram.style.transform = `translate(${padding}px, ${padding}px) scale(${scale})`;
+
+    // typography
+    const fontStyles = [
+      {
+        className: 'label',
+        varSuffix: 'primary'
+      },
+      {
+        className: 'value',
+        varSuffix: 'secondary'
+      },
+    ].map(({className, varSuffix}) => {
+      const fontSize = +window
+        .getComputedStyle(this.element)
+        .getPropertyValue(`--togostanza-fonts-font_size_${varSuffix}`);
+      const actualFontSize = fontSize / scale;
+      selectedDiagram.querySelectorAll(`text.${className}`).forEach((text) => {
+        text.style.fontSize = actualFontSize + "px";
+      });
+      return {className, varSuffix, fontSize, actualFontSize}
     });
+    let textShiftY = (fontStyles.reduce((acc, style) => acc + style.fontSize, 0)) * LINE_HEIGHT * -.5;
+    selectedDiagram.querySelectorAll("text.label").forEach(text => text.setAttribute("dy", textShiftY));
+    textShiftY += fontStyles[1].actualFontSize * LINE_HEIGHT;
+    selectedDiagram.querySelectorAll("text.value").forEach(text => text.setAttribute("dy", textShiftY));
 
     // shapes
     selectedDiagram.querySelectorAll(":scope > g").forEach((group) => {
@@ -130,8 +145,11 @@ export default class VennStanza extends Stanza {
         .querySelector(":scope > .part")
         .setAttribute("fill", color.toString());
       // set label
-      group.querySelector(":scope > text.label").textContent = labels.join(",");
-      group.querySelector(":scope > text.value").textContent = count;
+      group.querySelector(":scope .text > text.label").textContent = labels.join(",");
+      group.querySelector(":scope .text > text.value").textContent = count;
+      // interaction
+      group.addEventListener("mouseenter", () => selectedDiagram.classList.add("-hovering"));
+      group.addEventListener("mouseleave", () => selectedDiagram.classList.remove("-hovering"));
       // tooltip
       group.dataset.tooltip = `<strong>${labels.join("∩")}</strong>: ${count}`;
       group.dataset.tooltipHtml = true;
@@ -169,7 +187,7 @@ export default class VennStanza extends Stanza {
       window.getComputedStyle(this.element).getPropertyValue(key);
     const series = Array(6);
     for (let i = 0; i < series.length; i++) {
-      series[i] = `--togostanza-series-${i}-color`;
+      series[i] = `--togostanza-theme-series_${i}_color`;
     }
     return series.map((variable) => getPropertyValue(variable).trim());
   }
@@ -184,16 +202,18 @@ export default class VennStanza extends Stanza {
         );
       }
     });
-    const ratio = (targets.length - 1) / (this.numberOfData - 1);
-    switch (this.params["blend-mode"]) {
-      case "multiply":
-        blendedColor = blendedColor.saturate(ratio);
-        blendedColor = blendedColor.darken(ratio * 0.5);
-        break;
-      case "screen":
-        blendedColor = blendedColor.saturate(ratio);
-        blendedColor = blendedColor.lighten(ratio * 0.5);
-        break;
+    if (targets.length > 1) {
+      const ratio = (targets.length - 1) / (this.numberOfData - 1);
+      switch (this.params["color-blend"]) {
+        case "multiply":
+          blendedColor = blendedColor.saturate(ratio);
+          blendedColor = blendedColor.darken(ratio * 0.5);
+          break;
+        case "screen":
+          blendedColor = blendedColor.saturate(ratio);
+          blendedColor = blendedColor.lighten(ratio * 0.5);
+          break;
+      }
     }
     return blendedColor;
   }
@@ -204,11 +224,6 @@ export default class VennStanza extends Stanza {
       this.params["data-type"],
       this.root.querySelector("main")
     );
-    // // processing
-    // for (const datum of data) {
-    //   datum.orgs = datum.orgs.split(', ');
-    //   datum.count = Number(datum.count);
-    // }
     return data;
   }
 }
