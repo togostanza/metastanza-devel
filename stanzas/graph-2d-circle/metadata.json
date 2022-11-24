@@ -27,19 +27,20 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "custom_css_url",
+      "stanza:key": "misc-custom_css_url",
       "stanza:example": "",
-      "stanza:description": "Custom CSS URL"
+      "stanza:description": "Custom CSS URL",
+      "stanza:required": false
+    },
+
+    {
+      "stanza:key": "padding",
+      "stanza:type": "number",
+      "stanza:example": 60,
+      "stanza:description": "Inner padding in px"
     },
     {
-      "stanza:key": "nodes-key",
-      "stanza:type": "string",
-      "stanza:example": "nodes",
-      "stanza:description": "Where to find the nodes array",
-      "stanza:required": true
-    },
-    {
-      "stanza:key": "node-label-key",
+      "stanza:key": "nodes-sort-by",
       "stanza:type": "string",
       "stanza:example": "id",
       "stanza:description": "Key of the node label"
@@ -182,6 +183,98 @@
       "stanza:key": "--togostanza-outline-padding",
       "stanza:type": "text",
       "stanza:default": "10 20",
+      "stanza:description": "Group color 5"
+    },
+    {
+      "stanza:key": "--togostanza-border-color",
+      "stanza:type": "color",
+      "stanza:default": "#4E5059",
+      "stanza:description": "Border color"
+    },
+    {
+      "stanza:key": "--togostanza-border-width",
+      "stanza:type": "number",
+      "stanza:default": 1,
+      "stanza:description": "Border width in px"
+    },
+
+    {
+      "stanza:key": "--togostanza-theme-series_0_color",
+      "stanza:type": "color",
+      "stanza:default": "#6590e6",
+      "stanza:description": "Group color 0"
+    },
+    {
+      "stanza:key": "--togostanza-theme-series_1_color",
+      "stanza:type": "color",
+      "stanza:default": "#3ac9b6",
+      "stanza:description": "Group color 1"
+    },
+    {
+      "stanza:key": "--togostanza-theme-series_2_color",
+      "stanza:type": "color",
+      "stanza:default": "#9ede2f",
+      "stanza:description": "Group color 2"
+    },
+    {
+      "stanza:key": "--togostanza-theme-series_3_color",
+      "stanza:type": "color",
+      "stanza:default": "#E6BB1A",
+      "stanza:description": "Group color 3"
+    },
+    {
+      "stanza:key": "--togostanza-theme-series_4_color",
+      "stanza:type": "color",
+      "stanza:default": "#F57F5B",
+      "stanza:description": "Group color 4"
+    },
+    {
+      "stanza:key": "--togostanza-theme-series_5_color",
+      "stanza:type": "color",
+      "stanza:default": "#F75976",
+      "stanza:description": "Group color 5"
+    },
+    {
+      "stanza:key": "--togostanza-theme-background_color",
+      "stanza:type": "color",
+      "stanza:default": "rgba(255,255,255,0)",
+      "stanza:description": "Nodes default color"
+    },
+
+    {
+      "stanza:key": "--togostanza-series-0-color",
+      "stanza:type": "color",
+      "stanza:default": "#4E5059",
+      "stanza:description": "Font color"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_size_primary",
+      "stanza:type": "number",
+      "stanza:default": 10,
+      "stanza:description": "Primary font size"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_size_secondary",
+      "stanza:type": "number",
+      "stanza:default": 8,
+      "stanza:description": "Secondary font size"
+    },
+    {
+      "stanza:key": "--togostanza-outline-width",
+      "stanza:type": "number",
+      "stanza:default": 500,
+      "stanza:description": "Stanza width in px"
+    },
+    {
+      "stanza:key": "--togostanza-outline-height",
+      "stanza:type": "number",
+      "stanza:default": 500,
+      "stanza:description": "Stanza height in px"
+    },
+    {
+      "stanza:key": "--togostanza-outline-padding",
+      "stanza:type": "text",
+      "stanza:default": "10 20",
       "stanza:description": "Stanza margins in px"
     },
     {
@@ -241,7 +334,19 @@
       "stanza:description": "Group color 4"
     },
     {
-      "stanza:key": "--togostanza-theme-series_5_color",
+      "stanza:key": "--togostanza-outline-width",
+      "stanza:type": "number",
+      "stanza:default": "#F75976",
+      "stanza:description": "Group color 5"
+    },
+    {
+      "stanza:key": "--togostanza-outline-height",
+      "stanza:type": "number",
+      "stanza:default": "#F75976",
+      "stanza:description": "Group color 5"
+    },
+    {
+      "stanza:key": "--togostanza-series-5-color",
       "stanza:type": "color",
       "stanza:default": "#F75976",
       "stanza:description": "Group color 5"
