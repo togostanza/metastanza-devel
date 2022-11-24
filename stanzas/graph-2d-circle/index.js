@@ -14,6 +14,7 @@ import {
   appendCustomCss,
 } from "togostanza-utils";
 import { getMarginsFromCSSString } from "../../lib/utils";
+import { drawChordDiagram } from "./drawChordDiagram";
 
 export default class ForceGraph extends Stanza {
   menu() {
@@ -28,6 +29,12 @@ export default class ForceGraph extends Stanza {
 
   async render() {
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
+
+    const setFallbackVal = (param, defVal) => {
+      return isNaN(parseFloat(this.params[param]))
+        ? defVal
+        : this.params[param];
+    };
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
@@ -49,7 +56,7 @@ export default class ForceGraph extends Stanza {
     this._data = values;
 
     const nodes = values[this.params["nodes-key"]];
-    const edges = values.links;
+    const edges = values[this.params["edges-key"]];
 
     const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
 
@@ -80,31 +87,34 @@ export default class ForceGraph extends Stanza {
       sortOrder: this.params["nodes-sort-order"] || "ascending",
     };
 
+    const NODE_SIZE_BASED_ON = {
+      dataKey: "data key",
+      sumEdges: "sum of edge values",
+    };
+
     const nodeSizeParams = {
-      basedOn: this.params["node-size-based_on"] || "fixed",
+      basedOn: this.params["node-size-based_on"] || null,
       dataKey: this.params["node-size-key"] || "",
-      scale: this.params["node-size-scale"] || "linear",
-      fixedSize: this.params["node-size-min"] || 3,
-      minSize: this.params["node-size-min"],
+      minSize: setFallbackVal("node-size-min", 0),
       maxSize: this.params["node-size-max"],
+      scale: this.params["node-size-scale"] || "linear",
     };
 
     const nodeColorParams = {
-      basedOn: this.params["node-color-based-on"] || "fixed",
-      dataKey: this.params["node-color-data-key"] || "",
+      dataKey: this.params["node-color-key"] || "",
     };
 
     const edgeWidthParams = {
-      basedOn: this.params["edge-width-based-on"] || "fixed",
-      dataKey: this.params["edge-width-data-key"] || "",
-      fixedWidth: this.params["edge-fixed-width"] || 1,
-      minWidth: this.params["edge-min-width"],
-      maxWidth: this.params["edge-max-width"],
+      dataKey: this.params["edge-width-key"] || "",
+      minWidth: setFallbackVal("edge-width-min", 1),
+      maxWidth: this.params["edge-width-max"],
+      scale: "linear",
+      showArrows: this.params["edge-show_arrows"],
     };
 
     const edgeColorParams = {
-      basedOn: this.params["edge-color-based-on"] || "fixed",
-      dataKey: this.params["edge-color-data-key"] || "",
+      basedOn: "data key",
+      dataKey: Symbol(),
     };
 
     const nodeLabelParams = {
@@ -113,16 +123,16 @@ export default class ForceGraph extends Stanza {
     };
 
     const tooltipParams = {
-      dataKey: this.params["nodes-tooltip-data-key"],
-      show: nodes.some((d) => d[this.params["nodes-tooltip-data-key"]]),
+      dataKey: this.params["tooltips-key"],
+      show: nodes.some((d) => d[this.params["tooltips-key"]]),
     };
 
     const edgeParams = {
-      type: this.params["edge-type"] || "curved",
-      curveStrength: this.params["edge-curve-strength"] || 0,
+      type: "curve",
+      curveStrength: this.params["edge-curvature"] || 0,
     };
 
-    const highlightAdjEdges = this.params["highlight-adjacent-edges"] || false;
+    const highlightAdjEdges = true;
 
     const params = {
       MARGIN,
@@ -141,13 +151,30 @@ export default class ForceGraph extends Stanza {
       tooltipParams,
     };
 
+    let notEmptyNodes = nodes;
+    if (!notEmptyNodes) {
+      const names = Array.from(
+        new Set(edges.flatMap((d) => [d.source, d.target]))
+      );
+      notEmptyNodes = [];
+      names.forEach((name) => {
+        notEmptyNodes.push({
+          id: name,
+        });
+      });
+    }
+
     const { prepNodes, prepEdges, symbols } = prepareGraphData(
-      nodes,
+      notEmptyNodes,
       edges,
       params
     );
 
-    drawCircleLayout(svg, prepNodes, prepEdges, { ...params, symbols });
+    if (nodeSizeParams.basedOn === NODE_SIZE_BASED_ON.sumEdges) {
+      drawChordDiagram(svg, prepNodes, prepEdges, { ...params, symbols });
+    } else {
+      drawCircleLayout(svg, prepNodes, prepEdges, { ...params, symbols });
+    }
 
     this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
   }
