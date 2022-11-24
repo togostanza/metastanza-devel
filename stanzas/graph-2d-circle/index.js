@@ -14,6 +14,7 @@ import {
   appendCustomCss,
 } from "togostanza-utils";
 import { getMarginsFromCSSString } from "../../lib/utils";
+import { drawChordDiagram } from "./drawChordDiagram";
 
 export default class ForceGraph extends Stanza {
   menu() {
@@ -55,7 +56,7 @@ export default class ForceGraph extends Stanza {
     this._data = values;
 
     const nodes = values[this.params["nodes-key"]];
-    const edges = values.links;
+    const edges = values[this.params["edges-key"]];
 
     const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
 
@@ -92,12 +93,11 @@ export default class ForceGraph extends Stanza {
     };
 
     const nodeSizeParams = {
-      basedOn: this.params["node-size-based_on"] || "fixed",
+      basedOn: this.params["node-size-based_on"] || null,
       dataKey: this.params["node-size-key"] || "",
-      scale: this.params["node-size-scale"] || "linear",
-      fixedSize: this.params["node-size-min"] || 3,
-      minSize: this.params["node-size-min"],
+      minSize: setFallbackVal("node-size-min", 0),
       maxSize: this.params["node-size-max"],
+      scale: this.params["node-size-scale"] || "linear",
     };
 
     const nodeColorParams = {

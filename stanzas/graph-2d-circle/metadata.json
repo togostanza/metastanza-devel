@@ -51,17 +51,10 @@
       "stanza:description": "Key of the node label"
     },
     {
-      "stanza:key": "node-label-margin",
-      "stanza:type": "number",
-      "stanza:default": 5,
-      "stanza:example": 5,
-      "stanza:description": "Node labels offset from node center, in px."
-    },
-    {
       "stanza:key": "node-size-based_on",
       "stanza:type": "single-choice",
-      "stanza:choice": ["data key", "fixed", "sum of edges values"],
-      "stanza:example": "data key",
+      "stanza:choice": ["data key", "sum of edge values"],
+      "stanza:example": "sum of edge values",
       "stanza:description": "What node size is based on"
     },
     {
@@ -89,7 +82,12 @@
       "stanza:example": "sqrt",
       "stanza:description": "Scaling function of node size"
     },
-
+    {
+      "stanza:key": "node-color-key",
+      "stanza:type": "text",
+      "stanza:example": "group",
+      "stanza:description": "Node's color key"
+    },
     {
       "stanza:key": "nodes-sort-key",
       "stanza:type": "string",
@@ -102,44 +100,6 @@
       "stanza:choice": ["data key", "sum of edge values"],
       "stanza:example": "sum of edge values",
       "stanza:description": "What node size is based on"
-    },
-    {
-      "stanza:key": "node-size-key",
-      "stanza:type": "text",
-      "stanza:example": "group",
-      "stanza:description": "Node size key. Valid only if `node-size-based_on` is set to `data key`"
-    },
-    {
-      "stanza:key": "node-size-data-key",
-      "stanza:type": "string",
-      "stanza:example": "",
-      "stanza:description": "Set size on the node based on data key"
-    },
-
-    {
-      "stanza:key": "node-fixed-size",
-      "stanza:type": "number",
-      "stanza:example": 3,
-      "stanza:description": "Fixed node radius in px"
-    },
-    {
-      "stanza:key": "node-color-key",
-      "stanza:type": "text",
-      "stanza:example": "group",
-      "stanza:description": "Node's color key"
-    },
-    {
-      "stanza:key": "nodes-sort-key",
-      "stanza:type": "string",
-      "stanza:example": "group",
-      "stanza:description": "Sort nodes by this data key value"
-    },
-    {
-      "stanza:key": "nodes-sort-order",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["ascending", "descending"],
-      "stanza:example": "ascending",
-      "stanza:description": "Nodes sorting order"
     },
     {
       "stanza:key": "edges-key",
@@ -175,20 +135,6 @@
     {
       "stanza:key": "tooltips-key",
       "stanza:type": "string",
-      "stanza:example": "value",
-      "stanza:description": "Set color of the edge based on this data key"
-    },
-    {
-      "stanza:key": "highlight-adjacent-edges",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:default": false,
-      "stanza:description": "Highlight adjacent edges on node mouse hover"
-    },
-
-    {
-      "stanza:key": "nodes-tooltip-data-key",
-      "stanza:type": "string",
       "stanza:default": "id",
       "stanza:example": "id",
       "stanza:description": "Node tooltips data key. If empty, no tooltips will be shown"
@@ -210,98 +156,6 @@
     },
     {
       "stanza:key": "--togostanza-fonts-font_color",
-      "stanza:type": "color",
-      "stanza:default": "#4E5059",
-      "stanza:description": "Font color"
-    },
-    {
-      "stanza:key": "--togostanza-fonts-font_size_primary",
-      "stanza:type": "number",
-      "stanza:default": 10,
-      "stanza:description": "Primary font size"
-    },
-    {
-      "stanza:key": "--togostanza-fonts-font_size_secondary",
-      "stanza:type": "number",
-      "stanza:default": 8,
-      "stanza:description": "Secondary font size"
-    },
-    {
-      "stanza:key": "--togostanza-outline-width",
-      "stanza:type": "number",
-      "stanza:default": 500,
-      "stanza:description": "Stanza width in px"
-    },
-    {
-      "stanza:key": "--togostanza-outline-height",
-      "stanza:type": "number",
-      "stanza:default": 500,
-      "stanza:description": "Stanza height in px"
-    },
-    {
-      "stanza:key": "--togostanza-outline-padding",
-      "stanza:type": "text",
-      "stanza:default": "10 20",
-      "stanza:description": "Stanza margins in px"
-    },
-    {
-      "stanza:key": "--togostanza-border-color",
-      "stanza:type": "color",
-      "stanza:default": "#4E5059",
-      "stanza:description": "Border color"
-    },
-    {
-      "stanza:key": "--togostanza-border-width",
-      "stanza:type": "number",
-      "stanza:default": 1,
-      "stanza:description": "Border width in px"
-    },
-
-    {
-      "stanza:key": "--togostanza-theme-series_0_color",
-      "stanza:type": "color",
-      "stanza:default": "#6590e6",
-      "stanza:description": "Group color 0"
-    },
-    {
-      "stanza:key": "--togostanza-theme-series_1_color",
-      "stanza:type": "color",
-      "stanza:default": "#3ac9b6",
-      "stanza:description": "Group color 1"
-    },
-    {
-      "stanza:key": "--togostanza-theme-series_2_color",
-      "stanza:type": "color",
-      "stanza:default": "#9ede2f",
-      "stanza:description": "Group color 2"
-    },
-    {
-      "stanza:key": "--togostanza-theme-series_3_color",
-      "stanza:type": "color",
-      "stanza:default": "#E6BB1A",
-      "stanza:description": "Group color 3"
-    },
-    {
-      "stanza:key": "--togostanza-theme-series_4_color",
-      "stanza:type": "color",
-      "stanza:default": "#F57F5B",
-      "stanza:description": "Group color 4"
-    },
-    {
-      "stanza:key": "--togostanza-theme-series_5_color",
-      "stanza:type": "color",
-      "stanza:default": "#F75976",
-      "stanza:description": "Group color 5"
-    },
-    {
-      "stanza:key": "--togostanza-theme-background_color",
-      "stanza:type": "color",
-      "stanza:default": "rgba(255,255,255,0)",
-      "stanza:description": "Nodes default color"
-    },
-
-    {
-      "stanza:key": "--togostanza-series-0-color",
       "stanza:type": "color",
       "stanza:default": "#4E5059",
       "stanza:description": "Font color"
@@ -393,7 +247,7 @@
       "stanza:description": "Group color 4"
     },
     {
-      "stanza:key": "--togostanza-series-5-color",
+      "stanza:key": "--togostanza-theme-series_5_color",
       "stanza:type": "color",
       "stanza:default": "#F75976",
       "stanza:description": "Group color 5"
@@ -408,7 +262,7 @@
     {
       "stanza:key": "--togostanza-default-node-color",
       "stanza:type": "color",
-      "stanza:default": "#6590e6",
+      "stanza:default": "rgba(255,255,255,0)",
       "stanza:description": "Nodes default color"
     },
 

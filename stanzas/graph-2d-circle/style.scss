@@ -32,9 +32,6 @@ svg {
   stroke-linecap: round;
   fill: none;
   stroke: var(--togostanza-edge-default_color);
-  &.chord {
-    stroke: none;
-  }
 }
 
 .active {
