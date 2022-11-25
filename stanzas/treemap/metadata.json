@@ -43,10 +43,22 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "gap_width",
+      "stanza:key": "node-gap_width",
       "stanza:type": "number",
       "stanza:example": 2,
       "stanza:description": "Gap width in px"
+    },
+    {
+      "stanza:key": "node-label_key",
+      "stanza:type": "text",
+      "stanza:example": "label",
+      "stanza:description": "Node label data key"
+    },
+    {
+      "stanza:key": "node-value_key",
+      "stanza:type": "text",
+      "stanza:example": "n",
+      "stanza:description": "Node value key"
     }
   ],
   "stanza:menu-placement": "bottom-right",
