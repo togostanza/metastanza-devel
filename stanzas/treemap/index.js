@@ -2,7 +2,7 @@ import Stanza from "togostanza/stanza";
 import * as d3 from "d3";
 import uid from "./uid";
 import loadData from "togostanza-utils/load-data"; //"@/lib/load-data";
-
+import { StanzaColorGenerator } from "@/lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -42,12 +42,7 @@ export default class TreeMapStanza extends Stanza {
     const logScale = this.params["log-scale"];
     const borderWidth = this.params["gap-width"];
 
-    const colorScale = [];
-
-    // in metadata.json there is 6 colors for color scheme
-    for (let i = 0; i < 6; i++) {
-      colorScale.push(css(`--togostanza-series-${i}-color`));
-    }
+    const togostanzaColors = new StanzaColorGenerator(this).stanzaColor;
 
     const data = await loadData(
       this.params["data-url"],
@@ -85,6 +80,7 @@ export default class TreeMapStanza extends Stanza {
     }
 
     const treeMapElement = this.root.querySelector("#treemap");
+    const colorScale = d3.scaleOrdinal(togostanzaColors);
 
     const opts = {
       WIDTH,
@@ -149,8 +145,6 @@ function draw(el, dataset, opts) {
   };
 
   const format = d3.format(",d");
-
-  const color = d3.scaleOrdinal(colorScale);
 
   //move and scale children nodes to fit into parent nodes
   function tile(node, x0, y0, x1, y1) {
@@ -226,7 +220,7 @@ function draw(el, dataset, opts) {
         return `fill: ${
           d === root
             ? "var(--togostanza-background-color)"
-            : color(d.data.data.label)
+            : colorScale(d.data.data.label)
         }`;
       });
 
@@ -244,7 +238,9 @@ function draw(el, dataset, opts) {
       .attr("id", (d) => (d.leafUid = uid("leaf")).id)
       .attr("fill", "none")
       .attr("stroke-width", 1)
-      .attr("stroke", (d) => shadeColor(color(d.parent.data.data.label), -15));
+      .attr("stroke", (d) =>
+        shadeColor(colorScale(d.parent.data.data.label), -15)
+      );
 
     innerNode
       .append("clipPath")
