@@ -5,7 +5,7 @@
   box-sizing: border-box;
   display: flex;
   gap: 1rem;
-  background-color: var(--togostanza-background-color);
+  background-color: var(--togostanza-theme-background_color);
 }
 
 .legend-right {
@@ -34,15 +34,12 @@
 }
 
 svg {
-  .error-bar {
-    opacity: var(--togostanza-error_bars-opacity);
-  }
+  background-color: var(--togostanza-theme-background_color);
 
-  background-color: var(--togostanza-background-color);
-
-  .error-bars > line {
-    stroke: var(--togostanza-theme-primary_color);
+  .error-bars {
+    stroke: var(--togostanza-theme-border_color);
     stroke-width: calc(var(--togostanza-error_bars-width) * 1px);
+    opacity: var(--togostanza-error_bars-opacity);
   }
 
   .zoom {
@@ -52,7 +49,7 @@ svg {
   }
 
   .grid {
-    stroke: var(--togostanza-border-color);
+    stroke: var(--togostanza-theme-border_color);
     stroke-width: 1px;
     stroke-dasharray: 2, 2;
     opacity: 0.5;
@@ -89,18 +86,13 @@ svg {
 
   .axis {
     > .tick > line {
-      stroke: var(--togostanza-border-color);
-      stroke-width: var(--togostanza-axis-stroke_width);
+      stroke: var(--togostanza-theme-border_color);
+      stroke-width: 1px;
     }
 
     > path {
-      stroke: var(--togostanza-border-color);
-      stroke-width: var(--togostanza-axis-stroke_width);
-    }
-
-    > .tick > text {
-      font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
-      fill: var(--togostanza-fonts-font_color);
+      stroke: var(--togostanza-theme-border_color);
+      stroke-width: 1px;
     }
   }
 
@@ -114,15 +106,9 @@ svg {
   }
 
   path.line {
-    stroke-width: var(--togostanza-line-width);
-    opacity: var(--togostanza-line-opacity);
+    stroke-width: calc(var(--togostanza-border-width) * 1px);
+    opacity: 1;
     fill: none;
-  }
-
-  line.errorbar {
-    stroke: var(--togostanza-errorbar-line-color);
-    stroke-width: calc(var(--togostanza-errorbar-line-width) * 1px);
-    opacity: var(--togostanza-errorbar-line-opacity);
   }
 }
 

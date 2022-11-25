@@ -47,8 +47,8 @@
     {
       "stanza:key": "axis-x-visible",
       "stanza:type": "boolean",
-      "stanza:example": false,
-      "stanza:default": false,
+      "stanza:example": true,
+      "stanza:default": true,
       "stanza:description": "Show the axis",
       "stanza:required": false
     },
@@ -153,8 +153,8 @@
     {
       "stanza:key": "axis-y-visible",
       "stanza:type": "boolean",
-      "stanza:example": false,
-      "stanza:default": false,
+      "stanza:example": true,
+      "stanza:default": true,
       "stanza:description": "Hide the axis",
       "stanza:required": false
     },
@@ -401,20 +401,20 @@
     {
       "stanza:key": "--togostanza-border-width",
       "stanza:type": "number",
-      "stanza:default": 0.5,
-      "stanza:description": "Border width"
+      "stanza:default": 1,
+      "stanza:description": "Border width in px"
     },
     {
-      "stanza:key": "--togostanza-axis-stroke_width",
+      "stanza:key": "--togostanza-error_bars-width",
       "stanza:type": "number",
       "stanza:default": 1,
-      "stanza:description": "Axis width"
+      "stanza:description": "Erorr bars width in px"
     },
     {
       "stanza:key": "--togostanza-error_bars-opacity",
       "stanza:type": "number",
-      "stanza:default": 0.5,
-      "stanza:description": "Error bar stroke opacity "
+      "stanza:default": 1,
+      "stanza:description": "Erorr bars opacity"
     }
   ]
 }
