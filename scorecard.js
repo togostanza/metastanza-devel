@@ -12,7 +12,7 @@ class Scorecard extends Stanza {
   }
 
   async render() {
-    appendCustomCss(this, this.params["custom-css-url"]);
+    appendCustomCss(this, this.params["custom_css_url"]);
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
     const dataset = await loadData(
@@ -20,9 +20,9 @@ class Scorecard extends Stanza {
       this.params["data-type"],
       this.root.querySelector("main")
     );
-    const width = this.params["width"];
-    const height = this.params["height"];
-    const padding = this.params["padding"];
+    const width = +css("--togostanza-outline-width");
+    const height = +css("--togostanza-outline-height");
+    const padding = +css("--togostanza-outline-padding");
 
     const [key, value] = Object.entries(dataset)[0];
     this._data = { [key]: value };
@@ -52,27 +52,42 @@ class Scorecard extends Stanza {
     scorecardSvg.setAttribute(
       "height",
       `${
-        Number(css("--togostanza-key-font-size")) +
-        Number(css("--togostanza-value-font-size"))
+        Number(css("--togostanza-fonts-font_size_secondary")) +
+        Number(css("--togostanza-fonts-font_size_primary"))
       }`
     );
 
     const keyElement = this.root.querySelector("#key");
     const valueElement = this.root.querySelector("#value");
-    if (this.params["legend"] === "false") {
+    if (this.params["title-show"] === false) {
       keyElement.setAttribute(`style`, `display: none;`);
     }
 
-    keyElement.setAttribute("y", Number(css("--togostanza-key-font-size")));
-    keyElement.setAttribute("fill", "var(--togostanza-key-font-color)");
+    keyElement.setAttribute(
+      "y",
+      Number(css("--togostanza-fonts-font_size_secondary"))
+    );
+    keyElement.setAttribute(
+      "fill",
+      "var(--togostanza-fonts-font_color_secondary)"
+    );
     valueElement.setAttribute(
       "y",
-      Number(css("--togostanza-key-font-size")) +
-        Number(css("--togostanza-value-font-size"))
+      Number(css("--togostanza-fonts-font_size_secondary")) +
+        Number(css("--togostanza-fonts-font_size_primary"))
     );
-    valueElement.setAttribute("fill", "var(--togostanza-value-font-color)");
-    keyElement.setAttribute("font-size", css("--togostanza-key-font-size"));
-    valueElement.setAttribute("font-size", css("--togostanza-value-font-size"));
+    valueElement.setAttribute(
+      "fill",
+      "var(--togostanza-fonts-font_color_primary)"
+    );
+    keyElement.setAttribute(
+      "font-size",
+      css("--togostanza-fonts-font_size_secondary")
+    );
+    valueElement.setAttribute(
+      "font-size",
+      css("--togostanza-fonts-font_size_primary")
+    );
   }
 }
 
@@ -118,36 +133,27 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "custom-css-url",
+		"stanza:key": "custom_css_url",
 		"stanza:example": "",
 		"stanza:description": "Stylesheet(css file) URL to override current style",
 		"stanza:required": false
 	},
 	{
-		"stanza:key": "width",
-		"stanza:type": "number",
-		"stanza:example": 200,
-		"stanza:description": "Width"
+		"stanza:key": "score-key",
+		"stanza:type": "text",
+		"stanza:example": "",
+		"stanza:description": "Data key for score",
+		"stanza:required": false
 	},
 	{
-		"stanza:key": "height",
-		"stanza:type": "number",
-		"stanza:example": 70,
-		"stanza:description": "Height"
+		"stanza:key": "title-text",
+		"stanza:type": "text",
+		"stanza:example": "title",
+		"stanza:description": "Title text"
 	},
 	{
-		"stanza:key": "padding",
-		"stanza:type": "number",
-		"stanza:example": 50,
-		"stanza:description": "Padding"
-	},
-	{
-		"stanza:key": "legend",
-		"stanza:type": "single-choice",
-		"stanza:choice": [
-			"true",
-			"false"
-		],
+		"stanza:key": "title-show",
+		"stanza:type": "boolean",
 		"stanza:example": true,
 		"stanza:description": "Show key name"
 	}
@@ -155,49 +161,67 @@ var metadata = {
 	"stanza:menu-placement": "bottom-right",
 	"stanza:style": [
 	{
-		"stanza:key": "--togostanza-font-family",
+		"stanza:key": "--togostanza-outline-width",
+		"stanza:type": "number",
+		"stanza:default": 200,
+		"stanza:description": "Metastanza width in px"
+	},
+	{
+		"stanza:key": "--togostanza-outline-height",
+		"stanza:type": "number",
+		"stanza:default": 70,
+		"stanza:description": "Metastanza height in px"
+	},
+	{
+		"stanza:key": "--togostanza-outline-padding",
+		"stanza:type": "text",
+		"stanza:default": 50,
+		"stanza:description": "Metastanza padding"
+	},
+	{
+		"stanza:key": "--togostanza-fonts-font_family",
 		"stanza:type": "text",
 		"stanza:default": "Helvetica Neue",
 		"stanza:description": "Font family"
 	},
 	{
-		"stanza:key": "--togostanza-key-font-color",
+		"stanza:key": "--togostanza-fonts-font_color_secondary",
 		"stanza:type": "color",
 		"stanza:default": "#6590e6",
 		"stanza:description": "Font color for key"
 	},
 	{
-		"stanza:key": "--togostanza-key-font-size",
+		"stanza:key": "--togostanza-fonts-font_size_secondary",
 		"stanza:type": "number",
 		"stanza:default": 16,
 		"stanza:description": "Font size for key"
 	},
 	{
-		"stanza:key": "--togostanza-key-font-weight",
+		"stanza:key": "--togostanza-fonts-font_weight_secondary",
 		"stanza:type": "number",
 		"stanza:default": 400,
 		"stanza:description": "Font weight for key"
 	},
 	{
-		"stanza:key": "--togostanza-value-font-color",
+		"stanza:key": "--togostanza-fonts-font_color_primary",
 		"stanza:type": "color",
 		"stanza:default": "#4E5059",
 		"stanza:description": "Font color for value"
 	},
 	{
-		"stanza:key": "--togostanza-value-font-size",
+		"stanza:key": "--togostanza-fonts-font_size_primary",
 		"stanza:type": "number",
 		"stanza:default": 36,
 		"stanza:description": "Font size for value"
 	},
 	{
-		"stanza:key": "--togostanza-value-font-weight",
+		"stanza:key": "--togostanza-fonts-font_weight_primary",
 		"stanza:type": "number",
 		"stanza:default": 600,
 		"stanza:description": "Font weight for value"
 	},
 	{
-		"stanza:key": "--togostanza-background-color",
+		"stanza:key": "--togostanza-theme-background_color",
 		"stanza:type": "color",
 		"stanza:default": "rgba(255,255,255,0)",
 		"stanza:description": "Background color"
