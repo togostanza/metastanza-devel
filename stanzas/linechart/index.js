@@ -695,10 +695,7 @@ export default class Linechart extends Stanza {
           return this._previewYScaleY(d.y);
         });
 
-      const graphXAxisG = xAxisTitleGroup
-        .append("g")
-        .attr("class", "axis x")
-        .attr("clip-path", "url(#clip)");
+      const graphXAxisG = xAxisTitleGroup.append("g").attr("class", "axis x");
 
       const graphXGridG = xAxisTitleGroup.append("g").attr("class", "grid x");
 
