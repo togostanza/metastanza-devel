@@ -5,9 +5,6 @@
   box-sizing: border-box;
   display: flex;
   gap: 1rem;
-  width: var(--togostanza-outline-width);
-  height: var(--togostanza-outline-height);
-  padding: var(--togostanza-outline-padding);
   background-color: var(--togostanza-background-color);
 }
 
@@ -27,9 +24,8 @@
 .error {
   color: var(--togostanza-theme-series_5_color);
   box-sizing: border-box;
-  width: var(--togostanza-outline-width);
-  height: var(--togostanza-outline-height);
-  padding: var(--togostanza-outline-padding);
+  width: 100%;
+  height: 100%;
   position: absolute;
   top: 0;
   left: 0;
@@ -42,7 +38,6 @@ svg {
     opacity: var(--togostanza-error_bars-opacity);
   }
 
-  font-family: var(--togostanza-fonts-font_family);
   background-color: var(--togostanza-background-color);
 
   .error-bars > line {
@@ -57,7 +52,7 @@ svg {
   }
 
   .grid {
-    stroke: var(--togostanza-theme-series_5_color);
+    stroke: var(--togostanza-border-color);
     stroke-width: 1px;
     stroke-dasharray: 2, 2;
     opacity: 0.5;

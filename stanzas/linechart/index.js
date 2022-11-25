@@ -14,6 +14,7 @@ import {
   appendCustomCss,
 } from "togostanza-utils";
 import validateParams from "@/lib/validateParams";
+import { StanzaColorGenerator } from "../../lib/ColorGenerator";
 
 export default class Linechart extends Stanza {
   menu() {
@@ -152,7 +153,8 @@ export default class Linechart extends Stanza {
     // Data symbols
     const symbolGenerator = d3.symbol().size(pointsSize).type(d3.symbolCircle);
 
-    const { width, height } = root.getBoundingClientRect();
+    const width = css("--togostanza-outline-width");
+    const height = css("--togostanza-outline-height");
 
     const MARGIN = {
       top: parseFloat(getComputedStyle(root).paddingTop),
@@ -168,11 +170,9 @@ export default class Linechart extends Stanza {
       left: 24,
     };
 
-    const togostanzaColors = [];
+    const colorGenerator = new StanzaColorGenerator(this);
 
-    for (let i = 0; i < 6; i++) {
-      togostanzaColors.push(css(`--togostanza-theme-series_${i}_color`));
-    }
+    const togostanzaColors = colorGenerator.stanzaColor;
 
     const color = d3.scaleOrdinal().range(togostanzaColors);
 
@@ -308,6 +308,7 @@ export default class Linechart extends Stanza {
       const SVGHeight = height - MARGIN.top - MARGIN.bottom - legendRect.height;
 
       // Width and height of the chart
+
       const WIDTH =
         width -
         MARGIN.left -
