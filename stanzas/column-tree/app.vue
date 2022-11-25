@@ -23,7 +23,7 @@
         :data="suggestions"
         :keys="state.keys"
         :value-obj="valueObj"
-        :show-border-nodes="state.showBorderNodes"
+        :node-show-borders="state.nodeShowBorders"
         :node-content-alignment="state.nodeContentAlignment"
         @selectNode="selectNode"
       />
@@ -40,7 +40,7 @@
         :keys="state.keys"
         :highlighted-node="state.highligthedNodes[index]"
         :value-obj="valueObj"
-        :show-border-nodes="state.showBorderNodes"
+        :node-show-borders="state.nodeShowBorders"
         :node-content-alignment="state.nodeContentAlignment"
         :fixed-width-columns="state.fixedWidthColumns"
         @setParent="updatePartialColumnData"
@@ -63,6 +63,7 @@ import loadData from "togostanza-utils/load-data";
 import metadata from "./metadata.json";
 import NodeColumn from "./NodeColumn.vue";
 import SearchSuggestions from "./SearchSuggestions.vue";
+import { camelCase } from "lodash";
 
 function isRootNode(parent) {
   return !parent || isNaN(parent);
@@ -74,7 +75,7 @@ function isTruthBool(str) {
 // TODO: set path for data objects
 export default defineComponent({
   components: { NodeColumn, SearchSuggestions },
-  props: metadata["stanza:parameter"].map((p) => p["stanza:key"]),
+  props: metadata["stanza:parameter"].map((p) => camelCase(p["stanza:key"])),
   emits: ["resetHighlightedNode"],
   setup(params) {
     params = toRefs(params);
@@ -89,7 +90,7 @@ export default defineComponent({
       showValue: isTruthBool(params?.showValue?.value),
       showPath: isTruthBool(params?.showPath?.value),
       showPathExplanation: isTruthBool(params?.showPathExplanation?.value),
-      showBorderNodes: isTruthBool(params?.showBorderNodes?.value),
+      nodeShowBorders: isTruthBool(params?.nodeShowBorders?.value),
       nodeContentAlignment: params?.nodeContentAlignment?.value,
       showSuggestions: false,
       responseJSON: null,

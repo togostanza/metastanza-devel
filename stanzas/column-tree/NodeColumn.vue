@@ -9,7 +9,7 @@
           '-highlighted':
             node.id === highlightedNode && hasChildren(node.children),
         },
-        { '-with-border': showBorderNodes },
+        { '-with-border': nodeShowBorders },
       ]"
     >
       <input
@@ -78,7 +78,7 @@ export default defineComponent({
       type: [Number, String, null],
       default: null,
     },
-    showBorderNodes: {
+    nodeShowBorders: {
       type: Boolean,
       default: false,
     },

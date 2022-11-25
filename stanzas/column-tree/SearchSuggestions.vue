@@ -4,7 +4,7 @@
       <li
         v-for="(node, index) of data"
         :key="index"
-        :class="{ '-with-border': showBorderNodes }"
+        :class="{ '-with-border': nodeShowBorders }"
         @click="$emit('selectNode', node)"
       >
         <span class="label" :class="`-${nodeContentAlignment}`">
@@ -57,7 +57,7 @@ export default defineComponent({
       type: Object,
       required: true,
     },
-    showBorderNodes: {
+    nodeShowBorders: {
       type: Boolean,
       default: false,
     },
