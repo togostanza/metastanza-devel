@@ -33,7 +33,7 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "score-data_key",
+      "stanza:key": "score-key",
       "stanza:type": "text",
       "stanza:example": "",
       "stanza:description": "Data key for score",
