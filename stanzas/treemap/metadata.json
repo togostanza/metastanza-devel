@@ -30,7 +30,7 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "log_scale",
+      "stanza:key": "node-log_scale",
       "stanza:type": "boolean",
       "stanza:example": true,
       "stanza:description": "Log scale for values",
