@@ -2,6 +2,8 @@ import { a as s, a8 as i, y, S as Stanza, s as select, d as defineStanzaElement 
 import { a as brushX, c as brushY } from './brush-33fdf86b.js';
 import { l as loadData } from './load-data-adcdd25e.js';
 import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-210786f8.js';
+import { S as StanzaColorGenerator } from './ColorGenerator-305d9fd3.js';
+import { g as getMarginsFromCSSString } from './utils-0e0891dd.js';
 import { v as v4 } from './v4-1d7bfe79.js';
 import { S as Symbol, d as circle, an as timeFormat, t as time, q as utcSecond, W as utcMinute, Y as utcHour, _ as utcDay, a0 as utcSunday, ae as utcMonth, ag as utcYear } from './symbol-d7523de1.js';
 import { o as ordinal, f as format } from './ordinal-5aa82356.js';
@@ -11,6 +13,7 @@ import { l as line$2, a as log } from './line-f27d44e5.js';
 import { l as linear } from './linear-97142666.js';
 import { b as band } from './band-efabe511.js';
 import './nodrag-13395c65.js';
+import './axios-70c5a559.js';
 import './constant-c49047a5.js';
 import './math-24162d65.js';
 import './path-a78af922.js';
@@ -69,10 +72,12 @@ class Legend2 extends s {
       }
       .legend {
         padding: 3px 9px;
-
+        display: inline-block;
+        vertical-align: top;
+        max-width: 25em;
+        max-height: 100%;
         font-size: 10px;
         line-height: 1.5;
-        max-height: 100%;
         overflow-y: auto;
         color: var(--togostanza-fonts-font_color);
         background-color: rgba(255, 255, 255, 0.8);
@@ -451,14 +456,10 @@ class Linechart extends Stanza {
     // Data symbols
     const symbolGenerator = Symbol().size(pointsSize).type(circle);
 
-    const { width, height } = root.getBoundingClientRect();
+    const width = css("--togostanza-outline-width");
+    const height = css("--togostanza-outline-height");
 
-    const MARGIN = {
-      top: parseFloat(getComputedStyle(root).paddingTop),
-      right: parseFloat(getComputedStyle(root).paddingRight),
-      bottom: parseFloat(getComputedStyle(root).paddingBottom),
-      left: parseFloat(getComputedStyle(root).paddingLeft),
-    };
+    const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
 
     const SVGMargin = {
       top: 10,
@@ -467,11 +468,9 @@ class Linechart extends Stanza {
       left: 24,
     };
 
-    const togostanzaColors = [];
+    const colorGenerator = new StanzaColorGenerator(this);
 
-    for (let i = 0; i < 6; i++) {
-      togostanzaColors.push(css(`--togostanza-theme-series_${i}_color`));
-    }
+    const togostanzaColors = colorGenerator.stanzaColor;
 
     const color = ordinal().range(togostanzaColors);
 
@@ -603,22 +602,23 @@ class Linechart extends Stanza {
     function afterLegendRendered(legendRect) {
       // render svg after we got legend width
 
-      const SVGWidth = width - MARGIN.left - MARGIN.right - legendRect.width;
-      const SVGHeight = height - MARGIN.top - MARGIN.bottom - legendRect.height;
+      const SVGWidth = width - MARGIN.LEFT - MARGIN.RIGHT - legendRect.width;
+      const SVGHeight = height - MARGIN.TOP - MARGIN.BOTTOM - legendRect.height;
 
       // Width and height of the chart
+
       const WIDTH =
         width -
-        MARGIN.left -
+        MARGIN.LEFT -
         SVGMargin.left -
-        MARGIN.right -
+        MARGIN.RIGHT -
         SVGMargin.right -
         legendRect.width;
       const HEIGHT =
         height -
-        MARGIN.top -
+        MARGIN.TOP -
         SVGMargin.top -
-        MARGIN.bottom -
+        MARGIN.BOTTOM -
         SVGMargin.bottom -
         legendRect.height;
 
@@ -992,10 +992,7 @@ class Linechart extends Stanza {
           return this._previewYScaleY(d.y);
         });
 
-      const graphXAxisG = xAxisTitleGroup
-        .append("g")
-        .attr("class", "axis x")
-        .attr("clip-path", "url(#clip)");
+      const graphXAxisG = xAxisTitleGroup.append("g").attr("class", "axis x");
 
       const graphXGridG = xAxisTitleGroup.append("g").attr("class", "grid x");
 
@@ -1727,8 +1724,8 @@ var metadata = {
 	{
 		"stanza:key": "axis-x-visible",
 		"stanza:type": "boolean",
-		"stanza:example": false,
-		"stanza:default": false,
+		"stanza:example": true,
+		"stanza:default": true,
 		"stanza:description": "Show the axis",
 		"stanza:required": false
 	},
@@ -1837,8 +1834,8 @@ var metadata = {
 	{
 		"stanza:key": "axis-y-visible",
 		"stanza:type": "boolean",
-		"stanza:example": false,
-		"stanza:default": false,
+		"stanza:example": true,
+		"stanza:default": true,
 		"stanza:description": "Hide the axis",
 		"stanza:required": false
 	},
@@ -2057,30 +2054,30 @@ var metadata = {
 		"stanza:key": "--togostanza-fonts-font_size_primary",
 		"stanza:type": "number",
 		"stanza:default": 12,
-		"stanza:description": "Primary font size"
+		"stanza:description": "Primary font size in px (Axes title)"
 	},
 	{
 		"stanza:key": "--togostanza-fonts-font_size_secondary",
 		"stanza:type": "number",
 		"stanza:default": 9,
-		"stanza:description": "Secondary font size"
+		"stanza:description": "Secondary font size in px (Axes ticks values)"
 	},
 	{
 		"stanza:key": "--togostanza-outline-width",
-		"stanza:type": "text",
-		"stanza:default": "600px",
+		"stanza:type": "number",
+		"stanza:default": 600,
 		"stanza:description": "Togostanza element width"
 	},
 	{
 		"stanza:key": "--togostanza-outline-height",
-		"stanza:type": "text",
-		"stanza:default": "400px",
+		"stanza:type": "number",
+		"stanza:default": 400,
 		"stanza:description": "Togostanza element height"
 	},
 	{
 		"stanza:key": "--togostanza-outline-padding",
 		"stanza:type": "text",
-		"stanza:default": "20px",
+		"stanza:default": "20px 20px 20px 20px",
 		"stanza:description": "Togostanza element inner padding"
 	},
 	{
@@ -2092,20 +2089,20 @@ var metadata = {
 	{
 		"stanza:key": "--togostanza-border-width",
 		"stanza:type": "number",
-		"stanza:default": 0.5,
-		"stanza:description": "Border width"
+		"stanza:default": 1,
+		"stanza:description": "Border width in px"
 	},
 	{
-		"stanza:key": "--togostanza-axis-stroke_width",
+		"stanza:key": "--togostanza-error_bars-width",
 		"stanza:type": "number",
 		"stanza:default": 1,
-		"stanza:description": "Axis width"
+		"stanza:description": "Erorr bars width in px"
 	},
 	{
 		"stanza:key": "--togostanza-error_bars-opacity",
 		"stanza:type": "number",
-		"stanza:default": 0.5,
-		"stanza:description": "Error bar stroke opacity "
+		"stanza:default": 1,
+		"stanza:description": "Erorr bars opacity"
 	}
 ]
 };
