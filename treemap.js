@@ -1,11 +1,14 @@
-import { S as Stanza, s as select, d as defineStanzaElement } from './transform-23c22e70.js';
-import { l as loadData } from './load-data-07b02667.js';
-import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-346f55c8.js';
+import { S as Stanza, s as select, d as defineStanzaElement } from './transform-d69bdfce.js';
+import { l as loadData } from './load-data-adcdd25e.js';
+import { S as StanzaColorGenerator } from './ColorGenerator-305d9fd3.js';
+import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-210786f8.js';
+import { g as getMarginsFromCSSString } from './utils-0e0891dd.js';
+import { o as ordinal, f as format, a as interpolate$1 } from './ordinal-5aa82356.js';
 import { s as stratify, h as hierarchy } from './stratify-7050dfd9.js';
-import { l as linear } from './linear-83631732.js';
-import { f as format, o as ordinal, a as interpolate$1 } from './ordinal-7f94d42a.js';
+import { l as linear } from './linear-97142666.js';
 import { s as sum } from './sum-44e7480e.js';
 import { t as treemap } from './index-c76c1b89.js';
+import './axios-70c5a559.js';
 import './dice-7bdb0652.js';
 
 var count = 0;
@@ -127,19 +130,23 @@ class TreeMapStanza extends Stanza {
   async render() {
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
-    appendCustomCss(this, this.params["custom-css-url"]);
+    appendCustomCss(this, this.params["misc-custom_css_url"]);
 
-    const width = this.params["width"];
-    const height = this.params["height"];
-    const logScale = this.params["log-scale"];
-    const borderWidth = this.params["gap-width"];
+    const width = parseInt(css("--togostanza-outline-width"));
+    const height = parseInt(css("--togostanza-outline-height"));
 
-    const colorScale = [];
+    const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
 
-    // in metadata.json there is 6 colors for color scheme
-    for (let i = 0; i < 6; i++) {
-      colorScale.push(css(`--togostanza-series-${i}-color`));
-    }
+    const WIDTH = width - MARGIN.LEFT - MARGIN.RIGHT;
+    const HEIGHT = height - MARGIN.TOP - MARGIN.BOTTOM;
+
+    const logScale = this.params["node-log_scale"];
+    const borderWidth = this.params["node-gap_width"];
+
+    const labelKey = this.params["node-label_key"];
+    const valueKey = this.params["node-value_key"];
+
+    const togostanzaColors = new StanzaColorGenerator(this).stanzaColor;
 
     const data = await loadData(
       this.params["data-url"],
@@ -152,7 +159,9 @@ class TreeMapStanza extends Stanza {
 
     // filter out all elements with n=0
     const filteredData = data.filter(
-      (item) => (item.children && !item.n) || (item.n && item.n > 0)
+      (item) =>
+        (item.children && !item[valueKey]) ||
+        (item[valueKey] && item[valueKey] > 0)
     );
 
     //Add root element if there are more than one elements without parent. D3 cannot process data with more than one root elements
@@ -176,14 +185,17 @@ class TreeMapStanza extends Stanza {
       filteredData.push({ id: -1, value: "", label: "" });
     }
 
-    const treeMapElement = this.root.querySelector("#treemap");
+    const treeMapElement = this.root.querySelector("main");
+    const colorScale = ordinal(togostanzaColors);
 
     const opts = {
-      width,
-      height,
+      WIDTH,
+      HEIGHT,
       colorScale,
       logScale,
       borderWidth,
+      labelKey,
+      valueKey,
     };
 
     draw(treeMapElement, filteredData, opts);
@@ -202,7 +214,15 @@ function transformValue(logScale, value) {
 }
 
 function draw(el, dataset, opts) {
-  const { width, height, logScale, colorScale, borderWidth } = opts;
+  const {
+    WIDTH,
+    HEIGHT,
+    logScale,
+    colorScale,
+    borderWidth,
+    labelKey,
+    valueKey,
+  } = opts;
 
   const nested = stratify()
     .id(function (d) {
@@ -216,13 +236,13 @@ function draw(el, dataset, opts) {
   const rootHeight = getLineHeight(el) * 1.3;
 
   // Height of the rest chart
-  let adjustedHeight = height - rootHeight;
+  let adjustedHeight = HEIGHT - rootHeight;
 
   if (adjustedHeight < 0) {
     adjustedHeight = 10;
   }
 
-  const x = linear().rangeRound([0, width]);
+  const x = linear().rangeRound([0, WIDTH]);
   const y = linear().rangeRound([0, adjustedHeight]);
 
   // make path-like string for node
@@ -234,21 +254,19 @@ function draw(el, dataset, opts) {
       .ancestors()
       .reverse()
       .map((d) => {
-        return d.data.data.label;
+        return d.data.data[labelKey];
       })
       .join("/");
   };
 
   const format$1 = format(",d");
 
-  const color = ordinal(colorScale);
-
   //move and scale children nodes to fit into parent nodes
   function tile(node, x0, y0, x1, y1) {
-    treemapBinaryLog(node, 0, 0, width, adjustedHeight);
+    treemapBinaryLog(node, 0, 0, WIDTH, adjustedHeight);
     for (const child of node.children) {
-      child.x0 = x0 + (child.x0 / width) * (x1 - x0);
-      child.x1 = x0 + (child.x1 / width) * (x1 - x0);
+      child.x0 = x0 + (child.x0 / WIDTH) * (x1 - x0);
+      child.x1 = x0 + (child.x1 / WIDTH) * (x1 - x0);
       child.y0 = y0 + (child.y0 / adjustedHeight) * (y1 - y0);
       child.y1 = y0 + (child.y1 / adjustedHeight) * (y1 - y0);
     }
@@ -257,7 +275,7 @@ function draw(el, dataset, opts) {
   const treemap$1 = (data) =>
     treemap().tile(tile)(
       hierarchy(data)
-        .sum((d) => d.data.n)
+        .sum((d) => d.data[valueKey])
         .sort((a, b) => b.value - a.value)
         .each((d) => {
           d.value2 = transformValue(logScale, d.value);
@@ -265,23 +283,21 @@ function draw(el, dataset, opts) {
     );
 
   const svg = select(el)
-    .append("div")
-    .style("width", width + "px")
-    .style("height", height + "px")
-    .style("overflow", "hidden")
     .append("svg")
-    .attr("viewBox", [0, 0, width, height]);
+    .attr("width", WIDTH)
+    .attr("height", HEIGHT)
+    .attr("viewBox", [0, 0, WIDTH, HEIGHT]);
 
   let group = svg.append("g").call(render, treemap$1(nested), null);
 
   function render(group, root, zoomInOut) {
     group
       .append("rect")
+      .classed("container", true)
       .attr("x", 0)
       .attr("y", 0)
-      .attr("width", `${width}px`)
-      .attr("height", `${height}px`)
-      .attr("style", "fill: var(--togostanza-background-color)");
+      .attr("width", WIDTH)
+      .attr("height", HEIGHT);
 
     const node = group
       .selectAll("g")
@@ -293,7 +309,7 @@ function draw(el, dataset, opts) {
         return d === root ? d.parent : d.children;
       })
       .attr("cursor", "pointer")
-      .on("click", (event, d) => (d === root ? zoomout(root) : zoomin(d)));
+      .on("click", (_, d) => (d === root ? zoomout(root) : zoomin(d)));
 
     node
       .append("title")
@@ -302,20 +318,19 @@ function draw(el, dataset, opts) {
           ? ""
           : `${name(d)}\n${
               d?.children
-                ? format$1(sum(d, (d) => d?.data?.data?.n || 0))
-                : d.data.data.n
+                ? format$1(sum(d, (d) => d?.data?.data[valueKey] || 0))
+                : d.data.data[valueKey]
             }`
       );
 
     node
       .append("rect")
       .attr("id", (d) => (d.leafUid = uid("leaf")).id)
-
       .attr("style", (d) => {
         return `fill: ${
           d === root
-            ? "var(--togostanza-background-color)"
-            : color(d.data.data.label)
+            ? "var(--togostanza-theme-background_color)"
+            : colorScale(d.data.data[labelKey])
         }`;
       });
 
@@ -333,7 +348,9 @@ function draw(el, dataset, opts) {
       .attr("id", (d) => (d.leafUid = uid("leaf")).id)
       .attr("fill", "none")
       .attr("stroke-width", 1)
-      .attr("stroke", (d) => shadeColor(color(d.parent.data.data.label), -15));
+      .attr("stroke", (d) =>
+        shadeColor(colorScale(d.parent.data.data[labelKey]), -15)
+      );
 
     innerNode
       .append("clipPath")
@@ -358,7 +375,7 @@ function draw(el, dataset, opts) {
         if (d === root) {
           return name(d);
         } else {
-          return `${d.data.data.label}`;
+          return `${d.data.data[labelKey] || ""}`;
         }
       });
 
@@ -385,10 +402,10 @@ function draw(el, dataset, opts) {
       let maxWidth;
       if (isRoot) {
         lineSeparator = /(?=[/])/g;
-        maxWidth = width;
+        maxWidth = WIDTH;
       } else {
         lineSeparator = /\s+/;
-        maxWidth = width / 6;
+        maxWidth = WIDTH / 6;
       }
 
       const words = text.text().split(lineSeparator).reverse();
@@ -441,7 +458,7 @@ function draw(el, dataset, opts) {
         .attr("class", "number-label")
         .attr("dy", "1.6em")
         .attr("x", "1.6em")
-        .text((d) => format$1(sum(d, (d) => d?.data?.data?.n || 0)));
+        .text((d) => format$1(sum(d, (d) => d?.data?.data[valueKey] || 0)));
     }
   }
 
@@ -464,8 +481,8 @@ function draw(el, dataset, opts) {
     a.select("rect")
       .attr("width", (d) => {
         if (d === root) {
-          return width;
-        } else if (x(d.x1) === width) {
+          return WIDTH;
+        } else if (x(d.x1) === WIDTH) {
           if (x(d.x1) - x(d.x0) - 2 * borderWidth < 0) {
             return 0;
           }
@@ -610,125 +627,119 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "log-scale",
+		"stanza:key": "node-log_scale",
 		"stanza:type": "boolean",
 		"stanza:example": true,
 		"stanza:description": "Log scale for values",
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "custom-css-url",
+		"stanza:key": "misc-custom_css_url",
 		"stanza:example": "",
 		"stanza:description": "Stylesheet(css file) URL to override current style",
 		"stanza:required": false
 	},
 	{
-		"stanza:key": "width",
-		"stanza:type": "number",
-		"stanza:example": 400,
-		"stanza:description": "Width"
-	},
-	{
-		"stanza:key": "height",
-		"stanza:type": "number",
-		"stanza:example": 300,
-		"stanza:description": "Height"
-	},
-	{
-		"stanza:key": "gap-width",
+		"stanza:key": "node-gap_width",
 		"stanza:type": "number",
 		"stanza:example": 2,
-		"stanza:description": "Gap width"
+		"stanza:description": "Gap width in px"
+	},
+	{
+		"stanza:key": "node-label_key",
+		"stanza:type": "text",
+		"stanza:example": "label",
+		"stanza:description": "Node label data key"
+	},
+	{
+		"stanza:key": "node-value_key",
+		"stanza:type": "text",
+		"stanza:example": "n",
+		"stanza:description": "Node value key"
 	}
 ],
 	"stanza:menu-placement": "bottom-right",
 	"stanza:style": [
 	{
-		"stanza:key": "--togostanza-background-color",
+		"stanza:key": "--togostanza-theme-background_color",
 		"stanza:type": "color",
 		"stanza:default": "#eeeeee",
 		"stanza:description": "Background color"
 	},
 	{
-		"stanza:key": "--togostanza-label-font-family",
+		"stanza:key": "--togostanza-outline-width",
+		"stanza:type": "number",
+		"stanza:default": 400,
+		"stanza:description": "Stanza width in px"
+	},
+	{
+		"stanza:key": "--togostanza-outline-height",
+		"stanza:type": "number",
+		"stanza:default": 400,
+		"stanza:description": "Stanza height in px"
+	},
+	{
+		"stanza:key": "--togostanza-outline-padding",
+		"stanza:type": "text",
+		"stanza:default": "20px",
+		"stanza:description": "Stanza inner padding"
+	},
+	{
+		"stanza:key": "--togostanza-fonts-font_family",
 		"stanza:type": "text",
 		"stanza:default": "Helvetica Neue",
 		"stanza:description": "Label font family"
 	},
 	{
-		"stanza:key": "--togostanza-label-font-color",
+		"stanza:key": "--togostanza-fonts-font_color",
 		"stanza:type": "color",
 		"stanza:default": "#4E5059",
-		"stanza:description": "Label font color"
+		"stanza:description": "Font color"
 	},
 	{
-		"stanza:key": "--togostanza-label-font-size",
-		"stanza:type": "string",
-		"stanza:default": "11px",
-		"stanza:description": "Label font size"
+		"stanza:key": "--togostanza-fonts-font_size_primary",
+		"stanza:type": "number",
+		"stanza:default": 10,
+		"stanza:description": "Label font size in px"
 	},
 	{
-		"stanza:key": "--togostanza-label-font-weight",
-		"stanza:type": "string",
-		"stanza:default": "normal",
-		"stanza:description": "Label font weight"
+		"stanza:key": "--togostanza-fonts-font_size_secondary",
+		"stanza:type": "number",
+		"stanza:default": 8,
+		"stanza:description": "Number font size in px"
 	},
 	{
-		"stanza:key": "--togostanza-number-label-font-family",
-		"stanza:type": "text",
-		"stanza:default": "Helvetica Neue",
-		"stanza:description": "Number label font family"
-	},
-	{
-		"stanza:key": "--togostanza-number-label-font-color",
-		"stanza:type": "color",
-		"stanza:default": "#4E5059",
-		"stanza:description": "Number label font color"
-	},
-	{
-		"stanza:key": "--togostanza-number-label-font-size",
-		"stanza:type": "string",
-		"stanza:default": "7px",
-		"stanza:description": "Number label font size"
-	},
-	{
-		"stanza:key": "--togostanza-number-label-font-weight",
-		"stanza:type": "string",
-		"stanza:default": "normal",
-		"stanza:description": "Number label font weight"
-	},
-	{
-		"stanza:key": "--togostanza-series-0-color",
+		"stanza:key": "--togostanza-theme-series_0_color",
 		"stanza:type": "color",
 		"stanza:default": "#6590e6",
 		"stanza:description": "Color 1"
 	},
 	{
-		"stanza:key": "--togostanza-series-1-color",
+		"stanza:key": "--togostanza-theme-series_1_color",
 		"stanza:type": "color",
 		"stanza:default": "#3ac9b6",
 		"stanza:description": "Color 2"
 	},
 	{
-		"stanza:key": "--togostanza-series-2-color",
+		"stanza:key": "--togostanza-theme-series_2_color",
 		"stanza:type": "color",
 		"stanza:default": "#9ede2f",
 		"stanza:description": "Color 3"
 	},
 	{
-		"stanza:key": "--togostanza-series-3-color",
+		"stanza:key": "--togostanza-theme-series_3_color",
 		"stanza:type": "color",
 		"stanza:default": "#F5DA64",
 		"stanza:description": "Color 4"
 	},
 	{
-		"stanza:key": "--togostanza-series-4-color",
+		"stanza:key": "--togostanza-theme-series_4_color",
 		"stanza:type": "color",
 		"stanza:default": "#F57F5B",
 		"stanza:description": "Color 5"
 	},
 	{
-		"stanza:key": "--togostanza-series-5-color",
+		"stanza:key": "--togostanza-theme-series_5_color",
 		"stanza:type": "color",
 		"stanza:default": "#F75976",
 		"stanza:description": "Color 6"
@@ -742,7 +753,7 @@ var metadata = {
 
 var templates = [
   ["stanza.html.hbs", {"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<div id=\"treemap\"></div>";
+    return "";
 },"useData":true}]
 ];
 
