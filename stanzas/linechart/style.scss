@@ -4,8 +4,10 @@
 :scope main {
   box-sizing: border-box;
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   background-color: var(--togostanza-theme-background_color);
+  padding: var(--togostanza-outline-padding);
 }
 
 .legend-right {
@@ -37,7 +39,7 @@ svg {
   background-color: var(--togostanza-theme-background_color);
 
   .error-bars {
-    stroke: var(--togostanza-theme-border_color);
+    stroke: var(--togostanza-border-color);
     stroke-width: calc(var(--togostanza-error_bars-width) * 1px);
     opacity: var(--togostanza-error_bars-opacity);
   }
@@ -49,7 +51,7 @@ svg {
   }
 
   .grid {
-    stroke: var(--togostanza-theme-border_color);
+    stroke: var(--togostanza-border-color);
     stroke-width: 1px;
     stroke-dasharray: 2, 2;
     opacity: 0.5;
@@ -86,12 +88,12 @@ svg {
 
   .axis {
     > .tick > line {
-      stroke: var(--togostanza-theme-border_color);
+      stroke: var(--togostanza-border-color);
       stroke-width: 1px;
     }
 
     > path {
-      stroke: var(--togostanza-theme-border_color);
+      stroke: var(--togostanza-border-color);
       stroke-width: 1px;
     }
   }
