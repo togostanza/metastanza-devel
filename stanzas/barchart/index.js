@@ -167,7 +167,7 @@ export default class Barchart extends Stanza {
     }
 
     values.forEach((d) => {
-      d[errorKeyName] = d[errorKeyName].map(parseFloat);
+      d[errorKeyName] = d[errorKeyName]?.map(parseFloat);
       d[yKeyName] = parseFloat(d[yKeyName]);
     });
 
