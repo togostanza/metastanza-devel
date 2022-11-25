@@ -70,6 +70,24 @@
       "stanza:description": "Background color"
     },
     {
+      "stanza:key": "--togostanza-outline-width",
+      "stanza:type": "number",
+      "stanza:default": 400,
+      "stanza:description": "Stanza inner padding"
+    },
+    {
+      "stanza:key": "--togostanza-outline-height",
+      "stanza:type": "number",
+      "stanza:default": 400,
+      "stanza:description": "Stanza inner padding"
+    },
+    {
+      "stanza:key": "--togostanza-outline-padding",
+      "stanza:type": "text",
+      "stanza:default": "20",
+      "stanza:description": "Stanza inner padding"
+    },
+    {
       "stanza:key": "--togostanza-label-font-family",
       "stanza:type": "text",
       "stanza:default": "Helvetica Neue",

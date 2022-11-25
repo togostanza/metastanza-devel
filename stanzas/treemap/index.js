@@ -13,6 +13,7 @@ import {
 } from "togostanza-utils"; // from "@/lib/metastanza_utils.js"; //
 import shadeColor from "./shadeColor";
 import treemapBinaryLog from "./treemapBinaryLog";
+import { getMarginsFromCSSString } from "../../lib/utils";
 
 export default class TreeMapStanza extends Stanza {
   menu() {
@@ -28,10 +29,16 @@ export default class TreeMapStanza extends Stanza {
   async render() {
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
-    appendCustomCss(this, this.params["custom-css-url"]);
+    appendCustomCss(this, this.params["misc-custom_css_url"]);
 
-    const width = this.params["width"];
-    const height = this.params["height"];
+    const width = parseInt(css("--togostanza-outline-width"));
+    const height = parseInt(css("--togostanza-outline-height"));
+
+    const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
+
+    const WIDTH = width - MARGIN.LEFT - MARGIN.RIGHT;
+    const HEIGHT = height - MARGIN.TOP - MARGIN.BOTTOM;
+
     const logScale = this.params["log-scale"];
     const borderWidth = this.params["gap-width"];
 
@@ -80,8 +87,8 @@ export default class TreeMapStanza extends Stanza {
     const treeMapElement = this.root.querySelector("#treemap");
 
     const opts = {
-      width,
-      height,
+      WIDTH,
+      HEIGHT,
       colorScale,
       logScale,
       borderWidth,
@@ -103,7 +110,7 @@ function transformValue(logScale, value) {
 }
 
 function draw(el, dataset, opts) {
-  const { width, height, logScale, colorScale, borderWidth } = opts;
+  const { WIDTH, HEIGHT, logScale, colorScale, borderWidth } = opts;
 
   const nested = d3
     .stratify()
@@ -118,13 +125,13 @@ function draw(el, dataset, opts) {
   const rootHeight = getLineHeight(el) * 1.3;
 
   // Height of the rest chart
-  let adjustedHeight = height - rootHeight;
+  let adjustedHeight = WIDTH - rootHeight;
 
   if (adjustedHeight < 0) {
     adjustedHeight = 10;
   }
 
-  const x = d3.scaleLinear().rangeRound([0, width]);
+  const x = d3.scaleLinear().rangeRound([0, WIDTH]);
   const y = d3.scaleLinear().rangeRound([0, adjustedHeight]);
 
   // make path-like string for node
@@ -147,10 +154,10 @@ function draw(el, dataset, opts) {
 
   //move and scale children nodes to fit into parent nodes
   function tile(node, x0, y0, x1, y1) {
-    treemapBinaryLog(node, 0, 0, width, adjustedHeight);
+    treemapBinaryLog(node, 0, 0, WIDTH, adjustedHeight);
     for (const child of node.children) {
-      child.x0 = x0 + (child.x0 / width) * (x1 - x0);
-      child.x1 = x0 + (child.x1 / width) * (x1 - x0);
+      child.x0 = x0 + (child.x0 / WIDTH) * (x1 - x0);
+      child.x1 = x0 + (child.x1 / WIDTH) * (x1 - x0);
       child.y0 = y0 + (child.y0 / adjustedHeight) * (y1 - y0);
       child.y1 = y0 + (child.y1 / adjustedHeight) * (y1 - y0);
     }
@@ -170,11 +177,11 @@ function draw(el, dataset, opts) {
   const svg = d3
     .select(el)
     .append("div")
-    .style("width", width + "px")
-    .style("height", height + "px")
     .style("overflow", "hidden")
     .append("svg")
-    .attr("viewBox", [0, 0, width, height]);
+    .attr("width", WIDTH)
+    .attr("height", HEIGHT)
+    .attr("viewBox", [0, 0, WIDTH, HEIGHT]);
 
   let group = svg.append("g").call(render, treemap(nested), null);
 
@@ -183,8 +190,8 @@ function draw(el, dataset, opts) {
       .append("rect")
       .attr("x", 0)
       .attr("y", 0)
-      .attr("width", `${width}px`)
-      .attr("height", `${height}px`)
+      .attr("width", WIDTH)
+      .attr("height", HEIGHT)
       .attr("style", "fill: var(--togostanza-background-color)");
 
     const node = group
@@ -197,7 +204,7 @@ function draw(el, dataset, opts) {
         return d === root ? d.parent : d.children;
       })
       .attr("cursor", "pointer")
-      .on("click", (event, d) => (d === root ? zoomout(root) : zoomin(d)));
+      .on("click", (_, d) => (d === root ? zoomout(root) : zoomin(d)));
 
     node
       .append("title")
@@ -289,10 +296,10 @@ function draw(el, dataset, opts) {
       let maxWidth;
       if (isRoot) {
         lineSeparator = /(?=[/])/g;
-        maxWidth = width;
+        maxWidth = WIDTH;
       } else {
         lineSeparator = /\s+/;
-        maxWidth = width / 6;
+        maxWidth = WIDTH / 6;
       }
 
       const words = text.text().split(lineSeparator).reverse();
@@ -368,8 +375,8 @@ function draw(el, dataset, opts) {
     a.select("rect")
       .attr("width", (d) => {
         if (d === root) {
-          return width;
-        } else if (x(d.x1) === width) {
+          return WIDTH;
+        } else if (x(d.x1) === WIDTH) {
           if (x(d.x1) - x(d.x0) - 2 * borderWidth < 0) {
             return 0;
           }
