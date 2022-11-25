@@ -366,13 +366,13 @@
       "stanza:key": "--togostanza-fonts-font_size_primary",
       "stanza:type": "number",
       "stanza:default": 12,
-      "stanza:description": "Primary font size"
+      "stanza:description": "Primary font size in px (Axes title)"
     },
     {
       "stanza:key": "--togostanza-fonts-font_size_secondary",
       "stanza:type": "number",
       "stanza:default": 9,
-      "stanza:description": "Secondary font size"
+      "stanza:description": "Secondary font size in px (Axes ticks values)"
     },
     {
       "stanza:key": "--togostanza-outline-width",

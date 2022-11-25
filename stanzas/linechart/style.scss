@@ -92,6 +92,10 @@ svg {
       stroke-width: 1px;
     }
 
+    .tick {
+      font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+    }
+
     > path {
       stroke: var(--togostanza-border-color);
       stroke-width: 1px;
