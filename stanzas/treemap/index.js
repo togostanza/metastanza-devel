@@ -39,8 +39,8 @@ export default class TreeMapStanza extends Stanza {
     const WIDTH = width - MARGIN.LEFT - MARGIN.RIGHT;
     const HEIGHT = height - MARGIN.TOP - MARGIN.BOTTOM;
 
-    const logScale = this.params["log-scale"];
-    const borderWidth = this.params["gap-width"];
+    const logScale = this.params["log_scale"];
+    const borderWidth = this.params["gap_width"];
 
     const togostanzaColors = new StanzaColorGenerator(this).stanzaColor;
 
@@ -79,7 +79,7 @@ export default class TreeMapStanza extends Stanza {
       filteredData.push({ id: -1, value: "", label: "" });
     }
 
-    const treeMapElement = this.root.querySelector("#treemap");
+    const treeMapElement = this.root.querySelector("main");
     const colorScale = d3.scaleOrdinal(togostanzaColors);
 
     const opts = {
@@ -121,7 +121,7 @@ function draw(el, dataset, opts) {
   const rootHeight = getLineHeight(el) * 1.3;
 
   // Height of the rest chart
-  let adjustedHeight = WIDTH - rootHeight;
+  let adjustedHeight = HEIGHT - rootHeight;
 
   if (adjustedHeight < 0) {
     adjustedHeight = 10;
@@ -170,8 +170,6 @@ function draw(el, dataset, opts) {
 
   const svg = d3
     .select(el)
-    .append("div")
-    .style("overflow", "hidden")
     .append("svg")
     .attr("width", WIDTH)
     .attr("height", HEIGHT)
@@ -182,11 +180,11 @@ function draw(el, dataset, opts) {
   function render(group, root, zoomInOut) {
     group
       .append("rect")
+      .classed("container", true)
       .attr("x", 0)
       .attr("y", 0)
       .attr("width", WIDTH)
-      .attr("height", HEIGHT)
-      .attr("style", "fill: var(--togostanza-background-color)");
+      .attr("height", HEIGHT);
 
     const node = group
       .selectAll("g")
@@ -215,11 +213,10 @@ function draw(el, dataset, opts) {
     node
       .append("rect")
       .attr("id", (d) => (d.leafUid = uid("leaf")).id)
-
       .attr("style", (d) => {
         return `fill: ${
           d === root
-            ? "var(--togostanza-background-color)"
+            ? "var(--togostanza-theme-background_color)"
             : colorScale(d.data.data.label)
         }`;
       });
