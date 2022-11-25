@@ -29,6 +29,12 @@
       "stanza:required": true
     },
     {
+      "stanza:key": "misc-custom_css_url",
+      "stanza:example": "",
+      "stanza:description": "Stylesheet(css file) URL to override current style",
+      "stanza:required": false
+    },
+    {
       "stanza:key": "node-key",
       "stanza:type": "string",
       "stanza:description": "Key of node unique id",
