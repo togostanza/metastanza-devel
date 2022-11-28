@@ -60,19 +60,19 @@ export default class Sunburst extends Stanza {
 
     const dispatcher = this.element;
 
-    appendCustomCss(this, this.params["custom-css-url"]);
+    appendCustomCss(this, this.params["custom_css_url"]);
     // get value of css vars
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
-    const width = this.params["width"];
-    const height = this.params["height"];
+    const width = +css("--togostanza-outline-width");
+    const height = parseFloat(css("--togostanza-outline-height"));
     const colorScale = [];
 
-    const borderWidth = this.params["gap-width"] || 2;
-    const nodesGapWidth = this.params["nodes-gap-width"] || 8;
-    const cornerRadius = this.params["nodes-corner-radius"] || 0;
-    const showNumbers = this.params["show-numbers"];
-    let depthLim = +this.params["max-depth"] || 0;
+    const borderWidth = this.params["node-levels_gap_width"] || 2;
+    const nodesGapWidth = this.params["node-gap_width"] || 8;
+    const cornerRadius = this.params["node-corner_radius"] || 0;
+    const showNumbers = this.params["node-show_values"];
+    let depthLim = +this.params["max_depth"] || 0;
     const scalingMethod = this.params["scaling"];
 
     const data = await loadData(
@@ -84,7 +84,7 @@ export default class Sunburst extends Stanza {
     this._data = data;
 
     for (let i = 0; i <= 5; i++) {
-      colorScale.push(`--togostanza-series-${i}-color`);
+      colorScale.push(`--togostanza-theme-series_${i}_color`);
     }
 
     this.renderTemplate({
