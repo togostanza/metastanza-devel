@@ -38,9 +38,9 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
   const chords = chord(matrix);
 
   const edgeColorScale = params.color();
-  chords.forEach((chord) => {
-    chord.color = edgeColorScale("" + chord.target.index);
-    chords.groups[chord.source.index].color = chord.color;
+
+  chords.groups.forEach((node) => {
+    node.color = edgeColorScale("" + node.index);
   });
 
   console.log(chords);
@@ -67,7 +67,7 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
     .data(chords)
     .join("path")
     .attr("d", ribbon)
-    .attr("fill", (d) => d.color);
+    .attr("fill", (d) => chords.groups[d.source.index].color);
   rootGroup
     .append("g")
     .classed("arcs", true)
@@ -83,12 +83,38 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
     )
     .call((g) =>
       g
+        .append("g")
+        .attr("transform", (d) => {
+          let da = 0;
+          const angle =
+            (((d.endAngle + d.startAngle) / 2) * 180) / Math.PI - 90;
+          if (angle <= -90 || angle >= 90) {
+            da = 180;
+          }
+
+          return `
+          rotate(${
+            (((d.endAngle + d.startAngle) / 2) * 180) / Math.PI - 90 + da
+          })`;
+        })
         .append("text")
-        .attr("dy", -3)
-        .append("textPath")
-        // .attr('xlink:href', textId.href)
-        .attr("xlink:href", () => `#${fullsircleId}`)
-        .attr("startOffset", (d) => d.startAngle * outerRadius)
         .text((d) => names[d.index])
+        .attr("alignment-baseline", "middle")
+        .attr("x", (d) => {
+          const angle =
+            (((d.endAngle + d.startAngle) / 2) * 180) / Math.PI - 90;
+          if (angle <= -90 || angle >= 90) {
+            return -outerRadius;
+          }
+          return outerRadius;
+        })
+        .attr("text-anchor", (d) => {
+          const angle =
+            (((d.endAngle + d.startAngle) / 2) * 180) / Math.PI - 90;
+          if (angle > -90 && angle < 90) {
+            return "start";
+          }
+          return "end";
+        })
     );
 }
