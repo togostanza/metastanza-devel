@@ -4,6 +4,8 @@ import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
 import Legend from "@/lib/Legend";
 import { getXTextLabelProps, getYTextLabelProps } from "@/lib/SetLabelsAngle";
+
+import { StanzaColorGenerator } from "@/lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -12,6 +14,7 @@ import {
   downloadTSVMenuItem,
   appendCustomCss,
 } from "togostanza-utils";
+import { getMarginsFromCSSString } from "../../lib/utils";
 
 export default class Barchart extends Stanza {
   menu() {
@@ -25,72 +28,102 @@ export default class Barchart extends Stanza {
   }
 
   async render() {
-    appendCustomCss(this, this.params["custom-css-url"]);
+    appendCustomCss(this, this.params["misc-custom_css_url"]);
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
+    const colorGenerator = new StanzaColorGenerator(this);
     //width、height、padding
 
     //data
-    const xKeyName = this.params["category"];
-    const yKeyName = this.params["value"];
-    const xAxisTitle = this.params["category-title"];
-    const yAxisTitle = this.params["value-title"];
-    const yTicksNumber = this.params["yticks-number"] || 3;
-    const showLegend = this.params["legend"] || "top-right";
-    const groupKeyName = this.params["group-by"];
-    const showXGrid = this.params["xgrid"] === "true" ? true : false;
-    const showYGrid = this.params["ygrid"] === "true" ? true : false;
-    const xLabelAngle =
-      parseInt(this.params["xlabel-angle"]) === 0
-        ? 0
-        : parseInt(this.params["xlabel-angle"]) || -90;
-    const yLabelAngle =
-      parseInt(this.params["ylabel-angle"]) === 0
-        ? 0
-        : parseInt(this.params["ylabel-angle"]) || 0;
-    const barPlacement = this.params["bar-placement"];
-    const errorKeyName = this.params["error-key"];
-    const showErrorBars =
-      this.params["error-key"] !== "" || this.params["error-key"] !== undefined;
+    const xKeyName = this.params["axis-x-key"];
+    const yKeyName = this.params["axis-y-key"];
+    const xAxisTitle =
+      typeof this.params["axis-x-title"] === "undefined"
+        ? xKeyName
+        : this.params["axis-x-title"];
+    const yAxisTitle =
+      typeof this.params["axis-y-title"] === "undefined"
+        ? yKeyName
+        : this.params["axis-y-title"];
 
-    const errorBarWidth =
-      typeof this.params["error-bar-width"] !== "undefined"
-        ? this.params["error-bar-width"]
-        : 0.4;
-    const xLabelPadding =
-      parseInt(this.params["xlabel-padding"]) === 0
+    const xTicksHide = this.params["axis-x-ticks_hide"];
+    const xTicksNumber = xTicksHide ? 0 : null;
+    const xTickValues = xTicksHide ? [] : null;
+
+    const showLegend = this.params["legend-show"];
+    const legendTitle = this.params["legend-title"];
+
+    const groupKeyName = this.params["group_by-key"];
+
+    const xLabelAngle =
+      parseInt(this.params["axis-x-ticks_labels_angle"]) === 0
         ? 0
-        : parseInt(this.params["xlabel-padding"]) || 7;
-    const yLabelPadding =
-      parseInt(this.params["ylabel-padding"]) === 0
+        : parseInt(this.params["axis-x-ticks_labels_angle"]) || -90;
+    const yLabelAngle =
+      parseInt(this.params["axis-y-ticks_labels_angle"]) === 0
         ? 0
-        : parseInt(this.params["ylabel-padding"]) || 10;
-    const ylabelFormat = this.params["ylabel-format"] || null;
-    const xTitlePadding = this.params["xtitle-padding"] || 15;
-    const yTitlePadding = this.params["ytitle-padding"] || 25;
-    const xTickSize = parseInt(this.params["xtick-size"])
-      ? parseInt(this.params["xtick-size"])
-      : 0;
-    const yTickSize = parseInt(this.params["ytick-size"])
-      ? parseInt(this.params["ytick-size"])
-      : 0;
+        : parseInt(this.params["axis-y-ticks_labels_angle"]) || 0;
+
+    const yTicksInterval = parseFloat(this.params["axis-y-ticks_interval"]);
+
+    const yTicksNumber =
+      yTicksInterval === 0 ? null : isNaN(yTicksInterval) ? 5 : null;
+
+    const yGridLinesInterval = parseFloat(
+      this.params["axis-y-gridlines_interval"]
+    );
+
+    const yGridNumber =
+      yGridLinesInterval === 0 ? null : isNaN(yGridLinesInterval) ? 5 : null;
+
+    const barPlacement = this.params["chart-bar_arrangement"] || "grouped";
+    const errorKeyName = this.params["error_bars-key"];
+    const showErrorBars = errorKeyName !== "" || errorKeyName !== undefined;
+
+    const errorBarWidth = 0.4;
+    const xLabelPadding = 5;
+    const yLabelPadding = 10;
+    const ylabelFormat = this.params["axis-y-ticks_labels_format"] || null;
+    const xTitlePadding = this.params["axis-x-title_padding"] || 15;
+    const yTitlePadding = this.params["axis-y-title_padding"] || 25;
+    const xTickSize = this.params["axis-x-ticks_hide"] ? 0 : 4;
+    const yTickSize = 4;
     const axisTitleFontSize =
       parseInt(css("--togostanza-title-font-size")) || 10;
-    const barPaddings =
-      typeof this.params["bar-paddings"] === "undefined"
-        ? 0.1
-        : this.params["bar-paddings"];
-    const barSubPaddings =
-      typeof this.params["bar-sub-paddings"] === "undefined"
-        ? 0.1
-        : this.params["bar-sub-paddings"];
-    const xTickPlacement = this.params["xtick-placement"] || "in-between";
-    const showBarTooltips =
-      this.params["bar-tooltips"] === "true" ? true : false;
+    const barPaddings = 0.1;
 
-    const showXAxis = this.params["show-x-axis"] === "false" ? false : true;
-    const showYAxis = this.params["show-y-axis"] === "false" ? false : true;
+    const barSubPaddings = 0.1;
+
+    const xTickPlacement = barPlacement === "stacked" ? "center" : "in-between";
+
+    const tooltipsKey = this.params["tooltips-key"];
+
+    const showXAxis = !this.params["axis-x-hide"];
+    const showYAxis = !this.params["axis-y-hide"];
+
+    const axisYScale = this.params["axis-y-scale"] || "linear";
+
+    const width = parseInt(css("--togostanza-outline-width"));
+    const height = parseInt(css("--togostanza-outline-height"));
+
+    let inputMargin = getMarginsFromCSSString(
+      css("--togostanza-outline-padding")
+    );
+
+    inputMargin = {
+      TOP: Math.max(inputMargin.TOP, 10),
+      BOTTOM: Math.max(
+        inputMargin.BOTTOM,
+        xTitlePadding + xTickSize + 10 + axisTitleFontSize
+      ),
+      LEFT: Math.max(
+        inputMargin.LEFT,
+        yTitlePadding + yTickSize + 10 + axisTitleFontSize
+      ),
+
+      RIGHT: Math.max(inputMargin.RIGHT, 10),
+    };
 
     this.renderTemplate({
       template: "stanza.html.hbs",
@@ -101,11 +134,6 @@ export default class Barchart extends Stanza {
 
     // On change params rerender - Check if legend and svg already existing and remove them -
     const existingLegend = this.root.querySelector("togostanza--legend");
-
-    if (!this.tooltip && showBarTooltips) {
-      this.tooltip = new ToolTip();
-      root.append(this.tooltip);
-    }
 
     if (existingLegend) {
       existingLegend.remove();
@@ -118,7 +146,7 @@ export default class Barchart extends Stanza {
 
     // Add legend
 
-    if (showLegend !== "none") {
+    if (showLegend) {
       this.legend = new Legend();
       root.append(this.legend);
     }
@@ -129,17 +157,26 @@ export default class Barchart extends Stanza {
       this.root.querySelector("main")
     );
 
-    // TODO For now, artificially add 20% error and randomly add or not add it
-
-    function getRandomTrueFalse() {
-      return Math.random() >= 0.5;
+    if (
+      this.params["data-type"] === "csv" ||
+      this.params["data-type"] === "tsv"
+    ) {
+      values.forEach((d) => {
+        d[errorKeyName] = [d[`${errorKeyName}_q1`], d[`${errorKeyName}_q3`]];
+      });
     }
 
-    values.forEach((item) => {
-      if (getRandomTrueFalse()) {
-        item.error = item[yKeyName] * 0.2;
-      }
+    values.forEach((d) => {
+      d[errorKeyName] = d[errorKeyName]?.map(parseFloat);
+      d[yKeyName] = parseFloat(d[yKeyName]);
     });
+
+    const showBarTooltips = values.some((d) => d[tooltipsKey]);
+
+    if (!this.tooltip && showBarTooltips) {
+      this.tooltip = new ToolTip();
+      root.append(this.tooltip);
+    }
 
     // Check data
     let error;
@@ -162,18 +199,9 @@ export default class Barchart extends Stanza {
 
     this._data = values;
 
-    const togostanzaColors = [];
-    for (let i = 0; i < 6; i++) {
-      togostanzaColors.push(css(`--togostanza-series-${i}-color`));
-    }
+    const togostanzaColors = colorGenerator.stanzaColor;
 
-    let dataMax = d3.max(
-      values,
-      (d) => +d[yKeyName] + (parseFloat(d[errorKeyName]) || 0)
-    );
-
-    const width = parseInt(this.params["width"]);
-    const height = parseInt(this.params["height"]);
+    let dataMax = d3.max(values, (d) => d[yKeyName] + (d[errorKeyName] || 0));
 
     const svg = d3
       .select(el)
@@ -183,18 +211,7 @@ export default class Barchart extends Stanza {
 
     /// make below function to redraw with different margins if some labels are beyound the svg
 
-    const redrawSVG = (
-      MARGIN = {
-        TOP: 10,
-        BOTTOM: Math.max(
-          60,
-          xTitlePadding + xTickSize + 10 + axisTitleFontSize
-        ),
-        LEFT: Math.max(60, yTitlePadding + yTickSize + 10 + axisTitleFontSize),
-
-        RIGHT: 10,
-      }
-    ) => {
+    const redrawSVG = (MARGIN = inputMargin) => {
       const existingChart = svg.select("g.chart");
       if (!existingChart.empty()) {
         existingChart
@@ -284,25 +301,40 @@ export default class Barchart extends Stanza {
         .range([0, WIDTH])
         .padding(barPaddings);
 
-      const y = d3.scaleLinear().range([HEIGHT, 0]);
+      let y;
 
-      const xAxisGenerator = d3.axisBottom(x).tickSizeOuter(0);
+      if (barPlacement === "grouped") {
+        switch (axisYScale) {
+          case "log10":
+            y = d3.scaleLog().range([HEIGHT, 0]);
+
+            break;
+
+          default:
+            y = d3.scaleLinear().range([HEIGHT, 0]);
+
+            break;
+        }
+      } else {
+        y = d3.scaleLinear().range([HEIGHT, 0]);
+      }
+
+      const xAxisGenerator = d3
+        .axisBottom(x)
+        .tickSizeOuter(0)
+        .ticks(xTicksNumber)
+        .tickValues(xTickValues);
 
       const yAxisGenerator = d3
         .axisLeft(y)
         .ticks(yTicksNumber)
         .tickFormat((d) => d3.format(ylabelFormat)(d));
 
-      const xAxisGridGenerator = d3
-        .axisBottom(x)
-        .tickSize(-HEIGHT)
-        .tickFormat("");
-
       const yAxisGridGenerator = d3
         .axisLeft(y)
         .tickSize(-WIDTH)
         .tickFormat("")
-        .ticks(yTicksNumber);
+        .ticks(yGridNumber);
 
       const yGridLines = barsArea.append("g").attr("class", "y gridlines");
 
@@ -345,13 +377,6 @@ export default class Barchart extends Stanza {
         }
 
         // Show/hide grid lines
-        if (showXGrid) {
-          barsArea
-            .append("g")
-            .attr("class", "x gridlines")
-            .attr("transform", "translate(0," + HEIGHT + ")")
-            .call(xAxisGridGenerator);
-        }
 
         if (barPlacement === "stacked") {
           updateStackedBars(values);
@@ -360,11 +385,13 @@ export default class Barchart extends Stanza {
         }
 
         if (showBarTooltips) {
-          const arr = this.root.querySelectorAll("svg rect");
-          this.tooltip.setup(arr);
+          requestAnimationFrame(() => {
+            const arr = this.root.querySelectorAll("svg rect[data-tooltip]");
+            this.tooltip.setup(arr);
+          });
         }
 
-        if (showLegend !== "none") {
+        if (showLegend) {
           this.legend.setup(
             gSubKeyNames.map((item, index) => {
               return {
@@ -385,10 +412,11 @@ export default class Barchart extends Stanza {
             this.root.querySelector("main"),
             {
               fadeoutNodes: svg.selectAll("g.bars-group rect").nodes(),
-              position: showLegend.split("-"),
+              position: ["top", "right"],
               fadeProp: "opacity",
               showLeaders: false,
-            }
+            },
+            legendTitle
           );
         }
 
@@ -400,7 +428,7 @@ export default class Barchart extends Stanza {
             dataset.push({
               x: entry[0],
               ...Object.fromEntries(
-                entry[1].map((d) => [d[groupKeyName], +d[yKeyName]])
+                entry[1].map((d) => [d[groupKeyName], d[yKeyName]])
               ),
             });
           }
@@ -410,6 +438,38 @@ export default class Barchart extends Stanza {
           dataMax = d3.max(stackedData.flat(), (d) => d[1]);
 
           y.domain([0, dataMax * 1.05]);
+
+          if (isNaN(yTicksInterval)) {
+            yAxisGenerator.ticks(5);
+          } else if (yTicksInterval !== 0) {
+            const ticks = [];
+            for (
+              let i = 0;
+              i <= Math.floor((dataMax * 1.05) / yTicksInterval);
+              i++
+            ) {
+              ticks.push(i * yTicksInterval);
+            }
+            yAxisGenerator.tickValues(ticks);
+          } else {
+            yAxisGenerator.tickValues([]);
+          }
+
+          if (isNaN(yGridLinesInterval)) {
+            yAxisGridGenerator.ticks(yGridNumber);
+          } else if (yGridLinesInterval !== 0) {
+            const gridTicks = [];
+            for (
+              let i = 0;
+              i <= Math.floor((dataMax * 1.05) / yGridLinesInterval);
+              i++
+            ) {
+              gridTicks.push(i * yGridLinesInterval);
+            }
+            yAxisGridGenerator.tickValues(gridTicks);
+          } else {
+            yAxisGridGenerator.tickValues([]);
+          }
 
           if (showYAxis) {
             yAxisArea
@@ -425,9 +485,7 @@ export default class Barchart extends Stanza {
               .attr("transform", `rotate(${yLabelAngle})`);
           }
 
-          if (showYGrid) {
-            yGridLines.transition().duration(200).call(yAxisGridGenerator);
-          }
+          yGridLines.transition().duration(200).call(yAxisGridGenerator);
 
           stackedData.forEach((item) => {
             item.forEach((d) => (d.key = item.key));
@@ -490,9 +548,10 @@ export default class Barchart extends Stanza {
           )
             .attr("data-tooltip", (d) => `${d.key}: ${d[1] - d[0]}`)
             .attr("data-html", "true")
-            .attr("class", (d) => {
-              return `data-${gSubKeyNames.findIndex((item) => item === d.key)}`;
-            });
+            .attr(
+              "class",
+              (d) => `data-${gSubKeyNames.findIndex((item) => item === d.key)}`
+            );
         }
 
         function updateGroupedBars(values) {
@@ -500,10 +559,51 @@ export default class Barchart extends Stanza {
 
           const yMinMax = d3.extent(
             values,
-            (d) => +d[yKeyName] + (parseFloat(d[errorKeyName]) || 0) / 2
+            (d) => d[yKeyName] + (d[errorKeyName] || 0) / 2
           );
 
-          y.domain([0, yMinMax[1] * 1.05]);
+          switch (axisYScale) {
+            case "log10":
+              y.domain([yMinMax[0] || 1, yMinMax[1]]);
+              break;
+
+            default:
+              y.domain(yMinMax);
+              break;
+          }
+
+          if (isNaN(yTicksInterval)) {
+            yAxisGenerator.ticks(5);
+          } else if (yTicksInterval !== 0) {
+            const ticks = [];
+            for (
+              let i = 0;
+              i <= Math.floor((yMinMax[1] - yMinMax[0]) / yTicksInterval);
+              i++
+            ) {
+              ticks.push(i * yTicksInterval);
+            }
+            yAxisGenerator.tickValues(ticks);
+          } else {
+            yAxisGenerator.tickValues([]);
+          }
+
+          if (isNaN(yGridLinesInterval)) {
+            yAxisGridGenerator.ticks(yGridNumber);
+          } else if (yGridLinesInterval !== 0) {
+            const gridTicks = [];
+            for (
+              let i = 0;
+              i <= Math.floor((yMinMax[1] - yMinMax[0]) / yGridLinesInterval);
+              i++
+            ) {
+              gridTicks.push(i * yGridLinesInterval);
+            }
+            yAxisGridGenerator.tickValues(gridTicks);
+          } else {
+            yAxisGridGenerator.tickValues([]);
+          }
+
           if (showYAxis) {
             yAxisArea
               .transition()
@@ -518,9 +618,7 @@ export default class Barchart extends Stanza {
               .attr("transform", `rotate(${yLabelAngle})`);
           }
 
-          if (showYGrid) {
-            yGridLines.transition().duration(200).call(yAxisGridGenerator);
-          }
+          yGridLines.transition().duration(200).call(yAxisGridGenerator);
 
           const subX = d3
             .scaleBand()
@@ -533,25 +631,19 @@ export default class Barchart extends Stanza {
             .selectAll("g")
             .data(dataset, (d) => d[0])
             .join(
-              (enter) => {
-                return enter.append("g");
-              },
+              (enter) => enter.append("g"),
               (update) => update,
               (exit) => {
                 exit.remove();
               }
             )
-            .attr("transform", (d) => {
-              return `translate(${x(d[0])},0)`;
-            });
+            .attr("transform", (d) => `translate(${x(d[0])},0)`);
 
           // inside every g insert bars on its own x genertor
           barsGroup
             .selectAll("rect")
             .data(
-              (d) => {
-                return d[1];
-              },
+              (d) => d[1],
               (d) => `${d[xKeyName]}-${d[groupKeyName]}`
             )
             .join(
@@ -564,9 +656,14 @@ export default class Barchart extends Stanza {
             .transition(300)
             .attr("data-tooltip", (d) => `${d[groupKeyName]}: ${d[yKeyName]}`)
             .attr("x", (d) => subX(d[groupKeyName]))
-            .attr("y", (d) => y(+d[yKeyName]))
+            .attr("y", (d) => y(d[yKeyName]))
             .attr("width", subX.bandwidth())
-            .attr("height", (d) => y(0) - y(+d[yKeyName]))
+            .attr("height", (d) => {
+              if (y(y.domain()[0]) - y(d[yKeyName]) >= 0) {
+                return y(y.domain()[0]) - y(d[yKeyName]);
+              }
+              return 0;
+            })
             .attr(
               "class",
               (d) =>
@@ -574,9 +671,7 @@ export default class Barchart extends Stanza {
                   (item) => item === d[groupKeyName]
                 )}`
             )
-            .attr("fill", (d) => {
-              return color(d[groupKeyName]);
-            });
+            .attr("fill", (d) => color(d[groupKeyName]));
 
           if (showErrorBars) {
             barsGroup.call(errorBars, y, subX, errorBarWidth);
@@ -620,7 +715,7 @@ export default class Barchart extends Stanza {
 
       update(values);
 
-      if (showLegend !== "none") {
+      if (showLegend) {
         const legend = this.root
           .querySelector("togostanza--legend")
           .shadowRoot.querySelector(".legend > table > tbody");
@@ -643,7 +738,7 @@ export default class Barchart extends Stanza {
         });
       }
 
-      function errorBars(selection, yAxis, subXAxis, errorBarWidth) {
+      function errorBars(selection, yAxis, subXAxis) {
         selection.each(function (d) {
           const selG = d3.select(this);
 
@@ -652,10 +747,7 @@ export default class Barchart extends Stanza {
             .data(d[1])
             .enter()
             .filter((d) => {
-              return (
-                d[errorKeyName] !== undefined &&
-                !isNaN(parseFloat(d[errorKeyName]))
-              );
+              return d[errorKeyName] !== undefined && !isNaN(d[errorKeyName]);
             })
             .append("g")
             .attr("class", "error-bar");
@@ -667,53 +759,29 @@ export default class Barchart extends Stanza {
               "x1",
               (d) => subXAxis(d[groupKeyName]) + subXAxis.bandwidth() / 2
             )
-            .attr("y1", (d) => yAxis(+d[yKeyName] - d[errorKeyName] / 2))
+            .attr("y1", (d) => yAxis(d[errorKeyName][0]))
             .attr(
               "x2",
               (d) => subXAxis(d[groupKeyName]) + subXAxis.bandwidth() / 2
             )
-            .attr("y2", (d) => yAxis(+d[yKeyName] + d[errorKeyName] / 2));
+            .attr("y2", (d) => yAxis(d[errorKeyName][1]));
 
           // upper stroke
           errorBarGroup
             .append("line")
             .attr("class", "error-bar-line")
-            .attr(
-              "x1",
-              (d) =>
-                subXAxis(d[groupKeyName]) +
-                subXAxis.bandwidth() / 2 -
-                errorBarWidth / 2
-            )
-            .attr(
-              "x2",
-              (d) =>
-                subXAxis(d[groupKeyName]) +
-                subXAxis.bandwidth() / 2 +
-                errorBarWidth / 2
-            )
-            .attr("y1", (d) => yAxis(+d[yKeyName] - d[errorKeyName] / 2))
-            .attr("y2", (d) => yAxis(+d[yKeyName] - d[errorKeyName] / 2));
+            .attr("x1", (d) => subXAxis(d[groupKeyName]))
+            .attr("x2", (d) => subXAxis(d[groupKeyName]) + subXAxis.bandwidth())
+            .attr("y1", (d) => yAxis(d[errorKeyName][0]))
+            .attr("y2", (d) => yAxis(d[errorKeyName][0]));
           // lower stroke
           errorBarGroup
             .append("line")
             .attr("class", "error-bar-line")
-            .attr(
-              "x1",
-              (d) =>
-                subXAxis(d[groupKeyName]) +
-                subXAxis.bandwidth() / 2 -
-                errorBarWidth / 2
-            )
-            .attr(
-              "x2",
-              (d) =>
-                subXAxis(d[groupKeyName]) +
-                subXAxis.bandwidth() / 2 +
-                errorBarWidth / 2
-            )
-            .attr("y1", (d) => yAxis(+d[yKeyName] + d[errorKeyName] / 2))
-            .attr("y2", (d) => yAxis(+d[yKeyName] + d[errorKeyName] / 2));
+            .attr("x1", (d) => subXAxis(d[groupKeyName]))
+            .attr("x2", (d) => subXAxis(d[groupKeyName]) + subXAxis.bandwidth())
+            .attr("y1", (d) => yAxis(d[errorKeyName][1]))
+            .attr("y2", (d) => yAxis(d[errorKeyName][1]));
         });
       }
     };
