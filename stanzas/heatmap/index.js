@@ -219,7 +219,7 @@ export default class Heatmap extends Stanza {
     if (legendShow === true) {
       this.legend.setup(
         intervals(setColor),
-        {},
+        null,
         {
           position: ["top", "right"],
         },
