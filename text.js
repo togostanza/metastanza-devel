@@ -1,5 +1,5 @@
-import { k as commonjsGlobal, S as Stanza, d as defineStanzaElement } from './transform-d69bdfce.js';
-import { f as appendCustomCss } from './index-210786f8.js';
+import { c as commonjsGlobal, S as Stanza, d as defineStanzaElement } from './transform-2d2d4fd0.js';
+import { f as appendCustomCss } from './index-1567edd1.js';
 import { s as spinner } from './spinner-0571803e.js';
 
 function isContainer(node) {
