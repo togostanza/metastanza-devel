@@ -53,6 +53,8 @@ export default class Text extends Stanza {
   async render() {
     const main = this.root.querySelector("main");
 
+    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
+
     this._dataset = await this._loadText(this.params["data-url"], main);
 
     const value = this._dataset;
@@ -81,12 +83,12 @@ export default class Text extends Stanza {
       });
     }
 
+    appendCustomCss(this, this.params["custom_css_url"]);
     appendCustomCss(this, this.params["highlight-css-url"]);
-    appendCustomCss(this, this.params["custom-css-url"]);
 
-    const width = this.params["width"];
-    const height = this.params["height"];
-    const padding = this.params["padding"];
+    const width = +css("--togostanza-outline-width");
+    const height = +css("--togostanza-outline-height");
+    const padding = +css("--togostanza-outline-padding");
     const container = this.root.querySelector(".container");
     main.setAttribute("style", `padding: ${padding}px;`);
     container.setAttribute(`style`, `width: ${width}px; height: ${height}px;`);
