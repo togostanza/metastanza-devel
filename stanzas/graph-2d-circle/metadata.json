@@ -39,12 +39,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "nodes-id_key",
-      "stanza:type": "string",
-      "stanza:example": "id",
-      "stanza:description": "Key of the unique node id"
-    },
-    {
       "stanza:key": "node-label-key",
       "stanza:type": "string",
       "stanza:example": "id",
