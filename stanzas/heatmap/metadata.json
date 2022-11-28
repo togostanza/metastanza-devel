@@ -30,7 +30,7 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "misc-custom_css_url",
+      "stanza:key": "custom_css_url",
       "stanza:type": "text",
       "stanza:example": "",
       "stanza:description": "custom css to apply"
@@ -66,19 +66,25 @@
       "stanza:description": "Y axis title"
     },
     {
-      "stanza:key": "x-ticks_labels_angle",
+      "stanza:key": "axis-x-ticks_labels_angle",
       "stanza:type": "number",
       "stanza:example": 0,
       "stanza:description": "X ticks labels angle (in degree)"
     },
     {
-      "stanza:key": "y-ticks_labels_angle",
+      "stanza:key": "axis-y-ticks_labels_angle",
       "stanza:type": "number",
       "stanza:example": 0,
       "stanza:description": "Y ticks labels angle (in degree)"
     },
     {
-      "stanza:key": "axis-title_padding",
+      "stanza:key": "axis-x-title_padding",
+      "stanza:type": "number",
+      "stanza:example": 10,
+      "stanza:description": "Axis title padding"
+    },
+    {
+      "stanza:key": "axis-y-title_padding",
       "stanza:type": "number",
       "stanza:example": 10,
       "stanza:description": "Axis title padding"
