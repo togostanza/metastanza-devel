@@ -33,7 +33,7 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "highlight-css-url",
+      "stanza:key": "highlight_css_url",
       "stanza:example": "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/atom-one-light.min.css",
       "stanza:description": "Stylesheet (css file) URL of highlight.js theme (only effective in markdown mode)",
       "stanza:required": false
