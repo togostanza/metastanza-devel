@@ -57,7 +57,9 @@ function isExamplePage() {
 
   if (
     pageName === stanzaId &&
-    (hostname.includes("metastanza") || hostname.includes("localhost"))
+    (hostname.includes("metastanza") ||
+      hostname.includes("localhost") ||
+      hostname.includes("togostanza"))
   ) {
     return true;
   }
