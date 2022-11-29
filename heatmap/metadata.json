@@ -66,19 +66,25 @@
       "stanza:description": "Y axis title"
     },
     {
-      "stanza:key": "x-ticks_labels_angle",
+      "stanza:key": "axis-x-ticks_labels_angle",
       "stanza:type": "number",
       "stanza:example": 0,
       "stanza:description": "X ticks labels angle (in degree)"
     },
     {
-      "stanza:key": "y-ticks_labels_angle",
+      "stanza:key": "axis-y-ticks_labels_angle",
       "stanza:type": "number",
       "stanza:example": 0,
       "stanza:description": "Y ticks labels angle (in degree)"
     },
     {
-      "stanza:key": "axis-title_padding",
+      "stanza:key": "axis-x-title_padding",
+      "stanza:type": "number",
+      "stanza:example": 10,
+      "stanza:description": "Axis title padding"
+    },
+    {
+      "stanza:key": "axis-y-title_padding",
       "stanza:type": "number",
       "stanza:example": 10,
       "stanza:description": "Axis title padding"
@@ -90,17 +96,10 @@
       "stanza:description": "Show axis lines and ticks"
     },
     {
-      "stanza:key": "legend",
-      "stanza:type": "single-choice",
-      "stanza:choice": [
-        "none",
-        "top-left",
-        "top-right",
-        "bottom-left",
-        "bottom-right"
-      ],
-      "stanza:example": "top-right",
-      "stanza:description": "Where to show the legend. 'none' for no legend"
+      "stanza:key": "legend-show",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "whether show the legend"
     },
     {
       "stanza:key": "legend-title",
@@ -113,13 +112,6 @@
       "stanza:type": "number",
       "stanza:example": 10,
       "stanza:description": "Amount of groups for legend"
-    },
-    {
-      "stanza:key": "cell-color-scale",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["linear", "log10"],
-      "stanza:example": "linear",
-      "stanza:description": "If value to be mapped to color is a number"
     },
     {
       "stanza:key": "cell-color_min",

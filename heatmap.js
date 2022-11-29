@@ -1,7 +1,7 @@
 import { S as Stanza, s as select, d as defineStanzaElement } from './transform-2d2d4fd0.js';
 import { l as loadData } from './load-data-83b3c4c7.js';
 import { T as ToolTip } from './ToolTip-e0b879e2.js';
-import { L as Legend } from './Legend-e7db0aaa.js';
+import { L as Legend } from './Legend-08bca0f2.js';
 import { a as getGradationColor } from './ColorGenerator-55034777.js';
 import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-1567edd1.js';
 import { b as band } from './band-b5fce97a.js';
@@ -33,13 +33,13 @@ class Heatmap extends Stanza {
       root.append(this.tooltip);
     }
 
-    const legendShow = this.params["legend"];
+    const legendShow = this.params["legend-show"];
     const existingLegend = this.root.querySelector("togostanza--legend");
     if (existingLegend) {
       existingLegend.remove();
     }
 
-    if (legendShow !== "none") {
+    if (legendShow === true) {
       this.legend = new Legend();
       root.append(this.legend);
     }
@@ -57,13 +57,13 @@ class Heatmap extends Stanza {
     const yKey = this.params["axis-y-key"];
     const xTitle = this.params["axis-x-title"] || xKey;
     const yTitle = this.params["axis-y-title"] || yKey;
-    const xLabelAngle = this.params["x-ticks_labels_angle"];
-    const yLabelAngle = this.params["y-ticks_labels_angle"];
-    const axisTitlePadding = this.params["axis-title_padding"];
+    const xLabelAngle = this.params["axis-x-ticks_labels_angle"] || 0;
+    const yLabelAngle = this.params["axis-y-ticks_labels_angle"] || 0;
+    const axisXTitlePadding = this.params["axis-x-title_padding"] || 0;
+    const axisYTitlePadding = this.params["axis-y-title_padding"] || 0;
     const isAxisHide = this.params["axis-hide"];
     const legendTitle = this.params["legend-title"];
     const legendGroups = this.params["legend-groups"];
-    const cellColorScale = this.params["cell-color-scale"];
     const tooltipKey = this.params["tooltips-key"];
     const tooltipHTML = (d) =>
       `<span><strong>${d[xKey]},${d[yKey]}: </strong>${d[tooltipKey]}</span>`;
@@ -75,67 +75,16 @@ class Heatmap extends Stanza {
     let cellDomainMin = parseFloat(this.params["cell-value_min"]);
     let cellDomainMid = parseFloat(this.params["cell-value_mid"]);
     let cellDomainMax = parseFloat(this.params["cell-value_max"]);
-    let values = dataset.map((d) => parseFloat(d[cellColorKey]));
+    const values = dataset.map((d) => parseFloat(d[cellColorKey]));
 
-    if (cellColorScale === "log10") {
-      values = values.filter((d) => d > 0).map(Math.log10);
+    if (isNaN(parseFloat(cellDomainMin))) {
+      cellDomainMin = Math.min(...values);
     }
-
-    const minValue = Math.min(...values);
-    const maxValue = Math.max(...values);
-
-    function scaleWarn(param, fallback, fallbackValue) {
-      console.warn(
-        `Parameter ${param} is invalid for selected scale, fall back to ${fallback}, ${fallbackValue}`
-      );
+    if (isNaN(parseFloat(cellDomainMax))) {
+      cellDomainMax = Math.max(...values);
     }
-
-    const [LINEAR, LOG10] = ["linear", "log10"];
-    switch (cellColorScale) {
-      case LINEAR:
-        if (isNaN(parseFloat(cellDomainMin))) {
-          cellDomainMin = minValue;
-          scaleWarn("cell-value_min", "data minimum value", cellDomainMin);
-        }
-        if (isNaN(parseFloat(cellDomainMax))) {
-          cellDomainMax = maxValue;
-          scaleWarn("cell-value_max", "data maximum value", cellDomainMax);
-        }
-        if (isNaN(parseFloat(cellDomainMid))) {
-          cellDomainMid = (cellDomainMax + cellDomainMin) / 2;
-          scaleWarn("cell-value_mid", "data midrange value", cellDomainMid);
-        }
-        break;
-
-      case LOG10:
-        if (
-          isNaN(parseFloat(cellDomainMin)) ||
-          parseFloat(cellDomainMin) <= 0
-        ) {
-          cellDomainMin = minValue;
-          scaleWarn("cell-value_min", "data minimum value", cellDomainMin);
-        } else {
-          cellDomainMin = Math.log(parseFloat(cellDomainMin));
-        }
-        if (
-          isNaN(parseFloat(cellDomainMax)) ||
-          parseFloat(cellDomainMax) <= 0
-        ) {
-          cellDomainMax = maxValue;
-          scaleWarn("cell-value_max", "data maximum value", cellDomainMax);
-        } else {
-          cellDomainMax = Math.log10(parseFloat(cellDomainMax));
-        }
-        if (
-          isNaN(parseFloat(cellDomainMid)) ||
-          parseFloat(cellDomainMid) <= 0
-        ) {
-          cellDomainMid = (cellDomainMax + cellDomainMin) / 2;
-          scaleWarn("cell-value_mid", "data midrange value", cellDomainMid);
-        } else {
-          cellDomainMid = Math.log10(parseFloat(cellDomainMid));
-        }
-        break;
+    if (isNaN(parseFloat(cellDomainMid))) {
+      cellDomainMid = (cellDomainMax + cellDomainMin) / 2;
     }
 
     const setColor = getGradationColor(
@@ -143,27 +92,6 @@ class Heatmap extends Stanza {
       [cellColorMin, cellColorMid, cellColorMax],
       [cellDomainMin, cellDomainMid, cellDomainMax]
     );
-
-    const colorSym = Symbol();
-
-    //prepare data
-    dataset.forEach((d) => {
-      const value = parseFloat(d[cellColorKey]);
-
-      switch (cellColorScale) {
-        case LINEAR:
-          d[colorSym] = setColor(value);
-          break;
-
-        case LOG10:
-          {
-            let val = value;
-            val = value <= 0 ? NaN : Math.log10(value);
-            d[colorSym] = setColor(val);
-          }
-          break;
-      }
-    });
 
     //Styles
     const fontSize = +this.css("--togostanza-fonts-font_size_primary");
@@ -203,17 +131,20 @@ class Heatmap extends Stanza {
     maxColumnGroup.remove();
 
     //Margin between graph and title
-    const margin = axisTitlePadding + maxColumnWidth + tickSize;
+    const margin = {
+      left: axisXTitlePadding + maxColumnWidth + tickSize,
+      bottom: axisYTitlePadding + maxColumnWidth + tickSize,
+    };
 
     //Graph area including title
     svg
-      .attr("width", width + margin + fontSize)
-      .attr("height", height + margin + fontSize);
+      .attr("width", width + margin.left + fontSize)
+      .attr("height", height + margin.bottom + fontSize);
 
     const graphArea = svg
       .append("g")
       .attr("class", "graph")
-      .attr("transform", `translate(${margin + fontSize}, 0)`);
+      .attr("transform", `translate(${margin.left + fontSize}, 0)`);
 
     //Set for each rect
     graphArea
@@ -231,11 +162,11 @@ class Heatmap extends Stanza {
       .attr("height", y.bandwidth())
       .attr("rx", borderRadius)
       .attr("ry", borderRadius)
-      .style("fill", (d) => d[colorSym])
+      .style("fill", (d) => setColor(d[cellColorKey]))
       .on("mouseover", mouseover)
       .on("mouseleave", mouseleave);
 
-    //Draw the x-axis
+    //Draw about the x-axis
     const xaxisArea = graphArea
       .append("g")
       .attr("class", "x-axis")
@@ -245,25 +176,26 @@ class Heatmap extends Stanza {
       .call(xAxisGenerator)
       .selectAll("text")
       .attr("transform", `rotate(${xLabelAngle})`);
-    //Draw the x-axis title
     xaxisArea
       .append("text")
       .attr("text-anchor", "middle")
-      .attr("transform", `translate(${width / 2}, ${margin})`)
+      .attr("transform", `translate(${width / 2}, ${margin.bottom})`)
       .text(xTitle);
 
-    //Draw the y-axis;
+    //Draw about the y-axis;
     const yaxisArea = graphArea.append("g").attr("class", "y-axis");
     yaxisArea
       .append("g")
       .call(yAxisGenerator)
       .selectAll("text")
       .attr("transform", `rotate(${yLabelAngle})`);
-    //Draw the y-axis title
     yaxisArea
       .append("text")
       .attr("text-anchor", "middle")
-      .attr("transform", `translate(-${margin}, ${height / 2}) rotate(-90)`)
+      .attr(
+        "transform",
+        `translate(-${margin.left}, ${height / 2}) rotate(-90)`
+      )
       .text(yTitle);
 
     //Hide axis lines and ticks
@@ -279,12 +211,12 @@ class Heatmap extends Stanza {
 
     this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
 
-    if (legendShow !== "none") {
+    if (legendShow === true) {
       this.legend.setup(
         intervals(setColor),
-        {},
+        null,
         {
-          position: legendShow.split("-"),
+          position: ["top", "right"],
         },
         legendTitle
       );
@@ -311,26 +243,13 @@ class Heatmap extends Stanza {
       }
     }
 
-    // create legend objects
+    //create legend objects
     function intervals(color, steps = legendGroups >= 2 ? legendGroups : 2) {
       return [...Array(steps).keys()].map((i) => {
-        let legendSteps;
-        switch (cellColorScale) {
-          case LINEAR:
-            legendSteps = Math.round(
-              cellDomainMax -
-                i * (Math.abs(cellDomainMax - cellDomainMin) / (steps - 1))
-            );
-            break;
-
-          case LOG10:
-            legendSteps = (
-              cellDomainMax -
-              i * (Math.abs(cellDomainMax - cellDomainMin) / (steps - 1))
-            ).toFixed(3);
-            break;
-        }
-
+        const legendSteps = Math.round(
+          cellDomainMax -
+            i * (Math.abs(cellDomainMax - cellDomainMin) / (steps - 1))
+        );
         return {
           label: legendSteps,
           color: color(legendSteps),
@@ -420,19 +339,25 @@ var metadata = {
 		"stanza:description": "Y axis title"
 	},
 	{
-		"stanza:key": "x-ticks_labels_angle",
+		"stanza:key": "axis-x-ticks_labels_angle",
 		"stanza:type": "number",
 		"stanza:example": 0,
 		"stanza:description": "X ticks labels angle (in degree)"
 	},
 	{
-		"stanza:key": "y-ticks_labels_angle",
+		"stanza:key": "axis-y-ticks_labels_angle",
 		"stanza:type": "number",
 		"stanza:example": 0,
 		"stanza:description": "Y ticks labels angle (in degree)"
 	},
 	{
-		"stanza:key": "axis-title_padding",
+		"stanza:key": "axis-x-title_padding",
+		"stanza:type": "number",
+		"stanza:example": 10,
+		"stanza:description": "Axis title padding"
+	},
+	{
+		"stanza:key": "axis-y-title_padding",
 		"stanza:type": "number",
 		"stanza:example": 10,
 		"stanza:description": "Axis title padding"
@@ -444,17 +369,10 @@ var metadata = {
 		"stanza:description": "Show axis lines and ticks"
 	},
 	{
-		"stanza:key": "legend",
-		"stanza:type": "single-choice",
-		"stanza:choice": [
-			"none",
-			"top-left",
-			"top-right",
-			"bottom-left",
-			"bottom-right"
-		],
-		"stanza:example": "top-right",
-		"stanza:description": "Where to show the legend. 'none' for no legend"
+		"stanza:key": "legend-show",
+		"stanza:type": "boolean",
+		"stanza:example": true,
+		"stanza:description": "whether show the legend"
 	},
 	{
 		"stanza:key": "legend-title",
@@ -467,16 +385,6 @@ var metadata = {
 		"stanza:type": "number",
 		"stanza:example": 10,
 		"stanza:description": "Amount of groups for legend"
-	},
-	{
-		"stanza:key": "cell-color-scale",
-		"stanza:type": "single-choice",
-		"stanza:choice": [
-			"linear",
-			"log10"
-		],
-		"stanza:example": "linear",
-		"stanza:description": "If value to be mapped to color is a number"
 	},
 	{
 		"stanza:key": "cell-color_min",
