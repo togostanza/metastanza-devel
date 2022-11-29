@@ -4,7 +4,7 @@
   },
   "@id": "heatmap",
   "stanza:label": "Heatmap",
-  "stanza:definition": "Heatmap stanza",
+  "stanza:definition": "Heatmap MetaStanza",
   "stanza:type": "Stanza",
   "stanza:display": "Chart",
   "stanza:provider": "",
@@ -30,7 +30,7 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "misc-custom_css_url",
+      "stanza:key": "custom_css_url",
       "stanza:type": "text",
       "stanza:example": "",
       "stanza:description": "custom css to apply"
