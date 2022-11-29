@@ -150,7 +150,7 @@ class Barchart extends Stanza {
   }
 
   async render() {
-    appendCustomCss(this, this.params["misc-custom_css_url"]);
+    appendCustomCss(this, this.params["custom_css_url"]);
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
@@ -1080,7 +1080,7 @@ var metadata = {
 		"stanza:required": false
 	},
 	{
-		"stanza:key": "misc-custom_css_url",
+		"stanza:key": "custom_css_url",
 		"stanza:type": "text",
 		"stanza:example": "",
 		"stanza:description": "Stylesheet(css file) URL to override current style",

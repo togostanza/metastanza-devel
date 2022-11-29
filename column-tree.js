@@ -44,7 +44,7 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "custom-css-url",
+		"stanza:key": "custom_css_url",
 		"stanza:example": "",
 		"stanza:description": "Stylesheet(css file) URL to override current style",
 		"stanza:required": false
@@ -712,7 +712,7 @@ script.__file = "stanzas/column-tree/app.vue";
 
 class ColumnTree extends Stanza {
   async render() {
-    appendCustomCss(this, this.params["custom-css-url"]);
+    appendCustomCss(this, this.params["custom_css_url"]);
 
     const main = this.root.querySelector("main");
     main.parentNode.style.backgroundColor =

@@ -154,7 +154,7 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "custom-css-url",
+		"stanza:key": "custom_css_url",
 		"stanza:example": "",
 		"stanza:description": "Stylesheet(css file) URL to override current style",
 		"stanza:required": false

@@ -85476,7 +85476,7 @@ class Text extends Stanza {
     }
 
     appendCustomCss(this, this.params["highlight-css-url"]);
-    appendCustomCss(this, this.params["custom-css-url"]);
+    appendCustomCss(this, this.params["custom_css_url"]);
 
     const width = this.params["width"];
     const height = this.params["height"];
@@ -85568,7 +85568,7 @@ var metadata = {
 		"stanza:required": false
 	},
 	{
-		"stanza:key": "custom-css-url",
+		"stanza:key": "custom_css_url",
 		"stanza:example": "",
 		"stanza:description": "Stylesheet (css file) URL to override current style",
 		"stanza:required": false

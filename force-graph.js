@@ -312,7 +312,7 @@ class ForceGraph extends Stanza {
   }
 
   async render() {
-    appendCustomCss(this, this.params["misc-custom_css_url"]);
+    appendCustomCss(this, this.params["custom_css_url"]);
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
@@ -523,7 +523,7 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "misc-custom_css_url",
+		"stanza:key": "custom_css_url",
 		"stanza:example": "",
 		"stanza:description": "Stylesheet(scss file) URL to override current style",
 		"stanza:required": false

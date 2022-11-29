@@ -53,7 +53,7 @@ class Tree extends Stanza {
     );
     this._data = values;
 
-    appendCustomCss(this, this.params["misc-custom_css_url"]);
+    appendCustomCss(this, this.params["custom_css_url"]);
     const width = parseInt(this.params["width"]),
       height = parseInt(this.params["height"]),
       sortKey = this.params["sort-key"],
@@ -709,7 +709,7 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "misc-custom_css_url",
+		"stanza:key": "custom_css_url",
 		"stanza:example": "",
 		"stanza:description": "Custom CSS URL",
 		"stanza:required": false

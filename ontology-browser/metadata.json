@@ -21,7 +21,7 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "misc-custom_css_url",
+      "stanza:key": "custom_css_url",
       "type": "string",
       "stanza:example": "",
       "stanza:description": "URL of custom CSS",

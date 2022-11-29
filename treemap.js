@@ -130,7 +130,7 @@ class TreeMapStanza extends Stanza {
   async render() {
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
-    appendCustomCss(this, this.params["misc-custom_css_url"]);
+    appendCustomCss(this, this.params["custom_css_url"]);
 
     const width = parseInt(css("--togostanza-outline-width"));
     const height = parseInt(css("--togostanza-outline-height"));
@@ -634,7 +634,7 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "misc-custom_css_url",
+		"stanza:key": "custom_css_url",
 		"stanza:example": "",
 		"stanza:description": "Stylesheet(css file) URL to override current style",
 		"stanza:required": false
