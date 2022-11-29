@@ -139,7 +139,7 @@ var metadata = {
 },
 	"@id": "chord-diagram",
 	"stanza:label": "Chord diagram",
-	"stanza:definition": "",
+	"stanza:definition": "Chord diagram MetaStanza",
 	"stanza:license": "MIT",
 	"stanza:author": "永野 朗夫",
 	"stanza:contributor": [

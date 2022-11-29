@@ -351,7 +351,7 @@ var metadata = {
 },
 	"@id": "heatmap",
 	"stanza:label": "Heatmap",
-	"stanza:definition": "Heatmap stanza",
+	"stanza:definition": "Heatmap MetaStanza",
 	"stanza:type": "Stanza",
 	"stanza:display": "Chart",
 	"stanza:provider": "",
