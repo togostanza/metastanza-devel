@@ -15,7 +15,6 @@ import Legend from "@/lib/Legend";
 const LINE_HEIGHT = 1;
 
 export default class VennStanza extends Stanza {
-
   menu() {
     return [
       downloadSvgMenuItem(this, "vennstanza"),
@@ -27,7 +26,7 @@ export default class VennStanza extends Stanza {
   }
 
   async render() {
-    appendCustomCss(this, this.params["misc-custom_css_url"]);
+    appendCustomCss(this, this.params["custom_css_url"]);
     this.colorSeries = this.getColorSeries();
 
     this.renderTemplate({ template: "stanza.html.hbs" });
@@ -94,7 +93,8 @@ export default class VennStanza extends Stanza {
       .querySelector("main")
       .getBoundingClientRect();
     const rect = selectedDiagram.getBoundingClientRect();
-    const margin = Math.max(rect.x - containerRect.x, rect.y - containerRect.y) + padding;
+    const margin =
+      Math.max(rect.x - containerRect.x, rect.y - containerRect.y) + padding;
     const scale = Math.min(
       svgWidth / (rect.width + margin * 2),
       svgHeight / (rect.height + margin * 2)
@@ -104,14 +104,14 @@ export default class VennStanza extends Stanza {
     // typography
     const fontStyles = [
       {
-        className: 'label',
-        varSuffix: 'primary'
+        className: "label",
+        varSuffix: "primary",
       },
       {
-        className: 'value',
-        varSuffix: 'secondary'
+        className: "value",
+        varSuffix: "secondary",
       },
-    ].map(({className, varSuffix}) => {
+    ].map(({ className, varSuffix }) => {
       const fontSize = +window
         .getComputedStyle(this.element)
         .getPropertyValue(`--togostanza-fonts-font_size_${varSuffix}`);
@@ -119,12 +119,19 @@ export default class VennStanza extends Stanza {
       selectedDiagram.querySelectorAll(`text.${className}`).forEach((text) => {
         text.style.fontSize = actualFontSize + "px";
       });
-      return {className, varSuffix, fontSize, actualFontSize}
+      return { className, varSuffix, fontSize, actualFontSize };
     });
-    let textShiftY = (fontStyles.reduce((acc, style) => acc + style.fontSize, 0)) * LINE_HEIGHT * -.5;
-    selectedDiagram.querySelectorAll("text.label").forEach(text => text.setAttribute("dy", textShiftY));
+    let textShiftY =
+      fontStyles.reduce((acc, style) => acc + style.fontSize, 0) *
+      LINE_HEIGHT *
+      -0.5;
+    selectedDiagram
+      .querySelectorAll("text.label")
+      .forEach((text) => text.setAttribute("dy", textShiftY));
     textShiftY += fontStyles[1].actualFontSize * LINE_HEIGHT;
-    selectedDiagram.querySelectorAll("text.value").forEach(text => text.setAttribute("dy", textShiftY));
+    selectedDiagram
+      .querySelectorAll("text.value")
+      .forEach((text) => text.setAttribute("dy", textShiftY));
 
     // shapes
     selectedDiagram.querySelectorAll(":scope > g").forEach((group) => {
@@ -145,11 +152,16 @@ export default class VennStanza extends Stanza {
         .querySelector(":scope > .part")
         .setAttribute("fill", color.toString());
       // set label
-      group.querySelector(":scope .text > text.label").textContent = labels.join(",");
+      group.querySelector(":scope .text > text.label").textContent =
+        labels.join(",");
       group.querySelector(":scope .text > text.value").textContent = count;
       // interaction
-      group.addEventListener("mouseenter", () => selectedDiagram.classList.add("-hovering"));
-      group.addEventListener("mouseleave", () => selectedDiagram.classList.remove("-hovering"));
+      group.addEventListener("mouseenter", () =>
+        selectedDiagram.classList.add("-hovering")
+      );
+      group.addEventListener("mouseleave", () =>
+        selectedDiagram.classList.remove("-hovering")
+      );
       // tooltip
       group.dataset.tooltip = `<strong>${labels.join("∩")}</strong>: ${count}`;
       group.dataset.tooltipHtml = true;
