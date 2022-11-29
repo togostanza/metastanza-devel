@@ -8,6 +8,11 @@
   font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
   color: var(--togostanza-fonts-font_color);
 }
-text {
-  fill: var(--togostanza-fonts-font_color);
+
+svg {
+  font-family: var(--togostanza-fonts-font_family);
+  font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+  text {
+    fill: var(--togostanza-fonts-font_color);
+  }
 }

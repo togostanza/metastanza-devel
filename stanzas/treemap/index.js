@@ -29,7 +29,7 @@ export default class TreeMapStanza extends Stanza {
   async render() {
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
-    appendCustomCss(this, this.params["misc-custom_css_url"]);
+    appendCustomCss(this, this.params["custom_css_url"]);
 
     const width = parseInt(css("--togostanza-outline-width"));
     const height = parseInt(css("--togostanza-outline-height"));
