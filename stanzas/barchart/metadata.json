@@ -156,7 +156,7 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "misc-custom_css_url",
+      "stanza:key": "custom_css_url",
       "stanza:type": "text",
       "stanza:example": "",
       "stanza:description": "Stylesheet(css file) URL to override current style",
