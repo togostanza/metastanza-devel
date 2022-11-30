@@ -19,7 +19,9 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
   const innerRadius = Math.min(WIDTH, HEIGHT) * 0.5 - 20;
   const outerRadius = innerRadius + 6;
 
-  const arcsGap = 5;
+  // get Letter height
+
+  const arcsGap = 7;
   const edgeOffset = 5;
 
   const ribbon = d3
