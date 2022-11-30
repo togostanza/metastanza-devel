@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 
 export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
-  const names = nodes.map((node) => node.id);
+  const names = nodes.map((node) => node[params.labelsParams.dataKey]);
 
   const matrix = (() => {
     const index = new Map(names.map((name, i) => [name, i]));
@@ -23,6 +23,8 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
 
   const arcsGap = 7;
   const edgeOffset = 5;
+  const labelOffset = 5;
+  const labelRadius = outerRadius + labelOffset;
 
   const ribbon = d3
     .ribbonArrow()
@@ -43,9 +45,9 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
 
   chords.groups.forEach((node) => {
     node.color = edgeColorScale("" + node.index);
+    node.tooltip = nodes[node.index][params.tooltipParams.dataKey];
+    node.label = nodes[node.index][params.labelsParams.dataKey];
   });
-
-  console.log(chords);
 
   const fullsircleId = `fullsircle${new Date().getTime()}`;
 
@@ -70,53 +72,54 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
     .join("path")
     .attr("d", ribbon)
     .attr("fill", (d) => chords.groups[d.source.index].color);
-  rootGroup
+  const arcsG = rootGroup
     .append("g")
     .classed("arcs", true)
     .selectAll("g")
     .data(chords.groups)
-    .join("g")
-    .call((g) =>
-      g
-        .append("path")
-        .attr("d", arc)
-        .attr("fill", (d) => d.color)
-        .attr("stroke", "#fff")
-    )
-    .call((g) =>
-      g
-        .append("g")
-        .attr("transform", (d) => {
-          let da = 0;
-          const angle =
-            (((d.endAngle + d.startAngle) / 2) * 180) / Math.PI - 90;
-          if (angle <= -90 || angle >= 90) {
-            da = 180;
-          }
+    .join("g");
 
-          return `
+  const arcs = arcsG
+    .append("path")
+    .attr("d", arc)
+    .attr("fill", (d) => d.color);
+
+  if (params.tooltipParams.show) {
+    arcs.attr("data-tooltip", (d) => d.tooltip);
+  }
+
+  arcsG.call((g) =>
+    g
+      .append("g")
+      .attr("transform", (d) => {
+        let da = 0;
+        const angle = (((d.endAngle + d.startAngle) / 2) * 180) / Math.PI - 90;
+        if (angle <= -90 || angle >= 90) {
+          da = 180;
+        }
+
+        return `
           rotate(${
             (((d.endAngle + d.startAngle) / 2) * 180) / Math.PI - 90 + da
           })`;
-        })
-        .append("text")
-        .text((d) => names[d.index])
-        .attr("alignment-baseline", "middle")
-        .attr("x", (d) => {
-          const angle =
-            (((d.endAngle + d.startAngle) / 2) * 180) / Math.PI - 90;
-          if (angle <= -90 || angle >= 90) {
-            return -outerRadius;
-          }
-          return outerRadius;
-        })
-        .attr("text-anchor", (d) => {
-          const angle =
-            (((d.endAngle + d.startAngle) / 2) * 180) / Math.PI - 90;
-          if (angle > -90 && angle < 90) {
-            return "start";
-          }
-          return "end";
-        })
-    );
+      })
+      .append("text")
+      .attr("class", "label")
+      .text((d) => d.label)
+      .attr("alignment-baseline", "middle")
+      .attr("x", (d) => {
+        const angle = (((d.endAngle + d.startAngle) / 2) * 180) / Math.PI - 90;
+        if (angle <= -90 || angle >= 90) {
+          return -labelRadius;
+        }
+        return labelRadius;
+      })
+      .attr("text-anchor", (d) => {
+        const angle = (((d.endAngle + d.startAngle) / 2) * 180) / Math.PI - 90;
+        if (angle > -90 && angle < 90) {
+          return "start";
+        }
+        return "end";
+      })
+  );
 }
