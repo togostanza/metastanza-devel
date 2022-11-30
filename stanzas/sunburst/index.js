@@ -125,8 +125,12 @@ export default class Sunburst extends Stanza {
 
     const dataset = data.filter(
       (item) =>
-        (item.children && !item.n) || (item.n && item.n > 0) || item.id === "-1"
+        (item.children && !item[valueKey]) ||
+        (item[valueKey] && item[valueKey] > 0) ||
+        item.id === "-1"
     );
+
+    data.forEach((item) => console.log(item[valueKey]));
 
     const el = this.root.querySelector("#sunburst");
 
@@ -147,7 +151,7 @@ export default class Sunburst extends Stanza {
       const root = d3.hierarchy(data);
       switch (scalingMethod) {
         case "Natural":
-          root.sum((d) => d.data.n);
+          root.sum((d) => d.data[valueKey]);
           break;
         case "Equal children":
           root.sum((d) => (d.children ? 0 : 1));
@@ -165,7 +169,7 @@ export default class Sunburst extends Stanza {
       root
         .sort((a, b) => b.value - a.value)
         // store real values for number labels in d.value2
-        .each((d) => (d.value2 = d3.sum(d, (dd) => dd.data.data.n)));
+        .each((d) => (d.value2 = d3.sum(d, (dd) => dd.data.data[valueKey])));
       return d3.partition().size([2 * Math.PI, root.height + 1])(root);
     };
 
