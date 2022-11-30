@@ -8,6 +8,7 @@
 
 main {
   background-color: var(--togostanza-theme-background_color);
+  padding: var(--togostanza-outline-padding);
 }
 .container {
   display: flex;
@@ -28,7 +29,7 @@ main {
           word-break: break-all;
           color: var(--togostanza-fonts-font_color);
           font-size: var(--togostanza-fonts-font_size_primary);
-          font-weight: var(--togostanza-text-font_weight);
+          font-weight: var(--togostanza-fonts-font_weight);
         }
       }
     }

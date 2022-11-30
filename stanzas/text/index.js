@@ -88,9 +88,7 @@ export default class Text extends Stanza {
 
     const width = +css("--togostanza-outline-width");
     const height = +css("--togostanza-outline-height");
-    const padding = +css("--togostanza-outline-padding");
     const container = this.root.querySelector(".container");
-    main.setAttribute("style", `padding: ${padding}px;`);
     container.setAttribute(`style`, `width: ${width}px; height: ${height}px;`);
   }
 

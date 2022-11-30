@@ -86,7 +86,7 @@
       "stanza:description": "Font size"
     },
     {
-      "stanza:key": "--togostanza-text-font_weight",
+      "stanza:key": "--togostanza-fonts-font_weight",
       "stanza:type": "text",
       "stanza:default": "400",
       "stanza:description": "Font weight"
