@@ -36,18 +36,18 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "node-title_key",
+      "stanza:key": "node-label_key",
       "stanza:type": "text",
       "stanza:example": "id",
       "stanza:description": "Data key to use as a title",
-      "stanza:required": false
+      "stanza:required": true
     },
     {
       "stanza:key": "node-value_key",
       "stanza:type": "text",
       "stanza:example": "n",
       "stanza:description": "Data key to use as a value",
-      "stanza:required": false
+      "stanza:required": true
     },
     {
       "stanza:key": "node-show_values",
@@ -114,12 +114,6 @@
       "stanza:description": "outline padding"
     },
     {
-      "stanza:key": "--togostanza-theme-background_color",
-      "stanza:type": "color",
-      "stanza:default": "#eeeeee",
-      "stanza:description": "Background color"
-    },
-    {
       "stanza:key": "--togostanza-fonts-font_family",
       "stanza:type": "text",
       "stanza:default": "Helvetica Neue",
@@ -133,13 +127,13 @@
     },
     {
       "stanza:key": "--togostanza-fonts-font_size_primary",
-      "stanza:type": "string",
+      "stanza:type": "text",
       "stanza:default": "11px",
       "stanza:description": "Label font size"
     },
     {
       "stanza:key": "--togostanza-fonts-font_size_secondary",
-      "stanza:type": "string",
+      "stanza:type": "text",
       "stanza:default": "7px",
       "stanza:description": "Number label font size"
     },
@@ -178,6 +172,12 @@
       "stanza:type": "color",
       "stanza:default": "#F75976",
       "stanza:description": "Color 6"
+    },
+    {
+      "stanza:key": "--togostanza-theme-background_color",
+      "stanza:type": "color",
+      "stanza:default": "#eeeeee",
+      "stanza:description": "Background color"
     }
   ],
   "stanza:incomingEvent": [

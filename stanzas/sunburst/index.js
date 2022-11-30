@@ -64,7 +64,7 @@ export default class Sunburst extends Stanza {
     // get value of css vars
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
-    const width = +css("--togostanza-outline-width");
+    const width = parseFloat(css("--togostanza-outline-width"));
     const height = parseFloat(css("--togostanza-outline-height"));
     const colorScale = [];
 
@@ -72,8 +72,8 @@ export default class Sunburst extends Stanza {
     const nodesGapWidth = this.params["node-gap_width"] || 8;
     const cornerRadius = this.params["node-corner_radius"] || 0;
     const showNumbers = this.params["node-show_values"];
-    let depthLim = +this.params["max_depth"] || 0;
-    const scalingMethod = this.params["scaling"];
+    let depthLim = parseFloat(this.params["max_depth"]) || 0;
+    const scalingMethod = this.params["scaling"] || "Natural";
 
     const data = await loadData(
       this.params["data-url"],
