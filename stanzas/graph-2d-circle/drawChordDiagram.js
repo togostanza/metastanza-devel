@@ -47,9 +47,8 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
     node.color = edgeColorScale("" + node.index);
     node.tooltip = nodes[node.index][params.tooltipParams.dataKey];
     node.label = nodes[node.index][params.labelsParams.dataKey];
+    node.id = nodes[node.index][params.labelsParams.dataKey];
   });
-
-  const fullsircleId = `fullsircle${new Date().getTime()}`;
 
   const rootGroup = svg
     .append("g")
@@ -58,26 +57,24 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
       `translate(${[params.width * 0.5, params.height * 0.5]})`
     );
 
-  rootGroup
-    .append("path")
-    .classed("fullsircle", true)
-    .attr("id", fullsircleId)
-    .attr("d", d3.arc()({ outerRadius, startAngle: 0, endAngle: 2 * Math.PI }));
-
-  rootGroup
+  const ribbons = rootGroup
     .append("g")
     .classed("ribbons", true)
     .selectAll("g")
     .data(chords)
     .join("path")
     .attr("d", ribbon)
-    .attr("fill", (d) => chords.groups[d.source.index].color);
+    .classed("link", true)
+    .classed("chord", true)
+    .style("fill", (d) => chords.groups[d.source.index].color);
+
   const arcsG = rootGroup
     .append("g")
     .classed("arcs", true)
     .selectAll("g")
     .data(chords.groups)
-    .join("g");
+    .join("g")
+    .classed("node", true);
 
   const arcs = arcsG
     .append("path")
@@ -122,4 +119,49 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
         return "end";
       })
   );
+
+  if (params.highlightAdjEdges) {
+    arcsG.on("mouseenter", onHighlight);
+    arcsG.on("mouseleave", onHighlightOff);
+  }
+
+  function onHighlight(e, d) {
+    const node = nodes[d.index];
+    const connectedEdges = node[symbols.edgeSym];
+    const connectedNodesIds = connectedEdges
+      .map((edge) => [
+        edge[symbols.sourceNodeSym].id,
+        edge[symbols.targetNodeSym].id,
+      ])
+      .flat();
+
+    d3.select(this).classed("active", true);
+    arcsG.classed("fadeout", (p) => {
+      return d.index !== p.index;
+    });
+    arcsG.classed("half-active", (p) => {
+      return d.index !== p.index && connectedNodesIds.includes(p.id);
+    });
+    ribbons.classed(
+      "fadeout",
+      (p) => p.source.index !== d.index && p.target.index !== d.index
+    );
+    ribbons.classed("active", (p) => {
+      return p.source.index === d.index || p.target.index === d.index;
+    });
+    // ribbons.each(function (p) {
+    //     const isActive = p.source.index === d.index || p.target.index === d.index
+    //     if (isActive) {
+    //     }
+    //   nodes[p.source.index]
+    // });
+  }
+  function onHighlightOff() {
+    arcsG.classed("active", false);
+    arcsG.classed("fadeout", false);
+    arcsG.classed("half-active", false);
+
+    ribbons.classed("active", false);
+    ribbons.classed("fadeout", false);
+  }
 }
