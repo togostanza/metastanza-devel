@@ -86,8 +86,8 @@ export default class Text extends Stanza {
     appendCustomCss(this, this.params["custom_css_url"]);
     appendCustomCss(this, this.params["highlight-css-url"]);
 
-    const width = +css("--togostanza-outline-width");
-    const height = +css("--togostanza-outline-height");
+    const width = parseFloat(css("--togostanza-outline-width"));
+    const height = parseFloat(css("--togostanza-outline-height"));
     const container = this.root.querySelector(".container");
     container.setAttribute(`style`, `width: ${width}px; height: ${height}px;`);
   }
