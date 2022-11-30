@@ -68,12 +68,14 @@ export default class Sunburst extends Stanza {
     const height = parseFloat(css("--togostanza-outline-height"));
     const colorScale = [];
 
+    const labelKey = this.params["node-label_key"];
+    const valueKey = this.params["node-value_key"];
+    const showNumbers = this.params["node-show_values"];
     const borderWidth = this.params["node-levels_gap_width"] || 2;
     const nodesGapWidth = this.params["node-gap_width"] || 8;
     const cornerRadius = this.params["node-corner_radius"] || 0;
-    const showNumbers = this.params["node-show_values"];
-    let depthLim = parseFloat(this.params["max_depth"]) || 0;
     const scalingMethod = this.params["scaling"] || "Natural";
+    let depthLim = parseFloat(this.params["max_depth"]) || 0;
 
     const data = await loadData(
       this.params["data-url"],
