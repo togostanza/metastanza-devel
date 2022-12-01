@@ -43,7 +43,7 @@ export default class Sunburst extends Stanza {
         if (key === "currentId") {
           updateId(getNodeById(value));
         }
-        return Reflect.set(...arguments);
+        return Reflect.set;
       },
       get: Reflect.get,
     });
