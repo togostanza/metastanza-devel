@@ -36,13 +36,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "axis-x-hide",
-      "stanza:type": "boolean",
-      "stanza:example": false,
-      "stanza:description": "Hide x axis",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "axis-x-title",
       "stanza:type": "text",
       "stanza:example": "chromosome",
@@ -82,11 +75,10 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "axis-y-hide",
+      "stanza:key": "axis-y-ticks_hide",
       "stanza:type": "boolean",
       "stanza:example": false,
-      "stanza:description": "Hide y axis",
-      "stanza:required": false
+      "stanza:description": "Hide Y ticks"
     },
     {
       "stanza:key": "axis-y-scale",

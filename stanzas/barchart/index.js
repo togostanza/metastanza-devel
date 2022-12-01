@@ -48,8 +48,7 @@ export default class Barchart extends Stanza {
         : this.params["axis-y-title"];
 
     const xTicksHide = this.params["axis-x-ticks_hide"];
-    const xTicksNumber = xTicksHide ? 0 : null;
-    const xTickValues = xTicksHide ? [] : null;
+    const yTicksHide = this.params["axis-y-ticks_hide"];
 
     const showLegend = this.params["legend-show"];
     const legendTitle = this.params["legend-title"];
@@ -87,8 +86,8 @@ export default class Barchart extends Stanza {
     const ylabelFormat = this.params["axis-y-ticks_labels_format"] || null;
     const xTitlePadding = this.params["axis-x-title_padding"] || 15;
     const yTitlePadding = this.params["axis-y-title_padding"] || 25;
-    const xTickSize = this.params["axis-x-ticks_hide"] ? 0 : 4;
-    const yTickSize = 4;
+    const xTickSize = xTicksHide ? 0 : 4;
+    const yTickSize = yTicksHide ? 0 : 4;
     const axisTitleFontSize =
       parseInt(css("--togostanza-title-font-size")) || 10;
     const barPaddings = 0.1;
@@ -99,8 +98,8 @@ export default class Barchart extends Stanza {
 
     const tooltipsKey = this.params["tooltips-key"];
 
-    const showXAxis = !this.params["axis-x-hide"];
-    const showYAxis = !this.params["axis-y-hide"];
+    const showXAxis = true;
+    const showYAxis = true;
 
     const axisYScale = this.params["axis-y-scale"] || "linear";
 
@@ -319,11 +318,7 @@ export default class Barchart extends Stanza {
         y = d3.scaleLinear().range([HEIGHT, 0]);
       }
 
-      const xAxisGenerator = d3
-        .axisBottom(x)
-        .tickSizeOuter(0)
-        .ticks(xTicksNumber)
-        .tickValues(xTickValues);
+      const xAxisGenerator = d3.axisBottom(x).tickSizeOuter(0);
 
       const yAxisGenerator = d3
         .axisLeft(y)
