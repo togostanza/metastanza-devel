@@ -1,5 +1,5 @@
 import { S as Stanza, d as defineStanzaElement } from './transform-2d2d4fd0.js';
-import { l as loadData } from './load-data-83b3c4c7.js';
+import { l as loadData } from './load-data-4bf86f1c.js';
 import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-1567edd1.js';
 import { T as ToolTip } from './ToolTip-e0b879e2.js';
 import { L as Legend } from './Legend-08bca0f2.js';

@@ -1,5 +1,5 @@
 import { s as select, S as Stanza, d as defineStanzaElement } from './transform-2d2d4fd0.js';
-import { l as loadData } from './load-data-83b3c4c7.js';
+import { l as loadData } from './load-data-4bf86f1c.js';
 import { T as ToolTip } from './ToolTip-e0b879e2.js';
 import { p as prepareGraphData } from './prepareGraphData-b8dbfab0.js';
 import { p as point } from './band-b5fce97a.js';

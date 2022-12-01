@@ -243,6 +243,7 @@ function showLoadingIcon(element) {
 }
 
 function hideLoadingIcon(element) {
+  select(element).classed("main-center", false);
   style?.remove();
   select(element).select("#metastanza-loading-icon-div").remove();
 }
@@ -259,9 +260,21 @@ function displayApiError(element, error) {
   p.append("span").text(error);
 }
 
-async function loadJSON(url, requestInit) {
-  const res = await fetch(url, requestInit);
-  return await res.json();
+function withAcceptHeader(fetcher, accept) {
+  return (url, requestInit) => {
+    const requestInitWithHeader = {
+      headers: {
+        Accept: accept,
+      },
+      ...requestInit,
+    };
+
+    return fetcher(url, requestInitWithHeader);
+  };
+}
+
+function loadJSON(url, requestInit) {
+  return fetch(url, requestInit).then((res) => res.json());
 }
 
 function sparql2table(json) {
@@ -278,28 +291,22 @@ function sparql2table(json) {
 }
 
 async function loadSPARQL(url, requestInit) {
-  const requestInitWithHeader = {
-    headers: {
-      Accept: "application/sparql-results+json",
-    },
-    ...requestInit,
-  };
+  const json = await fetch(url, requestInit).then((res) => res.json());
 
-  const json = await loadJSON(url, requestInitWithHeader);
   return sparql2table(json);
 }
 
 function getLoader(type) {
   switch (type) {
     case "tsv":
-      return tsv;
+      return withAcceptHeader(tsv, "text/tab-separated-values");
     case "csv":
-      return csv;
+      return withAcceptHeader(csv, "text/csv");
     case "sparql-results-json":
-      return loadSPARQL;
+      return withAcceptHeader(loadSPARQL, "application/sparql-results+json");
     case "json":
     default:
-      return loadJSON;
+      return withAcceptHeader(loadJSON, "application/json");
   }
 }
 
@@ -456,4 +463,4 @@ function getSpinnerCss(color) {
 }
 
 export { csvParseRows as a, csvFormat as b, csvParse as c, dsvFormat as d, csvFormatBody as e, csvFormatRows as f, csvFormatRow as g, csvFormatValue as h, tsvParse as i, tsvParseRows as j, tsvFormat as k, loadData as l, tsvFormatBody as m, tsvFormatRows as n, tsvFormatRow as o, tsvFormatValue as p, dsv as q, csv as r, tsv as s, text as t };
-//# sourceMappingURL=load-data-83b3c4c7.js.map
+//# sourceMappingURL=load-data-4bf86f1c.js.map
