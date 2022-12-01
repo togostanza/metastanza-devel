@@ -42,8 +42,8 @@ export default class Linechart extends Stanza {
     const yKeyName = this._validatedParams.get("axis-y-key").value;
     const xAxisTitle = this._validatedParams.get("axis-x-title").value;
     const yAxisTitle = this._validatedParams.get("axis-y-title").value || "";
-    const hideXAxis = !this._validatedParams.get("axis-x-visible").value;
-    const hideYAxis = !this._validatedParams.get("axis-y-visible").value;
+    const hideXAxis = false;
+    const hideYAxis = false;
     const hideXAxisTicks = this._validatedParams.get("axis-x-ticks_hide").value;
     const hideYAxisTicks = this._validatedParams.get("axis-y-ticks_hide").value;
     const showPoints = this._validatedParams.get("points-show").value;

@@ -45,14 +45,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "axis-x-visible",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:default": true,
-      "stanza:description": "Show the axis",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "axis-x-title",
       "stanza:type": "text",
       "stanza:example": "Category",
@@ -78,7 +70,7 @@
     {
       "stanza:key": "axis-x-ticks_label_angle",
       "stanza:type": "number",
-      "stanza:example": 90,
+      "stanza:example": -90,
       "stanza:default": 0,
       "stanza:description": "Tick labels angle, in degrees",
       "stanza:required": false
@@ -149,14 +141,6 @@
       "stanza:example": "count",
       "stanza:description": "Variable to be assigned as y axis value. Ignored if data-type is CSV of TSV",
       "stanza:required": true
-    },
-    {
-      "stanza:key": "axis-y-visible",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:default": true,
-      "stanza:description": "Hide the axis",
-      "stanza:required": false
     },
     {
       "stanza:key": "axis-y-title",

@@ -379,6 +379,7 @@ export default class Barchart extends Stanza {
           updateGroupedBars(values);
         }
 
+        console.log(showBarTooltips);
         if (showBarTooltips) {
           requestAnimationFrame(() => {
             const arr = this.root.querySelectorAll("svg rect[data-tooltip]");
@@ -649,7 +650,10 @@ export default class Barchart extends Stanza {
               }
             )
             .transition(300)
-            .attr("data-tooltip", (d) => `${d[groupKeyName]}: ${d[yKeyName]}`)
+            .attr(
+              "data-tooltip",
+              (d) => `${d[groupKeyName]}: ${d[tooltipsKey]}`
+            )
             .attr("x", (d) => subX(d[groupKeyName]))
             .attr("y", (d) => y(d[yKeyName]))
             .attr("width", subX.bandwidth())
