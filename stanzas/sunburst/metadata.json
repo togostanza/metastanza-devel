@@ -32,15 +32,7 @@
     {
       "stanza:key": "custom_css_url",
       "stanza:example": "",
-      "stanza:description": "Stylesheet(css file) URL to override current style",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "node-label_key",
-      "stanza:type": "text",
-      "stanza:example": "id",
-      "stanza:description": "Data key to use as a title",
-      "stanza:required": true
+      "stanza:description": "Stylesheet(css file) URL to override current style"
     },
     {
       "stanza:key": "node-value_key",
@@ -50,32 +42,34 @@
       "stanza:required": true
     },
     {
+      "stanza:key": "node-label_key",
+      "stanza:type": "text",
+      "stanza:example": "label",
+      "stanza:description": "Data key to use as a title"
+    },
+    {
       "stanza:key": "node-show_values",
       "stanza:type": "boolean",
       "stanza:example": true,
-      "stanza:description": "Show numbers under labels",
-      "stanza:required": false
+      "stanza:description": "Show numbers under labels"
     },
     {
       "stanza:key": "node-levels_gap_width",
       "stanza:type": "number",
       "stanza:example": 2,
-      "stanza:description": "Gap between chart nodes levels, in px",
-      "stanza:required": false
+      "stanza:description": "Gap between chart nodes levels, in px"
     },
     {
       "stanza:key": "node-gap_width",
       "stanza:type": "number",
       "stanza:example": 8,
-      "stanza:description": "Gap between chart nodes that are on same level, unitless coefficient",
-      "stanza:required": false
+      "stanza:description": "Gap between chart nodes that are on same level, unitless coefficient"
     },
     {
       "stanza:key": "node-corner_radius",
       "stanza:type": "number",
       "stanza:example": 0,
-      "stanza:description": "Corner radius of nodes",
-      "stanza:required": false
+      "stanza:description": "Corner radius of nodes"
     },
     {
       "stanza:key": "scaling",
@@ -89,8 +83,7 @@
       "stanza:key": "max_depth",
       "stanza:type": "number",
       "stanza:example": 3,
-      "stanza:description": "Maximum depth to show",
-      "stanza:required": false
+      "stanza:description": "Maximum depth to show"
     }
   ],
   "stanza:menu-placement": "bottom-right",

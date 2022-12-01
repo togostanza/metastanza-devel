@@ -130,8 +130,6 @@ export default class Sunburst extends Stanza {
         item.id === "-1"
     );
 
-    data.forEach((item) => console.log(item[valueKey]));
-
     const el = this.root.querySelector("#sunburst");
 
     const stratifiedData = d3
@@ -244,6 +242,9 @@ export default class Sunburst extends Stanza {
     };
 
     function textFits(d, charWidth, text) {
+      if (!text || !text.length) {
+        return true;
+      }
       const deltaAngle = d.x1 - d.x0;
       const r = Math.max(0, ((d.y0 + d.y1) * radius) / 2);
       const perimeter = r * deltaAngle;
@@ -282,7 +283,7 @@ export default class Sunburst extends Stanza {
           return "none";
         }
 
-        return css(color(d.data.data.label));
+        return css(color(d.data.data.id));
       })
       .attr("fill-opacity", (d) =>
         arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0
@@ -297,7 +298,7 @@ export default class Sunburst extends Stanza {
     path.append("title").text((d) => {
       return `${d
         .ancestors()
-        .map((d) => d.data.data.label)
+        .map((d) => d.data.data[labelKey])
         .reverse()
         .join("/")}\n${formatNumber(d.value2)}`;
     });
@@ -340,12 +341,13 @@ export default class Sunburst extends Stanza {
       .join("text")
       .attr(
         "fill-opacity",
-        (d) => +(labelVisible(d) && textFits(d, CHAR_SPACE, d.data.data.label))
+        (d) =>
+          +(labelVisible(d) && textFits(d, CHAR_SPACE, d.data.data[labelKey]))
       )
       .append("textPath")
       .attr("startOffset", "50%")
       .attr("href", (_, i) => `#hiddenLabelArc${i}`)
-      .text((d) => d.data.data.label);
+      .text((d) => d.data.data[labelKey]);
 
     //Number labels
     const numLabels = g
@@ -360,7 +362,7 @@ export default class Sunburst extends Stanza {
         (d) =>
           +(
             labelVisible(d) &&
-            textFits(d, CHAR_SPACE, d.data.data.label) &&
+            textFits(d, CHAR_SPACE, d.data.data[labelKey]) &&
             showNumbers
           )
       )
@@ -433,8 +435,8 @@ export default class Sunburst extends Stanza {
           b = b.parent;
         }
 
-        return b.data?.data?.label
-          ? css(color(b.data.data.label))
+        return b.data?.data?.[labelKey]
+          ? css(color(b.data.data.id))
           : "rgba(0,0,0,0)";
       });
 
@@ -448,7 +450,7 @@ export default class Sunburst extends Stanza {
           (d) =>
             +(
               labelVisible(d.target) &&
-              textFits(d.target, CHAR_SPACE, d.data.data.label)
+              textFits(d.target, CHAR_SPACE, d.data.data[labelKey])
             )
         );
 
@@ -466,7 +468,7 @@ export default class Sunburst extends Stanza {
           (d) =>
             +(
               labelVisible(d.target) &&
-              textFits(d.target, CHAR_SPACE, d.data.data.label) &&
+              textFits(d.target, CHAR_SPACE, d.data.data[labelKey]) &&
               showNumbers
             )
         );
