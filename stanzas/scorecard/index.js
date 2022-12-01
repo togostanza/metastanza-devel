@@ -26,9 +26,6 @@ export default class Scorecard extends Stanza {
       this.params["data-type"],
       this.root.querySelector("main")
     );
-    const width = +css("--togostanza-outline-width");
-    const height = +css("--togostanza-outline-height");
-    const padding = +css("--togostanza-outline-padding");
 
     const [key, value] = Object.entries(dataset)[0];
     this._data = { [key]: value };
@@ -42,17 +39,8 @@ export default class Scorecard extends Stanza {
             value,
           },
         ],
-        width,
-        height,
-        padding,
       },
     });
-
-    const chartWrapper = this.root.querySelector(".chart-wrapper");
-    chartWrapper.setAttribute(
-      `style`,
-      `width: ${width}px; height: ${height}px; padding: ${padding}px`
-    );
 
     const scorecardSvg = this.root.querySelector("#scorecardSvg");
     scorecardSvg.setAttribute(

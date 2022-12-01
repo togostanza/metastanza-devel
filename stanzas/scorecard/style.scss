@@ -11,14 +11,14 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: var(--togostanza-outline-padding);
+  width: calc(var(--togostanza-outline-width) * 1px);
+  height: calc(var(--togostanza-outline-height) * 1px);
 }
 
 .chart-wrapper {
   display: flex;
   flex-direction: column;
-  width: 200px;
-  height: 100px;
-  padding: 10px;
   align-items: center;
   justify-content: center;
   position: relative;
