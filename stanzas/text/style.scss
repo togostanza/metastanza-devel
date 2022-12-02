@@ -15,12 +15,12 @@ main {
 .container {
   display: flex;
   flex-direction: column;
-  background-color: var(--togostanza-theme-background_color);
+  // background-color: var(--togostanza-theme-background_color);
   .menu {
     display: flex;
     padding: 5px;
     a {
-      color: var(--togostanza-fonts-font_color);
+      // color: var(--togostanza-fonts-font_color);
     }
   }
   table {
@@ -29,7 +29,7 @@ main {
       tr {
         td {
           word-break: break-all;
-          color: var(--togostanza-fonts-font_color);
+          // color: var(--togostanza-fonts-font_color);
           font-size: var(--togostanza-fonts-font_size_primary);
           font-weight: var(--togostanza-fonts-font_weight);
         }

@@ -115,6 +115,16 @@ export default class Text extends Stanza {
     main.appendChild(spinnerDiv);
 
     const response = await fetch(url).then((res) => res.text());
+    //error処理の追加 fetchなど status
+
+    // Parameters (heatmapの様に行いたい)
+    // const dataset = await loadData(
+    //   this.params["data-url"],
+    //   this.params["data-type"],
+    //   root
+    // );
+
+    //togostanza utilsを追加する
 
     main.removeChild(spinnerDiv);
 
