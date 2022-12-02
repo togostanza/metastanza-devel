@@ -120,14 +120,14 @@
     },
     {
       "stanza:key": "--togostanza-fonts-font_size_primary",
-      "stanza:type": "text",
-      "stanza:default": "11px",
+      "stanza:type": "number",
+      "stanza:default": 11,
       "stanza:description": "Label font size"
     },
     {
       "stanza:key": "--togostanza-fonts-font_size_secondary",
-      "stanza:type": "text",
-      "stanza:default": "7px",
+      "stanza:type": "number",
+      "stanza:default": 7,
       "stanza:description": "Number label font size"
     },
     {
