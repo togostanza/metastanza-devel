@@ -147,27 +147,9 @@ main {
           }
         }
         &:first-child {
-          border-top-left-radius: max(
-            calc(var(--togostanza-column-border_radius) * 1px),
-            calc(var(--togostanza-node-border_radius) * 1px)
-          );
-          border-top-right-radius: max(
-            calc(var(--togostanza-column-border_radius) * 1px),
-            calc(var(--togostanza-node-border_radius) * 1px)
-          );
           &.-with-border:after {
             border-top: none;
           }
-        }
-        &:last-child {
-          border-bottom-left-radius: max(
-            calc(var(--togostanza-column-border_radius) * 1px),
-            calc(var(--togostanza-node-border_radius) * 1px)
-          );
-          border-bottom-right-radius: max(
-            calc(var(--togostanza-column-border_radius) * 1px),
-            calc(var(--togostanza-node-border_radius) * 1px)
-          );
         }
         &.-highlighted {
           background-color: var(--togostanza-node-selected_background_color);
