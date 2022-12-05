@@ -1,16 +1,4 @@
 import * as d3 from "d3";
-import { axisBottom } from "d3";
-
-const AXIS_PLACEMENT = {
-  left: "left",
-  right: "right",
-  top: "top",
-  bottom: "bottom",
-};
-
-type ReturnsAxisFuncT = (
-  scale: d3.AxisScale<d3.AxisDomain>
-) => d3.Axis<d3.AxisDomain>;
 
 enum AxisScaleE {
   linear = "linear",
@@ -25,15 +13,22 @@ enum AxisPlacementE {
   bottom = "bottom",
 }
 
+type AxisPlacementT = "left" | "right" | "top" | "bottom";
+
 interface axisParamsI {
-  scale: AxisScaleE;
-  placement: AxisPlacementE;
   domain: number[];
   range: number[];
-  ticks: boolean;
+  showTicks?: boolean;
+  scale?: AxisScaleE;
+  placement?: AxisPlacementT;
   width?: number;
   height?: number;
+  tickLabelsAngle?: number;
+  ticksLabelsMargin?: number;
+  title?: string;
 }
+
+type d3Selection = d3.Selection<SVGSVGElement, any, any, any>;
 
 type GetScaleT =
   | d3.ScaleLinear<d3.AxisDomain, number, never>
@@ -42,20 +37,33 @@ type GetScaleT =
   | d3.ScaleTime<d3.AxisDomain, number, never>;
 
 export class Axis {
-  axisG: d3.Selection<SVGElement, {}, SVGAElement, any>;
-  axisScale: GetScaleT;
-  axisGen: d3.Axis<d3.AxisDomain>;
-  LENGTH: number;
-  constructor(parentSVGElement, axisParams: axisParamsI) {
-    this.axisG = d3.select(parentSVGElement);
+  private axisScale: GetScaleT;
+  private axisGen: d3.Axis<d3.AxisDomain>;
+  private parentSelection: d3Selection;
+  private axisParams: axisParamsI;
+
+  constructor(parentSelection, axisParams: axisParamsI) {
+    this.axisParams = axisParams;
+    this.parentSelection = parentSelection;
     this.axisScale = this._getScale(axisParams.scale);
-    this.axisScale.domain(axisParams.domain);
     this.axisScale.range(axisParams.range);
 
     this.axisGen = this._getAxisGen(axisParams.placement)(
       this.axisScale as d3.AxisScale<d3.AxisDomain>
     );
-    this.LENGTH = axisParams.width || axisParams.height;
+
+    this._init();
+  }
+
+  private _init() {
+    if (
+      this.axisParams.placement === AxisPlacementE.left ||
+      this.axisParams.placement === AxisPlacementE.right
+    ) {
+      this.axisScale.domain(this.axisParams.domain.reverse());
+    } else {
+      this.axisScale.domain(this.axisParams.domain);
+    }
   }
 
   get axis() {
@@ -64,10 +72,27 @@ export class Axis {
 
   set axisDomain(newDomain) {
     this.axisScale.domain(newDomain);
+    this.update();
   }
 
   set axisRange(newRange) {
     this.axisScale.range(newRange);
+    this.update();
+  }
+
+  private update() {
+    queueMicrotask(() => this.parentSelection.call(this.axis));
+  }
+
+  private _rotateLabels(g: d3Selection) {
+    if (this.axisParams.tickLabelsAngle < 0) {
+      g.selectAll("text").attr("text-anchor", "end");
+    }
+
+    g.selectAll("text").attr(
+      "transform",
+      `rotate(${this.axisParams.tickLabelsAngle || 0})`
+    );
   }
 
   _getScale(scale: AxisScaleE) {
@@ -85,7 +110,7 @@ export class Axis {
     }
   }
 
-  _getAxisGen(type: AxisPlacementE) {
+  _getAxisGen(type: AxisPlacementT) {
     switch (type) {
       case AxisPlacementE.left:
         return d3.axisLeft;
