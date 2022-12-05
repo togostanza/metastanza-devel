@@ -1,190 +1,102 @@
 import * as d3 from "d3";
+import { axisBottom } from "d3";
 
-interface marginI {
-  TOP: number;
-  BOTTOM: number;
-  LEFT: number;
-  RIGHT: number;
+const AXIS_PLACEMENT = {
+  left: "left",
+  right: "right",
+  top: "top",
+  bottom: "bottom",
+};
+
+type ReturnsAxisFuncT = (
+  scale: d3.AxisScale<d3.AxisDomain>
+) => d3.Axis<d3.AxisDomain>;
+
+enum AxisScaleE {
+  linear = "linear",
+  log10 = "log10",
+  time = "time",
+  ordinal = "band",
+}
+enum AxisPlacementE {
+  left = "left",
+  right = "right",
+  top = "top",
+  bottom = "bottom",
 }
 
-type Constructor = new (...args: any[]) => any;
-
-export function AddAxisMixin<BaseT extends Constructor>(Base: BaseT) {
-  return class extends Base {
-    updateAxis(axis = "x", range: number[], MARGIN: marginI): void {
-      // TODO update axis here to be able on d3.selection.call(updateAxis("x", [...], MARGIN))
-    }
-
-    drawAxis(axis = "x", width: number, height: number, MARGIN: marginI) {
-      const axisString = `axis-${axis}`;
-
-      const HEIGHT = height - MARGIN.TOP - MARGIN.BOTTOM;
-      const WIDTH = width - MARGIN.LEFT - MARGIN.RIGHT;
-
-      const key = this.params[`${axisString}-key`];
-      const scale = this.params[`${axisString}-scale`] as AxisScaleTypesE;
-      const hide = this.params[`${axisString}-hide`];
-
-      const title = this.params[`${axisString}-title`];
-      const titlePadding = this.params[`${axisString}-title_padding`];
-
-      const ticksHide = this.params[`${axisString}-ticks_hide`];
-      const ticksLabelsAngle = this.params[`${axisString}-ticks_labels_angle`];
-      const ticksInterval =
-        scale === "linear" || scale === "log10"
-          ? parseFloat(this.params[`${axisString}-ticks_interval`])
-          : this.params[`${axisString}-ticks_interval`];
-      const ticksIntervalUnits =
-        scale === "time"
-          ? this.params[`${axisString}-ticks_interval_units`]
-          : 1;
-      const ticksLabelsFormat =
-        this.params[`${axisString}-ticks_labels_format`];
-
-      const placement = this.params[
-        `${axisString}-placement`
-      ] as AxisPlacementE;
-
-      const labelFormat = this.params[`${axisString}-ticks_labels_format`];
-
-      const min =
-        this.params[`${axisString}-range_min`] ||
-        d3.min(this._data, (d: datumT) => this.parseValue(d[key], scale)); //TODO address 0 case, address ordinal scale
-
-      const max =
-        this.params[`${axisString}-range_max`] ||
-        d3.max(this._data, (d: datumT) => this.parseValue(d[key], scale)); //TODO address 0 case
-
-      const gridlinesInterval = this.params[`${axisString}-gridlines_interval`];
-      const gridlinesIntervalUnits =
-        this.params[`${axisString}-gridlines_interval_units`];
-
-      const domain = [min, max];
-
-      const range = axis === "x" ? [0, WIDTH] : [HEIGHT, 0];
-
-      const axisScaleFn = this.getAxisScale(scale);
-      axisScaleFn.range(range);
-      axisScaleFn.domain(domain);
-
-      const sb = d3.scaleLog().range([0, 19]).domain([0, 23]);
-
-      const axisGen = this.axisPlacementMap[placement](sb).tickFormat();
-
-      const gridAxisGen = this.axisPlacementMap[placement](axisScaleFn)
-        .tickSize(axis === "x" ? -HEIGHT : -WIDTH)
-        .tickFormat(null);
-
-      if (scale === "linear") {
-        if (ticksInterval) {
-          const ticks = [];
-          const Nticks = Math.round((max - min) / ticksInterval) + 1;
-          const integerTickInterval = (max - min) / (Nticks - 1);
-          for (let i = 0; i < Nticks; i++) {
-            ticks.push(min + i * integerTickInterval);
-          }
-          axisGen.tickValues(ticks);
-        } else {
-          axisGen.ticks(5);
-        }
-      }
-
-      let TL = MARGIN.LEFT,
-        TT = MARGIN.TOP;
-
-      if (placement === "bottom") {
-        TT += Math.abs(range[0] - range[1]);
-      } else if (placement === "right") {
-        TL += Math.abs(range[0] - range[1]);
-      }
-
-      const translate = `translate(${TL},${TT})`;
-
-      return function (selection: d3.Selection<SVGElement, any, any, any>) {
-        const axisArea = selection
-          .append("g")
-          .attr("class", `${axisString} axis`)
-          .attr("transform", translate);
-        axisArea.call(axisGen);
-      };
-    }
-
-    intervalMap = {
-      second: () => d3.utcSecond,
-      minute: () => d3.utcMinute,
-      hour: () => d3.utcHour,
-      day: () => d3.utcDay,
-      week: () => d3.utcWeek,
-      month: () => d3.utcMonth,
-      year: () => d3.utcYear,
-    };
-
-    getAxisScale(scaleType: AxisScaleTypesE) {
-      switch (scaleType) {
-        case AxisScaleTypesE.LINEAR:
-          return d3.scaleLinear();
-        case AxisScaleTypesE.LOG:
-          return d3.scaleLog();
-        case AxisScaleTypesE.TIME:
-          return d3.scaleTime();
-
-        default:
-          return d3.scaleBand();
-      }
-    }
-
-    parseValue(value: valueT, scaleType: AxisScaleTypesE) {
-      if (typeof value === "undefined") {
-        return null;
-      }
-      switch (scaleType) {
-        case AxisScaleTypesE.LINEAR:
-        case AxisScaleTypesE.LOG:
-          return parseFloat(value as string);
-        case AxisScaleTypesE.TIME:
-          const parsedDate = new Date(value);
-          return !isNaN(Number(parsedDate)) ? parsedDate : null;
-
-        default:
-          return null;
-      }
-    }
-
-    axisPlacementMap = {
-      left: d3.axisLeft,
-      right: d3.axisRight,
-      top: d3.axisTop,
-      bottom: d3.axisBottom,
-    };
-  };
+interface axisParamsI {
+  scale: AxisScaleE;
+  placement: AxisPlacementE;
+  domain: number[];
+  range: number[];
+  ticks: boolean;
+  width?: number;
+  height?: number;
 }
 
-export enum AxisScaleTypesE {
-  LOG = "log10",
-  LINEAR = "linear",
-  TIME = "time",
-  ORDINAL = "ordinal",
-}
+type GetScaleT =
+  | d3.ScaleLinear<d3.AxisDomain, number, never>
+  | d3.ScaleLogarithmic<d3.AxisDomain, number, never>
+  | d3.ScaleBand<d3.AxisDomain>
+  | d3.ScaleTime<d3.AxisDomain, number, never>;
 
-export enum AxisPlacementE {
-  LEFT = "left",
-  RIGHT = "right",
-  TOP = "top",
-  BOTTOM = "bottom",
-}
+export class Axis {
+  axisG: d3.Selection<SVGElement, {}, SVGAElement, any>;
+  axisScale: GetScaleT;
+  axisGen: d3.Axis<d3.AxisDomain>;
+  LENGTH: number;
+  constructor(parentSVGElement, axisParams: axisParamsI) {
+    this.axisG = d3.select(parentSVGElement);
+    this.axisScale = this._getScale(axisParams.scale);
+    this.axisScale.domain(axisParams.domain);
+    this.axisScale.range(axisParams.range);
 
-type valueT = number | string | undefined;
+    this.axisGen = this._getAxisGen(axisParams.placement)(
+      this.axisScale as d3.AxisScale<d3.AxisDomain>
+    );
+    this.LENGTH = axisParams.width || axisParams.height;
+  }
 
-type datumT = Record<string | symbol | number, string | number>;
+  get axis() {
+    return this.axisGen;
+  }
 
-type parseValueT = (
-  value: number | string,
-  scaleType: AxisScaleTypesE
-) => number | string | Date;
+  set axisDomain(newDomain) {
+    this.axisScale.domain(newDomain);
+  }
 
-interface axisPlacementMapI {
-  left: typeof d3.axisLeft;
-  right: typeof d3.axisRight;
-  top: typeof d3.axisTop;
-  bottom: typeof d3.axisBottom;
+  set axisRange(newRange) {
+    this.axisScale.range(newRange);
+  }
+
+  _getScale(scale: AxisScaleE) {
+    switch (scale) {
+      case AxisScaleE.linear:
+        return d3.scaleLinear();
+      case AxisScaleE.log10:
+        return d3.scaleLog();
+      case AxisScaleE.ordinal:
+        return d3.scaleBand();
+      case AxisScaleE.time:
+        return d3.scaleTime();
+      default:
+        return d3.scaleLinear();
+    }
+  }
+
+  _getAxisGen(type: AxisPlacementE) {
+    switch (type) {
+      case AxisPlacementE.left:
+        return d3.axisLeft;
+      case AxisPlacementE.right:
+        return d3.axisRight;
+      case AxisPlacementE.bottom:
+        return d3.axisBottom;
+      case AxisPlacementE.top:
+        return d3.axisTop;
+      default:
+        return d3.axisBottom;
+    }
+  }
 }
