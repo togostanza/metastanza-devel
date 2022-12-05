@@ -1,5 +1,5 @@
 <template>
-  <div class="column" :class="{ '-fixed': fixedWidthColumns }">
+  <div class="column" :class="{ '-fixed': columnFixedWidth }">
     <span
       v-for="node in nodes"
       :key="node.id"
@@ -86,7 +86,7 @@ export default defineComponent({
       type: String,
       default: "horizontal",
     },
-    fixedWidthColumns: {
+    columnFixedWidth: {
       type: Boolean,
       default: false,
     },

@@ -13,7 +13,7 @@
             {{ node[keys.value] ?? valueObj.fallback }}
           </span>
         </span>
-        <span v-if="showPath" class="value">
+        <span v-if="searchShowPath" class="value">
           Path :
           <ruby v-for="(item, pathIndex) of node.path" :key="pathIndex">
             {{ item.label }}/<rp>(</rp><rt> {{ item.id }}</rt
@@ -37,7 +37,7 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    showPath: {
+    searchShowPath: {
       type: Boolean,
       default: false,
     },

@@ -18,7 +18,7 @@
       >
       <search-suggestions
         :show-suggestions="state.showSuggestions"
-        :show-path="state.showPath"
+        :search-show-path="state.searchShowPath"
         :search-input="state.searchTerm"
         :data="suggestions"
         :keys="state.keys"
@@ -42,7 +42,7 @@
         :value-obj="valueObj"
         :node-show-borders="state.nodeShowBorders"
         :node-content-alignment="state.nodeContentAlignment"
-        :fixed-width-columns="state.fixedWidthColumns"
+        :column-fixed-width="state.columnFixedWidth"
         @setParent="updatePartialColumnData"
         @setCheckedNode="updateCheckedNodes"
       />
@@ -82,13 +82,13 @@ export default defineComponent({
     const layerRefs = ref([]);
     const state = reactive({
       keys: {
-        label: params?.labelKey?.value,
-        value: params?.valueKey?.value,
+        label: params?.nodeLabelKey?.value,
+        value: params?.nodeValueKey?.value,
       },
-      fallbackInCaseOfNoValue: params?.valueFallback.value,
-      fixedWidthColumns: isTruthBool(params?.fixedWidthColumns?.value),
-      showValue: isTruthBool(params?.showValue?.value),
-      showPath: isTruthBool(params?.showPath?.value),
+      fallbackInCaseOfNoValue: params?.nodeValueFallback.value,
+      columnFixedWidth: isTruthBool(params?.columnFixedWidth?.value),
+      nodeShowValue: isTruthBool(params?.nodeShowValue?.value),
+      searchShowPath: isTruthBool(params?.searchShowPath?.value),
       showPathExplanation: isTruthBool(params?.showPathExplanation?.value),
       nodeShowBorders: isTruthBool(params?.nodeShowBorders?.value),
       nodeContentAlignment: params?.nodeContentAlignment?.value,
@@ -149,7 +149,10 @@ export default defineComponent({
         .startsWith(state.searchTerm.toLowerCase());
     }
     const valueObj = computed(() => {
-      return { show: state.showValue, fallback: state.fallbackInCaseOfNoValue };
+      return {
+        show: state.nodeShowValue,
+        fallback: state.fallbackInCaseOfNoValue,
+      };
     });
     const isValidSearchNode = computed(() => {
       return state.searchTerm.length > 0;
