@@ -50,22 +50,24 @@ export default class Tree extends Stanza {
     );
     this._data = values;
 
-    appendCustomCss(this, this.params["misc-custom_css_url"]);
-    const width = parseInt(this.params["width"]),
-      height = parseInt(this.params["height"]),
+    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
+
+    appendCustomCss(this, this.params["custom_css_url"]);
+    const width = parseFloat(css("--togostanza-outline-width")),
+      height = parseFloat(css("--togostanza-outline-height")),
       sortKey = this.params["sort-key"],
       sortOrder = this.params["sort-order"],
       isLeafNodesAlign = this.params["graph-align_leaf_nodes"],
-      layout = this.params["layout"],
+      layout = this.params["graph-layout"],
       nodeKey = this.params["node-label-key"],
       labelMargin = this.params["node-label-margin"],
       sizeKey = this.params["node-size-key"],
       minRadius = this.params["node-size-min"] / 2,
       maxRadius = this.params["node-size-max"] / 2,
       aveRadius = (minRadius + maxRadius) / 2,
-      colorKey = this.params["color-key"],
-      colorGroup = this.params["color-group"],
-      colorMode = this.params["color-blend"];
+      colorKey = this.params["node-color-key"],
+      colorGroup = this.params["node-color-group"],
+      colorMode = this.params["node-color-blend"];
 
     let colorModeProperty, colorModeValue;
     switch (colorMode) {
