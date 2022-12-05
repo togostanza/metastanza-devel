@@ -41,7 +41,7 @@
       "stanza:key": "axis-x-key",
       "stanza:type": "text",
       "stanza:example": "chromosome",
-      "stanza:description": "Variable to be assigned as x axis value.",
+      "stanza:description": "Variable to be assigned as X axis value",
       "stanza:required": true
     },
     {
@@ -49,7 +49,7 @@
       "stanza:type": "text",
       "stanza:example": "Category",
       "stanza:computed": true,
-      "stanza:description": "Axis title",
+      "stanza:description": "X axis title",
       "stanza:required": false
     },
     {
@@ -57,14 +57,14 @@
       "stanza:type": "number",
       "stanza:example": 40,
       "stanza:default": 20,
-      "stanza:description": "Axis title padding in px",
+      "stanza:description": "X axis title padding in px",
       "stanza:required": false
     },
     {
       "stanza:key": "axis-x-ticks_hide",
       "stanza:type": "boolean",
       "stanza:example": false,
-      "stanza:description": "Hide axis ticks",
+      "stanza:description": "Hide X axis ticks",
       "stanza:required": false
     },
     {
@@ -80,7 +80,7 @@
       "stanza:type": "boolean",
       "stanza:example": false,
       "stanza:default": false,
-      "stanza:description": "Show",
+      "stanza:description": "Show X axis preview",
       "stanza:required": false
     },
     {
@@ -89,7 +89,7 @@
       "stanza:choice": ["linear", "log", "ordinal", "time"],
       "stanza:example": "time",
       "stanza:default": "linear",
-      "stanza:description": "Axis scale",
+      "stanza:description": "X axis scale",
       "stanza:required": false
     },
     {
@@ -97,7 +97,7 @@
       "stanza:type": "number",
       "stanza:example": "",
       "stanza:computed": true,
-      "stanza:description": "Axis ticks interval. If not set, show 5 ticks. If axis scale is ordinal, show all ticks",
+      "stanza:description": "X axis ticks interval. If not set, show 5 ticks. If axis scale is ordinal, show all ticks",
       "stanza:required": false
     },
     {
@@ -115,7 +115,7 @@
       ],
       "stanza:example": "none",
       "stanza:default": "none",
-      "stanza:description": "Axis ticks interval units",
+      "stanza:description": "X axis ticks interval units",
       "stanza:required": false
     },
     {
@@ -123,7 +123,7 @@
       "stanza:type": "text",
       "stanza:example": "%b %d",
       "stanza:default": "",
-      "stanza:description": "Axis ticks interval format, in d3.format string form",
+      "stanza:description": "X axis ticks interval format, in d3.format string form",
       "stanza:required": false
     },
 
@@ -132,14 +132,14 @@
       "stanza:type": "boolean",
       "stanza:example": true,
       "stanza:computed": true,
-      "stanza:description": "Show grid lines",
+      "stanza:description": "Show vertical grid lines",
       "stanza:required": false
     },
     {
       "stanza:key": "axis-y-key",
       "stanza:type": "text",
       "stanza:example": "count",
-      "stanza:description": "Variable to be assigned as y axis value. Ignored if data-type is CSV of TSV",
+      "stanza:description": "Variable to be assigned as Y axis value. Ignored if data-type is CSV of TSV",
       "stanza:required": true
     },
     {
@@ -147,7 +147,7 @@
       "stanza:type": "text",
       "stanza:example": "Data",
       "stanza:computed": true,
-      "stanza:description": "Axis title",
+      "stanza:description": "Y axis title",
       "stanza:required": false
     },
     {
@@ -155,7 +155,7 @@
       "stanza:type": "number",
       "stanza:example": 20,
       "stanza:default": 20,
-      "stanza:description": "Axis title padding in px",
+      "stanza:description": "Y axis title padding in px",
       "stanza:required": false
     },
     {
@@ -163,7 +163,7 @@
       "stanza:type": "boolean",
       "stanza:example": false,
       "stanza:default": false,
-      "stanza:description": "Hide axis ticks",
+      "stanza:description": "Hide Y axis ticks",
       "stanza:required": false
     },
     {
@@ -172,7 +172,7 @@
       "stanza:choice": ["linear", "log"],
       "stanza:example": "linear",
       "stanza:default": "linear",
-      "stanza:description": "Axis scale",
+      "stanza:description": "Y axis scale",
       "stanza:required": false
     },
     {
@@ -180,7 +180,7 @@
       "stanza:type": "boolean",
       "stanza:example": true,
       "stanza:default": false,
-      "stanza:description": "Show",
+      "stanza:description": "Show Y axis preview",
       "stanza:required": false
     },
     {
@@ -188,7 +188,7 @@
       "stanza:type": "number",
       "stanza:example": null,
       "stanza:computed": true,
-      "stanza:description": "Axis range min",
+      "stanza:description": "Y axis range min",
       "stanza:required": false
     },
     {
@@ -196,7 +196,7 @@
       "stanza:type": "number",
       "stanza:example": null,
       "stanza:computed": true,
-      "stanza:description": "Axis range max",
+      "stanza:description": "Y axis range max",
       "stanza:required": false
     },
     {
@@ -204,7 +204,7 @@
       "stanza:type": "number",
       "stanza:example": 0,
       "stanza:computed": true,
-      "stanza:description": "Axis ticks interval. If bot set, show 5 ticks",
+      "stanza:description": "Y axis ticks interval. If bot set, show 5 ticks",
       "stanza:required": false
     },
     {
@@ -212,7 +212,7 @@
       "stanza:type": "text",
       "stanza:example": "",
       "stanza:default": "",
-      "stanza:description": "Axis ticks interval format, in d3.format string form",
+      "stanza:description": "Y axis ticks interval format, in d3.format string form",
       "stanza:required": false
     },
     {
@@ -220,7 +220,33 @@
       "stanza:type": "boolean",
       "stanza:example": true,
       "stanza:default": false,
-      "stanza:description": "Show grid lines",
+      "stanza:description": "Show horizontal grid lines",
+      "stanza:required": false
+    },
+
+    {
+      "stanza:key": "legend-show",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:default": false,
+      "stanza:description": "Show legend",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "legend-placement",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["left", "right", "bottom", "top"],
+      "stanza:example": "right",
+      "stanza:default": "right",
+      "stanza:description": "Legend placement",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "legend-title",
+      "stanza:type": "text",
+      "stanza:example": "",
+      "stanza:default": "",
+      "stanza:description": "Legend title. If not set explicitly, shows a data grouoping data key. If set to empty string ('') no title will be shown",
       "stanza:required": false
     },
     {
@@ -252,7 +278,7 @@
       "stanza:type": "text",
       "stanza:example": "category",
       "stanza:default": "",
-      "stanza:description": "Data key to group by data series. All data points wich includes that key will be considered as one data series. If not set, all points will be considered as of one data series.",
+      "stanza:description": "Data key to group by data series. All data points wich includes that key will be considered as one data series. If not set, all points will be considered as of one data series",
       "stanza:required": false
     },
     {
@@ -260,33 +286,7 @@
       "stanza:type": "text",
       "stanza:example": "category",
       "stanza:default": "series",
-      "stanza:description": "Data key to map color to the data series. If includes hex color, that color will be used, if not - color from the ordinal scale from the theme colors will be used.",
-      "stanza:required": false
-    },
-
-    {
-      "stanza:key": "legend-show",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:default": false,
-      "stanza:description": "Show legend",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "legend-placement",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["left", "right", "bottom", "top"],
-      "stanza:example": "right",
-      "stanza:default": "right",
-      "stanza:description": "Legend placement",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "legend-title",
-      "stanza:type": "text",
-      "stanza:example": "",
-      "stanza:default": "",
-      "stanza:description": "Legend title. If not set explicitly, shows a data grouoping data key. If set to empty string ('') no title will be shown.",
+      "stanza:description": "Data key to map color to the data series. If includes hex color, that color will be used, if not - color from the ordinal scale from the theme colors will be used",
       "stanza:required": false
     }
   ],

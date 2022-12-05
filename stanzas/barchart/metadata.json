@@ -46,7 +46,7 @@
       "stanza:key": "axis-x-ticks_hide",
       "stanza:type": "boolean",
       "stanza:example": false,
-      "stanza:description": "Hide X ticks"
+      "stanza:description": "Hide X axis ticks"
     },
     {
       "stanza:key": "axis-x-ticks_labels_angle",
@@ -58,7 +58,7 @@
       "stanza:key": "axis-x-title_padding",
       "stanza:type": "number",
       "stanza:example": 20,
-      "stanza:description": "Padding between X title and label"
+      "stanza:description": "Padding between X axis title and label"
     },
     {
       "stanza:key": "axis-y-key",
@@ -78,7 +78,7 @@
       "stanza:key": "axis-y-ticks_hide",
       "stanza:type": "boolean",
       "stanza:example": false,
-      "stanza:description": "Hide Y ticks"
+      "stanza:description": "Hide Y axis ticks"
     },
     {
       "stanza:key": "axis-y-scale",
@@ -92,13 +92,13 @@
       "stanza:key": "axis-y-title_padding",
       "stanza:type": "number",
       "stanza:example": 40,
-      "stanza:description": "Padding between Y title and label"
+      "stanza:description": "Padding between Y axis title and label"
     },
     {
       "stanza:key": "axis-y-ticks_labels_angle",
       "stanza:type": "number",
       "stanza:example": 0,
-      "stanza:description": "Y label angle (in degree) in range [-90, +90]"
+      "stanza:description": "Y axis label angle (in degree) in range [-90, +90]"
     },
     {
       "stanza:key": "axis-y-ticks_interval",
@@ -117,6 +117,18 @@
       "stanza:type": "number",
       "stanza:example": null,
       "stanza:description": "Y axis grid lines interval. If undefined, 5 gridlines will be drawn at `neat` y-axis values. Setting it to 0, would hide all gridlines."
+    },
+    {
+      "stanza:key": "legend-show",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Whether to show the legend"
+    },
+    {
+      "stanza:key": "legend-title",
+      "stanza:type": "text",
+      "stanza:example": "Category",
+      "stanza:description": "Legend title"
     },
     {
       "stanza:key": "group_by-key",
@@ -153,18 +165,6 @@
       "stanza:example": "",
       "stanza:description": "Stylesheet(css file) URL to override current style",
       "stanza:required": false
-    },
-    {
-      "stanza:key": "legend-show",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:description": "Whether to show the legend"
-    },
-    {
-      "stanza:key": "legend-title",
-      "stanza:type": "text",
-      "stanza:example": "Category",
-      "stanza:description": "Legend title"
     }
   ],
   "stanza:menu-placement": "bottom-right",
