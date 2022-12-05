@@ -15,14 +15,27 @@ enum AxisPlacementE {
 
 type AxisPlacementT = "left" | "right" | "top" | "bottom";
 
+interface MarginsI {
+  LEFT: number;
+  RIGHT: number;
+  TOP: number;
+  BOTTOM: number;
+}
+
+interface AxisMarginI {
+  LEFT: number;
+  TOP: number;
+}
+
 interface axisParamsI {
   domain: number[];
   range: number[];
+  width: number;
+  height: number;
+  margins?: MarginsI;
   showTicks?: boolean;
   scale?: AxisScaleE;
   placement?: AxisPlacementT;
-  width?: number;
-  height?: number;
   tickLabelsAngle?: number;
   ticksLabelsMargin?: number;
   title?: string;
@@ -38,9 +51,11 @@ type GetScaleT =
 
 export class Axis {
   private axisScale: GetScaleT;
-  private axisGen: d3.Axis<d3.AxisDomain>;
+  private _axisGen: d3.Axis<d3.AxisDomain>;
   private parentSelection: d3Selection;
   private axisParams: axisParamsI;
+  private _axesMargins: AxisMarginI;
+  private _margins: MarginsI;
 
   constructor(parentSelection, axisParams: axisParamsI) {
     this.axisParams = axisParams;
@@ -48,14 +63,44 @@ export class Axis {
     this.axisScale = this._getScale(axisParams.scale);
     this.axisScale.range(axisParams.range);
 
-    this.axisGen = this._getAxisGen(axisParams.placement)(
+    this._axisGen = this._getAxisGen(axisParams.placement)(
       this.axisScale as d3.AxisScale<d3.AxisDomain>
     );
 
     this._init();
   }
 
+  private _addTranslate(g: d3Selection) {
+    const transform = g.attr("transform");
+    g.attr(
+      "transform",
+      `${transform || ""} translate(${this._axesMargins.LEFT}, ${
+        this._axesMargins.TOP
+      })`
+    );
+  }
+
   private _init() {
+    if (!this._margins) {
+      this._margins = {
+        TOP: 0,
+        BOTTOM: 0,
+        LEFT: 0,
+        RIGHT: 0,
+      };
+    }
+
+    this._axesMargins = { TOP: this._margins.TOP, LEFT: this._margins.LEFT };
+    switch (this.axisParams.placement) {
+      case AxisPlacementE.right:
+        this._axesMargins.LEFT = this._margins.LEFT + this.axisParams.width;
+        break;
+      case AxisPlacementE.bottom:
+        this._axesMargins.TOP = this._margins.TOP + this.axisParams.height;
+      default:
+        break;
+    }
+
     if (
       this.axisParams.placement === AxisPlacementE.left ||
       this.axisParams.placement === AxisPlacementE.right
@@ -67,7 +112,11 @@ export class Axis {
   }
 
   get axis() {
-    return this.axisGen;
+    return (g: d3Selection) => {
+      this._axisGen(g);
+      this._rotateLabels(g);
+      this._addTranslate(g);
+    };
   }
 
   set axisDomain(newDomain) {

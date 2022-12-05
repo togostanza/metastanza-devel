@@ -53,33 +53,45 @@ class TestAxis extends Stanza {
 
     let svg = d3.select(root.querySelector("svg"));
 
-    if (!svg.node()) {
+    if (svg.empty()) {
       svg = d3.select(root).append("svg");
     }
 
     svg.attr("width", width).attr("height", height);
 
-    const xG = svg.append("g").classed("x axis", true);
+    let xG = svg.select("g.x");
+    let yG = svg.select("g.y");
 
-    this.xAxisGen = new Axis(svg, {
+    console.log(xG.empty());
+    if (xG.empty()) {
+      xG = svg.append("g").classed("x axis", true);
+    }
+    if (yG.empty()) {
+      yG = svg.append("g").classed("y axis", true);
+    }
+
+    this.xAxisGen = new Axis(xG, {
       placement: "bottom",
       domain: [0, 100],
       range: [0, 200],
       showTicks: true,
-      width: 200,
+      width,
+      height,
       tickLabelsAngle: this.params["axis-x-ticks_label_angle"],
     });
 
-    // this.yAxisGen = new Axis(yG, {
-    //   placement: "left",
-    //   domain: [0, 100],
-    //   range: [0, 200],
-    //   showTicks: true,
-    //   height: 200,
-    //   tickLabelsAngle: this.params["axis-y-ticks_label_angle"],
-    // });
+    this.yAxisGen = new Axis(yG, {
+      placement: "left",
+      domain: [0, 100],
+      range: [0, 200],
+      showTicks: true,
+      height,
+      width,
+      tickLabelsAngle: this.params["axis-y-ticks_label_angle"],
+    });
 
     xG.call(this.xAxisGen.axis);
+    yG.call(this.yAxisGen.axis);
   }
 }
 
