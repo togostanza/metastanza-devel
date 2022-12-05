@@ -56,12 +56,15 @@ export class Axis {
   private axisParams: axisParamsI;
   private _axesMargins: AxisMarginI;
   private _margins: MarginsI;
+  private WIDTH: number;
+  private HEIGHT: number;
 
   constructor(parentSelection, axisParams: axisParamsI) {
     this.axisParams = axisParams;
     this.parentSelection = parentSelection;
     this.axisScale = this._getScale(axisParams.scale);
-    this.axisScale.range(axisParams.range);
+
+    this._margins = axisParams.margins;
 
     this._axisGen = this._getAxisGen(axisParams.placement)(
       this.axisScale as d3.AxisScale<d3.AxisDomain>
@@ -93,20 +96,28 @@ export class Axis {
     this._axesMargins = { TOP: this._margins.TOP, LEFT: this._margins.LEFT };
     switch (this.axisParams.placement) {
       case AxisPlacementE.right:
-        this._axesMargins.LEFT = this._margins.LEFT + this.axisParams.width;
+        this._axesMargins.LEFT = this.axisParams.width - this._margins.RIGHT;
         break;
+
       case AxisPlacementE.bottom:
-        this._axesMargins.TOP = this._margins.TOP + this.axisParams.height;
+        this._axesMargins.TOP = this.axisParams.height - this._margins.BOTTOM;
       default:
         break;
     }
+
+    this.WIDTH =
+      this.axisParams.width - this._margins.LEFT - this._margins.RIGHT;
+    this.HEIGHT =
+      this.axisParams.height - this._margins.TOP - this._margins.BOTTOM;
 
     if (
       this.axisParams.placement === AxisPlacementE.left ||
       this.axisParams.placement === AxisPlacementE.right
     ) {
+      this.axisScale.range([0, this.HEIGHT]);
       this.axisScale.domain(this.axisParams.domain.reverse());
     } else {
+      this.axisScale.range([0, this.WIDTH]);
       this.axisScale.domain(this.axisParams.domain);
     }
   }

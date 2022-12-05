@@ -35,8 +35,8 @@ class TestAxis extends Stanza {
 
     const MARGIN = {
       TOP: 10,
-      BOTTOM: 10,
-      LEFT: 10,
+      BOTTOM: 20,
+      LEFT: 30,
       RIGHT: 10,
     };
 
@@ -73,20 +73,22 @@ class TestAxis extends Stanza {
     this.xAxisGen = new Axis(xG, {
       placement: "bottom",
       domain: [0, 100],
-      range: [0, 200],
+      range: [0, width],
       showTicks: true,
       width,
       height,
+      margins: MARGIN,
       tickLabelsAngle: this.params["axis-x-ticks_label_angle"],
     });
 
     this.yAxisGen = new Axis(yG, {
       placement: "left",
       domain: [0, 100],
-      range: [0, 200],
+      range: [0, height],
       showTicks: true,
       height,
       width,
+      margins: MARGIN,
       tickLabelsAngle: this.params["axis-y-ticks_label_angle"],
     });
 
