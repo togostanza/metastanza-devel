@@ -37,7 +37,7 @@
     {
       "stanza:key": "node-label_key",
       "stanza:example": "label",
-      "stanza:description": "key for data attribute to display as label",
+      "stanza:description": "Key for data attribute to display as label",
       "stanza:required": true
     },
     {
@@ -59,7 +59,7 @@
       "stanza:type": "single-choice",
       "stanza:choice": ["true", "false"],
       "stanza:example": true,
-      "stanza:description": "Show value set by [value-key] in tree and suggestions"
+      "stanza:description": "Show value set by [node-value-key] in tree and suggestions"
     },
     {
       "stanza:key": "node-value-key",
@@ -69,12 +69,12 @@
     {
       "stanza:key": "node-value-fallback",
       "stanza:example": "no data",
-      "stanza:description": "Message in case there is no data for data set by [value-key]"
+      "stanza:description": "Message in case there is no data for data set by [node-value-key]"
     },
     {
       "stanza:key": "search-key",
       "stanza:example": "value",
-      "stanza:description": "key for data atrribute to search with suggestions. Besides this key, one can also search by path using the id followed by a / E.G.: 1/2/3"
+      "stanza:description": "Key for data atrribute to search with suggestions. Besides this key, one can also search by path using the id followed by a / E.G.: 1/2/3"
     },
     {
       "stanza:key": "search-show_path",
@@ -116,7 +116,7 @@
       "stanza:key": "--togostanza-outline-padding",
       "stanza:type": "text",
       "stanza:default": "20px",
-      "stanza:description": "outline padding"
+      "stanza:description": "Padding of a stanza. CSS padding-like text (10px 10px 10px 10px)"
     },
     {
       "stanza:key": "--togostanza-theme-background_color",
@@ -131,40 +131,16 @@
       "stanza:description": "Font family"
     },
     {
-      "stanza:key": "--togostanza-fonts-font_size_primary",
-      "stanza:type": "number",
-      "stanza:default": 14,
-      "stanza:description": "Font size used in stanza"
-    },
-    {
       "stanza:key": "--togostanza-fonts-font_color",
       "stanza:type": "color",
       "stanza:default": "#3c3744",
       "stanza:description": "Default text color"
     },
     {
-      "stanza:key": "--togostanza-node-hover_background_color",
-      "stanza:type": "color",
-      "stanza:default": "#FFFDD1",
-      "stanza:description": "Hover color for background when hovering over items"
-    },
-    {
-      "stanza:key": "--togostanza-node-hover_text_color",
-      "stanza:type": "color",
-      "stanza:default": "#221727",
-      "stanza:description": "Hover color for text when hovering over items"
-    },
-    {
-      "stanza:key": "--togostanza-node-selected_background_color",
-      "stanza:type": "color",
-      "stanza:default": "#256D80",
-      "stanza:description": "Background color for selected items"
-    },
-    {
-      "stanza:key": "--togostanza-node-selected_text_color",
-      "stanza:type": "color",
-      "stanza:default": "#FFFFFF",
-      "stanza:description": "Text color for selected items"
+      "stanza:key": "--togostanza-fonts-font_size_primary",
+      "stanza:type": "number",
+      "stanza:default": 14,
+      "stanza:description": "Font size used in stanza"
     },
     {
       "stanza:key": "--togostanza-column-width",
@@ -227,10 +203,28 @@
       "stanza:description": "Border radius of highlighted/selected nodes"
     },
     {
-      "stanza:key": "--togostanza-theme-background_color",
+      "stanza:key": "--togostanza-node-selected_background_color",
       "stanza:type": "color",
-      "stanza:default": "rgba(255,255,255,0)",
-      "stanza:description": "Background color"
+      "stanza:default": "#256D80",
+      "stanza:description": "Background color for selected items"
+    },
+    {
+      "stanza:key": "--togostanza-node-selected_text_color",
+      "stanza:type": "color",
+      "stanza:default": "#FFFFFF",
+      "stanza:description": "Text color for selected items"
+    },
+    {
+      "stanza:key": "--togostanza-node-hover_background_color",
+      "stanza:type": "color",
+      "stanza:default": "#FFFDD1",
+      "stanza:description": "Hover color for background when hovering over items"
+    },
+    {
+      "stanza:key": "--togostanza-node-hover_text_color",
+      "stanza:type": "color",
+      "stanza:default": "#221727",
+      "stanza:description": "Hover color for text when hovering over items"
     }
   ],
   "stanza:incomingEvent": [],
