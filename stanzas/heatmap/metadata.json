@@ -213,12 +213,6 @@
       "stanza:description": "Hover border color"
     },
     {
-      "stanza:key": "--togostanza-axis-color",
-      "stanza:type": "color",
-      "stanza:default": "#000000",
-      "stanza:description": "Axis color"
-    },
-    {
       "stanza:key": "--togostanza-theme-series_0_color",
       "stanza:type": "color",
       "stanza:default": "#6590e6",
