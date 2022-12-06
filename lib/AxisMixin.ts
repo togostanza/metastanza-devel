@@ -27,7 +27,7 @@ interface AxisMarginI {
   TOP: number;
 }
 
-interface axisParamsI {
+interface AxisParamsI {
   domain: number[];
   range: number[];
   width: number;
@@ -49,17 +49,50 @@ type GetScaleT =
   | d3.ScaleBand<d3.AxisDomain>
   | d3.ScaleTime<d3.AxisDomain, number, never>;
 
+interface UpdateParams {
+  domain?: d3.AxisDomain;
+  range?: number[];
+  margins?: MarginsI;
+  showTicks?: boolean;
+  scale?: AxisScaleE;
+  placement?: AxisPlacementT;
+  tickLabelsAngle?: number;
+  ticksLabelsMargin?: number;
+  title?: string;
+}
+
+const initialMargins: MarginsI = {
+  TOP: 0,
+  BOTTOM: 0,
+  LEFT: 0,
+  RIGHT: 0,
+};
+
+const initialState: AxisParamsI = {
+  domain: [],
+  range: [],
+  width: 0,
+  height: 0,
+  margins: initialMargins,
+  showTicks: true,
+  scale: AxisScaleE.linear,
+  placement: AxisPlacementE.bottom,
+  tickLabelsAngle: 0,
+  ticksLabelsMargin: 0,
+  title: "",
+};
+
 export class Axis {
   private axisScale: GetScaleT;
   private _axisGen: d3.Axis<d3.AxisDomain>;
   private parentSelection: d3Selection;
-  private axisParams: axisParamsI;
+  private axisParams: AxisParamsI;
   private _axesMargins: AxisMarginI;
   private _margins: MarginsI;
   private WIDTH: number;
   private HEIGHT: number;
 
-  constructor(parentSelection, axisParams: axisParamsI) {
+  constructor(parentSelection, axisParams: AxisParamsI) {
     this.axisParams = axisParams;
     this.parentSelection = parentSelection;
     this.axisScale = this._getScale(axisParams.scale);
@@ -74,13 +107,20 @@ export class Axis {
   }
 
   private _addTranslate(g: d3Selection) {
-    const transform = g.attr("transform");
     g.attr(
       "transform",
-      `${transform || ""} translate(${this._axesMargins.LEFT}, ${
-        this._axesMargins.TOP
-      })`
+      `translate(${this._axesMargins.LEFT}, ${this._axesMargins.TOP})`
     );
+  }
+
+  private _addTitle(g: d3Selection) {
+    const title = g.selectAll("g.title").data([this.axisParams.title]);
+    title.join("text").text((d) => d);
+  }
+
+  set params(newParams: AxisParamsI) {
+    this.axisParams = { ...this.axisParams, ...newParams };
+    this._update();
   }
 
   private _init() {
@@ -127,29 +167,36 @@ export class Axis {
       this._axisGen(g);
       this._rotateLabels(g);
       this._addTranslate(g);
+      this._addTitle(g);
     };
   }
 
   set axisDomain(newDomain) {
     this.axisScale.domain(newDomain);
-    this.update();
   }
 
   set axisRange(newRange) {
     this.axisScale.range(newRange);
-    this.update();
   }
 
-  private update() {
+  update(params: UpdateParams) {
+    this.axisParams = { ...this.axisParams, ...params } as AxisParamsI;
+    this._update();
+  }
+
+  private _update() {
+    this.axisDomain = this.axisParams.domain;
+    this.axisRange = this.axisParams.range;
+
     queueMicrotask(() => this.parentSelection.call(this.axis));
   }
 
   private _rotateLabels(g: d3Selection) {
     if (this.axisParams.tickLabelsAngle < 0) {
-      g.selectAll("text").attr("text-anchor", "end");
+      g.selectAll("tick text").attr("text-anchor", "end");
     }
 
-    g.selectAll("text").attr(
+    g.selectAll("tick text").attr(
       "transform",
       `rotate(${this.axisParams.tickLabelsAngle || 0})`
     );
