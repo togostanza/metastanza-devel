@@ -93,7 +93,7 @@ export default defineComponent({
       nodeShowBorders: isTruthBool(params?.nodeShowBorders?.value),
       nodeContentAlignment: params?.nodeContentAlignment?.value,
       showSuggestions: false,
-      responseJSON: null,
+      responseJSON: [],
       columnData: [],
       checkedNodes: new Map(),
       searchTerm: "",
