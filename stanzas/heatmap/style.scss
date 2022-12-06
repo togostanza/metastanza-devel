@@ -22,7 +22,7 @@ main {
     color: var(--togostanza-fonts-font_color);
   }
   .highlighted {
-    stroke: var(--togostanza-hover-border-color);
+    stroke: var(--togostanza-cell-border_hover_color);
   }
   rect {
     stroke: var(--togostanza-border-color);

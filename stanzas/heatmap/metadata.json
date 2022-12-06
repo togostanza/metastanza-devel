@@ -30,72 +30,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "custom_css_url",
-      "stanza:type": "text",
-      "stanza:example": "",
-      "stanza:description": "custom css to apply"
-    },
-    {
-      "stanza:key": "cell-color-key",
-      "stanza:type": "text",
-      "stanza:example": "value",
-      "stanza:description": "Data key to color the data points"
-    },
-    {
-      "stanza:key": "axis-x-key",
-      "stanza:type": "text",
-      "stanza:example": "group",
-      "stanza:description": "What key in data to use",
-      "stanza:required": true
-    },
-    {
-      "stanza:key": "axis-y-key",
-      "stanza:type": "text",
-      "stanza:example": "variable",
-      "stanza:description": "What key in data to use",
-      "stanza:required": true
-    },
-    {
-      "stanza:key": "axis-x-title",
-      "stanza:type": "text",
-      "stanza:description": "X axis title"
-    },
-    {
-      "stanza:key": "axis-y-title",
-      "stanza:type": "text",
-      "stanza:description": "Y axis title"
-    },
-    {
-      "stanza:key": "axis-x-ticks_labels_angle",
-      "stanza:type": "number",
-      "stanza:example": 0,
-      "stanza:description": "X ticks labels angle (in degree)"
-    },
-    {
-      "stanza:key": "axis-y-ticks_labels_angle",
-      "stanza:type": "number",
-      "stanza:example": 0,
-      "stanza:description": "Y ticks labels angle (in degree)"
-    },
-    {
-      "stanza:key": "axis-x-title_padding",
-      "stanza:type": "number",
-      "stanza:example": 10,
-      "stanza:description": "Axis title padding"
-    },
-    {
-      "stanza:key": "axis-y-title_padding",
-      "stanza:type": "number",
-      "stanza:example": 10,
-      "stanza:description": "Axis title padding"
-    },
-    {
-      "stanza:key": "axis-hide",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:description": "Show axis lines and ticks"
-    },
-    {
       "stanza:key": "legend-show",
       "stanza:type": "boolean",
       "stanza:example": true,
@@ -114,37 +48,103 @@
       "stanza:description": "Amount of groups for legend"
     },
     {
-      "stanza:key": "cell-color_min",
+      "stanza:key": "custom_css_url",
+      "stanza:type": "text",
+      "stanza:example": "",
+      "stanza:description": "custom css to apply"
+    },
+    {
+      "stanza:key": "axis-hide",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Show axis lines and ticks"
+    },
+    {
+      "stanza:key": "axis-x-key",
+      "stanza:type": "text",
+      "stanza:example": "group",
+      "stanza:description": "What key in data to use",
+      "stanza:required": true
+    },
+    {
+      "stanza:key": "axis-x-title",
+      "stanza:type": "text",
+      "stanza:description": "X axis title"
+    },
+    {
+      "stanza:key": "axis-x-title_padding",
+      "stanza:type": "number",
+      "stanza:example": 10,
+      "stanza:description": "Axis title padding"
+    },
+    {
+      "stanza:key": "axis-x-ticks_labels_angle",
+      "stanza:type": "number",
+      "stanza:example": 0,
+      "stanza:description": "X ticks labels angle (in degree)"
+    },
+    {
+      "stanza:key": "axis-y-key",
+      "stanza:type": "text",
+      "stanza:example": "variable",
+      "stanza:description": "What key in data to use",
+      "stanza:required": true
+    },
+    {
+      "stanza:key": "axis-y-title",
+      "stanza:type": "text",
+      "stanza:description": "Y axis title"
+    },
+    {
+      "stanza:key": "axis-y-title_padding",
+      "stanza:type": "number",
+      "stanza:example": 10,
+      "stanza:description": "Axis title padding"
+    },
+    {
+      "stanza:key": "axis-y-ticks_labels_angle",
+      "stanza:type": "number",
+      "stanza:example": 0,
+      "stanza:description": "Y ticks labels angle (in degree)"
+    },
+    {
+      "stanza:key": "cell-color-key",
+      "stanza:type": "text",
+      "stanza:example": "value",
+      "stanza:description": "Data key to color the data points"
+    },
+    {
+      "stanza:key": "cell-color-min",
       "stanza:type": "text",
       "stanza:example": "#6590e6",
       "stanza:description": "Cell color range min"
     },
     {
-      "stanza:key": "cell-color_mid",
+      "stanza:key": "cell-color-mid",
       "stanza:type": "text",
       "stanza:example": "#ffffff",
       "stanza:description": "Cell color range mid"
     },
     {
-      "stanza:key": "cell-color_max",
+      "stanza:key": "cell-color-max",
       "stanza:type": "text",
       "stanza:example": "#F75976",
       "stanza:description": "Cell color range max"
     },
     {
-      "stanza:key": "cell-value_min",
+      "stanza:key": "cell-value-min",
       "stanza:type": "number",
       "stanza:example": -50,
       "stanza:description": "Cell color domain min"
     },
     {
-      "stanza:key": "cell-value_mid",
+      "stanza:key": "cell-value-mid",
       "stanza:type": "number",
       "stanza:example": 0,
       "stanza:description": "Cell color domain mid"
     },
     {
-      "stanza:key": "cell-value_max",
+      "stanza:key": "cell-value-max",
       "stanza:type": "number",
       "stanza:example": 100,
       "stanza:description": "Cell color domain max"
@@ -195,19 +195,19 @@
       "stanza:description": "outline padding"
     },
     {
-      "stanza:key": "--togostanza-border-width",
-      "stanza:type": "number",
-      "stanza:default": 0,
-      "stanza:description": "border width"
-    },
-    {
       "stanza:key": "--togostanza-border-color",
       "stanza:type": "color",
       "stanza:default": "#000000",
       "stanza:description": "border color"
     },
     {
-      "stanza:key": "--togostanza-hover-border-color",
+      "stanza:key": "--togostanza-border-width",
+      "stanza:type": "number",
+      "stanza:default": 0,
+      "stanza:description": "border width"
+    },
+    {
+      "stanza:key": "--togostanza-cell-border_hover_color",
       "stanza:type": "color",
       "stanza:default": "#FFDF3D",
       "stanza:description": "Hover border color"
