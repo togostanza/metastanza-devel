@@ -42,7 +42,7 @@
       "stanza:key": "title-text",
       "stanza:type": "text",
       "stanza:example": "title",
-      "stanza:description": "Title text"
+      "stanza:description": "Title of the score card"
     },
     {
       "stanza:key": "title-show",
@@ -69,7 +69,13 @@
       "stanza:key": "--togostanza-outline-padding",
       "stanza:type": "text",
       "stanza:default": "50px",
-      "stanza:description": "Metastanza padding"
+      "stanza:description": "Padding of a stanza. CSS padding-like text (10px 10px 10px 10px)"
+    },
+    {
+      "stanza:key": "--togostanza-theme-background_color",
+      "stanza:type": "color",
+      "stanza:default": "rgba(255,255,255,0)",
+      "stanza:description": "Background color"
     },
     {
       "stanza:key": "--togostanza-fonts-font_family",
@@ -84,22 +90,10 @@
       "stanza:description": "Font color for value"
     },
     {
-      "stanza:key": "--togostanza-fonts-font_color_secondary",
-      "stanza:type": "color",
-      "stanza:default": "#6590e6",
-      "stanza:description": "Font color for key"
-    },
-    {
       "stanza:key": "--togostanza-fonts-font_size_primary",
       "stanza:type": "number",
       "stanza:default": 36,
       "stanza:description": "Font size for value"
-    },
-    {
-      "stanza:key": "--togostanza-fonts-font_size_secondary",
-      "stanza:type": "number",
-      "stanza:default": 16,
-      "stanza:description": "Font size for key"
     },
     {
       "stanza:key": "--togostanza-fonts-font_weight_primary",
@@ -108,16 +102,22 @@
       "stanza:description": "Font weight for value"
     },
     {
+      "stanza:key": "--togostanza-fonts-font_color_secondary",
+      "stanza:type": "color",
+      "stanza:default": "#6590e6",
+      "stanza:description": "Font color for key"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_size_secondary",
+      "stanza:type": "number",
+      "stanza:default": 16,
+      "stanza:description": "Font size for key"
+    },
+    {
       "stanza:key": "--togostanza-fonts-font_weight_secondary",
       "stanza:type": "number",
       "stanza:default": 400,
       "stanza:description": "Font weight for key"
-    },
-    {
-      "stanza:key": "--togostanza-theme-background_color",
-      "stanza:type": "color",
-      "stanza:default": "rgba(255,255,255,0)",
-      "stanza:description": "Background color"
     }
   ]
 }
