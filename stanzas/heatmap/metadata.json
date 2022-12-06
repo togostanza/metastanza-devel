@@ -33,7 +33,7 @@
       "stanza:key": "legend-show",
       "stanza:type": "boolean",
       "stanza:example": true,
-      "stanza:description": "whether show the legend"
+      "stanza:description": "Whether show the legend"
     },
     {
       "stanza:key": "legend-title",
@@ -45,7 +45,7 @@
       "stanza:key": "legend-groups",
       "stanza:type": "number",
       "stanza:example": 10,
-      "stanza:description": "Amount of groups for legend"
+      "stanza:description": "Number of gradation colors between color-min and color-max"
     },
     {
       "stanza:key": "custom_css_url",
@@ -63,7 +63,7 @@
       "stanza:key": "axis-x-key",
       "stanza:type": "text",
       "stanza:example": "group",
-      "stanza:description": "What key in data to use",
+      "stanza:description": "What X key in data to use",
       "stanza:required": true
     },
     {
@@ -75,7 +75,7 @@
       "stanza:key": "axis-x-title_padding",
       "stanza:type": "number",
       "stanza:example": 10,
-      "stanza:description": "Axis title padding"
+      "stanza:description": "Title and X axis gap in px"
     },
     {
       "stanza:key": "axis-x-ticks_labels_angle",
@@ -87,7 +87,7 @@
       "stanza:key": "axis-y-key",
       "stanza:type": "text",
       "stanza:example": "variable",
-      "stanza:description": "What key in data to use",
+      "stanza:description": "What Y key in data to use",
       "stanza:required": true
     },
     {
@@ -99,7 +99,7 @@
       "stanza:key": "axis-y-title_padding",
       "stanza:type": "number",
       "stanza:example": 10,
-      "stanza:description": "Axis title padding"
+      "stanza:description": "Title and Y axis gap in px"
     },
     {
       "stanza:key": "axis-y-ticks_labels_angle",
@@ -111,7 +111,7 @@
       "stanza:key": "cell-color-key",
       "stanza:type": "text",
       "stanza:example": "value",
-      "stanza:description": "Data key to color the data points"
+      "stanza:description": "Data key to color the data points. if all data keys values includes hex color, use that color, otherwise use ordinal scale from the theme colors."
     },
     {
       "stanza:key": "cell-color-min",
@@ -159,24 +159,6 @@
   "stanza:menu-placement": "bottom-right",
   "stanza:style": [
     {
-      "stanza:key": "--togostanza-fonts-font_family",
-      "stanza:type": "text",
-      "stanza:default": "Helvetica Neue",
-      "stanza:description": "Font family"
-    },
-    {
-      "stanza:key": "--togostanza-fonts-font_color",
-      "stanza:type": "color",
-      "stanza:default": "#000000",
-      "stanza:description": "Title font color"
-    },
-    {
-      "stanza:key": "--togostanza-fonts-font_size_primary",
-      "stanza:type": "number",
-      "stanza:default": 12,
-      "stanza:description": "Font size primary"
-    },
-    {
       "stanza:key": "--togostanza-outline-width",
       "stanza:type": "number",
       "stanza:default": 450,
@@ -192,25 +174,7 @@
       "stanza:key": "--togostanza-outline-padding",
       "stanza:type": "text",
       "stanza:default": "20px",
-      "stanza:description": "outline padding"
-    },
-    {
-      "stanza:key": "--togostanza-border-color",
-      "stanza:type": "color",
-      "stanza:default": "#000000",
-      "stanza:description": "border color"
-    },
-    {
-      "stanza:key": "--togostanza-border-width",
-      "stanza:type": "number",
-      "stanza:default": 0,
-      "stanza:description": "border width"
-    },
-    {
-      "stanza:key": "--togostanza-cell-border_hover_color",
-      "stanza:type": "color",
-      "stanza:default": "#FFDF3D",
-      "stanza:description": "Hover border color"
+      "stanza:description": "Padding of a stanza. CSS padding-like text (10px 10px 10px 10px)"
     },
     {
       "stanza:key": "--togostanza-theme-series_0_color",
@@ -253,6 +217,42 @@
       "stanza:type": "color",
       "stanza:default": "#F8F9FA",
       "stanza:description": "Background color"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_family",
+      "stanza:type": "text",
+      "stanza:default": "Helvetica Neue",
+      "stanza:description": "Font family"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_color",
+      "stanza:type": "color",
+      "stanza:default": "#000000",
+      "stanza:description": "Title font color"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_size_primary",
+      "stanza:type": "number",
+      "stanza:default": 12,
+      "stanza:description": "Font size primary"
+    },
+    {
+      "stanza:key": "--togostanza-border-color",
+      "stanza:type": "color",
+      "stanza:default": "#000000",
+      "stanza:description": "Border color for everything that have a border"
+    },
+    {
+      "stanza:key": "--togostanza-border-width",
+      "stanza:type": "number",
+      "stanza:default": 0,
+      "stanza:description": "Border width"
+    },
+    {
+      "stanza:key": "--togostanza-cell-border_hover_color",
+      "stanza:type": "color",
+      "stanza:default": "#FFDF3D",
+      "stanza:description": "Hover border color"
     }
   ],
   "stanza:incomingEvent": [],
