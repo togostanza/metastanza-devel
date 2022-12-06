@@ -97,11 +97,12 @@ export default class Heatmap extends Stanza {
     );
 
     //Styles
-    const fontSize = +this.css("--togostanza-fonts-font_size_primary");
-    const width = +this.css("--togostanza-outline-width");
-    const height = +this.css("--togostanza-outline-height");
-    const borderWidth = +this.css("--togostanza-border-width") || 0;
-    const borderRadius = +this.css("--togostanza-border-radius");
+    const fontSize = parseFloat(
+      this.css("--togostanza-fonts-font_size_primary")
+    );
+    const width = parseFloat(this.css("--togostanza-outline-width"));
+    const height = parseFloat(this.css("--togostanza-outline-height"));
+    const borderWidth = parseFloat(this.css("--togostanza-border-width") || 0);
     const tickSize = 2;
 
     // x-axis scale
@@ -165,8 +166,6 @@ export default class Heatmap extends Stanza {
       .attr("data-tooltip", (d) => tooltipHTML(d))
       .attr("width", x.bandwidth())
       .attr("height", y.bandwidth())
-      .attr("rx", borderRadius)
-      .attr("ry", borderRadius)
       .style("fill", (d) => setColor(d[cellColorKey]))
       .on("mouseover", mouseover)
       .on("mouseleave", mouseleave);
