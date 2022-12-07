@@ -27,7 +27,8 @@ export default class Scorecard extends Stanza {
       this.root.querySelector("main")
     );
 
-    const [key, value] = Object.entries(dataset)[0];
+    const key = this.params["score-key"];
+    const value = dataset[key];
     this._data = { [key]: value };
 
     const titleText = this.params["title-text"] || key;
