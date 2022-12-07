@@ -22,13 +22,8 @@ interface MarginsI {
   BOTTOM: number;
 }
 
-interface AxisMarginI {
-  LEFT: number;
-  TOP: number;
-}
-
 export interface AxisParamsI {
-  domain: number[];
+  domain: d3.AxisDomain[];
   range: number[];
   width: number;
   height: number;
@@ -48,18 +43,6 @@ type GetScaleT =
   | d3.ScaleLogarithmic<d3.AxisDomain, number, never>
   | d3.ScaleBand<d3.AxisDomain>
   | d3.ScaleTime<d3.AxisDomain, number, never>;
-
-interface UpdateParams {
-  domain?: d3.AxisDomain;
-  range?: number[];
-  margins?: MarginsI;
-  showTicks?: boolean;
-  scale?: AxisScaleE;
-  placement?: AxisPlacementT;
-  tickLabelsAngle?: number;
-  ticksLabelsMargin?: number;
-  title?: string;
-}
 
 const initialMargins: MarginsI = {
   TOP: 0,
@@ -105,14 +88,15 @@ export class Axis {
   params: AxisParamsI;
   _svg: SVGSVGElement;
   _g: d3Selection;
+  _axisG: d3Selection;
+  _titleG: d3Selection;
   _axisMargin: MarginsI = { LEFT: 0, TOP: 0, BOTTOM: 0, RIGHT: 0 };
   _height: number;
   _width: number;
-  callbackMap: Map<string, (val) => void>;
+  callbackMap: Map<keyof AxisParamsI, (val) => void>;
   _axisScale: GetScaleT;
   _axisGen: d3.Axis<d3.AxisDomain>;
   _axisLength: number;
-  _axisG: d3Selection;
 
   constructor(params: AxisParamsI, svg: SVGSVGElement) {
     this._svg = svg;
@@ -132,29 +116,68 @@ export class Axis {
     this._init(params);
 
     this.callbackMap = new Map();
-    this.callbackMap.set("domain", (val) => {
-      this._axisScale.domain(val);
-      this._axisG.call(this._axisGen.bind(this));
-    });
-    this.callbackMap.set("placement", () => {
-      console.log("changed to", this.params.placement);
-      this._calcAxisMargins(this.params);
-      this._axisGen = getAxisGen(this.params.placement)(
-        this._axisScale as d3.AxisScale<d3.AxisDomain>
-      );
-      this._axisG.remove();
-      this._axisG = this._g
-        .append("g")
-        .classed("axis", true)
-        .call(this._axisGen);
+    this.callbackMap.set("domain", this._handleDomainUpdate.bind(this));
+    this.callbackMap.set("placement", this._handlePlacementUpdate.bind(this));
+    this.callbackMap.set("title", this._handleTitleUpdate.bind(this));
+    this.callbackMap.set("showTicks", this._handleShowTicksUpdate.bind(this));
 
-      this._g.attr(
+    this.params = proxyfy(params, this.callbackMap) as AxisParamsI;
+  }
+
+  private _init(params: AxisParamsI) {
+    const svg = d3.select(this._svg);
+    this._g = svg
+      .append("g")
+      .classed("axis-container", true)
+      .attr(
         "transform",
         `translate(${this._axisMargin.LEFT}, ${this._axisMargin.TOP})`
       );
-    });
 
-    this.params = proxyfy(params, this.callbackMap) as AxisParamsI;
+    this._axisG = this._g.append("g").classed("axis", true).call(this._axisGen);
+
+    let translate;
+
+    if (params.placement === "bottom" || params.placement === "top") {
+      translate = `translate(${this._axisLength / 2}, 0)`;
+    } else {
+      translate = `translate(0, ${this._axisLength / 2})`;
+    }
+
+    this._titleG = this._g
+      .append("g")
+      .attr("transform", translate)
+      .append("text")
+      .classed("title", true)
+      .text(params.title);
+  }
+
+  private _handleDomainUpdate(domain: d3.AxisDomain[]) {
+    this._axisScale.domain(domain);
+    this._axisG.call(this._axisGen.bind(this));
+  }
+
+  private _handlePlacementUpdate() {
+    this._calcAxisMargins(this.params);
+    this._axisGen = getAxisGen(this.params.placement)(
+      this._axisScale as d3.AxisScale<d3.AxisDomain>
+    );
+    this._axisG.remove();
+    this._axisG = this._g.append("g").classed("axis", true).call(this._axisGen);
+
+    this._g.attr(
+      "transform",
+      `translate(${this._axisMargin.LEFT}, ${this._axisMargin.TOP})`
+    );
+  }
+
+  private _handleTitleUpdate(title: string) {
+    this._titleG.text(title);
+  }
+
+  private _handleShowTicksUpdate(showTicks: boolean) {
+    this._axisGen.tickSize(!showTicks ? 0 : 6);
+    this._axisG.call(this._axisGen.bind(this));
   }
 
   private _calcAxisMargins(params) {
@@ -191,34 +214,6 @@ export class Axis {
       default:
         break;
     }
-  }
-
-  private _init(params: AxisParamsI) {
-    const svg = d3.select(this._svg);
-    this._g = svg
-      .append("g")
-      .classed("axis-container", true)
-      .attr(
-        "transform",
-        `translate(${this._axisMargin.LEFT}, ${this._axisMargin.TOP})`
-      );
-
-    this._axisG = this._g.append("g").classed("axis", true).call(this._axisGen);
-
-    let translate;
-
-    if (params.placement === "bottom" || params.placement === "top") {
-      translate = `translate(${this._axisLength / 2}, 0)`;
-    } else {
-      translate = `translate(0, ${this._axisLength / 2})`;
-    }
-
-    this._g
-      .append("g")
-      .attr("transform", translate)
-      .append("text")
-      .classed("title", true)
-      .text(params.title);
   }
 }
 

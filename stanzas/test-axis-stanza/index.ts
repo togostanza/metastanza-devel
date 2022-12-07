@@ -66,6 +66,8 @@ class TestAxis extends Stanza {
         "axis-y-placement": z
           .union([z.literal("left"), z.literal("right")])
           .default("left"),
+        "axis-y-ticks_hide": z.boolean(),
+        "axis-x-ticks_hide": z.boolean(),
       })
       .passthrough();
 
@@ -85,7 +87,7 @@ class TestAxis extends Stanza {
       placement: params["axis-x-placement"],
       domain: [0, 100],
       range: [0, width],
-      showTicks: true,
+      showTicks: !params["axis-x-ticks_hide"],
       width,
       height,
       margins: MARGIN,
@@ -102,6 +104,8 @@ class TestAxis extends Stanza {
     }
 
     this.xAxisGen.params.placement = params["axis-x-placement"];
+    this.xAxisGen.params.title = params["axis-x-title"];
+    this.xAxisGen.params.showTicks = !params["axis-x-ticks_hide"];
 
     this.interval = setInterval(() => {
       this.xAxisGen.params.domain = [0, Math.random() * 100];
