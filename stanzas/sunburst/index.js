@@ -75,7 +75,10 @@ export default class Sunburst extends Stanza {
     const nodesGapWidth = this.params["node-gap_width"] || 8;
     const cornerRadius = this.params["node-corner_radius"] || 0;
     const scalingMethod = this.params["scaling"] || "By value";
-    let depthLim = parseFloat(this.params["max_depth"]) || 0;
+    let depthLim =
+      parseFloat(this.params["max_depth"]) > 0
+        ? parseFloat(this.params["max_depth"])
+        : 1;
 
     const data = await loadData(
       this.params["data-url"],
