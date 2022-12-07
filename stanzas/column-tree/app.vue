@@ -68,9 +68,6 @@ import { camelCase } from "lodash";
 function isRootNode(parent) {
   return !parent || isNaN(parent);
 }
-function isTruthBool(str) {
-  return str === "true";
-}
 
 // TODO: set path for data objects
 export default defineComponent({
@@ -86,11 +83,11 @@ export default defineComponent({
         value: params?.nodeValueKey?.value,
       },
       fallbackInCaseOfNoValue: params?.nodeValueFallback.value,
-      columnFixedWidth: isTruthBool(params?.columnFixedWidth?.value),
-      nodeShowValue: isTruthBool(params?.nodeShowValue?.value),
-      searchShowPath: isTruthBool(params?.searchShowPath?.value),
-      showPathExplanation: isTruthBool(params?.showPathExplanation?.value),
-      nodeShowBorders: isTruthBool(params?.nodeShowBorders?.value),
+      columnFixedWidth: params?.columnFixedWidth?.value,
+      nodeShowValue: params?.nodeShowValue?.value,
+      searchShowPath: params?.searchShowPath?.value,
+      showPathExplanation: params?.showPathExplanation?.value,
+      nodeShowBorders: params?.nodeShowBorders?.value,
       nodeContentAlignment: params?.nodeContentAlignment?.value,
       showSuggestions: false,
       responseJSON: [],

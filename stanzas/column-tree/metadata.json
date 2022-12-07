@@ -42,8 +42,7 @@
     },
     {
       "stanza:key": "node-show_borders",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["true", "false"],
+      "stanza:type": "boolean",
       "stanza:example": false,
       "stanza:description": "Show border between nodes"
     },
@@ -56,8 +55,7 @@
     },
     {
       "stanza:key": "node-show_value",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["true", "false"],
+      "stanza:type": "boolean",
       "stanza:example": true,
       "stanza:description": "Show value set by [node-value-key] in tree and suggestions"
     },
@@ -78,22 +76,19 @@
     },
     {
       "stanza:key": "search-show_path",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["true", "false"],
+      "stanza:type": "boolean",
       "stanza:example": false,
       "stanza:description": "Show path in suggestions"
     },
     {
       "stanza:key": "column-fixed_width",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["true", "false"],
+      "stanza:type": "boolean",
       "stanza:example": true,
       "stanza:description": "Make all columns a fixed width set by [--togostanza-column-width] at the styles section"
     },
     {
       "stanza:key": "show_path_explanation",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["true", "false"],
+      "stanza:type": "boolean",
       "stanza:example": true,
       "stanza:description": "Show explanation on how to use id path for searching"
     }
