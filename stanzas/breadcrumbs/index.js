@@ -12,7 +12,7 @@ export default class BreadcrumbsLit extends Stanza {
   }
 
   async render() {
-    appendCustomCss(this, this.params["misc-custom_css_url"]);
+    appendCustomCss(this, this.params["custom_css_url"]);
 
     const root = this.root.querySelector("main");
 
@@ -57,7 +57,9 @@ function isExamplePage() {
 
   if (
     pageName === stanzaId &&
-    (hostname.includes("metastanza") || hostname.includes("localhost"))
+    (hostname.includes("metastanza") ||
+      hostname.includes("localhost") ||
+      hostname.includes("togostanza"))
   ) {
     return true;
   }

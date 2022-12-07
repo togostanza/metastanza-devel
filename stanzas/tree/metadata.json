@@ -27,7 +27,7 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "misc-custom_css_url",
+      "stanza:key": "custom_css_url",
       "stanza:example": "",
       "stanza:description": "Custom CSS URL",
       "stanza:required": false

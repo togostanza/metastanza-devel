@@ -14,6 +14,8 @@ import {
   appendCustomCss,
 } from "togostanza-utils";
 import validateParams from "@/lib/validateParams";
+import { StanzaColorGenerator } from "../../lib/ColorGenerator";
+import { getMarginsFromCSSString } from "../../lib/utils";
 
 export default class Linechart extends Stanza {
   menu() {
@@ -29,7 +31,7 @@ export default class Linechart extends Stanza {
   async render() {
     this._hideError();
 
-    appendCustomCss(this, this.params["misc-custom_css_url"]);
+    appendCustomCss(this, this.params["custom_css_url"]);
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
@@ -152,14 +154,10 @@ export default class Linechart extends Stanza {
     // Data symbols
     const symbolGenerator = d3.symbol().size(pointsSize).type(d3.symbolCircle);
 
-    const { width, height } = root.getBoundingClientRect();
+    const width = css("--togostanza-outline-width");
+    const height = css("--togostanza-outline-height");
 
-    const MARGIN = {
-      top: parseFloat(getComputedStyle(root).paddingTop),
-      right: parseFloat(getComputedStyle(root).paddingRight),
-      bottom: parseFloat(getComputedStyle(root).paddingBottom),
-      left: parseFloat(getComputedStyle(root).paddingLeft),
-    };
+    const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
 
     const SVGMargin = {
       top: 10,
@@ -168,11 +166,9 @@ export default class Linechart extends Stanza {
       left: 24,
     };
 
-    const togostanzaColors = [];
+    const colorGenerator = new StanzaColorGenerator(this);
 
-    for (let i = 0; i < 6; i++) {
-      togostanzaColors.push(css(`--togostanza-theme-series_${i}_color`));
-    }
+    const togostanzaColors = colorGenerator.stanzaColor;
 
     const color = d3.scaleOrdinal().range(togostanzaColors);
 
@@ -304,22 +300,23 @@ export default class Linechart extends Stanza {
     function afterLegendRendered(legendRect) {
       // render svg after we got legend width
 
-      const SVGWidth = width - MARGIN.left - MARGIN.right - legendRect.width;
-      const SVGHeight = height - MARGIN.top - MARGIN.bottom - legendRect.height;
+      const SVGWidth = width - MARGIN.LEFT - MARGIN.RIGHT - legendRect.width;
+      const SVGHeight = height - MARGIN.TOP - MARGIN.BOTTOM - legendRect.height;
 
       // Width and height of the chart
+
       const WIDTH =
         width -
-        MARGIN.left -
+        MARGIN.LEFT -
         SVGMargin.left -
-        MARGIN.right -
+        MARGIN.RIGHT -
         SVGMargin.right -
         legendRect.width;
       const HEIGHT =
         height -
-        MARGIN.top -
+        MARGIN.TOP -
         SVGMargin.top -
-        MARGIN.bottom -
+        MARGIN.BOTTOM -
         SVGMargin.bottom -
         legendRect.height;
 
@@ -698,10 +695,7 @@ export default class Linechart extends Stanza {
           return this._previewYScaleY(d.y);
         });
 
-      const graphXAxisG = xAxisTitleGroup
-        .append("g")
-        .attr("class", "axis x")
-        .attr("clip-path", "url(#clip)");
+      const graphXAxisG = xAxisTitleGroup.append("g").attr("class", "axis x");
 
       const graphXGridG = xAxisTitleGroup.append("g").attr("class", "grid x");
 
