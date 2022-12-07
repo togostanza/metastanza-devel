@@ -30,12 +30,14 @@ export default class Scorecard extends Stanza {
     const [key, value] = Object.entries(dataset)[0];
     this._data = { [key]: value };
 
+    const titleText = this.params["title-text"] || key;
+
     this.renderTemplate({
       template: "stanza.html.hbs",
       parameters: {
         scorecards: [
           {
-            key,
+            titleText,
             value,
           },
         ],
