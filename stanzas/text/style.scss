@@ -2,12 +2,10 @@
 @use "@/common.scss";
 
 * {
-  font-family: var(--togostanza-fonts-font_family);
   box-sizing: border-box;
 }
 
 main {
-  background-color: var(--togostanza-theme-background_color);
   padding: var(--togostanza-outline-padding);
   width: calc(var(--togostanza-outline-width) * 1px);
   height: calc(var(--togostanza-outline-height) * 1px);
@@ -15,13 +13,9 @@ main {
 .container {
   display: flex;
   flex-direction: column;
-  // background-color: var(--togostanza-theme-background_color);
   .menu {
     display: flex;
     padding: 5px;
-    a {
-      // color: var(--togostanza-fonts-font_color);
-    }
   }
   table {
     display: block;
@@ -29,8 +23,6 @@ main {
       tr {
         td {
           word-break: break-all;
-          // color: var(--togostanza-fonts-font_color);
-          font-size: var(--togostanza-fonts-font_size_primary);
           font-weight: var(--togostanza-fonts-font_weight);
         }
       }

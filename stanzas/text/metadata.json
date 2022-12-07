@@ -41,8 +41,7 @@
       "stanza:type": "single-choice",
       "stanza:choice": ["text", "markdown"],
       "stanza:example": "text",
-      "stanza:description": "Mode",
-      "stanza:required": true
+      "stanza:description": "Mode"
     }
   ],
   "stanza:menu-placement": "bottom-right",
@@ -51,19 +50,25 @@
       "stanza:key": "--togostanza-outline-width",
       "stanza:type": "number",
       "stanza:default": 800,
-      "stanza:description": "outline width"
+      "stanza:description": "Outline width"
     },
     {
       "stanza:key": "--togostanza-outline-height",
       "stanza:type": "number",
       "stanza:default": 450,
-      "stanza:description": "outline height"
+      "stanza:description": "Outline height"
     },
     {
       "stanza:key": "--togostanza-outline-padding",
       "stanza:type": "text",
       "stanza:default": "20px",
-      "stanza:description": "outline padding"
+      "stanza:description": "Padding of a stanza. CSS padding-like text (10px 10px 10px 10px)"
+    },
+    {
+      "stanza:key": "--togostanza-theme-background_color",
+      "stanza:type": "color",
+      "stanza:default": "rgba(255,255,255,0)",
+      "stanza:description": "Background color"
     },
     {
       "stanza:key": "--togostanza-fonts-font_family",
@@ -88,12 +93,6 @@
       "stanza:type": "number",
       "stanza:default": 400,
       "stanza:description": "Font weight"
-    },
-    {
-      "stanza:key": "--togostanza-theme-background_color",
-      "stanza:type": "color",
-      "stanza:default": "rgba(255,255,255,0)",
-      "stanza:description": "Background color"
     }
   ]
 }
