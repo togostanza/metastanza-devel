@@ -74,7 +74,7 @@ export default class Sunburst extends Stanza {
     const borderWidth = this.params["node-levels_gap_width"] || 2;
     const nodesGapWidth = this.params["node-gap_width"] || 8;
     const cornerRadius = this.params["node-corner_radius"] || 0;
-    const scalingMethod = this.params["scaling"] || "Natural";
+    const scalingMethod = this.params["scaling"] || "By value";
     let depthLim = parseFloat(this.params["max_depth"]) || 0;
 
     const data = await loadData(
@@ -148,7 +148,7 @@ export default class Sunburst extends Stanza {
     const partition = (data) => {
       const root = d3.hierarchy(data);
       switch (scalingMethod) {
-        case "Natural":
+        case "By value":
           root.sum((d) => d.data[valueKey]);
           break;
         case "Equal children":

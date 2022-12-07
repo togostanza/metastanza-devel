@@ -13,16 +13,8 @@ main {
   text-anchor: middle;
 }
 
-#sunburst .labels {
-  font-family: var(--togostanza-fonts-font_family);
-  font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
-  fill: var(--togostanza-fonts-font_color);
-}
-
 #sunburst .numbers {
-  font-family: var(--togostanza-fonts-font_family);
   font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
-  fill: var(--togostanza-fonts-font_color);
 }
 
 #sunburst g .hidden-arc {
