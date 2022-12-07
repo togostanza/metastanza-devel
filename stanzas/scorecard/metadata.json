@@ -98,7 +98,7 @@
     {
       "stanza:key": "--togostanza-fonts-font_weight_primary",
       "stanza:type": "number",
-      "stanza:default": 600,
+      "stanza:default": 500,
       "stanza:description": "Font weight for value"
     },
     {

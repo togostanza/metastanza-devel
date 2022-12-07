@@ -82,5 +82,13 @@ export default class Scorecard extends Stanza {
       "font-size",
       css("--togostanza-fonts-font_size_primary")
     );
+    keyElement.setAttribute(
+      "font-weight",
+      css("--togostanza-fonts-font_weight_secondary")
+    );
+    valueElement.setAttribute(
+      "font-weight",
+      css("--togostanza-fonts-font_weight_primary")
+    );
   }
 }
