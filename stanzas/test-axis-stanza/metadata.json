@@ -157,6 +157,14 @@
       "stanza:required": true
     },
     {
+      "stanza:key": "axis-y-placement",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["left", "right"],
+      "stanza:example": "left",
+      "stanza:description": "Y axis placement",
+      "stanza:required": true
+    },
+    {
       "stanza:key": "axis-y-visible",
       "stanza:type": "boolean",
       "stanza:example": false,

@@ -27,7 +27,7 @@ interface AxisMarginI {
   TOP: number;
 }
 
-interface AxisParamsI {
+export interface AxisParamsI {
   domain: number[];
   range: number[];
   width: number;
@@ -41,7 +41,7 @@ interface AxisParamsI {
   title?: string;
 }
 
-type d3Selection = d3.Selection<SVGSVGElement, any, any, any>;
+type d3Selection = d3.Selection<SVGElement, any, any, any>;
 
 type GetScaleT =
   | d3.ScaleLinear<d3.AxisDomain, number, never>
@@ -82,153 +82,172 @@ const initialState: AxisParamsI = {
   title: "",
 };
 
+type updatedParamT = string | number | number[];
+
+const proxyfy = (
+  init: object,
+  callbackMap: Map<string, (val: updatedParamT) => void>
+) => {
+  return new Proxy(init, {
+    set(target: object, key: string, val: updatedParamT) {
+      if (callbackMap.has(key)) {
+        if (target[key] !== val) {
+          target[key] = val;
+          callbackMap.get(key)(val);
+        }
+      }
+      return true;
+    },
+  });
+};
+
 export class Axis {
-  private axisScale: GetScaleT;
-  private _axisGen: d3.Axis<d3.AxisDomain>;
-  private parentSelection: d3Selection;
-  private axisParams: AxisParamsI;
-  private _axesMargins: AxisMarginI;
-  private _margins: MarginsI;
-  private WIDTH: number;
-  private HEIGHT: number;
+  params: AxisParamsI;
+  _svg: SVGSVGElement;
+  _g: d3Selection;
+  _axisMargin: MarginsI = { LEFT: 0, TOP: 0, BOTTOM: 0, RIGHT: 0 };
+  _height: number;
+  _width: number;
+  callbackMap: Map<string, (val) => void>;
+  _axisScale: GetScaleT;
+  _axisGen: d3.Axis<d3.AxisDomain>;
+  _axisLength: number;
+  _axisG: d3Selection;
 
-  constructor(parentSelection, axisParams: AxisParamsI) {
-    this.axisParams = axisParams;
-    this.parentSelection = parentSelection;
-    this.axisScale = this._getScale(axisParams.scale);
+  constructor(params: AxisParamsI, svg: SVGSVGElement) {
+    this._svg = svg;
 
-    this._margins = axisParams.margins;
+    this._width = svg.getBoundingClientRect().width;
+    this._height = svg.getBoundingClientRect().height;
 
-    this._axisGen = this._getAxisGen(axisParams.placement)(
-      this.axisScale as d3.AxisScale<d3.AxisDomain>
+    this._axisScale = getScale(params.scale);
+    this._axisScale.domain(params.domain);
+
+    this._axisGen = getAxisGen(params.placement)(
+      this._axisScale as d3.AxisScale<d3.AxisDomain>
     );
 
-    this._init();
+    this._calcAxisMargins(params);
+
+    this._init(params);
+
+    this.callbackMap = new Map();
+    this.callbackMap.set("domain", (val) => {
+      this._axisScale.domain(val);
+      this._axisG.call(this._axisGen.bind(this));
+    });
+    this.callbackMap.set("placement", () => {
+      console.log("changed to", this.params.placement);
+      this._calcAxisMargins(this.params);
+      this._axisGen = getAxisGen(this.params.placement)(
+        this._axisScale as d3.AxisScale<d3.AxisDomain>
+      );
+      this._axisG.remove();
+      this._axisG = this._g
+        .append("g")
+        .classed("axis", true)
+        .call(this._axisGen);
+
+      this._g.attr(
+        "transform",
+        `translate(${this._axisMargin.LEFT}, ${this._axisMargin.TOP})`
+      );
+    });
+
+    this.params = proxyfy(params, this.callbackMap) as AxisParamsI;
   }
 
-  private _addTranslate(g: d3Selection) {
-    g.attr(
-      "transform",
-      `translate(${this._axesMargins.LEFT}, ${this._axesMargins.TOP})`
-    );
-  }
-
-  private _addTitle(g: d3Selection) {
-    const title = g.selectAll("g.title").data([this.axisParams.title]);
-    title.join("text").text((d) => d);
-  }
-
-  set params(newParams: AxisParamsI) {
-    this.axisParams = { ...this.axisParams, ...newParams };
-    this._update();
-  }
-
-  private _init() {
-    if (!this._margins) {
-      this._margins = {
-        TOP: 0,
-        BOTTOM: 0,
-        LEFT: 0,
-        RIGHT: 0,
-      };
-    }
-
-    this._axesMargins = { TOP: this._margins.TOP, LEFT: this._margins.LEFT };
-    switch (this.axisParams.placement) {
-      case AxisPlacementE.right:
-        this._axesMargins.LEFT = this.axisParams.width - this._margins.RIGHT;
+  private _calcAxisMargins(params) {
+    switch (params.placement) {
+      case "bottom":
+        this._axisMargin.LEFT = params.margins.LEFT;
+        this._axisMargin.TOP = this._height - params.margins.BOTTOM;
+        this._axisLength =
+          this._width - params.margins.LEFT - params.margins.RIGHT;
+        this._axisScale.range([0, this._axisLength]);
+        break;
+      case "top":
+        this._axisMargin.LEFT = params.margins.LEFT;
+        this._axisMargin.TOP = params.margins.TOP;
+        this._axisLength =
+          this._width - params.margins.LEFT - params.margins.RIGHT;
+        this._axisScale.range([0, this._axisLength]);
+        break;
+      case "left":
+        this._axisMargin.LEFT = params.margins.LEFT;
+        this._axisMargin.TOP = params.margins.TOP;
+        this._axisLength =
+          this._height - params.margins.TOP - params.margins.BOTTOM;
+        this._axisScale.range([this._axisLength, 0]);
+        break;
+      case "right":
+        this._axisMargin.LEFT = this._width - params.margins.RIGHT;
+        this._axisMargin.TOP = params.margins.TOP;
+        this._axisLength =
+          this._height - params.margins.TOP - params.margins.BOTTOM;
+        this._axisScale.range([this._axisLength, 0]);
         break;
 
-      case AxisPlacementE.bottom:
-        this._axesMargins.TOP = this.axisParams.height - this._margins.BOTTOM;
       default:
         break;
     }
+  }
 
-    this.WIDTH =
-      this.axisParams.width - this._margins.LEFT - this._margins.RIGHT;
-    this.HEIGHT =
-      this.axisParams.height - this._margins.TOP - this._margins.BOTTOM;
+  private _init(params: AxisParamsI) {
+    const svg = d3.select(this._svg);
+    this._g = svg
+      .append("g")
+      .classed("axis-container", true)
+      .attr(
+        "transform",
+        `translate(${this._axisMargin.LEFT}, ${this._axisMargin.TOP})`
+      );
 
-    if (
-      this.axisParams.placement === AxisPlacementE.left ||
-      this.axisParams.placement === AxisPlacementE.right
-    ) {
-      this.axisScale.range([0, this.HEIGHT]);
-      this.axisScale.domain(this.axisParams.domain.reverse());
+    this._axisG = this._g.append("g").classed("axis", true).call(this._axisGen);
+
+    let translate;
+
+    if (params.placement === "bottom" || params.placement === "top") {
+      translate = `translate(${this._axisLength / 2}, 0)`;
     } else {
-      this.axisScale.range([0, this.WIDTH]);
-      this.axisScale.domain(this.axisParams.domain);
-    }
-  }
-
-  get axis() {
-    return (g: d3Selection) => {
-      this._axisGen(g);
-      this._rotateLabels(g);
-      this._addTranslate(g);
-      this._addTitle(g);
-    };
-  }
-
-  set axisDomain(newDomain) {
-    this.axisScale.domain(newDomain);
-  }
-
-  set axisRange(newRange) {
-    this.axisScale.range(newRange);
-  }
-
-  update(params: UpdateParams) {
-    this.axisParams = { ...this.axisParams, ...params } as AxisParamsI;
-    this._update();
-  }
-
-  private _update() {
-    this.axisDomain = this.axisParams.domain;
-    this.axisRange = this.axisParams.range;
-
-    queueMicrotask(() => this.parentSelection.call(this.axis));
-  }
-
-  private _rotateLabels(g: d3Selection) {
-    if (this.axisParams.tickLabelsAngle < 0) {
-      g.selectAll("tick text").attr("text-anchor", "end");
+      translate = `translate(0, ${this._axisLength / 2})`;
     }
 
-    g.selectAll("tick text").attr(
-      "transform",
-      `rotate(${this.axisParams.tickLabelsAngle || 0})`
-    );
+    this._g
+      .append("g")
+      .attr("transform", translate)
+      .append("text")
+      .classed("title", true)
+      .text(params.title);
   }
+}
 
-  _getScale(scale: AxisScaleE) {
-    switch (scale) {
-      case AxisScaleE.linear:
-        return d3.scaleLinear();
-      case AxisScaleE.log10:
-        return d3.scaleLog();
-      case AxisScaleE.ordinal:
-        return d3.scaleBand();
-      case AxisScaleE.time:
-        return d3.scaleTime();
-      default:
-        return d3.scaleLinear();
-    }
+function getScale(scale: AxisScaleE) {
+  switch (scale) {
+    case AxisScaleE.linear:
+      return d3.scaleLinear();
+    case AxisScaleE.log10:
+      return d3.scaleLog();
+    case AxisScaleE.ordinal:
+      return d3.scaleBand();
+    case AxisScaleE.time:
+      return d3.scaleTime();
+    default:
+      return d3.scaleLinear();
   }
+}
 
-  _getAxisGen(type: AxisPlacementT) {
-    switch (type) {
-      case AxisPlacementE.left:
-        return d3.axisLeft;
-      case AxisPlacementE.right:
-        return d3.axisRight;
-      case AxisPlacementE.bottom:
-        return d3.axisBottom;
-      case AxisPlacementE.top:
-        return d3.axisTop;
-      default:
-        return d3.axisBottom;
-    }
+function getAxisGen(type: AxisPlacementT) {
+  switch (type) {
+    case AxisPlacementE.left:
+      return d3.axisLeft;
+    case AxisPlacementE.right:
+      return d3.axisRight;
+    case AxisPlacementE.bottom:
+      return d3.axisBottom;
+    case AxisPlacementE.top:
+      return d3.axisTop;
+    default:
+      return d3.axisBottom;
   }
 }

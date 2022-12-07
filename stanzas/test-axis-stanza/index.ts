@@ -1,8 +1,9 @@
 import Stanza from "togostanza/stanza";
 import * as d3 from "d3";
 import loadData from "togostanza-utils/load-data";
-import { z, ZodError } from "zod";
+import { z } from "zod";
 import { Axis } from "../../lib/AxisMixin";
+import type { AxisParamsI } from "../../lib/AxisMixin";
 
 import { getMarginsFromCSSString } from "../../lib/utils";
 
@@ -59,6 +60,12 @@ class TestAxis extends Stanza {
         "axis-y-title_padding": z.number().default(0),
         "axis-x-title": z.string(),
         "axis-y-title": z.string(),
+        "axis-x-placement": z
+          .union([z.literal("top"), z.literal("bottom")])
+          .default("bottom"),
+        "axis-y-placement": z
+          .union([z.literal("left"), z.literal("right")])
+          .default("left"),
       })
       .passthrough();
 
@@ -74,46 +81,31 @@ class TestAxis extends Stanza {
 
     svg.attr("width", width).attr("height", height);
 
-    let xG = svg.select("g.x");
-    let yG = svg.select("g.y");
-
-    if (xG.empty()) {
-      xG = svg.append("g").classed("x axis", true);
-    }
-    if (yG.empty()) {
-      yG = svg.append("g").classed("y axis", true);
-    }
+    const xParams = {
+      placement: params["axis-x-placement"],
+      domain: [0, 100],
+      range: [0, width],
+      showTicks: true,
+      width,
+      height,
+      margins: MARGIN,
+      tickLabelsAngle: params["axis-x-ticks_label_angle"],
+      title: params["axis-x-title"],
+    };
 
     if (!this.xAxisGen) {
-      this.xAxisGen = new Axis(xG, {
-        placement: "bottom",
-        domain: [0, 100],
-        range: [0, width],
-        showTicks: true,
-        width,
-        height,
-        margins: MARGIN,
-        tickLabelsAngle: params["axis-x-ticks_label_angle"],
-        title: params["axis-x-title"],
-      });
+      this.xAxisGen = new Axis(xParams, svg.node());
     }
 
-    if (!this.yAxisGen) {
-      this.yAxisGen = new Axis(yG, {
-        placement: "left",
-        domain: [0, 100],
-        range: [0, height],
-        showTicks: true,
-        height,
-        width,
-        margins: MARGIN,
-        tickLabelsAngle: params["axis-y-ticks_label_angle"],
-        title: params["axis-y-title"],
-      });
+    if (this.interval) {
+      clearInterval(this.interval);
     }
 
-    xG.call(this.xAxisGen.axis);
-    yG.call(this.yAxisGen.axis);
+    this.xAxisGen.params.placement = params["axis-x-placement"];
+
+    this.interval = setInterval(() => {
+      this.xAxisGen.params.domain = [0, Math.random() * 100];
+    }, 1000);
   }
 }
 
