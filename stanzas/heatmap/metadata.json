@@ -237,6 +237,12 @@
       "stanza:description": "Font size primary"
     },
     {
+      "stanza:key": "--togostanza-fonts-font_size_secondary",
+      "stanza:type": "number",
+      "stanza:default": 10,
+      "stanza:description": "Secondary (axes ticks, legend, tooltips) font size"
+    },
+    {
       "stanza:key": "--togostanza-border-color",
       "stanza:type": "color",
       "stanza:default": "#000000",

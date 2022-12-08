@@ -177,6 +177,7 @@ export default class Heatmap extends Stanza {
       .attr("transform", `translate(0, ${height})`);
     xaxisArea
       .append("g")
+      .attr("class", "x-axis-label")
       .call(xAxisGenerator)
       .selectAll("text")
       .attr("transform", `rotate(${xLabelAngle})`);
@@ -190,6 +191,7 @@ export default class Heatmap extends Stanza {
     const yaxisArea = graphArea.append("g").attr("class", "y-axis");
     yaxisArea
       .append("g")
+      .attr("class", "y-axis-label")
       .call(yAxisGenerator)
       .selectAll("text")
       .attr("transform", `rotate(${yLabelAngle})`);

@@ -3,6 +3,14 @@
 
 main {
   padding: var(--togostanza-outline-padding);
+  .domain,
+  .tick {
+    color: #333;
+  }
+  .x-axis-label .tick .text,
+  .y-axis-label .tick .text {
+    font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+  }
   .text {
     font-family: var(--togostanza-fonts-font_family);
     font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
