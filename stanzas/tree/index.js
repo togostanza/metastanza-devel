@@ -87,7 +87,7 @@ export default class Tree extends Stanza {
         break;
     }
 
-    const tooltipKey = this.params["tooltips-data_key"];
+    const tooltipKey = this.params["tooltips-key"];
     const showToolTips =
       !!tooltipKey && values.some((item) => item[tooltipKey]);
     this.tooltip = new ToolTip();
