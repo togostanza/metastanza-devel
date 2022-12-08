@@ -4,7 +4,7 @@
   },
   "@id": "heatmap",
   "stanza:label": "Heatmap",
-  "stanza:definition": "Heatmap stanza",
+  "stanza:definition": "Heatmap MetaStanza",
   "stanza:type": "Stanza",
   "stanza:display": "Chart",
   "stanza:provider": "",
@@ -30,7 +30,7 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "misc-custom_css_url",
+      "stanza:key": "custom_css_url",
       "stanza:type": "text",
       "stanza:example": "",
       "stanza:description": "custom css to apply"
@@ -66,19 +66,25 @@
       "stanza:description": "Y axis title"
     },
     {
-      "stanza:key": "x-ticks_labels_angle",
+      "stanza:key": "axis-x-ticks_labels_angle",
       "stanza:type": "number",
       "stanza:example": 0,
       "stanza:description": "X ticks labels angle (in degree)"
     },
     {
-      "stanza:key": "y-ticks_labels_angle",
+      "stanza:key": "axis-y-ticks_labels_angle",
       "stanza:type": "number",
       "stanza:example": 0,
       "stanza:description": "Y ticks labels angle (in degree)"
     },
     {
-      "stanza:key": "axis-title_padding",
+      "stanza:key": "axis-x-title_padding",
+      "stanza:type": "number",
+      "stanza:example": 10,
+      "stanza:description": "Axis title padding"
+    },
+    {
+      "stanza:key": "axis-y-title_padding",
       "stanza:type": "number",
       "stanza:example": 10,
       "stanza:description": "Axis title padding"
@@ -90,17 +96,10 @@
       "stanza:description": "Show axis lines and ticks"
     },
     {
-      "stanza:key": "legend",
-      "stanza:type": "single-choice",
-      "stanza:choice": [
-        "none",
-        "top-left",
-        "top-right",
-        "bottom-left",
-        "bottom-right"
-      ],
-      "stanza:example": "top-right",
-      "stanza:description": "Where to show the legend. 'none' for no legend"
+      "stanza:key": "legend-show",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "whether show the legend"
     },
     {
       "stanza:key": "legend-title",

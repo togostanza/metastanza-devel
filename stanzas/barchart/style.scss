@@ -1,19 +1,16 @@
 // Load the repository-wide global style here. The actual file is located at ../common.scss for details.
 @use "@/common.scss";
 
-.legend .label text {
-  color: black;
-  font-size: 0.5em;
+.legend .title {
+  font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
 }
 
 svg {
   .gridlines {
     & > .tick > line {
-      stroke: var(--togostanza-grid-color);
-      opacity: var(--togostanza-grid-opacity);
-      stroke-width: var(--togostanza-grid-width);
-      stroke-dasharray: var(--togostanza-grid-dash-length),
-        var(--togostanza-grid-dash-length);
+      stroke: var(--togostanza-border-color);
+      opacity: 0.4;
+      stroke-width: 1px;
     }
     & > path.domain {
       display: none;
@@ -21,42 +18,41 @@ svg {
   }
 
   .bars rect {
-    stroke-width: var(--togostanza-bars-border-width);
-    stroke: var(--togostanza-bars-border-color);
+    stroke-width: 0.5px;
+    stroke: var(--togostanza-border-color);
+  }
+
+  @media (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {
+    .gridlines > .tick > line {
+      stroke-width: 0.5px;
+    }
   }
 
   .axis {
     & > .tick > line {
-      stroke: var(--togostanza-tick-color);
-      stroke-width: var(--togostanza-tick-width);
+      stroke: var(--togostanza-border-color);
+      stroke-width: 1px;
     }
 
     & > .tick > text {
-      font-size: calc(var(--togostanza-label-font-size) * 1px);
-      fill: var(--togostanza-label-font-color);
+      font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
     }
 
     & > path {
-      stroke: var(--togostanza-axis-color);
-      stroke-width: var(--togostanza-axis-width);
-    }
-
-    &.title text {
-      font-size: calc(var(--togostanza-title-font-size) * 1px);
-      font-weight: var(--togostanza-title-font-weight);
-      fill: var(--togostanza-title-font-color);
+      stroke: var(--togostanza-border-color);
+      stroke-width: 1px;
     }
   }
 
   line.error-bar-line {
-    stroke: var(--togostanza-errorbar-line-color);
-    stroke-width: calc(var(--togostanza-errorbar-line-width) * 1px);
-    opacity: var(--togostanza-errorbar-line-opacity);
+    stroke: var(--togostanza-border-color);
+    stroke-width: 1px;
+    opacity: 0.8;
   }
 }
 
 main {
-  background-color: var(--togostanza-background-color);
+  background-color: var(--togostanza-theme-background_color);
   border: calc(var(--togostanza-border-width) * 1px) solid
     var(--togostanza-border-color);
 }

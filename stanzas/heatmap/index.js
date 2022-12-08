@@ -36,13 +36,13 @@ export default class Heatmap extends Stanza {
       root.append(this.tooltip);
     }
 
-    const legendShow = this.params["legend"];
+    const legendShow = this.params["legend-show"];
     const existingLegend = this.root.querySelector("togostanza--legend");
     if (existingLegend) {
       existingLegend.remove();
     }
 
-    if (legendShow !== "none") {
+    if (legendShow === true) {
       this.legend = new Legend();
       root.append(this.legend);
     }
@@ -54,15 +54,16 @@ export default class Heatmap extends Stanza {
       root
     );
 
-    appendCustomCss(this, this.params["misc-custom_css_url"]);
+    appendCustomCss(this, this.params["custom_css_url"]);
     const cellColorKey = this.params["cell-color-key"];
     const xKey = this.params["axis-x-key"];
     const yKey = this.params["axis-y-key"];
     const xTitle = this.params["axis-x-title"] || xKey;
     const yTitle = this.params["axis-y-title"] || yKey;
-    const xLabelAngle = this.params["x-ticks_labels_angle"];
-    const yLabelAngle = this.params["y-ticks_labels_angle"];
-    const axisTitlePadding = this.params["axis-title_padding"];
+    const xLabelAngle = this.params["axis-x-ticks_labels_angle"] || 0;
+    const yLabelAngle = this.params["axis-y-ticks_labels_angle"] || 0;
+    const axisXTitlePadding = this.params["axis-x-title_padding"] || 0;
+    const axisYTitlePadding = this.params["axis-y-title_padding"] || 0;
     const isAxisHide = this.params["axis-hide"];
     const legendTitle = this.params["legend-title"];
     const legendGroups = this.params["legend-groups"];
@@ -135,17 +136,20 @@ export default class Heatmap extends Stanza {
     maxColumnGroup.remove();
 
     //Margin between graph and title
-    const margin = axisTitlePadding + maxColumnWidth + tickSize;
+    const margin = {
+      left: axisXTitlePadding + maxColumnWidth + tickSize,
+      bottom: axisYTitlePadding + maxColumnWidth + tickSize,
+    };
 
     //Graph area including title
     svg
-      .attr("width", width + margin + fontSize)
-      .attr("height", height + margin + fontSize);
+      .attr("width", width + margin.left + fontSize)
+      .attr("height", height + margin.bottom + fontSize);
 
     const graphArea = svg
       .append("g")
       .attr("class", "graph")
-      .attr("transform", `translate(${margin + fontSize}, 0)`);
+      .attr("transform", `translate(${margin.left + fontSize}, 0)`);
 
     //Set for each rect
     graphArea
@@ -180,7 +184,7 @@ export default class Heatmap extends Stanza {
     xaxisArea
       .append("text")
       .attr("text-anchor", "middle")
-      .attr("transform", `translate(${width / 2}, ${margin})`)
+      .attr("transform", `translate(${width / 2}, ${margin.bottom})`)
       .text(xTitle);
 
     //Draw about the y-axis;
@@ -193,7 +197,10 @@ export default class Heatmap extends Stanza {
     yaxisArea
       .append("text")
       .attr("text-anchor", "middle")
-      .attr("transform", `translate(-${margin}, ${height / 2}) rotate(-90)`)
+      .attr(
+        "transform",
+        `translate(-${margin.left}, ${height / 2}) rotate(-90)`
+      )
       .text(yTitle);
 
     //Hide axis lines and ticks
@@ -209,12 +216,12 @@ export default class Heatmap extends Stanza {
 
     this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
 
-    if (legendShow !== "none") {
+    if (legendShow === true) {
       this.legend.setup(
         intervals(setColor),
-        {},
+        null,
         {
-          position: legendShow.split("-"),
+          position: ["top", "right"],
         },
         legendTitle
       );
