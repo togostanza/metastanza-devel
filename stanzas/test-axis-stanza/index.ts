@@ -98,6 +98,7 @@ class TestAxis extends Stanza {
       margins: MARGIN,
       tickLabelsAngle: params["axis-x-ticks_label_angle"],
       title: params["axis-x-title"],
+      titlePadding: params["axis-x-title_padding"],
     };
 
     if (!this.xAxisGen) {

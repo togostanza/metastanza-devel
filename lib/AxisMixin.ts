@@ -35,6 +35,7 @@ export interface AxisParamsI {
   tickLabelsAngle?: number;
   ticksLabelsMargin?: number;
   title?: string;
+  titlePadding?: number;
 }
 
 type d3Selection = d3.Selection<SVGElement, any, any, any>;
@@ -64,6 +65,7 @@ const initialState: AxisParamsI = {
   tickLabelsAngle: 0,
   ticksLabelsMargin: 0,
   title: "",
+  titlePadding: 0,
 };
 
 type updatedParamT = string | number | number[];
@@ -74,7 +76,11 @@ const proxyfy = (init: object, callbackMap: Map<string, (val) => void>) => {
       if (key === "params") {
         const oldParams = target[key];
         Object.entries(val).forEach(([pKey, pValue]) => {
-          if (oldParams[pKey] !== pValue && callbackMap.has(pKey)) {
+          if (
+            typeof oldParams[pKey] !== undefined &&
+            oldParams[pKey] !== pValue &&
+            callbackMap.has(pKey)
+          ) {
             target[key] = val;
             callbackMap.get(pKey)(pValue);
           }
@@ -122,15 +128,18 @@ export class Axis {
     this.callbackMap.set("domain", this._handleDomainUpdate.bind(this));
     this.callbackMap.set("placement", this._handlePlacementUpdate.bind(this));
     this.callbackMap.set("title", this._handleTitleUpdate.bind(this));
+    this.callbackMap.set(
+      "titlePadding",
+      this._handleTitlePaddingUpdate.bind(this)
+    );
     this.callbackMap.set("showTicks", this._handleShowTicksUpdate.bind(this));
     this.callbackMap.set("margins", this._handleMarginsUpdate.bind(this));
 
     return proxyfy(this, this.callbackMap) as Axis;
   }
 
-  update(params) {
+  update(params: Partial<AxisParamsI>) {
     this.params = { ...this.params, ...params };
-    console.log("update params", this.params);
   }
 
   private _init() {
@@ -184,18 +193,47 @@ export class Axis {
       "alignment-baseline",
       getTitleBaseline(this.params.placement)
     );
+
+    this._handleTitlePaddingUpdate(this.params.titlePadding);
   }
 
   private _handleTitleUpdate(title: string) {
     this._titleText.text(title);
   }
 
+  private _handleTitlePaddingUpdate(padding: number) {
+    let translate;
+
+    const previousTransform = this._titleG.attr("transform");
+
+    const prevTranslate = /translate\((-?\d+),\s*(-?\d+)/.exec(
+      previousTransform
+    );
+    const [prevTX, prevTY] = prevTranslate.slice(1);
+
+    switch (this.params.placement) {
+      case "bottom":
+        translate = `translate(${prevTX},${padding})`;
+        break;
+      case "top":
+        translate = `translate(${prevTX},${-padding})`;
+        break;
+      case "left":
+        translate = `translate(${-padding},${prevTY})`;
+        break;
+      case "right":
+        translate = `translate(${padding},${prevTY})`;
+      default:
+        translate = `translate(${prevTX},${prevTY})`;
+    }
+
+    this._titleG.attr("transform", translate);
+  }
+
   private _handleShowTicksUpdate(showTicks: boolean) {
     this._axisGen.tickSize(!showTicks ? 0 : 6);
     this._axisG.call(this._axisGen.bind(this));
   }
-
-  private _handleTitlePaddingUpdate(padding: number) {}
 
   private _calcAxisMargins() {
     switch (this.params.placement) {
