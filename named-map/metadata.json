@@ -11,7 +11,9 @@
   "stanza:license": "MIT",
   "stanza:author": "DBCLS",
   "stanza:address": "https://github.com/togostanza/metastanza",
-  "stanza:contributor": ["PENQE"],
+  "stanza:contributor": [
+    "PENQE"
+  ],
   "stanza:created": "2021-04-23",
   "stanza:updated": "2021-08-25",
   "stanza:parameter": [
@@ -24,7 +26,12 @@
     {
       "stanza:key": "data-type",
       "stanza:type": "single-choice",
-      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
+      "stanza:choice": [
+        "json",
+        "tsv",
+        "csv",
+        "sparql-results-json"
+      ],
       "stanza:example": "tsv",
       "stanza:description": "Data type",
       "stanza:required": true
@@ -38,7 +45,10 @@
     {
       "stanza:key": "area",
       "stanza:type": "single-choice",
-      "stanza:choice": ["us", "world"],
+      "stanza:choice": [
+        "us",
+        "world"
+      ],
       "stanza:example": "world",
       "stanza:description": "Area of map",
       "stanza:required": true
@@ -46,21 +56,32 @@
     {
       "stanza:key": "border",
       "stanza:type": "boolean",
-      "stanza:choice": ["true", "false"],
+      "stanza:choice": [
+        "true",
+        "false"
+      ],
       "stanza:example": true,
       "stanza:description": "Show border between"
     },
     {
       "stanza:key": "legend",
       "stanza:type": "boolean",
-      "stanza:choice": ["true", "false"],
+      "stanza:choice": [
+        "true",
+        "false"
+      ],
       "stanza:example": true,
       "stanza:description": "Show legend"
     },
     {
       "stanza:key": "legend-orient",
       "stanza:type": "single-choice",
-      "stanza:choice": ["top-left", "top-right", "bottom-left", "bottom-right"],
+      "stanza:choice": [
+        "top-left",
+        "top-right",
+        "bottom-left",
+        "bottom-right"
+      ],
       "stanza:example": "top-right",
       "stanza:description": "Legend Placement"
     },
@@ -73,14 +94,25 @@
     {
       "stanza:key": "group-amount",
       "stanza:type": "single-choice",
-      "stanza:choice": ["2", "3", "4", "5", "6", "7", "8"],
+      "stanza:choice": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+      ],
       "stanza:example": "5",
       "stanza:description": "Amount of Region groups"
     },
     {
       "stanza:key": "percentage",
       "stanza:type": "boolean",
-      "stanza:choice": ["true", "false"],
+      "stanza:choice": [
+        "true",
+        "false"
+      ],
       "stanza:example": "false",
       "stanza:description": "Format data as percentage"
     }
@@ -114,7 +146,11 @@
     {
       "stanza:key": "--togostanza-title-font-weight",
       "stanza:type": "single-choice",
-      "stanza:choice": ["normal", "bold", "lighter"],
+      "stanza:choice": [
+        "normal",
+        "bold",
+        "lighter"
+      ],
       "stanza:default": "normal",
       "stanza:description": "Title font weight"
     },

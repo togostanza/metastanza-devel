@@ -8,7 +8,9 @@
   "stanza:license": "MIT",
   "stanza:author": "DBCLS",
   "stanza:address": "https://github.com/togostanza/metastanza",
-  "stanza:contributor": ["PENQE"],
+  "stanza:contributor": [
+    "PENQE"
+  ],
   "stanza:created": "2022-06-30",
   "stanza:updated": "2022-06-30",
   "stanza:parameter": [
@@ -21,7 +23,12 @@
     {
       "stanza:key": "data-type",
       "stanza:type": "single-choice",
-      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
+      "stanza:choice": [
+        "json",
+        "tsv",
+        "csv",
+        "sparql-results-json"
+      ],
       "stanza:example": "json",
       "stanza:description": "Data type",
       "stanza:required": true
@@ -54,7 +61,10 @@
     {
       "stanza:key": "sort-order",
       "stanza:type": "single-choice",
-      "stanza:choice": ["ascending", "descending"],
+      "stanza:choice": [
+        "ascending",
+        "descending"
+      ],
       "stanza:example": "ascending",
       "stanza:description": "sorting order"
     },
@@ -67,7 +77,11 @@
     {
       "stanza:key": "layout",
       "stanza:type": "single-choice",
-      "stanza:choice": ["horizontal", "vertical", "radial"],
+      "stanza:choice": [
+        "horizontal",
+        "vertical",
+        "radial"
+      ],
       "stanza:example": "horizontal",
       "stanza:description": "Tree layout"
     },
@@ -123,7 +137,12 @@
     {
       "stanza:key": "color-blend",
       "stanza:type": "single-choice",
-      "stanza:choice": ["normal", "translucent", "multiply", "screen"],
+      "stanza:choice": [
+        "normal",
+        "translucent",
+        "multiply",
+        "screen"
+      ],
       "stanza:example": "normal",
       "stanza:description": "Blend mode for overlaying nodes"
     },

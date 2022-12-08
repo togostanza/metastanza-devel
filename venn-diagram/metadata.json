@@ -11,7 +11,9 @@
   "stanza:license": "MIT",
   "stanza:author": "DBCLS",
   "stanza:address": "https://github.com/togostanza/metastanza",
-  "stanza:contributor": ["PENQE"],
+  "stanza:contributor": [
+    "PENQE"
+  ],
   "stanza:created": "2021-08-03",
   "stanza:updated": "2022-01-23",
   "stanza:parameter": [
@@ -24,7 +26,12 @@
     {
       "stanza:key": "data-type",
       "stanza:type": "single-choice",
-      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
+      "stanza:choice": [
+        "json",
+        "tsv",
+        "csv",
+        "sparql-results-json"
+      ],
       "stanza:example": "json",
       "stanza:description": "Data type",
       "stanza:required": true
@@ -38,7 +45,11 @@
     {
       "stanza:key": "color-blend",
       "stanza:type": "single-choice",
-      "stanza:choice": ["normal", "multiply", "screen"],
+      "stanza:choice": [
+        "normal",
+        "multiply",
+        "screen"
+      ],
       "stanza:example": "screen",
       "stanza:description": "How to mix colors in overlapping areas"
     }

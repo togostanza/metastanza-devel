@@ -8,7 +8,9 @@
   "stanza:license": "MIT",
   "stanza:author": "DBCLS",
   "stanza:address": "https://github.com/togostanza/metastanza",
-  "stanza:contributor": ["PENQE"],
+  "stanza:contributor": [
+    "PENQE"
+  ],
   "stanza:created": "2022-09-06",
   "stanza:updated": "2022-09-06",
   "stanza:parameter": [
@@ -114,7 +116,6 @@
       "stanza:default": "Helvetica Neue",
       "stanza:description": "Font family"
     },
-
     {
       "stanza:key": "--togostanza-fonts-font_color",
       "stanza:type": "color",

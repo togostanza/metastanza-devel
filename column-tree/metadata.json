@@ -11,7 +11,9 @@
   "stanza:license": "MIT",
   "stanza:author": "DBCLS",
   "stanza:address": "https://github.com/togostanza/metastanza",
-  "stanza:contributor": ["PENQE"],
+  "stanza:contributor": [
+    "PENQE"
+  ],
   "stanza:created": "2021-08-13",
   "stanza:updated": "2021-08-13",
   "stanza:parameter": [
@@ -24,7 +26,12 @@
     {
       "stanza:key": "data-type",
       "stanza:type": "single-choice",
-      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
+      "stanza:choice": [
+        "json",
+        "tsv",
+        "csv",
+        "sparql-results-json"
+      ],
       "stanza:example": "json",
       "stanza:description": "Data type",
       "stanza:required": true
@@ -38,7 +45,10 @@
     {
       "stanza:key": "show-border-nodes",
       "stanza:type": "single-choice",
-      "stanza:choice": ["true", "false"],
+      "stanza:choice": [
+        "true",
+        "false"
+      ],
       "stanza:example": false,
       "stanza:description": "Show border between nodes",
       "stanza:required": false
@@ -46,7 +56,10 @@
     {
       "stanza:key": "fixed-width-columns",
       "stanza:type": "single-choice",
-      "stanza:choice": ["true", "false"],
+      "stanza:choice": [
+        "true",
+        "false"
+      ],
       "stanza:example": true,
       "stanza:description": "Make all columns a fixed width set by [--togostanza-column-width] at the styles section",
       "stanza:required": false
@@ -54,7 +67,10 @@
     {
       "stanza:key": "node-content-alignment",
       "stanza:type": "single-choice",
-      "stanza:choice": ["vertical", "horizontal"],
+      "stanza:choice": [
+        "vertical",
+        "horizontal"
+      ],
       "stanza:example": "horizontal",
       "stanza:description": "Set alignment of node content",
       "stanza:required": false
@@ -74,7 +90,10 @@
     {
       "stanza:key": "show-path",
       "stanza:type": "single-choice",
-      "stanza:choice": ["true", "false"],
+      "stanza:choice": [
+        "true",
+        "false"
+      ],
       "stanza:example": false,
       "stanza:description": "Show path in suggestions",
       "stanza:required": false
@@ -82,7 +101,10 @@
     {
       "stanza:key": "show-path-explanation",
       "stanza:type": "single-choice",
-      "stanza:choice": ["true", "false"],
+      "stanza:choice": [
+        "true",
+        "false"
+      ],
       "stanza:example": true,
       "stanza:description": "Show explanation on how to use id path for searching",
       "stanza:required": false
@@ -90,7 +112,10 @@
     {
       "stanza:key": "show-value",
       "stanza:type": "single-choice",
-      "stanza:choice": ["true", "false"],
+      "stanza:choice": [
+        "true",
+        "false"
+      ],
       "stanza:example": true,
       "stanza:description": "Show value set by [value-key] in tree and suggestions",
       "stanza:required": false

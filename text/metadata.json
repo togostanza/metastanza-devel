@@ -8,7 +8,9 @@
   "stanza:license": "MIT",
   "stanza:author": "DBCLS",
   "stanza:address": "https://github.com/togostanza/metastanza",
-  "stanza:contributor": ["Enishi Tech"],
+  "stanza:contributor": [
+    "Enishi Tech"
+  ],
   "stanza:created": "2020-12-02",
   "stanza:updated": "2020-12-02",
   "stanza:parameter": [
@@ -21,7 +23,10 @@
     {
       "stanza:key": "mode",
       "stanza:type": "single-choice",
-      "stanza:choice": ["text", "markdown"],
+      "stanza:choice": [
+        "text",
+        "markdown"
+      ],
       "stanza:example": "text",
       "stanza:description": "Mode",
       "stanza:required": true

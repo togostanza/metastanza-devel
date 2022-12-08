@@ -8,7 +8,9 @@
   "stanza:license": "MIT",
   "stanza:author": "DBCLS",
   "stanza:address": "https://github.com/togostanza/metastanza",
-  "stanza:contributor": ["PENQE"],
+  "stanza:contributor": [
+    "PENQE"
+  ],
   "stanza:created": "2021-01-06",
   "stanza:updated": "2022-11-01",
   "stanza:parameter": [
@@ -24,7 +26,12 @@
     {
       "stanza:key": "data-type",
       "stanza:type": "single-choice",
-      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
+      "stanza:choice": [
+        "json",
+        "tsv",
+        "csv",
+        "sparql-results-json"
+      ],
       "stanza:example": "json",
       "stanza:description": "Data type",
       "stanza:required": true
@@ -94,7 +101,12 @@
     {
       "stanza:key": "axis-x-scale",
       "stanza:type": "single-choice",
-      "stanza:choice": ["linear", "log", "ordinal", "time"],
+      "stanza:choice": [
+        "linear",
+        "log",
+        "ordinal",
+        "time"
+      ],
       "stanza:example": "time",
       "stanza:default": "linear",
       "stanza:description": "Axis scale",
@@ -134,7 +146,6 @@
       "stanza:description": "Axis ticks interval format, in d3.format string form",
       "stanza:required": false
     },
-
     {
       "stanza:key": "axis-x-show_gridlines",
       "stanza:type": "boolean",
@@ -185,7 +196,10 @@
     {
       "stanza:key": "axis-y-scale",
       "stanza:type": "single-choice",
-      "stanza:choice": ["linear", "log"],
+      "stanza:choice": [
+        "linear",
+        "log"
+      ],
       "stanza:example": "linear",
       "stanza:default": "linear",
       "stanza:description": "Axis scale",
@@ -279,7 +293,6 @@
       "stanza:description": "Data key to map color to the data series. If includes hex color, that color will be used, if not - color from the ordinal scale from the theme colors will be used.",
       "stanza:required": false
     },
-
     {
       "stanza:key": "legend-show",
       "stanza:type": "boolean",
@@ -291,7 +304,12 @@
     {
       "stanza:key": "legend-placement",
       "stanza:type": "single-choice",
-      "stanza:choice": ["left", "right", "bottom", "top"],
+      "stanza:choice": [
+        "left",
+        "right",
+        "bottom",
+        "top"
+      ],
       "stanza:example": "right",
       "stanza:default": "right",
       "stanza:description": "Legend placement",

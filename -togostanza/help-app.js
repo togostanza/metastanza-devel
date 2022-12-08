@@ -1,4 +1,4 @@
-import { d as defineComponent, h as computed, a as createElementBlock, e as createBaseVNode, f as createCommentVNode, i as createTextVNode, t as toDisplayString, F as Fragment, b as renderList, n as normalizeClass, o as openBlock, j as ref, k as octicons, m as mergeProps, l as watch, c as createBlock, p as normalizeProps, q as guardReactiveProps, u as resolveDynamicComponent, v as createVNode, r as resolveComponent, s as script$4, w as withCtx, x as pushScopeId, y as popScopeId, z as n, g as createApp } from './Layout-333aa8f1.js';
+import { d as defineComponent, h as computed, a as createElementBlock, e as createBaseVNode, f as createCommentVNode, i as createTextVNode, t as toDisplayString, F as Fragment, b as renderList, n as normalizeClass, o as openBlock, j as ref, k as octicons, m as mergeProps, l as watch, c as createBlock, p as normalizeProps, q as guardReactiveProps, u as resolveDynamicComponent, v as createVNode, r as resolveComponent, s as script$4, w as withCtx, x as pushScopeId, y as popScopeId, z as n, g as createApp } from './Layout-670d7d62.js';
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -4064,7 +4064,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                         return (openBlock(), createElementBlock("button", {
                           key: b,
                           class: normalizeClass(
-                        `nav-link text-start ps-4` +
+                        `nav-link text-start` +
                         (`${a}-${b}` === _ctx.firstActiveParamFiledGroupPath
                           ? ' active'
                           : '')
@@ -4072,7 +4072,8 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                           "data-bs-toggle": "pill",
                           "data-bs-target": `#v-pills-${a}-${b}`,
                           type: "button",
-                          role: "tab"
+                          role: "tab",
+                          style: {"padding-left":"2rem"}
                         }, toDisplayString(b), 11 /* TEXT, CLASS, PROPS */, _hoisted_23))
                       }), 128 /* KEYED_FRAGMENT */))
                     ], 64 /* STABLE_FRAGMENT */))

@@ -8,7 +8,10 @@
   "stanza:license": "MIT",
   "stanza:author": "DBCLS",
   "stanza:address": "https://github.com/togostanza/metastanza",
-  "stanza:contributor": ["PENQE", "Einishi Tech"],
+  "stanza:contributor": [
+    "PENQE",
+    "Einishi Tech"
+  ],
   "stanza:created": "2021-01-18",
   "stanza:updated": "2021-02-16",
   "stanza:parameter": [
@@ -22,12 +25,16 @@
     {
       "stanza:key": "data-type",
       "stanza:type": "single-choice",
-      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
+      "stanza:choice": [
+        "json",
+        "tsv",
+        "csv",
+        "sparql-results-json"
+      ],
       "stanza:example": "json",
       "stanza:description": "Data type",
       "stanza:required": true
     },
-
     {
       "stanza:key": "axis-x-key",
       "stanza:type": "text",
@@ -91,7 +98,9 @@
     {
       "stanza:key": "axis-y-scale",
       "stanza:type": "single-choice",
-      "stanza:choice": ["linear"],
+      "stanza:choice": [
+        "linear"
+      ],
       "stanza:example": "linear",
       "stanza:description": "Y axis scale",
       "stanza:required": false
@@ -136,7 +145,10 @@
     {
       "stanza:key": "chart-bar_arrangement",
       "stanza:type": "single-choice",
-      "stanza:choice": ["stacked", "grouped"],
+      "stanza:choice": [
+        "stacked",
+        "grouped"
+      ],
       "stanza:example": "grouped",
       "stanza:description": "Bars arrangement",
       "stanza:required": true
@@ -231,7 +243,6 @@
       "stanza:default": "10 20 60 20",
       "stanza:description": "Metastanza padding CSS in px."
     },
-
     {
       "stanza:key": "--togostanza-fonts-font_family",
       "stanza:type": "text",

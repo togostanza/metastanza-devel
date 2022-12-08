@@ -8,7 +8,10 @@
   "stanza:license": "MIT",
   "stanza:author": "DBCLS",
   "stanza:address": "https://github.com/togostanza/metastanza",
-  "stanza:contributor": ["PENQE", "Enishi Tech"],
+  "stanza:contributor": [
+    "PENQE",
+    "Enishi Tech"
+  ],
   "stanza:created": "2021-03-18",
   "stanza:updated": "2022-10-25",
   "stanza:parameter": [
@@ -21,7 +24,12 @@
     {
       "stanza:key": "data-type",
       "stanza:type": "single-choice",
-      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
+      "stanza:choice": [
+        "json",
+        "tsv",
+        "csv",
+        "sparql-results-json"
+      ],
       "stanza:example": "json",
       "stanza:description": "Data type",
       "stanza:required": true
@@ -82,7 +90,6 @@
       "stanza:default": "rgba(255,255,255,0)",
       "stanza:description": "Stanza background color"
     },
-
     {
       "stanza:key": "--togostanza-fonts-font_family",
       "stanza:type": "text",
@@ -107,7 +114,6 @@
       "stanza:default": "9px",
       "stanza:description": "Secondary font size"
     },
-
     {
       "stanza:key": "--togostanza-table-row-border_bottom",
       "stanza:type": "text",
