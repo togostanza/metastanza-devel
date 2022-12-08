@@ -4,35 +4,55 @@
 
 With legend on, you can hide/show data lines by clicking the correspondong legend item.
 
-### Params
+### JSON/sparql-results-json data format
 
-#### category
+In square brackets there are stanza params to be mapped to these data keys:
 
-X axis will use values stored with this key
+```js
+[
+  {
+    [axis-x-key]:  "Evidence at protein level",
+    [axis-y-key]: "1859",
+    [error_bars-key]: [98.5, 102.3],
+    <... other optional data>
+  },
+  ...
+]
+```
 
-#### value
+For example,
 
-Y axis will use values stored with this key
+```json
+[
+  {
+  "category": "Evidence at protein level",
+  "category_order": 0,
+  "chromosome": "1",
+  "chromosome_order": 0,
+  "count": "1859",
+  "error": ["1850", "1865"]
+  },
+  ...
+]
 
-#### group-by
+```
 
-Inside each `category` divide data by this key's value
+### CSV/TSV data format
 
-#### error-key
+```csv
+[axis-x-key],[axis-y-key],[error_bars-key]_q1,[error_bars-key]_q3,<other optional data>
+Evidence at protein level,0,1,0,1859,1487.2,1896.18, <other optional data>
+```
 
-Use error data (for error bars) stored in value with this key
+For example:
 
-#### xlabel-angle
+```csv
+chromosome,count,error_q1,error_q3,<other optional data>
+Evidence at protein level,0,1,0,1859,1487.2,1896.18, <other optional data>
+```
 
-Angle of x labels, in range [-90, +90] degrees
+### Expected data types
 
-#### ylabel-angle
+`axis-x-key`,`axis-y-key` are expecting String or Number
 
-Angle of y labels, in range [-90, +90] degrees
-
-### Error bars
-
-If `error-key` is empty or undefined, no error bars would be rendered.
-If there is `error-bar` specified, error bars will be drawn.
-For data points where there is a data in key specified by `error-key`.
-If that key is non-existent, or the data stored there cannot be parsed as a float number, no error bar will be drawn for such data point.
+`error_bars-key` is expecting array with two elements, Strings or Numbers: [minValue, maxValue]

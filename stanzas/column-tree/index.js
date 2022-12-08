@@ -5,7 +5,7 @@ import { appendCustomCss } from "togostanza-utils";
 
 export default class ColumnTree extends Stanza {
   async render() {
-    appendCustomCss(this, this.params["custom-css-url"]);
+    appendCustomCss(this, this.params["custom_css_url"]);
 
     const main = this.root.querySelector("main");
     main.parentNode.style.backgroundColor =
