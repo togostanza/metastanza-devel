@@ -136,20 +136,14 @@ export class Axis {
 
     this._axisG = this._g.append("g").classed("axis", true).call(this._axisGen);
 
-    let translate;
-
-    if (params.placement === "bottom" || params.placement === "top") {
-      translate = `translate(${this._axisLength / 2}, 0)`;
-    } else {
-      translate = `translate(0, ${this._axisLength / 2})`;
-    }
-
     this._titleG = this._g
       .append("g")
-      .attr("transform", translate)
+      .attr("transform", getTitleTranslate.call(this, params.placement))
       .append("text")
       .classed("title", true)
-      .text(params.title);
+      .text(params.title)
+      .attr("text-anchor", "middle")
+      .attr("alignment-baseline", getTitleBaseline(params.placement));
   }
 
   private _handleDomainUpdate(domain: d3.AxisDomain[]) {
@@ -179,6 +173,8 @@ export class Axis {
     this._axisGen.tickSize(!showTicks ? 0 : 6);
     this._axisG.call(this._axisGen.bind(this));
   }
+
+  private _handleTitlePaddingUpdate(padding: number) {}
 
   private _calcAxisMargins(params) {
     switch (params.placement) {
@@ -244,5 +240,36 @@ function getAxisGen(type: AxisPlacementT) {
       return d3.axisTop;
     default:
       return d3.axisBottom;
+  }
+}
+
+function getTitleBaseline(placement: AxisParamsI["placement"]): string {
+  switch (placement) {
+    case "top":
+      return "baseline";
+    case "bottom":
+      return "hanging";
+    case "left":
+      return "baseline";
+    case "right":
+      return "hanging";
+    default:
+      return "hangong";
+  }
+}
+
+function getTitleTranslate(placement: AxisParamsI["placement"]): string {
+  switch (placement) {
+    case "top":
+      return `translate(${this._axisLength / 2}, 0)`;
+    case "bottom":
+      return `translate(${this._axisLength / 2}, 0)`;
+    case "left":
+      return `rotate(90) translate(0, ${this._axisLength / 2})`;
+    case "right":
+      return `rotate(90) translate(0, ${this._axisLength / 2})`;
+
+    default:
+      break;
   }
 }
