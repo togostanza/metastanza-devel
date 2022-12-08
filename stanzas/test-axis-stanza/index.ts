@@ -71,7 +71,12 @@ class TestAxis extends Stanza {
       })
       .passthrough();
 
-    const params: z.infer<typeof paramsModel> = paramsModel.parse(this.params);
+    let params: z.infer<typeof paramsModel>;
+    try {
+      params = paramsModel.parse(this.params);
+    } catch (error) {
+      console.log(error);
+    }
 
     const root = this.root.querySelector("main");
 
@@ -96,20 +101,18 @@ class TestAxis extends Stanza {
     };
 
     if (!this.xAxisGen) {
-      this.xAxisGen = new Axis(xParams, svg.node());
+      this.xAxisGen = new Axis(svg.node());
     }
 
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
+    // if (this.interval) {
+    //   clearInterval(this.interval);
+    // }
 
-    this.xAxisGen.params.placement = params["axis-x-placement"];
-    this.xAxisGen.params.title = params["axis-x-title"];
-    this.xAxisGen.params.showTicks = !params["axis-x-ticks_hide"];
+    this.xAxisGen.update(xParams);
 
-    this.interval = setInterval(() => {
-      this.xAxisGen.params.domain = [0, Math.random() * 100];
-    }, 1000);
+    // this.interval = setInterval(() => {
+    //   this.xAxisGen.update({ domain: [0, Math.random() * 100] });
+    // }, 1000);
   }
 }
 

@@ -11,9 +11,10 @@ enum AxisPlacementE {
   right = "right",
   top = "top",
   bottom = "bottom",
+  default = "",
 }
 
-type AxisPlacementT = "left" | "right" | "top" | "bottom";
+type AxisPlacementT = "left" | "right" | "top" | "bottom" | "";
 
 interface MarginsI {
   LEFT: number;
@@ -59,7 +60,7 @@ const initialState: AxisParamsI = {
   margins: initialMargins,
   showTicks: true,
   scale: AxisScaleE.linear,
-  placement: AxisPlacementE.bottom,
+  placement: AxisPlacementE.default,
   tickLabelsAngle: 0,
   ticksLabelsMargin: 0,
   title: "",
@@ -67,19 +68,20 @@ const initialState: AxisParamsI = {
 
 type updatedParamT = string | number | number[];
 
-const proxyfy = (
-  init: object,
-  callbackMap: Map<string, (val: updatedParamT) => void>
-) => {
+const proxyfy = (init: object, callbackMap: Map<string, (val) => void>) => {
   return new Proxy(init, {
-    set(target: object, key: string, val: updatedParamT) {
-      if (callbackMap.has(key)) {
-        if (target[key] !== val) {
-          target[key] = val;
-          callbackMap.get(key)(val);
-        }
+    set(target: object, key: string, val: Partial<AxisParamsI>) {
+      if (key === "params") {
+        const oldParams = target[key];
+        Object.entries(val).forEach(([pKey, pValue]) => {
+          if (oldParams[pKey] !== pValue && callbackMap.has(pKey)) {
+            target[key] = val;
+            callbackMap.get(pKey)(pValue);
+          }
+        });
       }
-      return true;
+
+      return Reflect.set(target, key, val);
     },
   });
 };
@@ -90,6 +92,7 @@ export class Axis {
   _g: d3Selection;
   _axisG: d3Selection;
   _titleG: d3Selection;
+  _titleText: d3Selection;
   _axisMargin: MarginsI = { LEFT: 0, TOP: 0, BOTTOM: 0, RIGHT: 0 };
   _height: number;
   _width: number;
@@ -98,52 +101,58 @@ export class Axis {
   _axisGen: d3.Axis<d3.AxisDomain>;
   _axisLength: number;
 
-  constructor(params: AxisParamsI, svg: SVGSVGElement) {
+  constructor(svg: SVGSVGElement) {
     this._svg = svg;
 
     this._width = svg.getBoundingClientRect().width;
     this._height = svg.getBoundingClientRect().height;
 
-    this._axisScale = getScale(params.scale);
-    this._axisScale.domain(params.domain);
+    this._axisScale = getScale(AxisScaleE.linear);
+    this._axisScale.domain([0, 1]);
 
-    this._axisGen = getAxisGen(params.placement)(
+    this._axisGen = getAxisGen(AxisPlacementE.bottom)(
       this._axisScale as d3.AxisScale<d3.AxisDomain>
     );
 
-    this._calcAxisMargins(params);
+    this.params = initialState;
 
-    this._init(params);
+    this._init();
 
     this.callbackMap = new Map();
     this.callbackMap.set("domain", this._handleDomainUpdate.bind(this));
     this.callbackMap.set("placement", this._handlePlacementUpdate.bind(this));
     this.callbackMap.set("title", this._handleTitleUpdate.bind(this));
     this.callbackMap.set("showTicks", this._handleShowTicksUpdate.bind(this));
+    this.callbackMap.set("margins", this._handleMarginsUpdate.bind(this));
 
-    this.params = proxyfy(params, this.callbackMap) as AxisParamsI;
+    return proxyfy(this, this.callbackMap) as Axis;
   }
 
-  private _init(params: AxisParamsI) {
+  update(params) {
+    this.params = { ...this.params, ...params };
+    console.log("update params", this.params);
+  }
+
+  private _init() {
     const svg = d3.select(this._svg);
-    this._g = svg
-      .append("g")
-      .classed("axis-container", true)
-      .attr(
-        "transform",
-        `translate(${this._axisMargin.LEFT}, ${this._axisMargin.TOP})`
-      );
+    this._g = svg.append("g").classed("axis-container", true);
 
     this._axisG = this._g.append("g").classed("axis", true).call(this._axisGen);
 
-    this._titleG = this._g
-      .append("g")
-      .attr("transform", getTitleTranslate.call(this, params.placement))
+    this._titleG = this._g.append("g").classed("title-conatiner", true);
+
+    this._titleText = this._titleG
       .append("text")
       .classed("title", true)
-      .text(params.title)
-      .attr("text-anchor", "middle")
-      .attr("alignment-baseline", getTitleBaseline(params.placement));
+      .attr("text-anchor", "middle");
+  }
+
+  private _handleMarginsUpdate() {
+    this._calcAxisMargins();
+    this._g.attr(
+      "transform",
+      `translate(${this._axisMargin.LEFT}, ${this._axisMargin.TOP})`
+    );
   }
 
   private _handleDomainUpdate(domain: d3.AxisDomain[]) {
@@ -152,21 +161,33 @@ export class Axis {
   }
 
   private _handlePlacementUpdate() {
-    this._calcAxisMargins(this.params);
-    this._axisGen = getAxisGen(this.params.placement)(
-      this._axisScale as d3.AxisScale<d3.AxisDomain>
-    );
-    this._axisG.remove();
-    this._axisG = this._g.append("g").classed("axis", true).call(this._axisGen);
-
+    this._calcAxisMargins();
     this._g.attr(
       "transform",
       `translate(${this._axisMargin.LEFT}, ${this._axisMargin.TOP})`
     );
+
+    this._axisGen = getAxisGen(this.params.placement)(
+      this._axisScale as d3.AxisScale<d3.AxisDomain>
+    );
+    if (!this._axisG.empty()) {
+      this._axisG.remove();
+    }
+    this._axisG = this._g.append("g").classed("axis", true).call(this._axisGen);
+
+    this._titleG.attr(
+      "transform",
+      getTitleTranslate.call(this, this.params.placement)
+    );
+
+    this._titleText.attr(
+      "alignment-baseline",
+      getTitleBaseline(this.params.placement)
+    );
   }
 
   private _handleTitleUpdate(title: string) {
-    this._titleG.text(title);
+    this._titleText.text(title);
   }
 
   private _handleShowTicksUpdate(showTicks: boolean) {
@@ -176,34 +197,34 @@ export class Axis {
 
   private _handleTitlePaddingUpdate(padding: number) {}
 
-  private _calcAxisMargins(params) {
-    switch (params.placement) {
+  private _calcAxisMargins() {
+    switch (this.params.placement) {
       case "bottom":
-        this._axisMargin.LEFT = params.margins.LEFT;
-        this._axisMargin.TOP = this._height - params.margins.BOTTOM;
+        this._axisMargin.LEFT = this.params.margins.LEFT;
+        this._axisMargin.TOP = this._height - this.params.margins.BOTTOM;
         this._axisLength =
-          this._width - params.margins.LEFT - params.margins.RIGHT;
+          this._width - this.params.margins.LEFT - this.params.margins.RIGHT;
         this._axisScale.range([0, this._axisLength]);
         break;
       case "top":
-        this._axisMargin.LEFT = params.margins.LEFT;
-        this._axisMargin.TOP = params.margins.TOP;
+        this._axisMargin.LEFT = this.params.margins.LEFT;
+        this._axisMargin.TOP = this.params.margins.TOP;
         this._axisLength =
-          this._width - params.margins.LEFT - params.margins.RIGHT;
+          this._width - this.params.margins.LEFT - this.params.margins.RIGHT;
         this._axisScale.range([0, this._axisLength]);
         break;
       case "left":
-        this._axisMargin.LEFT = params.margins.LEFT;
-        this._axisMargin.TOP = params.margins.TOP;
+        this._axisMargin.LEFT = this.params.margins.LEFT;
+        this._axisMargin.TOP = this.params.margins.TOP;
         this._axisLength =
-          this._height - params.margins.TOP - params.margins.BOTTOM;
+          this._height - this.params.margins.TOP - this.params.margins.BOTTOM;
         this._axisScale.range([this._axisLength, 0]);
         break;
       case "right":
-        this._axisMargin.LEFT = this._width - params.margins.RIGHT;
-        this._axisMargin.TOP = params.margins.TOP;
+        this._axisMargin.LEFT = this._width - this.params.margins.RIGHT;
+        this._axisMargin.TOP = this.params.margins.TOP;
         this._axisLength =
-          this._height - params.margins.TOP - params.margins.BOTTOM;
+          this._height - this.params.margins.TOP - this.params.margins.BOTTOM;
         this._axisScale.range([this._axisLength, 0]);
         break;
 
