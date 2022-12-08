@@ -24669,6 +24669,7 @@ var dependencies = {
 	lit: "^2.4.0",
 	"lit-element": "^3.0.1",
 	"lit-html": "^2.0.1",
+	"lodash.camelcase": "^4.3.0",
 	"lodash.mapvalues": "^4.6.0",
 	"lodash.omit": "^4.5.0",
 	"lodash.orderby": "^4.6.0",
@@ -24771,4 +24772,4 @@ script.render = render;
 script.__file = "node_modules/togostanza/src/components/Layout.vue";
 
 export { Fragment as F, createElementBlock as a, renderList as b, createBlock as c, defineComponent as d, createBaseVNode as e, createCommentVNode as f, createApp as g, computed as h, createTextVNode as i, ref as j, octicons as k, watch as l, mergeProps as m, normalizeClass as n, openBlock as o, normalizeProps as p, guardReactiveProps as q, resolveComponent as r, script as s, toDisplayString as t, resolveDynamicComponent as u, createVNode as v, withCtx as w, pushScopeId as x, popScopeId as y, n as z };
-//# sourceMappingURL=Layout-670d7d62.js.map
+//# sourceMappingURL=Layout-3a4ca163.js.map
