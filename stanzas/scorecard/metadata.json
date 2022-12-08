@@ -14,7 +14,7 @@
   "stanza:parameter": [
     {
       "stanza:key": "data-url",
-      "stanza:example": "https://raw.githubusercontent.com/YukikoNoda/sampleJSON-Scorecard/main/scorecard.json",
+      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/main/samples/json/scorecard.json",
       "stanza:description": "Data source URL",
       "stanza:required": true
     },
@@ -34,7 +34,7 @@
     {
       "stanza:key": "score-key",
       "stanza:type": "text",
-      "stanza:example": "seq_length",
+      "stanza:example": "value",
       "stanza:description": "Data key for score",
       "stanza:required": true
     },
