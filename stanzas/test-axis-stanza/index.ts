@@ -3,7 +3,6 @@ import * as d3 from "d3";
 import loadData from "togostanza-utils/load-data";
 import { z } from "zod";
 import { Axis } from "../../lib/AxisMixin";
-import type { AxisParamsI } from "../../lib/AxisMixin";
 
 import { getMarginsFromCSSString } from "../../lib/utils";
 
@@ -93,27 +92,41 @@ class TestAxis extends Stanza {
       domain: [0, 100],
       range: [0, width],
       showTicks: !params["axis-x-ticks_hide"],
-      width,
-      height,
-      margins: MARGIN,
+      margins: getMarginsFromCSSString(css("--togostanza-outline-padding")),
       tickLabelsAngle: params["axis-x-ticks_label_angle"],
       title: params["axis-x-title"],
       titlePadding: params["axis-x-title_padding"],
     };
 
+    const yParams = {
+      placement: params["axis-y-placement"],
+      domain: [0, 100],
+      range: [0, width],
+      showTicks: !params["axis-y-ticks_hide"],
+      margins: getMarginsFromCSSString(css("--togostanza-outline-padding")),
+      tickLabelsAngle: params["axis-y-ticks_label_angle"],
+      title: params["axis-y-title"],
+      titlePadding: params["axis-y-title_padding"],
+    };
+
     if (!this.xAxisGen) {
       this.xAxisGen = new Axis(svg.node());
     }
+    if (!this.yAxisGen) {
+      this.yAxisGen = new Axis(svg.node());
+    }
 
-    // if (this.interval) {
-    //   clearInterval(this.interval);
-    // }
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
 
     this.xAxisGen.update(xParams);
+    this.yAxisGen.update(yParams);
 
-    // this.interval = setInterval(() => {
-    //   this.xAxisGen.update({ domain: [0, Math.random() * 100] });
-    // }, 1000);
+    this.interval = setInterval(() => {
+      this.xAxisGen.update({ domain: [0, Math.random() * 100] });
+      this.yAxisGen.update({ domain: [0, Math.random() * 100] });
+    }, 1000);
   }
 }
 

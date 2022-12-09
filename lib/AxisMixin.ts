@@ -26,8 +26,6 @@ interface MarginsI {
 export interface AxisParamsI {
   domain: d3.AxisDomain[];
   range: number[];
-  width: number;
-  height: number;
   margins?: MarginsI;
   showTicks?: boolean;
   scale?: AxisScaleE;
@@ -56,8 +54,6 @@ const initialMargins: MarginsI = {
 const initialState: AxisParamsI = {
   domain: [],
   range: [],
-  width: 0,
-  height: 0,
   margins: initialMargins,
   showTicks: true,
   scale: AxisScaleE.linear,
@@ -134,6 +130,10 @@ export class Axis {
     );
     this.callbackMap.set("showTicks", this._handleShowTicksUpdate.bind(this));
     this.callbackMap.set("margins", this._handleMarginsUpdate.bind(this));
+    this.callbackMap.set(
+      "tickLabelsAngle",
+      this._handleTickLabelsAngleUpdate.bind(this)
+    );
 
     return proxyfy(this, this.callbackMap) as Axis;
   }
@@ -158,9 +158,15 @@ export class Axis {
 
   private _handleMarginsUpdate() {
     this._calcAxisMargins();
+    this._axisG.call(this._axisGen.bind(this));
+
     this._g.attr(
       "transform",
       `translate(${this._axisMargin.LEFT}, ${this._axisMargin.TOP})`
+    );
+    this._titleG.attr(
+      "transform",
+      getTitleTranslate.call(this, this.params.placement)
     );
   }
 
@@ -171,6 +177,8 @@ export class Axis {
 
   private _handlePlacementUpdate() {
     this._calcAxisMargins();
+    this._axisG.call(this._axisGen.bind(this));
+
     this._g.attr(
       "transform",
       `translate(${this._axisMargin.LEFT}, ${this._axisMargin.TOP})`
@@ -193,6 +201,10 @@ export class Axis {
       "alignment-baseline",
       getTitleBaseline(this.params.placement)
     );
+
+    if (this.params.placement === "left" || this.params.placement === "right") {
+      this._titleText.attr("transform", "rotate(-90)");
+    }
 
     this._handleTitlePaddingUpdate(this.params.titlePadding);
   }
@@ -228,6 +240,10 @@ export class Axis {
     }
 
     this._titleG.attr("transform", translate);
+  }
+
+  private _handleTickLabelsAngleUpdate(angle: number) {
+    this._axisG.selectAll("text").attr("transform", `rotate(${angle})`);
   }
 
   private _handleShowTicksUpdate(showTicks: boolean) {
