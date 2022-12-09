@@ -27,11 +27,13 @@ export default class Scorecard extends Stanza {
       this.root.querySelector("main")
     );
 
-    const key = this.params["score-key"];
-    const value = dataset[key];
-    this._data = { [key]: value };
+    const scoreKey = this.params["score-key"];
+    const titleKey = this.params["title-key"];
+    const scoreValue = dataset[scoreKey];
+    this._data = { [scoreKey]: scoreValue };
 
-    const titleText = this.params["title-text"] || key;
+    const titleText =
+      this.params["title-text"] || dataset[titleKey] || scoreKey;
 
     this.renderTemplate({
       template: "stanza.html.hbs",
@@ -39,7 +41,7 @@ export default class Scorecard extends Stanza {
         scorecards: [
           {
             titleText,
-            value,
+            scoreValue,
           },
         ],
       },
