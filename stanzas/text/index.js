@@ -57,8 +57,10 @@ export default class Text extends Stanza {
       this.params["data-type"],
       main
     );
-
     this._dataset = value;
+
+    appendCustomCss(this, this.params["custom_css_url"]);
+    appendHighlightCss(this, this.params["highlight-css-url"]);
 
     if (this._isMarkdownMode()) {
       const parser = new commonmark.Parser();
@@ -83,8 +85,23 @@ export default class Text extends Stanza {
         },
       });
     }
+  }
+}
 
-    appendCustomCss(this, this.params["custom_css_url"]);
-    appendCustomCss(this, this.params["highlight-css-url"]);
+export function appendHighlightCss(stanza, highlightCssUrl) {
+  const links = stanza.root.querySelectorAll(
+    "link[data-togostanza-highlight-css]"
+  );
+  for (const link of links) {
+    link.remove();
+  }
+
+  if (highlightCssUrl) {
+    const link = document.createElement("link");
+    stanza.root.appendChild(link);
+
+    link.setAttribute("rel", "stylesheet");
+    link.setAttribute("href", highlightCssUrl);
+    link.setAttribute("data-togostanza-highlight-css", "");
   }
 }
