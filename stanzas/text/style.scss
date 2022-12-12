@@ -7,17 +7,13 @@
 
 main {
   padding: var(--togostanza-outline-padding);
-  width: calc(var(--togostanza-outline-width) * 1px);
-  height: calc(var(--togostanza-outline-height) * 1px);
-  background-color: var(--togostanza-theme-background_color);
 }
 .container {
   display: flex;
   flex-direction: column;
-  // .menu {
-  //   display: flex;
-  //   padding: 5px;
-  // }
+  width: calc(var(--togostanza-outline-width) * 1px);
+  height: calc(var(--togostanza-outline-height) * 1px);
+
   table {
     display: block;
     tbody {
@@ -30,5 +26,3 @@ main {
     }
   }
 }
-// .menu {
-// }

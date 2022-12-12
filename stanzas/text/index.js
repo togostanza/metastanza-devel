@@ -4,9 +4,7 @@ import * as commonmark from "commonmark";
 import hljs from "highlight.js";
 import "katex/dist/katex.mjs";
 import renderMathInElement from "katex/dist/contrib/auto-render.mjs";
-
 import { appendCustomCss } from "togostanza-utils";
-// import spinner from "togostanza-utils/spinner.png";
 
 export default class Text extends Stanza {
   constructor() {
