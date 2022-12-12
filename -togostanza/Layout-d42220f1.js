@@ -24677,7 +24677,7 @@ var dependencies = {
 	"lodash.zip": "^4.2.0",
 	"rollup-plugin-vue": "^6.0.0",
 	"sprintf-js": "^1.1.2",
-	togostanza: "^3.0.0-beta.44",
+	togostanza: "^3.0.0-beta.46",
 	"togostanza-utils": "github:togostanza/togostanza-utils",
 	uuid: "^9.0.0",
 	vega: "^5.19.1",
@@ -24771,5 +24771,5 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 script.render = render;
 script.__file = "node_modules/togostanza/src/components/Layout.vue";
 
-export { Fragment as F, createElementBlock as a, renderList as b, createBlock as c, defineComponent as d, createBaseVNode as e, createCommentVNode as f, createApp as g, computed as h, createTextVNode as i, ref as j, octicons as k, watch as l, mergeProps as m, normalizeClass as n, openBlock as o, normalizeProps as p, guardReactiveProps as q, resolveComponent as r, script as s, toDisplayString as t, resolveDynamicComponent as u, createVNode as v, withCtx as w, pushScopeId as x, popScopeId as y, n as z };
-//# sourceMappingURL=Layout-3a4ca163.js.map
+export { unref as A, normalizeStyle as B, Fragment as F, createElementBlock as a, renderList as b, createBlock as c, defineComponent as d, createBaseVNode as e, createCommentVNode as f, createApp as g, ref as h, octicons as i, createTextVNode as j, computed as k, watch as l, mergeProps as m, normalizeProps as n, openBlock as o, guardReactiveProps as p, resolveDynamicComponent as q, resolveComponent as r, script as s, toDisplayString as t, createVNode as u, pushScopeId as v, withCtx as w, popScopeId as x, n as y, normalizeClass as z };
+//# sourceMappingURL=Layout-d42220f1.js.map
