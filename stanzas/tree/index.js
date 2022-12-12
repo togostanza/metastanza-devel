@@ -441,6 +441,10 @@ export default class Tree extends Stanza {
           )
           .attr("fill", setColor);
 
+        if (showToolTips) {
+          this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
+        }
+
         //Drawing labels
         const nodeLabelsUpdate = gLabels
           .selectAll("g")
@@ -672,9 +676,5 @@ export default class Tree extends Stanza {
 
     //Drawing
     draw();
-
-    if (showToolTips) {
-      this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
-    }
   }
 }
