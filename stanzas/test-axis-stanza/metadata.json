@@ -309,7 +309,7 @@
     {
       "stanza:key": "--togostanza-outline-padding",
       "stanza:type": "text",
-      "stanza:default": "20px",
+      "stanza:default": "30px",
       "stanza:description": "Togostanza element inner padding"
     },
     {

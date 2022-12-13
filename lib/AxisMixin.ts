@@ -140,6 +140,15 @@ export class Axis {
 
   update(params: Partial<AxisParamsI>) {
     this.params = { ...this.params, ...params };
+    // TODO handle tick labels rotation -> when updating domain!
+  }
+
+  get scale() {
+    return this._axisGen.scale;
+  }
+
+  get axisGen() {
+    return this._axisGen;
   }
 
   private _init() {
@@ -172,12 +181,18 @@ export class Axis {
 
   private _handleDomainUpdate(domain: d3.AxisDomain[]) {
     this._axisScale.domain(domain);
+
     this._axisG.call(this._axisGen.bind(this));
+
+    this._applyOtherParams();
+  }
+
+  private _applyOtherParams() {
+    this._handleTickLabelsAngleUpdate(this.params.tickLabelsAngle);
   }
 
   private _handlePlacementUpdate() {
     this._calcAxisMargins();
-    this._axisG.call(this._axisGen.bind(this));
 
     this._g.attr(
       "transform",
@@ -235,6 +250,8 @@ export class Axis {
         break;
       case "right":
         translate = `translate(${padding},${prevTY})`;
+        break;
+
       default:
         translate = `translate(${prevTX},${prevTY})`;
     }
@@ -340,9 +357,9 @@ function getTitleTranslate(placement: AxisParamsI["placement"]): string {
     case "bottom":
       return `translate(${this._axisLength / 2}, 0)`;
     case "left":
-      return `rotate(90) translate(0, ${this._axisLength / 2})`;
+      return `translate(0, ${this._axisLength / 2})`;
     case "right":
-      return `rotate(90) translate(0, ${this._axisLength / 2})`;
+      return `translate(0, ${this._axisLength / 2})`;
 
     default:
       break;
