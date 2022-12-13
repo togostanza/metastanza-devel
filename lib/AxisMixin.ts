@@ -4,7 +4,7 @@ enum AxisScaleE {
   linear = "linear",
   log10 = "log10",
   time = "time",
-  ordinal = "band",
+  ordinal = "ordinal",
 }
 enum AxisPlacementE {
   left = "left",
@@ -23,12 +23,14 @@ interface MarginsI {
   BOTTOM: number;
 }
 
+type ScaleType = `${AxisScaleE}`;
+
 export interface AxisParamsI {
   domain: d3.AxisDomain[];
   range: number[];
   margins?: MarginsI;
   showTicks?: boolean;
-  scale?: AxisScaleE;
+  scale?: ScaleType;
   placement?: AxisPlacementT;
   tickLabelsAngle?: number;
   ticksLabelsMargin?: number;
@@ -134,6 +136,7 @@ export class Axis {
       "tickLabelsAngle",
       this._handleTickLabelsAngleUpdate.bind(this)
     );
+    this.callbackMap.set("scale", this._handleScaleUpdate.bind(this));
 
     return proxyfy(this, this.callbackMap) as Axis;
   }
@@ -199,13 +202,7 @@ export class Axis {
       `translate(${this._axisMargin.LEFT}, ${this._axisMargin.TOP})`
     );
 
-    this._axisGen = getAxisGen(this.params.placement)(
-      this._axisScale as d3.AxisScale<d3.AxisDomain>
-    );
-    if (!this._axisG.empty()) {
-      this._axisG.remove();
-    }
-    this._axisG = this._g.append("g").classed("axis", true).call(this._axisGen);
+    this._redrawAxis();
 
     this._titleG.attr(
       "transform",
@@ -268,6 +265,42 @@ export class Axis {
     this._axisG.call(this._axisGen.bind(this));
   }
 
+  private _handleScaleUpdate(newScale: ScaleType) {
+    const prevDomain = this._axisScale.domain();
+    const prevRange = this._axisScale.range();
+
+    this._axisScale = getScale(newScale);
+    this._axisScale.domain(prevDomain);
+    this._axisScale.range(prevRange);
+
+    this._redrawAxis();
+  }
+
+  private _getTicksFormat() {
+    switch (this.params.scale) {
+      case AxisScaleE.linear:
+        return (value: d3.AxisDomain) => value.toString();
+      case AxisScaleE.log10:
+        return formatPower;
+
+      default:
+        return (value: d3.AxisDomain) => value.toString();
+    }
+  }
+
+  private _redrawAxis() {
+    this._axisGen = getAxisGen(this.params.placement)(
+      this._axisScale as d3.AxisScale<d3.AxisDomain>
+    );
+
+    this._axisGen.tickFormat(this._getTicksFormat());
+
+    if (!this._axisG.empty()) {
+      this._axisG.remove();
+    }
+    this._axisG = this._g.append("g").classed("axis", true).call(this._axisGen);
+  }
+
   private _calcAxisMargins() {
     switch (this.params.placement) {
       case "bottom":
@@ -305,7 +338,7 @@ export class Axis {
   }
 }
 
-function getScale(scale: AxisScaleE) {
+function getScale(scale: ScaleType) {
   switch (scale) {
     case AxisScaleE.linear:
       return d3.scaleLinear();
@@ -364,4 +397,10 @@ function getTitleTranslate(placement: AxisParamsI["placement"]): string {
     default:
       break;
   }
+}
+
+function formatPower(x) {
+  const e = Math.log10(x);
+  if (e !== Math.floor(e)) return; // Ignore non-exact power of ten.
+  return `10${(e + "").replace(/./g, (c) => "⁰¹²³⁴⁵⁶⁷⁸⁹"[c] || "⁻")}`;
 }

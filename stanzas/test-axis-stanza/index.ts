@@ -40,7 +40,7 @@ class TestAxis extends Stanza {
 
     const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
 
-    const width = 200;
+    const width = 500;
     const height = 200;
 
     this._data = await loadData(
@@ -67,6 +67,18 @@ class TestAxis extends Stanza {
           .default("left"),
         "axis-y-ticks_hide": z.boolean(),
         "axis-x-ticks_hide": z.boolean(),
+        "axis-x-scale": z.union([
+          z.literal("linear"),
+          z.literal("log10"),
+          z.literal("time"),
+          z.literal("ordinal"),
+        ]),
+        "axis-y-scale": z.union([
+          z.literal("linear"),
+          z.literal("log10"),
+          z.literal("time"),
+          z.literal("ordinal"),
+        ]),
       })
       .passthrough();
 
@@ -89,13 +101,14 @@ class TestAxis extends Stanza {
 
     const xParams = {
       placement: params["axis-x-placement"],
-      domain: [0, 100],
+      domain: [0.01, 100],
       range: [0, width],
       showTicks: !params["axis-x-ticks_hide"],
-      margins: getMarginsFromCSSString(css("--togostanza-outline-padding")),
+      margins: MARGIN,
       tickLabelsAngle: params["axis-x-ticks_label_angle"],
       title: params["axis-x-title"],
       titlePadding: params["axis-x-title_padding"],
+      scale: params["axis-x-scale"],
     };
 
     const yParams = {
@@ -103,10 +116,11 @@ class TestAxis extends Stanza {
       domain: [0, 100],
       range: [0, width],
       showTicks: !params["axis-y-ticks_hide"],
-      margins: getMarginsFromCSSString(css("--togostanza-outline-padding")),
+      margins: MARGIN,
       tickLabelsAngle: params["axis-y-ticks_label_angle"],
       title: params["axis-y-title"],
       titlePadding: params["axis-y-title_padding"],
+      scale: params["axis-y-scale"],
     };
 
     if (!this.xAxisGen) {
@@ -124,7 +138,7 @@ class TestAxis extends Stanza {
     this.yAxisGen.update(yParams);
 
     this.interval = setInterval(() => {
-      this.xAxisGen.update({ domain: [0, Math.random() * 100] });
+      this.xAxisGen.update({ domain: [0.01, Math.random() * 1000] });
       this.yAxisGen.update({ domain: [0, Math.random() * 100] });
     }, 1000);
   }
