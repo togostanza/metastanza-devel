@@ -116,7 +116,7 @@ class TestAxis extends Stanza {
 
     const yParams = {
       placement: params["axis-y-placement"],
-      domain: [0, 100],
+      domain: [0.01, 100],
       range: [0, width],
       showTicks: !params["axis-y-ticks_hide"],
       margins: MARGIN,
@@ -143,7 +143,7 @@ class TestAxis extends Stanza {
 
     this.interval = setInterval(() => {
       this.xAxisGen.update({ domain: [0.01, Math.random() * 1000] });
-      this.yAxisGen.update({ domain: [0, Math.random() * 100] });
+      this.yAxisGen.update({ domain: [0.01, Math.random() * 100] });
     }, 1000);
   }
 }

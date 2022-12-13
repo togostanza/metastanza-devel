@@ -178,11 +178,7 @@ export class Axis {
   }
 
   private _handleGridIntervalUpdate() {
-    if (this.params.gridInterval === 0) {
-      this._gridGen.tickValues(null).ticks(5);
-    } else {
-      this._gridGen.tickValues(this.gridTickValues);
-    }
+    this._updateGrid();
 
     this._gridG.call(this._gridGen.bind(this));
   }
@@ -244,6 +240,8 @@ export class Axis {
 
   private _handleDomainUpdate(domain: d3.AxisDomain[]) {
     this._axisScale.domain(domain);
+
+    this._updateGrid();
 
     this._gridG.call(this._gridGen.bind(this));
 
@@ -370,15 +368,24 @@ export class Axis {
     if (!this._gridG.empty()) {
       this._gridG.remove();
     }
-    this._gridGen.tickFormat(() => "");
-    this._gridGen.tickValues(this.gridTickValues);
-    this._gridGen.tickSize(this.tickSize);
+
+    this._updateGrid();
 
     this._axisG = this._g.append("g").classed("axis", true).call(this._axisGen);
     this._gridG = this._g
       .append("g")
       .classed("grid-lines", true)
       .call(this._gridGen);
+  }
+
+  private _updateGrid() {
+    this._gridGen.tickFormat(() => "");
+    this._gridGen.tickSize(this.tickSize);
+    if (this.gridTickValues.length > 0) {
+      this._gridGen.tickValues(this.gridTickValues);
+    } else {
+      this._gridGen.tickValues(null).ticks(5);
+    }
   }
 
   private get tickSize() {
