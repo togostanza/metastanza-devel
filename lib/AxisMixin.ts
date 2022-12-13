@@ -36,6 +36,7 @@ export interface AxisParamsI {
   ticksLabelsMargin?: number;
   title?: string;
   titlePadding?: number;
+  gridInterval?: number;
 }
 
 type d3Selection = d3.Selection<SVGElement, any, any, any>;
@@ -94,6 +95,7 @@ export class Axis {
   params: AxisParamsI;
   _svg: SVGSVGElement;
   _g: d3Selection;
+  _gridG: d3Selection;
   _axisG: d3Selection;
   _titleG: d3Selection;
   _titleText: d3Selection;
@@ -103,22 +105,30 @@ export class Axis {
   callbackMap: Map<keyof AxisParamsI, (val) => void>;
   _axisScale: GetScaleT;
   _axisGen: d3.Axis<d3.AxisDomain>;
+  _gridGen: d3.Axis<d3.AxisDomain>;
   _axisLength: number;
 
   constructor(svg: SVGSVGElement) {
     this._svg = svg;
+    this.params = initialState;
 
     this._width = svg.getBoundingClientRect().width;
     this._height = svg.getBoundingClientRect().height;
 
     this._axisScale = getScale(AxisScaleE.linear);
     this._axisScale.domain([0, 1]);
+    this._axisScale.range([0, this.WIDTH]);
 
     this._axisGen = getAxisGen(AxisPlacementE.bottom)(
       this._axisScale as d3.AxisScale<d3.AxisDomain>
     );
 
-    this.params = initialState;
+    this._gridGen = getAxisGen(AxisPlacementE.bottom)(
+      this._axisScale as d3.AxisScale<d3.AxisDomain>
+    );
+
+    this._gridGen.tickFormat(() => "");
+    this._gridGen.tickSize(-this.HEIGHT);
 
     this._init();
 
@@ -137,8 +147,51 @@ export class Axis {
       this._handleTickLabelsAngleUpdate.bind(this)
     );
     this.callbackMap.set("scale", this._handleScaleUpdate.bind(this));
-
+    this.callbackMap.set(
+      "gridInterval",
+      this._handleGridIntervalUpdate.bind(this)
+    );
     return proxyfy(this, this.callbackMap) as Axis;
+  }
+
+  private get gridTickValues() {
+    if (this.params.gridInterval) {
+      if (this.params.scale === "linear" || this.params.scale === "log10") {
+        const domain = this.params.domain as number[];
+        const domainSize = Math.abs(domain[0] - domain[1]);
+
+        const intervalsCount = Math.floor(
+          domainSize / this.params.gridInterval
+        );
+
+        const tickValues = [...Array(intervalsCount + 1)]
+          .slice(1)
+          .map(
+            (_, i) => Math.min(...domain) + (i + 1) * this.params.gridInterval
+          );
+
+        return tickValues;
+      }
+    }
+
+    return [];
+  }
+
+  private _handleGridIntervalUpdate() {
+    if (this.params.gridInterval === 0) {
+      this._gridGen.tickValues(null).ticks(5);
+    } else {
+      this._gridGen.tickValues(this.gridTickValues);
+    }
+
+    this._gridG.call(this._gridGen.bind(this));
+  }
+
+  private get HEIGHT() {
+    return this._height - this.params.margins.TOP - this.params.margins.BOTTOM;
+  }
+  private get WIDTH() {
+    return this._width - this.params.margins.LEFT - this.params.margins.RIGHT;
   }
 
   update(params: Partial<AxisParamsI>) {
@@ -160,6 +213,11 @@ export class Axis {
 
     this._axisG = this._g.append("g").classed("axis", true).call(this._axisGen);
 
+    this._gridG = this._g
+      .append("g")
+      .classed("grid-lines", true)
+      .call(this._gridGen);
+
     this._titleG = this._g.append("g").classed("title-conatiner", true);
 
     this._titleText = this._titleG
@@ -170,7 +228,9 @@ export class Axis {
 
   private _handleMarginsUpdate() {
     this._calcAxisMargins();
+
     this._axisG.call(this._axisGen.bind(this));
+    this._gridG.call(this._gridGen.bind(this));
 
     this._g.attr(
       "transform",
@@ -185,6 +245,8 @@ export class Axis {
   private _handleDomainUpdate(domain: d3.AxisDomain[]) {
     this._axisScale.domain(domain);
 
+    this._gridG.call(this._gridGen.bind(this));
+
     this._axisG.call(this._axisGen.bind(this));
 
     this._applyOtherParams();
@@ -196,6 +258,8 @@ export class Axis {
 
   private _handlePlacementUpdate() {
     this._calcAxisMargins();
+
+    // TODO update gridGen
 
     this._g.attr(
       "transform",
@@ -293,12 +357,38 @@ export class Axis {
       this._axisScale as d3.AxisScale<d3.AxisDomain>
     );
 
+    this._gridGen = getAxisGen(this.params.placement)(
+      this._axisScale as d3.AxisScale<d3.AxisDomain>
+    );
+
     this._axisGen.tickFormat(this._getTicksFormat());
 
     if (!this._axisG.empty()) {
       this._axisG.remove();
     }
+
+    if (!this._gridG.empty()) {
+      this._gridG.remove();
+    }
+    this._gridGen.tickFormat(() => "");
+    this._gridGen.tickValues(this.gridTickValues);
+    this._gridGen.tickSize(this.tickSize);
+
     this._axisG = this._g.append("g").classed("axis", true).call(this._axisGen);
+    this._gridG = this._g
+      .append("g")
+      .classed("grid-lines", true)
+      .call(this._gridGen);
+  }
+
+  private get tickSize() {
+    if (
+      this.params.placement === AxisPlacementE.bottom ||
+      this.params.placement === AxisPlacementE.top
+    ) {
+      return -this.HEIGHT;
+    }
+    return -this.WIDTH;
   }
 
   private _calcAxisMargins() {
@@ -306,35 +396,34 @@ export class Axis {
       case "bottom":
         this._axisMargin.LEFT = this.params.margins.LEFT;
         this._axisMargin.TOP = this._height - this.params.margins.BOTTOM;
-        this._axisLength =
-          this._width - this.params.margins.LEFT - this.params.margins.RIGHT;
+        this._axisLength = this.WIDTH;
         this._axisScale.range([0, this._axisLength]);
+
         break;
       case "top":
         this._axisMargin.LEFT = this.params.margins.LEFT;
         this._axisMargin.TOP = this.params.margins.TOP;
-        this._axisLength =
-          this._width - this.params.margins.LEFT - this.params.margins.RIGHT;
+        this._axisLength = this.WIDTH;
         this._axisScale.range([0, this._axisLength]);
+
         break;
       case "left":
         this._axisMargin.LEFT = this.params.margins.LEFT;
         this._axisMargin.TOP = this.params.margins.TOP;
-        this._axisLength =
-          this._height - this.params.margins.TOP - this.params.margins.BOTTOM;
+        this._axisLength = this.HEIGHT;
         this._axisScale.range([this._axisLength, 0]);
         break;
       case "right":
         this._axisMargin.LEFT = this._width - this.params.margins.RIGHT;
         this._axisMargin.TOP = this.params.margins.TOP;
-        this._axisLength =
-          this._height - this.params.margins.TOP - this.params.margins.BOTTOM;
+        this._axisLength = this.HEIGHT;
         this._axisScale.range([this._axisLength, 0]);
         break;
 
       default:
         break;
     }
+    this._gridGen.tickSize(this.tickSize);
   }
 }
 

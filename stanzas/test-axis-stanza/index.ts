@@ -79,6 +79,8 @@ class TestAxis extends Stanza {
           z.literal("time"),
           z.literal("ordinal"),
         ]),
+        "axis-x-gridlines_interval": z.number().optional(),
+        "axis-y-gridlines_interval": z.number().optional(),
       })
       .passthrough();
 
@@ -109,6 +111,7 @@ class TestAxis extends Stanza {
       title: params["axis-x-title"],
       titlePadding: params["axis-x-title_padding"],
       scale: params["axis-x-scale"],
+      gridInterval: params["axis-x-gridlines_interval"],
     };
 
     const yParams = {
@@ -121,6 +124,7 @@ class TestAxis extends Stanza {
       title: params["axis-y-title"],
       titlePadding: params["axis-y-title_padding"],
       scale: params["axis-y-scale"],
+      gridInterval: params["axis-y-gridlines_interval"],
     };
 
     if (!this.xAxisGen) {

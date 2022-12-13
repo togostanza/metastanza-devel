@@ -142,11 +142,11 @@
     },
 
     {
-      "stanza:key": "axis-x-show_gridlines",
-      "stanza:type": "boolean",
-      "stanza:example": true,
+      "stanza:key": "axis-x-gridlines_interval",
+      "stanza:type": "number",
+      "stanza:example": 0,
       "stanza:computed": true,
-      "stanza:description": "Show grid lines",
+      "stanza:description": "Axis gridlines interval. If set to 0, show gridlines at axis ticks values, if not set, not show gridlines.",
       "stanza:required": false
     },
     {
@@ -254,11 +254,11 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "axis-y-show_gridlines",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:default": false,
-      "stanza:description": "Show grid lines",
+      "stanza:key": "axis-y-gridlines_interval",
+      "stanza:type": "number",
+      "stanza:example": 0,
+      "stanza:computed": true,
+      "stanza:description": "Axis gridlines interval. If set to 0, show gridlines at axis ticks values, if not set, not show gridlines.",
       "stanza:required": false
     }
   ],
