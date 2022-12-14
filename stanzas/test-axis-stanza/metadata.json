@@ -110,9 +110,9 @@
     {
       "stanza:key": "axis-x-ticks_interval",
       "stanza:type": "number",
-      "stanza:example": 1,
+      "stanza:example": null,
       "stanza:computed": true,
-      "stanza:description": "Axis ticks interval. If not set, show 5 ticks. If axis scale is ordinal, show all ticks",
+      "stanza:description": "Axis ticks interval. if not set, show 5 ticks at automatically chosen values. If set to 0, hide all ticks.",
       "stanza:required": false
     },
     {
@@ -144,7 +144,7 @@
     {
       "stanza:key": "axis-x-gridlines_interval",
       "stanza:type": "number",
-      "stanza:example": 0,
+      "stanza:example": null,
       "stanza:computed": true,
       "stanza:description": "Axis gridlines interval. If set to 0, show gridlines at axis ticks values, if not set, not show gridlines.",
       "stanza:required": false
@@ -240,9 +240,9 @@
     {
       "stanza:key": "axis-y-ticks_interval",
       "stanza:type": "number",
-      "stanza:example": 0,
+      "stanza:example": null,
       "stanza:computed": true,
-      "stanza:description": "Axis ticks interval. If bot set, show 5 ticks",
+      "stanza:description": "Axis ticks interval. if not set, show 5 ticks at automatically chosen values. If set to 0, hide all ticks.",
       "stanza:required": false
     },
     {
@@ -256,7 +256,7 @@
     {
       "stanza:key": "axis-y-gridlines_interval",
       "stanza:type": "number",
-      "stanza:example": 0,
+      "stanza:example": null,
       "stanza:computed": true,
       "stanza:description": "Axis gridlines interval. If set to 0, show gridlines at axis ticks values, if not set, not show gridlines.",
       "stanza:required": false

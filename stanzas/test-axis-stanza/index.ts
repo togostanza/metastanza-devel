@@ -2,7 +2,7 @@ import Stanza from "togostanza/stanza";
 import * as d3 from "d3";
 import loadData from "togostanza-utils/load-data";
 import { z } from "zod";
-import { Axis } from "../../lib/AxisMixin";
+import { Axis, AxisParamsI } from "../../lib/AxisMixin";
 
 import { getMarginsFromCSSString } from "../../lib/utils";
 
@@ -81,6 +81,8 @@ class TestAxis extends Stanza {
         ]),
         "axis-x-gridlines_interval": z.number().optional(),
         "axis-y-gridlines_interval": z.number().optional(),
+        "axis-x-ticks_interval": z.number().optional(),
+        "axis-y-ticks_interval": z.number().optional(),
       })
       .passthrough();
 
@@ -101,7 +103,7 @@ class TestAxis extends Stanza {
 
     svg.attr("width", width).attr("height", height);
 
-    const xParams = {
+    const xParams: AxisParamsI = {
       placement: params["axis-x-placement"],
       domain: [0.01, 100],
       range: [0, width],
@@ -112,9 +114,10 @@ class TestAxis extends Stanza {
       titlePadding: params["axis-x-title_padding"],
       scale: params["axis-x-scale"],
       gridInterval: params["axis-x-gridlines_interval"],
+      ticksInterval: params["axis-x-ticks_interval"],
     };
 
-    const yParams = {
+    const yParams: AxisParamsI = {
       placement: params["axis-y-placement"],
       domain: [0.01, 100],
       range: [0, width],
@@ -125,6 +128,7 @@ class TestAxis extends Stanza {
       titlePadding: params["axis-y-title_padding"],
       scale: params["axis-y-scale"],
       gridInterval: params["axis-y-gridlines_interval"],
+      ticksInterval: params["axis-y-ticks_interval"],
     };
 
     if (!this.xAxisGen) {

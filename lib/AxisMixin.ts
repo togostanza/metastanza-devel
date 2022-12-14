@@ -34,6 +34,7 @@ export interface AxisParamsI {
   placement?: AxisPlacementT;
   tickLabelsAngle?: number;
   ticksLabelsMargin?: number;
+  ticksInterval?: number;
   title?: string;
   titlePadding?: number;
   gridInterval?: number;
@@ -63,11 +64,11 @@ const initialState: AxisParamsI = {
   placement: AxisPlacementE.default,
   tickLabelsAngle: 0,
   ticksLabelsMargin: 0,
+  ticksInterval: 0,
   title: "",
   titlePadding: 0,
+  gridInterval: 0,
 };
-
-type updatedParamT = string | number | number[];
 
 const proxyfy = (init: object, callbackMap: Map<string, (val) => void>) => {
   return new Proxy(init, {
@@ -107,6 +108,32 @@ export class Axis {
   _axisGen: d3.Axis<d3.AxisDomain>;
   _gridGen: d3.Axis<d3.AxisDomain>;
   _axisLength: number;
+
+  private _getTickValues(interval: number) {
+    if (interval) {
+      if (this.params.scale === "linear" || this.params.scale === "log10") {
+        const domain = this.params.domain as number[];
+        const domainSize = Math.abs(domain[0] - domain[1]);
+
+        const intervalsCount = Math.floor(domainSize / interval);
+
+        const tickValues = [...Array(intervalsCount + 1)]
+          .slice(1)
+          .map((_, i) => Math.min(...domain) + (i + 1) * interval);
+
+        return tickValues;
+      }
+    }
+
+    return [];
+  }
+
+  private get gridTickValues() {
+    return this._getTickValues(this.params.gridInterval);
+  }
+  private get axisTickValues() {
+    return this._getTickValues(this.params.ticksInterval);
+  }
 
   constructor(svg: SVGSVGElement) {
     this._svg = svg;
@@ -151,36 +178,22 @@ export class Axis {
       "gridInterval",
       this._handleGridIntervalUpdate.bind(this)
     );
+    this.callbackMap.set(
+      "ticksInterval",
+      this._handleTicksIntervalUpdate.bind(this)
+    );
     return proxyfy(this, this.callbackMap) as Axis;
-  }
-
-  private get gridTickValues() {
-    if (this.params.gridInterval) {
-      if (this.params.scale === "linear" || this.params.scale === "log10") {
-        const domain = this.params.domain as number[];
-        const domainSize = Math.abs(domain[0] - domain[1]);
-
-        const intervalsCount = Math.floor(
-          domainSize / this.params.gridInterval
-        );
-
-        const tickValues = [...Array(intervalsCount + 1)]
-          .slice(1)
-          .map(
-            (_, i) => Math.min(...domain) + (i + 1) * this.params.gridInterval
-          );
-
-        return tickValues;
-      }
-    }
-
-    return [];
   }
 
   private _handleGridIntervalUpdate() {
     this._updateGrid();
 
     this._gridG.call(this._gridGen.bind(this));
+  }
+
+  private _handleTicksIntervalUpdate() {
+    this._updateTicks();
+    this._axisG.call(this._axisGen.bind(this));
   }
 
   private get HEIGHT() {
@@ -240,6 +253,8 @@ export class Axis {
 
   private _handleDomainUpdate(domain: d3.AxisDomain[]) {
     this._axisScale.domain(domain);
+
+    this._updateTicks();
 
     this._updateGrid();
 
@@ -369,6 +384,7 @@ export class Axis {
       this._gridG.remove();
     }
 
+    this._updateTicks();
     this._updateGrid();
 
     this._axisG = this._g.append("g").classed("axis", true).call(this._axisGen);
@@ -384,9 +400,21 @@ export class Axis {
     if (this.gridTickValues.length > 0) {
       this._gridGen.tickValues(this.gridTickValues);
     } else if (typeof this.params.gridInterval === "undefined") {
-      this._gridGen.tickValues([]);
-    } else {
+      // if not set, show automatically chosen 5 grid lines
       this._gridGen.tickValues(null).ticks(5);
+    } else {
+      // else hide all grid lines
+      this._gridGen.tickValues([]);
+    }
+  }
+
+  private _updateTicks() {
+    if (this.axisTickValues.length > 0) {
+      this._axisGen.tickValues(this.axisTickValues);
+    } else if (typeof this.params.ticksInterval === "undefined") {
+      this._axisGen.tickValues(null).ticks(5);
+    } else {
+      this._axisGen.tickValues([]);
     }
   }
 
