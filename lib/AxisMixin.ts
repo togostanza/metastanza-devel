@@ -383,6 +383,8 @@ export class Axis {
     this._gridGen.tickSize(this.tickSize);
     if (this.gridTickValues.length > 0) {
       this._gridGen.tickValues(this.gridTickValues);
+    } else if (typeof this.params.gridInterval === "undefined") {
+      this._gridGen.tickValues([]);
     } else {
       this._gridGen.tickValues(null).ticks(5);
     }
