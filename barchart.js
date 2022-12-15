@@ -1,5 +1,5 @@
 import { S as Stanza, s as select, d as defineStanzaElement } from './transform-2d2d4fd0.js';
-import { l as loadData } from './load-data-4bf86f1c.js';
+import { l as loadData } from './load-data-5bcda25c.js';
 import { T as ToolTip } from './ToolTip-c89896f1.js';
 import { L as Legend } from './Legend-0dffa067.js';
 import { S as StanzaColorGenerator } from './ColorGenerator-55034777.js';
@@ -941,7 +941,8 @@ var metadata = {
 			"json",
 			"tsv",
 			"csv",
-			"sparql-results-json"
+			"sparql-results-json",
+			"elasticsearch"
 		],
 		"stanza:example": "json",
 		"stanza:description": "Data type",

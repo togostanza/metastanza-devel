@@ -296,14 +296,24 @@ async function loadSPARQL(url, requestInit) {
   return sparql2table(json);
 }
 
+async function loadElasticsearch(url, requestInit) {
+  const json = await fetch(url, requestInit).then((res) => res.json());
+
+  return json.hits.hits.map((hit) => hit._source);
+}
+
 function getLoader(type) {
   switch (type) {
+    case "text":
+      return withAcceptHeader(text, "text/plain");
     case "tsv":
       return withAcceptHeader(tsv, "text/tab-separated-values");
     case "csv":
       return withAcceptHeader(csv, "text/csv");
     case "sparql-results-json":
       return withAcceptHeader(loadSPARQL, "application/sparql-results+json");
+    case "elasticsearch":
+      return withAcceptHeader(loadElasticsearch, "application/json");
     case "json":
     default:
       return withAcceptHeader(loadJSON, "application/json");
@@ -463,4 +473,4 @@ function getSpinnerCss(color) {
 }
 
 export { csvParseRows as a, csvFormat as b, csvParse as c, dsvFormat as d, csvFormatBody as e, csvFormatRows as f, csvFormatRow as g, csvFormatValue as h, tsvParse as i, tsvParseRows as j, tsvFormat as k, loadData as l, tsvFormatBody as m, tsvFormatRows as n, tsvFormatRow as o, tsvFormatValue as p, dsv as q, csv as r, tsv as s, text as t };
-//# sourceMappingURL=load-data-4bf86f1c.js.map
+//# sourceMappingURL=load-data-5bcda25c.js.map

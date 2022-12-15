@@ -1,5 +1,5 @@
 import { S as Stanza, s as select, d as defineStanzaElement } from './transform-2d2d4fd0.js';
-import { l as loadData } from './load-data-4bf86f1c.js';
+import { l as loadData } from './load-data-5bcda25c.js';
 import { g as getStanzaInterpolateColor } from './ColorGenerator-55034777.js';
 import { d as descending } from './linear-b53de1ad.js';
 import { s as sum } from './sum-44e7480e.js';

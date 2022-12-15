@@ -1,6 +1,6 @@
 import { a as s, a8 as i, y, S as Stanza, s as select, d as defineStanzaElement } from './transform-2d2d4fd0.js';
 import { a as brushX, c as brushY } from './brush-1c3a785b.js';
-import { l as loadData } from './load-data-4bf86f1c.js';
+import { l as loadData } from './load-data-5bcda25c.js';
 import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-1567edd1.js';
 import { S as StanzaColorGenerator } from './ColorGenerator-55034777.js';
 import { g as getMarginsFromCSSString } from './utils-a1cc17fa.js';
@@ -1688,9 +1688,7 @@ var metadata = {
 	{
 		"stanza:key": "data-url",
 		"stanza:type": "text",
-		"stanza:example_csv": "https://raw.githubusercontent.com/jbrownlee/Datasets/master/daily-min-temperatures.csv",
-		"stanza:example_sparql": "https://sparql-support.dbcls.jp/sparqlist/api/metastanza_multi_data_chart",
-		"stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/main/samples/json/linechart-data-with-errors.json",
+		"stanza:example": "https://sparql-support.dbcls.jp/sparqlist/api/metastanza_multi_data_chart",
 		"stanza:description": "Data source URL",
 		"stanza:required": true
 	},
@@ -1701,7 +1699,8 @@ var metadata = {
 			"json",
 			"tsv",
 			"csv",
-			"sparql-results-json"
+			"sparql-results-json",
+			"elasticsearch"
 		],
 		"stanza:example": "json",
 		"stanza:description": "Data type",
