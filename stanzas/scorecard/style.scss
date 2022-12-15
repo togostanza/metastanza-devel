@@ -1,19 +1,11 @@
 // Load the repository-wide global style here. The actual file is located at ../common.scss for details.
 @use "@/common.scss";
 
-.group {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 main {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: var(--togostanza-outline-padding);
-  width: calc(var(--togostanza-outline-width) * 1px);
-  height: calc(var(--togostanza-outline-height) * 1px);
 }
 
 .chart-wrapper {
@@ -25,8 +17,8 @@ main {
 }
 
 svg.scorecard-svg {
-  width: 200px;
-  height: 48px;
+  width: calc(var(--togostanza-outline-width) * 1px);
+  height: calc(var(--togostanza-outline-height) * 1px);
   overflow: visible;
 }
 

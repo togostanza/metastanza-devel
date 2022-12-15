@@ -47,15 +47,6 @@ export default class Scorecard extends Stanza {
       },
     });
 
-    const scorecardSvg = this.root.querySelector("#scorecardSvg");
-    scorecardSvg.setAttribute(
-      "height",
-      `${
-        Number(css("--togostanza-fonts-font_size_secondary")) +
-        Number(css("--togostanza-fonts-font_size_primary"))
-      }`
-    );
-
     const keyElement = this.root.querySelector("#key");
     const valueElement = this.root.querySelector("#value");
     if (this.params["title-show"] === false) {
