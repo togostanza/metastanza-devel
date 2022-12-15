@@ -27,7 +27,8 @@ class Legend extends s {
           line-height: 1.5;
           max-height: 100%;
           overflow-y: auto;
-          color: var(--togostanza-label-font-color);
+          color: var(--togostanza-fonts-font_color);
+          font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
           background-color: rgba(255, 255, 255, 0.8);
           box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
           white-space: nowrap;
@@ -206,4 +207,4 @@ class Legend extends s {
 customElements.define("togostanza--legend", Legend);
 
 export { Legend as L };
-//# sourceMappingURL=Legend-08bca0f2.js.map
+//# sourceMappingURL=Legend-0dffa067.js.map
