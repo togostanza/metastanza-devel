@@ -7,21 +7,21 @@ main {
   padding: var(--togostanza-outline-padding);
 }
 
-#sunburst textPath {
+textPath {
   pointer-events: none;
   dominant-baseline: middle;
   text-anchor: middle;
 }
 
-#sunburst .numbers {
+.numbers {
   font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
 }
 
-#sunburst g .hidden-arc {
+g .hidden-arc {
   fill: none;
   stroke: none;
 }
 
-#sunburst .no-fill {
+.no-fill {
   fill: none;
 }
