@@ -54,6 +54,8 @@ export default class Heatmap extends Stanza {
       root
     );
 
+    this._data = dataset;
+
     appendCustomCss(this, this.params["custom_css_url"]);
     const cellColorKey = this.params["cell-color-key"];
     const xKey = this.params["axis-x-key"];
@@ -68,8 +70,7 @@ export default class Heatmap extends Stanza {
     const legendTitle = this.params["legend-title"];
     const legendGroups = this.params["legend-groups"];
     const tooltipKey = this.params["tooltips-key"];
-    const tooltipHTML = (d) =>
-      `<span><strong>${d[xKey]},${d[yKey]}: </strong>${d[tooltipKey]}</span>`;
+    const tooltipHTML = (d) => d[tooltipKey];
 
     // Color scale
     const cellColorMin = this.params["cell-color-min"];
