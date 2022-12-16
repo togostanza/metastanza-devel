@@ -2,8 +2,6 @@ import Stanza from "togostanza/stanza";
 import { createApp } from "vue";
 import App from "./app.vue";
 import {
-  downloadSvgMenuItem,
-  downloadPngMenuItem,
   downloadJSONMenuItem,
   downloadCSVMenuItem,
   downloadTSVMenuItem,
@@ -15,8 +13,6 @@ import loadData from "togostanza-utils/load-data";
 export default class ColumnTree extends Stanza {
   menu() {
     return [
-      downloadSvgMenuItem(this, "column-tree"),
-      downloadPngMenuItem(this, "column-tree"),
       downloadJSONMenuItem(this, "column-tree", this._data),
       downloadCSVMenuItem(this, "column-tree", this._data),
       downloadTSVMenuItem(this, "column-tree", this._data),
@@ -43,7 +39,6 @@ export default class ColumnTree extends Stanza {
     this._app?.unmount();
     this._app = createApp(App, {
       ...camelCaseParams,
-
       main,
     });
     this._app.mount(main);
