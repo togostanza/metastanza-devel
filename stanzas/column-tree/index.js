@@ -37,10 +37,7 @@ export default class ColumnTree extends Stanza {
     camelCaseParams.data = this._data;
 
     this._app?.unmount();
-    this._app = createApp(App, {
-      ...camelCaseParams,
-      main,
-    });
+    this._app = createApp(App, { ...camelCaseParams, main });
     this._app.mount(main);
   }
 }

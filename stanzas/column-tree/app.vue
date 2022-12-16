@@ -68,13 +68,31 @@ function isRootNode(parent) {
   return !parent || isNaN(parent);
 }
 
+const getType = (stanzaType) => {
+  switch (stanzaType) {
+    case "boolean":
+      return Boolean;
+    case "number":
+      return Number;
+    default:
+      return String;
+  }
+};
+const typeArray = metadata["stanza:parameter"].map((param) => {
+  return {
+    name: camelCase(param["stanza:key"]),
+    type: getType(param["stanza:type"]),
+  };
+});
+const typeObject = typeArray.reduce(
+  (objects, current) => ({ ...objects, [current.name]: current.type }),
+  {}
+);
+
 // TODO: set path for data objects
 export default defineComponent({
   components: { NodeColumn, SearchSuggestions },
-  props: [
-    ...metadata["stanza:parameter"].map((p) => camelCase(p["stanza:key"])),
-    "data",
-  ],
+  props: { ...typeObject, data: { type: Array, default: () => [] } },
   emits: ["resetHighlightedNode"],
   setup(params) {
     params = toRefs(params);
