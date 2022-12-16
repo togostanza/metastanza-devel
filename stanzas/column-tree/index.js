@@ -10,6 +10,8 @@ import {
   appendCustomCss,
 } from "togostanza-utils";
 import { camelCase } from "lodash";
+import loadData from "togostanza-utils/load-data";
+
 export default class ColumnTree extends Stanza {
   menu() {
     return [
@@ -31,8 +33,19 @@ export default class ColumnTree extends Stanza {
       camelCaseParams[camelCase(key)] = value;
     });
 
+    this._data = await loadData(
+      camelCaseParams.dataUrl,
+      camelCaseParams.dataType,
+      main
+    );
+    camelCaseParams.data = this._data;
+
     this._app?.unmount();
-    this._app = createApp(App, { ...camelCaseParams, main });
+    this._app = createApp(App, {
+      ...camelCaseParams,
+
+      main,
+    });
     this._app.mount(main);
   }
 }

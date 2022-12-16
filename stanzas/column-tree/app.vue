@@ -59,7 +59,6 @@ import {
   ref,
   computed,
 } from "vue";
-import loadData from "togostanza-utils/load-data";
 import metadata from "./metadata.json";
 import NodeColumn from "./NodeColumn.vue";
 import SearchSuggestions from "./SearchSuggestions.vue";
@@ -72,10 +71,14 @@ function isRootNode(parent) {
 // TODO: set path for data objects
 export default defineComponent({
   components: { NodeColumn, SearchSuggestions },
-  props: metadata["stanza:parameter"].map((p) => camelCase(p["stanza:key"])),
+  props: [
+    ...metadata["stanza:parameter"].map((p) => camelCase(p["stanza:key"])),
+    "data",
+  ],
   emits: ["resetHighlightedNode"],
   setup(params) {
     params = toRefs(params);
+
     const layerRefs = ref([]);
     const state = reactive({
       keys: {
@@ -97,13 +100,8 @@ export default defineComponent({
       highligthedNodes: [],
     });
     watchEffect(
-      async () => {
-        state.responseJSON = await loadData(
-          params?.dataUrl?.value,
-          params?.dataType?.value,
-          params?.main
-        );
-        state.responseJSON = state.responseJSON.map((node) => {
+      () => {
+        state.responseJSON = params?.data?.value?.map((node) => {
           return { ...node, path: getPath(node) };
         });
         state.checkedNodes = new Map();
