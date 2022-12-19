@@ -25,7 +25,7 @@
         :value-obj="valueObj"
         :node-show-borders="state.nodeShowBorders"
         :node-content-alignment="state.nodeContentAlignment"
-        @selectNode="selectNode"
+        @select-node="selectNode"
       />
     </div>
     <div id="tree">
@@ -43,8 +43,8 @@
         :node-show-borders="state.nodeShowBorders"
         :node-content-alignment="state.nodeContentAlignment"
         :column-fixed-width="state.columnFixedWidth"
-        @setParent="updatePartialColumnData"
-        @setCheckedNode="updateCheckedNodes"
+        @set-parent="updatePartialColumnData"
+        @set-checked-node="updateCheckedNodes"
       />
     </div>
   </section>
