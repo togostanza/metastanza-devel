@@ -1,5 +1,5 @@
 import { S as Stanza, s as select, d as defineStanzaElement } from './transform-237e281d.js';
-import { l as loadData } from './load-data-ee59fc83.js';
+import { l as loadData } from './load-data-60693126.js';
 import { T as ToolTip } from './ToolTip-4322f509.js';
 import { b as StanzaCirculateColorGenerator } from './ColorGenerator-4f5c41b8.js';
 import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-86482d2c.js';

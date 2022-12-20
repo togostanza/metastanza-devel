@@ -225,17 +225,19 @@ function showLoadingIcon(element) {
   const spinnerBgColor = css("--togostanza-loading_spinner-bg_color");
   const spinnerColor = css("--togostanza-loading_spinner-color");
 
-
   style = document.createElement("style");
   style.setAttribute("id", "spinner-css");
 
-  style.innerHTML = getSpinnerCss(spinnerBgColor || "rgb(200,200,200)",spinnerColor || "#fff");
+  style.innerHTML = getSpinnerCss(
+    spinnerBgColor || "rgb(200,200,200)",
+    spinnerColor || "#fff"
+  );
   element.getRootNode().appendChild(style);
 
   const container = select(element)
-  .append("div")
-  .classed("metastanza-loading-icon-div", true)
-  .attr("id", "metastanza-loading-icon-div");
+    .append("div")
+    .classed("metastanza-loading-icon-div", true)
+    .attr("id", "metastanza-loading-icon-div");
 
   const wrap = container.append("div").classed("spinner-wrap", true);
   const circle = wrap.append("div").classed("circle", true);
@@ -333,11 +335,21 @@ async function loadData(
   url,
   type = "json",
   mainElement = null,
-  timeout = 10 * 60 * 1000
+  timeout = 10 * 60 * 1000,
+  limit = null,
+  offset = null
 ) {
-  const _cacheKey = JSON.stringify({ url, type });
+  const _cacheKey = JSON.stringify({ url, type, limit, offset });
   if (cacheKey === _cacheKey) {
     return cache;
+  }
+
+  const u = new URL(url);
+  if (limit) {
+    u.searchParams.set(type === "elasticsearch" ? "size" : "limit", limit);
+  }
+  if (offset) {
+    u.searchParams.set(type === "elasticsearch" ? "from" : "offset", offset);
   }
 
   const loader = getLoader(type);
@@ -356,11 +368,10 @@ async function loadData(
     if (mainElement) {
       showLoadingIcon(mainElement);
     }
-    data = await loader(url, requestInit);
+    data = await loader(u, requestInit);
 
     cache = data;
     cacheKey = _cacheKey;
-
   } catch (error) {
     if (mainElement) {
       const detail =
@@ -436,4 +447,4 @@ function getSpinnerCss(bgColor, spinnerColor) {
 }
 
 export { csvParseRows as a, csvFormat as b, csvParse as c, dsvFormat as d, csvFormatBody as e, csvFormatRows as f, csvFormatRow as g, csvFormatValue as h, tsvParse as i, tsvParseRows as j, tsvFormat as k, loadData as l, tsvFormatBody as m, tsvFormatRows as n, tsvFormatRow as o, tsvFormatValue as p, dsv as q, csv as r, tsv as s, text as t };
-//# sourceMappingURL=load-data-ee59fc83.js.map
+//# sourceMappingURL=load-data-60693126.js.map

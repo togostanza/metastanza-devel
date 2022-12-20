@@ -1,5 +1,5 @@
 import { s as select, S as Stanza, d as defineStanzaElement } from './transform-237e281d.js';
-import { l as loadData } from './load-data-ee59fc83.js';
+import { l as loadData } from './load-data-60693126.js';
 import { T as ToolTip } from './ToolTip-4322f509.js';
 import { l as line$2 } from './line-5ff356a1.js';
 import { f as forceSimulation, a as forceManyBody, b as forceCenter, c as forceLink, d as forceCollide } from './manyBody-55426ba5.js';
