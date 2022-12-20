@@ -4,7 +4,7 @@ import { T as ToolTip } from './ToolTip-c89896f1.js';
 import { L as Legend } from './Legend-0dffa067.js';
 import { S as StanzaColorGenerator } from './ColorGenerator-55034777.js';
 import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-1567edd1.js';
-import { g as getMarginsFromCSSString } from './utils-a1cc17fa.js';
+import { g as getMarginsFromCSSString } from './utils-0de57f2d.js';
 import { m as max } from './max-2c042256.js';
 import { s as stack, g as group } from './stack-61f3dc15.js';
 import { o as ordinal, f as format } from './ordinal-5c40f749.js';

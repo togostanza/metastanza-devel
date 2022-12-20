@@ -3,7 +3,7 @@ import { a as brushX, c as brushY } from './brush-1c3a785b.js';
 import { l as loadData } from './load-data-c99d7a02.js';
 import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-1567edd1.js';
 import { S as StanzaColorGenerator } from './ColorGenerator-55034777.js';
-import { g as getMarginsFromCSSString } from './utils-a1cc17fa.js';
+import { g as getMarginsFromCSSString } from './utils-0de57f2d.js';
 import { v as v4 } from './v4-1d7bfe79.js';
 import { S as Symbol, d as circle, an as timeFormat, t as time, q as utcSecond, W as utcMinute, Y as utcHour, _ as utcDay, a0 as utcSunday, ae as utcMonth, ag as utcYear } from './symbol-f660dd1d.js';
 import { o as ordinal, f as format } from './ordinal-5c40f749.js';

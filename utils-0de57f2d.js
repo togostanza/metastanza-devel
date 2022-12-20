@@ -619,22 +619,22 @@ function getMarginsFromCSSString(str) {
 
   switch (splitted.length) {
     case 1:
-      res.TOP = res.RIGHT = res.BOTTOM = res.LEFT = parseInt(splitted[0]);
+      res.TOP = res.RIGHT = res.BOTTOM = res.LEFT = parseInt(splitted[0]) || 0;
       break;
     case 2:
-      res.TOP = res.BOTTOM = parseInt(splitted[0]);
-      res.LEFT = res.RIGHT = parseInt(splitted[1]);
+      res.TOP = res.BOTTOM = parseInt(splitted[0]) || 0;
+      res.LEFT = res.RIGHT = parseInt(splitted[1]) || 0;
       break;
     case 3:
-      res.TOP = parseInt(splitted[0]);
-      res.LEFT = res.RIGHT = parseInt(splitted[1]);
-      res.BOTTOM = parseInt(splitted[2]);
+      res.TOP = parseInt(splitted[0]) || 0;
+      res.LEFT = res.RIGHT = parseInt(splitted[1]) || 0;
+      res.BOTTOM = parseInt(splitted[2]) || 0;
       break;
     case 4:
-      res.TOP = parseInt(splitted[0]);
-      res.RIGHT = parseInt(splitted[1]);
-      res.BOTTOM = parseInt(splitted[2]);
-      res.LEFT = parseInt(splitted[3]);
+      res.TOP = parseInt(splitted[0]) || 0;
+      res.RIGHT = parseInt(splitted[1]) || 0;
+      res.BOTTOM = parseInt(splitted[2]) || 0;
+      res.LEFT = parseInt(splitted[3]) || 0;
       break;
   }
 
@@ -642,4 +642,4 @@ function getMarginsFromCSSString(str) {
 }
 
 export { applyConstructor as a, getMarginsFromCSSString as g };
-//# sourceMappingURL=utils-a1cc17fa.js.map
+//# sourceMappingURL=utils-0de57f2d.js.map

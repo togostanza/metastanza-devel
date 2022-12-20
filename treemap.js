@@ -2,7 +2,7 @@ import { S as Stanza, s as select, d as defineStanzaElement } from './transform-
 import { l as loadData } from './load-data-c99d7a02.js';
 import { S as StanzaColorGenerator } from './ColorGenerator-55034777.js';
 import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-1567edd1.js';
-import { g as getMarginsFromCSSString } from './utils-a1cc17fa.js';
+import { g as getMarginsFromCSSString } from './utils-0de57f2d.js';
 import { o as ordinal, f as format, a as interpolate$1 } from './ordinal-5c40f749.js';
 import { s as stratify, h as hierarchy } from './stratify-7050dfd9.js';
 import { l as linear } from './linear-b53de1ad.js';
