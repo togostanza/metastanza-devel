@@ -71,7 +71,7 @@
     {
       "stanza:key": "axis-x-title_padding",
       "stanza:type": "number",
-      "stanza:example": 0,
+      "stanza:example": 20,
       "stanza:default": 20,
       "stanza:description": "Axis title padding in px",
       "stanza:required": false

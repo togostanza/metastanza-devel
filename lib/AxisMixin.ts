@@ -256,7 +256,10 @@ export class Axis {
       this.querySelector("text").setAttribute("y", "0");
     });
 
-    this._handleTickLabelsAngleUpdate();
+    queueMicrotask(() => {
+      this._handleTickLabelsAngleUpdate();
+      this._handleTitlePaddingUpdate();
+    });
   }
 
   private get HEIGHT() {
@@ -354,7 +357,9 @@ export class Axis {
     this._titleText.text(title);
   }
 
-  private _handleTitlePaddingUpdate(padding: number) {
+  private _handleTitlePaddingUpdate(
+    padding: number = this.params.titlePadding || 0
+  ) {
     let translate;
 
     const previousTransform = this._titleG.attr("transform");
