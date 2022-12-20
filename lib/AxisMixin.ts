@@ -35,6 +35,7 @@ export interface AxisParamsI {
   tickLabelsAngle?: number;
   ticksLabelsMargin?: number;
   ticksInterval?: number;
+  ticksLabelsFormat?: string;
   title?: string;
   titlePadding?: number;
   gridInterval?: number;
@@ -66,6 +67,7 @@ const initialState: AxisParamsI = {
   ticksLabelsMargin: 0,
   ticksInterval: 0,
   title: "",
+  ticksLabelsFormat: "",
   titlePadding: 0,
   gridInterval: 0,
 };
@@ -108,7 +110,7 @@ export class Axis {
   _axisGen: d3.Axis<d3.AxisDomain>;
   _gridGen: d3.Axis<d3.AxisDomain>;
   _axisLength: number;
-
+  _tickTextXY: { x: string; y: string };
   private _getTickValues(interval: number) {
     if (interval) {
       if (this.params.scale === "linear" || this.params.scale === "log10") {
@@ -126,6 +128,16 @@ export class Axis {
     }
 
     return [];
+  }
+
+  private get scaleType() {
+    if (this.params.scale === "ordinal") {
+      return "ordinal";
+    } else return "quantitaive";
+  }
+
+  private get ticksLabelsFormatter() {
+    return d3.format(this.params.ticksLabelsFormat);
   }
 
   private get gridTickValues() {
@@ -182,6 +194,10 @@ export class Axis {
       "ticksInterval",
       this._handleTicksIntervalUpdate.bind(this)
     );
+    this.callbackMap.set(
+      "ticksLabelsFormat",
+      this._handleTicksLabelsFormatUpdate.bind(this)
+    );
     return proxyfy(this, this.callbackMap) as Axis;
   }
 
@@ -193,7 +209,24 @@ export class Axis {
 
   private _handleTicksIntervalUpdate() {
     this._updateTicks();
+    this._callDrawAxis();
+  }
+
+  private _callDrawAxis() {
     this._axisG.call(this._axisGen.bind(this));
+    this._tickTextXY = {
+      x: this._axisG.select(".tick").select("text").attr("x") || "0",
+      y: this._axisG.select(".tick").select("text").attr("y") || "0",
+    };
+    this._axisG.selectAll(".tick").each(function (this: SVGElement) {
+      this.querySelector("text").setAttribute("x", "0");
+      this.querySelector("text").setAttribute("y", "0");
+    });
+
+    this._handleTickLabelsAngleUpdate();
+
+    //this._handleTitlePaddingUpdate(this.params.titlePadding);
+    // TODO update here ticks angles and paddings
   }
 
   private get HEIGHT() {
@@ -238,7 +271,7 @@ export class Axis {
   private _handleMarginsUpdate() {
     this._calcAxisMargins();
 
-    this._axisG.call(this._axisGen.bind(this));
+    this._callDrawAxis();
     this._gridG.call(this._gridGen.bind(this));
 
     this._g.attr(
@@ -260,19 +293,13 @@ export class Axis {
 
     this._gridG.call(this._gridGen.bind(this));
 
-    this._axisG.call(this._axisGen.bind(this));
+    this._callDrawAxis();
 
-    this._applyOtherParams();
-  }
-
-  private _applyOtherParams() {
-    this._handleTickLabelsAngleUpdate(this.params.tickLabelsAngle);
+    this._handleTickLabelsAngleUpdate();
   }
 
   private _handlePlacementUpdate() {
     this._calcAxisMargins();
-
-    // TODO update gridGen
 
     this._g.attr(
       "transform",
@@ -294,8 +321,6 @@ export class Axis {
     if (this.params.placement === "left" || this.params.placement === "right") {
       this._titleText.attr("transform", "rotate(-90)");
     }
-
-    this._handleTitlePaddingUpdate(this.params.titlePadding);
   }
 
   private _handleTitleUpdate(title: string) {
@@ -310,7 +335,8 @@ export class Axis {
     const prevTranslate = /translate\((-?\d+),\s*(-?\d+)/.exec(
       previousTransform
     );
-    const [prevTX, prevTY] = prevTranslate.slice(1);
+
+    const [prevTX, prevTY] = prevTranslate?.slice(1) || [0, 0];
 
     switch (this.params.placement) {
       case "bottom":
@@ -333,13 +359,69 @@ export class Axis {
     this._titleG.attr("transform", translate);
   }
 
-  private _handleTickLabelsAngleUpdate(angle: number) {
-    this._axisG.selectAll("text").attr("transform", `rotate(${angle})`);
+  private _handleTickLabelsAngleUpdate(
+    angle: number = this.params.tickLabelsAngle
+  ) {
+    let translate = "";
+
+    if (this.params.ticksInterval === 0) return;
+
+    if (!this._axisG.select(".tick").select("text").empty()) {
+      const { x, y } = this._tickTextXY;
+
+      if (this.params.placement === "bottom") {
+        translate = `translate(0,${y})`;
+
+        if (angle > 0 && angle < 90) {
+          this._axisG.selectAll("text").attr("text-anchor", "start");
+        } else if (angle > -90 && angle < 0) {
+          this._axisG.selectAll("text").attr("text-anchor", "end");
+        } else {
+          this._axisG.selectAll("text").attr("text-anchor", "middle");
+        }
+      } else if (this.params.placement === "top") {
+        translate = `translate(0,${y})`;
+
+        if (angle > 0 && angle < 90) {
+          this._axisG.selectAll("text").attr("text-anchor", "end");
+        } else if (angle > -90 && angle < 0) {
+          this._axisG.selectAll("text").attr("text-anchor", "start");
+        } else {
+          this._axisG.selectAll("text").attr("text-anchor", "middle");
+        }
+      } else if (this.params.placement === "left") {
+        if (angle > -90 && angle < 90) {
+          this._axisG.selectAll("text").attr("text-anchor", "end");
+          if (angle === 90) {
+            this._axisG
+              .selectAll(".tick")
+              .select("text")
+              .attr("alignment-baseline", "middle");
+          }
+          translate = `translate(${x},0)`;
+        }
+      } else {
+        if (angle > -90 && angle < 90) {
+          this._axisG.selectAll("text").attr("text-anchor", "start");
+          if (angle === 90) {
+            this._axisG
+              .selectAll(".tick")
+              .select("text")
+              .attr("alignment-baseline", "middle");
+          }
+          translate = `translate(${x},0)`;
+        }
+      }
+    }
+
+    this._axisG
+      .selectAll("text")
+      .attr("transform", `${translate || ""} rotate(${angle})`);
   }
 
   private _handleShowTicksUpdate(showTicks: boolean) {
     this._axisGen.tickSize(!showTicks ? 0 : 6);
-    this._axisG.call(this._axisGen.bind(this));
+    this._callDrawAxis();
   }
 
   private _handleScaleUpdate(newScale: ScaleType) {
@@ -353,10 +435,15 @@ export class Axis {
     this._redrawAxis();
   }
 
+  private _handleTicksLabelsFormatUpdate() {
+    this._axisGen.tickFormat(this.ticksLabelsFormatter);
+    this._callDrawAxis();
+  }
+
   private _getTicksFormat() {
     switch (this.params.scale) {
       case AxisScaleE.linear:
-        return (value: d3.AxisDomain) => value.toString();
+        return this.ticksLabelsFormatter;
       case AxisScaleE.log10:
         return formatPower;
 
@@ -374,7 +461,7 @@ export class Axis {
       this._axisScale as d3.AxisScale<d3.AxisDomain>
     );
 
-    this._axisGen.tickFormat(this._getTicksFormat());
+    this._axisGen.tickFormat(this.ticksLabelsFormatter);
 
     if (!this._axisG.empty()) {
       this._axisG.remove();
@@ -384,10 +471,13 @@ export class Axis {
       this._gridG.remove();
     }
 
+    this._axisG = this._g.append("g").classed("axis", true);
+
+    this._callDrawAxis();
+
     this._updateTicks();
     this._updateGrid();
 
-    this._axisG = this._g.append("g").classed("axis", true).call(this._axisGen);
     this._gridG = this._g
       .append("g")
       .classed("grid-lines", true)

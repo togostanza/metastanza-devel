@@ -65,8 +65,6 @@ class TestAxis extends Stanza {
         "axis-y-placement": z
           .union([z.literal("left"), z.literal("right")])
           .default("left"),
-        "axis-y-ticks_hide": z.boolean(),
-        "axis-x-ticks_hide": z.boolean(),
         "axis-x-scale": z.union([
           z.literal("linear"),
           z.literal("log10"),
@@ -83,6 +81,8 @@ class TestAxis extends Stanza {
         "axis-y-gridlines_interval": z.number().optional(),
         "axis-x-ticks_interval": z.number().optional(),
         "axis-y-ticks_interval": z.number().optional(),
+        "axis-x-ticks_labels_format": z.string().optional(),
+        "axis-y-ticks_labels_format": z.string().optional(),
       })
       .passthrough();
 
@@ -115,6 +115,7 @@ class TestAxis extends Stanza {
       scale: params["axis-x-scale"],
       gridInterval: params["axis-x-gridlines_interval"],
       ticksInterval: params["axis-x-ticks_interval"],
+      ticksLabelsFormat: params["axis-x-ticks_labels_format"],
     };
 
     const yParams: AxisParamsI = {
@@ -129,6 +130,7 @@ class TestAxis extends Stanza {
       scale: params["axis-y-scale"],
       gridInterval: params["axis-y-gridlines_interval"],
       ticksInterval: params["axis-y-ticks_interval"],
+      ticksLabelsFormat: params["axis-y-ticks_labels_format"],
     };
 
     if (!this.xAxisGen) {
@@ -145,10 +147,10 @@ class TestAxis extends Stanza {
     this.xAxisGen.update(xParams);
     this.yAxisGen.update(yParams);
 
-    this.interval = setInterval(() => {
-      this.xAxisGen.update({ domain: [0.01, Math.random() * 1000] });
-      this.yAxisGen.update({ domain: [0.01, Math.random() * 100] });
-    }, 1000);
+    // this.interval = setInterval(() => {
+    //   this.xAxisGen.update({ domain: [0.01, Math.random() * 10000] });
+    //   this.yAxisGen.update({ domain: [0.01, Math.random() * 100] });
+    // }, 1000);
   }
 }
 
