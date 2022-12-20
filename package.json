@@ -2,7 +2,7 @@
   "name": "metastanza",
   "version": "0.0.1",
   "license": "MIT",
-  "repository": "https://github.com/togostanza/metastanza.git",
+  "repository": "https://github.com/togostanza/metastanza-devel.git",
   "scripts": {
     "lint": "npm-run-all --aggregate-output --continue-on-error --parallel 'lint:!(fix)'",
     "lint:fix": "npm-run-all --continue-on-error lint:*:fix",
