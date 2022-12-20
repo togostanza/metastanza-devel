@@ -1,4 +1,4 @@
-import { d as defineComponent, h as ref, i as octicons, a as createElementBlock, F as Fragment, e as createBaseVNode, j as createTextVNode, m as mergeProps, o as openBlock, k as computed, l as watch, c as createBlock, n as normalizeProps, p as guardReactiveProps, q as resolveDynamicComponent, u as createVNode, t as toDisplayString, r as resolveComponent, b as renderList, v as pushScopeId, x as popScopeId, y as n, f as createCommentVNode, z as normalizeClass, A as unref, B as normalizeStyle, s as script$8, w as withCtx, g as createApp } from './Layout-d42220f1.js';
+import { d as defineComponent, h as ref, i as octicons, a as createElementBlock, F as Fragment, e as createBaseVNode, j as createTextVNode, m as mergeProps, o as openBlock, k as computed, l as watch, c as createBlock, n as normalizeProps, p as guardReactiveProps, q as resolveDynamicComponent, u as createVNode, t as toDisplayString, r as resolveComponent, b as renderList, v as pushScopeId, x as popScopeId, y as n, f as createCommentVNode, z as normalizeClass, A as unref, B as normalizeStyle, s as script$8, w as withCtx, g as createApp } from './Layout-35bf6c23.js';
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -3625,7 +3625,7 @@ script$5.__scopeId = "data-v-43688ce6";
 script$5.__file = "node_modules/togostanza/src/components/HelpAboutPane.vue";
 
 var script$4 = defineComponent({
-  props: ['choices', 'helpText', 'input', 'name', 'required', 'type'],
+  props: ['choices', 'helpText', 'input', 'name', 'required', 'type', 'label'],
   setup(props) {
     const formType = computed(() => {
       return props.type === 'datetime' ? 'datetime-local' : props.type;
@@ -3649,10 +3649,7 @@ const _hoisted_9$1 = ["checked", "id"];
 const _hoisted_10$1 = ["for"];
 const _hoisted_11$1 = ["type", "value"];
 const _hoisted_12$1 = ["disabled"];
-const _hoisted_13 = {
-  key: 0,
-  class: "form-text text-muted"
-};
+const _hoisted_13 = { class: "form-text text-muted" };
 
 function render$1(_ctx, _cache, $props, $setup, $data, $options) {
   return (openBlock(), createElementBlock(Fragment, null, [
@@ -3694,7 +3691,7 @@ function render$1(_ctx, _cache, $props, $setup, $data, $options) {
               createBaseVNode("label", {
                 class: "input-group-text flex-fill bg-body",
                 for: _ctx.name
-              }, toDisplayString(_ctx.helpText), 9 /* TEXT, PROPS */, _hoisted_10$1)
+              }, toDisplayString(_ctx.label), 9 /* TEXT, PROPS */, _hoisted_10$1)
             ], 64 /* STABLE_FRAGMENT */))
           : (openBlock(), createElementBlock("input", {
               key: 2,
@@ -3713,9 +3710,7 @@ function render$1(_ctx, _cache, $props, $setup, $data, $options) {
           }, " Reset ", 8 /* PROPS */, _hoisted_12$1))
         : createCommentVNode("v-if", true)
     ]),
-    (_ctx.formType !== 'boolean')
-      ? (openBlock(), createElementBlock("small", _hoisted_13, toDisplayString(_ctx.helpText), 1 /* TEXT */))
-      : createCommentVNode("v-if", true)
+    createBaseVNode("small", _hoisted_13, toDisplayString(_ctx.helpText), 1 /* TEXT */)
   ], 64 /* STABLE_FRAGMENT */))
 }
 
@@ -3805,8 +3800,9 @@ return (_ctx, _cache) => {
                 type: param['stanza:type'],
                 choices: param['stanza:choice'],
                 required: param['stanza:required'],
-                "help-text": param['stanza:description']
-              }, null, 8 /* PROPS */, ["input", "name", "type", "choices", "required", "help-text"])
+                "help-text": param['stanza:description'],
+                label: params['stanza:label']
+              }, null, 8 /* PROPS */, ["input", "name", "type", "choices", "required", "help-text", "label"])
             ]))
           }), 128 /* KEYED_FRAGMENT */))
         ], 10 /* CLASS, PROPS */, _hoisted_5$3))
@@ -3908,8 +3904,9 @@ return (_ctx, _cache) => {
                     type: style['stanza:type'],
                     choices: style['stanza:choice'],
                     required: style['stanza:required'],
-                    "help-text": style['stanza:description']
-                  }, null, 8 /* PROPS */, ["input", "name", "type", "choices", "required", "help-text"])
+                    "help-text": style['stanza:description'],
+                    label: style['stanza:label']
+                  }, null, 8 /* PROPS */, ["input", "name", "type", "choices", "required", "help-text", "label"])
                 ]))
               }), 128 /* KEYED_FRAGMENT */))
             ], 10 /* CLASS, PROPS */, _hoisted_6$2))
