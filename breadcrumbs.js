@@ -2,7 +2,7 @@ import { a as s, y, h as b, w, S as Stanza, d as defineStanzaElement } from './t
 import { f as appendCustomCss } from './index-1567edd1.js';
 import { o, e, n } from './ref-cf92847b.js';
 import { a as applyConstructor } from './utils-a1cc17fa.js';
-import { l as loadData } from './load-data-5bcda25c.js';
+import { l as loadData } from './load-data-c99d7a02.js';
 import { F as FAIcons } from './index-c774cef2.js';
 import './axios-70c5a559.js';
 

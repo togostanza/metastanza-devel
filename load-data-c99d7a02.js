@@ -222,28 +222,34 @@ function showLoadingIcon(element) {
   }
 
   const css = (key) => getComputedStyle(element).getPropertyValue(key);
+  const spinnerBgColor = css("--togostanza-loading_spinner-bg_color");
+  const spinnerColor = css("--togostanza-loading_spinner-color");
 
-  const spinnerColor = css("--togostanza-loading-spinner-color");
-
-  select(element).classed("main-center", true);
 
   style = document.createElement("style");
   style.setAttribute("id", "spinner-css");
 
-  style.innerHTML = getSpinnerCss(spinnerColor || "grey");
+  style.innerHTML = getSpinnerCss(spinnerBgColor || "rgb(200,200,200)",spinnerColor || "#fff");
   element.getRootNode().appendChild(style);
 
   const container = select(element)
-    .append("div")
-    .attr("class", "metastanza-loading-icon-div")
-    .attr("id", "metastanza-loading-icon-div");
+  .append("div")
+  .classed("metastanza-loading-icon-div", true)
+  .attr("id", "metastanza-loading-icon-div");
 
-  container.append("div").classed("loading", true);
-  container.append("div").classed("circle", true);
+  const wrap = container.append("div").classed("spinner-wrap", true);
+  const circle = wrap.append("div").classed("circle", true);
+  const spinner = circle
+    .append("div")
+    .classed("spinner", true)
+    .attr("style", "--count: 12");
+
+  for (let i = 0; i < 12; i++) {
+    spinner.append("span").attr("style", `--index: ${i}`);
+  }
 }
 
 function hideLoadingIcon(element) {
-  select(element).classed("main-center", false);
   style?.remove();
   select(element).select("#metastanza-loading-icon-div").remove();
 }
@@ -354,6 +360,7 @@ async function loadData(
 
     cache = data;
     cacheKey = _cacheKey;
+
   } catch (error) {
     if (mainElement) {
       const detail =
@@ -375,102 +382,58 @@ async function loadData(
   return data;
 }
 
-function getSpinnerCss(color) {
+function getSpinnerCss(bgColor, spinnerColor) {
   return `
   :host {
-    --loading_spinner_background: ${color};
-    --dot_1: rgba(255,255,255,1);
-    --dot_2: rgba(255,255,255,0.8);
-    --dot_3: rgba(255,255,255,0.6);
-    --dot_4: rgba(255,255,255,0.3);
-  }
-
-  .main-center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 150px;
+    --loading_spinner_bg_color: ${bgColor};
+    --loading_spinner_color: ${spinnerColor};
   }
 
   .metastanza-loading-icon-div {
     display: flex;
     align-items: center;
-    justify-content: center;
     height: 150px;
-    position: relative;
+  }
+
+  .spinner-wrap {
+    position: absolute;
+    left: 50%;
   }
 
   .circle {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    background-color: var(--loading_spinner_background);
     position: absolute;
-    top: 50%;
-    left: 50%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: var(--loading_spinner_bg_color);
     transform: translate(-50%, -50%);
   }
 
-  .loading {
-    height: 3.5px;
-    width: 3.5px;
-    border-radius: 50%;
-    animation: load 1.5s infinite ease;
-    z-index: 1;
+  .spinner {
+    position: absolute;
+    inset: 50%;
+    animation: spin 2s steps(var(--count), end) infinite;
   }
 
-  @keyframes load {
-    0%,
-    100% {
-      box-shadow: 0em -0.7em 0em 0em var(--dot_1), 0.5em -0.45em 0 0em var(--dot_4), 0.7em 0em 0 0em var(--dot_4),
-        0.45em 0.4em 0 0em var(--dot_4), 0em 0.7em 0 0em var(--dot_4),
-        -0.45em 0.45em 0 0em var(--dot_3),-0.7em 0em 0 0em var(--dot_4),
-        -0.45em -0.45em 0 0em var(--dot_2);
+  .spinner span {
+    position: absolute;
+    height: 2px;
+    width: 4px;
+    top: -1px;
+    left: -2px;
+    background-color: var(--loading_spinner_color);
+    border-radius: 1.5px;
+    transform: rotate(calc(var(--index) * 30deg)) translateX(6px) scaleY(0.5);
+    opacity: calc(var(--index) / var(--count));
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
     }
-    12.5% {
-      box-shadow: 0em -0.7em 0em 0em var(--dot_2), 0.5em -0.45em 0 0em var(--dot_1), 0.7em 0em 0 0em var(--dot_4),
-        0.45em 0.4em 0 0em var(--dot_4), 0em 0.7em 0 0em var(--dot_4),
-        -0.45em 0.45em 0 0em var(--dot_4),-0.7em 0em 0 0em var(--dot_4),
-        -0.45em -0.45em 0 0em var(--dot_3);
-    }
-    25% {
-      box-shadow: 0em -0.7em 0em 0em var(--dot_3), 0.5em -0.45em 0 0em var(--dot_2), 0.7em 0em 0 0em var(--dot_1),
-        0.5em 0.45em 0 0em var(--dot_4), 0em 0.7em 0 0em var(--dot_4),
-        -0.5em 0.45em 0 0em var(--dot_4),-0.7em 0em 0 0em var(--dot_4),
-        -0.5em -0.45em 0 0em var(--dot_4);
-    }
-    37.5% {
-      box-shadow: 0em -0.7em 0em 0em var(--dot_4), 0.5em -0.45em 0 0em var(--dot_3), 0.7em 0em 0 0em var(--dot_2),
-        0.5em 0.45em 0 0em var(--dot_1), 0em 0.7em 0 0em var(--dot_4),
-        -0.5em 0.45em 0 0em var(--dot_4),-0.7em 0em 0 0em var(--dot_4),
-        -0.5em -0.45em 0 0em var(--dot_4);
-    }
-    50% {
-      box-shadow: 0em -0.7em 0em 0em var(--dot_4), 0.5em -0.45em 0 0em var(--dot_4), 0.7em 0em 0 0em var(--dot_3),
-        0.5em 0.45em 0 0em var(--dot_2), 0em 0.7em 0 0em var(--dot_1),
-        -0.5em 0.45em 0 0em var(--dot_4),-0.7em 0em 0 0em var(--dot_4),
-        -0.5em -0.45em 0 0em var(--dot_4);
-    }
-    62.5% {
-      box-shadow: 0em -0.7em 0em 0em var(--dot_4), 0.5em -0.45em 0 0em var(--dot_4), 0.7em 0em 0 0em var(--dot_4),
-        0.5em 0.45em 0 0em var(--dot_3), 0em 0.7em 0 0em var(--dot_2),
-        -0.5em 0.45em 0 0em var(--dot_1),-0.7em 0em 0 0em var(--dot_4),
-        -0.5em -0.45em 0 0em var(--dot_4);
-    }
-    75% {
-      box-shadow: 0em -0.7em 0em 0em var(--dot_4), 0.5em -0.45em 0 0em var(--dot_4), 0.7em 0em 0 0em var(--dot_4),
-        0.5em 0.45em 0 0em var(--dot_4), 0em 0.7em 0 0em var(--dot_3),
-        -0.5em 0.45em 0 0em var(--dot_2),-0.7em 0em 0 0em var(--dot_1),
-        -0.5em -0.45em 0 0em var(--dot_4);
-    }
-    87.5% {
-      box-shadow: 0em -0.7em 0em 0em var(--dot_4), 0.5em -0.45em 0 0em var(--dot_4), 0.7em 0em 0 0em var(--dot_4),
-        0.5em 0.45em 0 0em var(--dot_4), 0em 0.7em 0 0em var(--dot_4),
-        -0.5em 0.45em 0 0em var(--dot_3),-0.7em 0em 0 0em var(--dot_2),
-        -0.5em -0.45em 0 0em var(--dot_1);
-    }
+  }
   `;
 }
 
 export { csvParseRows as a, csvFormat as b, csvParse as c, dsvFormat as d, csvFormatBody as e, csvFormatRows as f, csvFormatRow as g, csvFormatValue as h, tsvParse as i, tsvParseRows as j, tsvFormat as k, loadData as l, tsvFormatBody as m, tsvFormatRows as n, tsvFormatRow as o, tsvFormatValue as p, dsv as q, csv as r, tsv as s, text as t };
-//# sourceMappingURL=load-data-5bcda25c.js.map
+//# sourceMappingURL=load-data-c99d7a02.js.map

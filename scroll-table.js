@@ -1,7 +1,7 @@
 import { S as Stanza, d as defineStanzaElement } from './transform-2d2d4fd0.js';
 import { f as appendCustomCss } from './index-1567edd1.js';
 import { d as defineComponent, c as createElementBlock, a as createBaseVNode, B as normalizeStyle, t as toDisplayString, F as Fragment, o as openBlock, p as createVNode, b as createCommentVNode, e as createBlock, g as createTextVNode, f as resolveComponent, j as reactive, x as onMounted, i as ref, D as onRenderTriggered, r as renderList, n as normalizeClass, q as createApp } from './runtime-dom.esm-bundler-f53c2341.js';
-import { l as loadData } from './load-data-5bcda25c.js';
+import { l as loadData } from './load-data-c99d7a02.js';
 
 var script$2 = defineComponent({
   props: {
@@ -167,7 +167,8 @@ var metadata$1 = {
 			"json",
 			"tsv",
 			"csv",
-			"sparql-results-json"
+			"sparql-results-json",
+			"elasticsearch"
 		],
 		"stanza:example": "json",
 		"stanza:description": "Data type",
@@ -333,28 +334,14 @@ var script = defineComponent({
 
     async function fetchData() {
       state.isFetching = true;
-      const urlParams = {
-        limit: params.pageSize,
-        offset: state.offset,
-      };
-
-      const url = new URL(params.dataUrl);
-      const searchParams = new URLSearchParams(url.search);
-
-      const rightParams = [];
-      searchParams.forEach((param, name) => {
-        if (name !== "limit" && name !== "offset") {
-          rightParams.push([name, param]);
-        }
-      });
-      rightParams.push(...Object.entries(urlParams));
-
-      const rightsearchParams = new URLSearchParams(rightParams);
 
       const data = await loadData(
-        `${url.origin}${url.pathname}?${rightsearchParams.toString()}`,
+        params.dataUrl,
         params.dataType,
-        params.main
+        params.main,
+        undefined,
+        params.pageSize,
+        state.offset
       );
 
       if (params.columns) {
@@ -589,7 +576,8 @@ var metadata = {
 			"json",
 			"tsv",
 			"csv",
-			"sparql-results-json"
+			"sparql-results-json",
+			"elasticsearch"
 		],
 		"stanza:example": "json",
 		"stanza:description": "Data type",

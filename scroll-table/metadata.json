@@ -28,7 +28,8 @@
         "json",
         "tsv",
         "csv",
-        "sparql-results-json"
+        "sparql-results-json",
+        "elasticsearch"
       ],
       "stanza:example": "json",
       "stanza:description": "Data type",
