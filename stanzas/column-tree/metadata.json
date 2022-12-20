@@ -30,11 +30,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "custom_css_url",
-      "stanza:example": "",
-      "stanza:description": "Stylesheet(css file) URL to override current style"
-    },
-    {
       "stanza:key": "node-label_key",
       "stanza:example": "label",
       "stanza:description": "Key for data attribute to display as label",
@@ -91,6 +86,11 @@
       "stanza:type": "boolean",
       "stanza:example": true,
       "stanza:description": "Show explanation on how to use id path for searching"
+    },
+    {
+      "stanza:key": "togostanza-custom_css_url",
+      "stanza:example": "",
+      "stanza:description": "Stylesheet(css file) URL to override current style"
     }
   ],
   "stanza:menu-placement": "bottom-right",
