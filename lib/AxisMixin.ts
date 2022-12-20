@@ -78,18 +78,38 @@ const proxyfy = (init: object, callbackMap: Map<string, (val) => void>) => {
       if (key === "params") {
         const oldParams = target[key];
         Object.entries(val).forEach(([pKey, pValue]) => {
-          if (
-            typeof oldParams[pKey] !== undefined &&
-            oldParams[pKey] !== pValue &&
-            callbackMap.has(pKey)
-          ) {
-            target[key] = val;
-            callbackMap.get(pKey)(pValue);
+          // const oldType = typeof oldParams[pKey];
+          const newType = typeof pValue;
+
+          if (newType !== "object") {
+            if (oldParams[pKey] !== pValue && callbackMap.has(pKey)) {
+              target[key] = val;
+              callbackMap.get(pKey)(pValue);
+            }
+          } else if (Array.isArray(pValue)) {
+            const isChanged =
+              (pValue.length !== oldParams[pKey].length ||
+                oldParams[pKey].toString() !== pValue.toString()) &&
+              callbackMap.has(pKey);
+            if (isChanged) {
+              target[key] = val;
+              callbackMap.get(pKey)(pValue);
+            }
+          } else {
+            const ifChanged =
+              Object.entries(pValue).some(([subKey, subVal]) => {
+                oldParams[pKey][subKey] !== subVal;
+              }) && callbackMap.has(pKey);
+
+            if (ifChanged) {
+              target[key] = val;
+              callbackMap.get(pKey)(pValue);
+            }
           }
         });
       }
 
-      return Reflect.set(target, key, val);
+      return true;
     },
   });
 };
@@ -120,11 +140,14 @@ export class Axis {
 
         const intervalsCount = Math.floor(domainSize / interval);
 
-        const tickValues = [...Array(intervalsCount + 1)]
-          .slice(1)
-          .map((_, i) => Math.min(...domain) + (i + 1) * interval);
+        if (intervalsCount !== 0) {
+          const tickValues = [...Array(intervalsCount + 1)]
+            .slice(1)
+            .map((_, i) => Math.min(...domain) + (i + 1) * interval);
+          return tickValues;
+        }
 
-        return tickValues;
+        return [];
       }
     }
 
@@ -215,10 +238,19 @@ export class Axis {
 
   private _callDrawAxis() {
     this._axisG.call(this._axisGen.bind(this));
-    this._tickTextXY = {
-      x: this._axisG.select(".tick").select("text").attr("x") || "0",
-      y: this._axisG.select(".tick").select("text").attr("y") || "0",
-    };
+    const tick = this._axisG.select(".tick")?.select("text");
+    if (tick.empty()) {
+      this._tickTextXY = {
+        x: "0",
+        y: "0",
+      };
+    } else {
+      this._tickTextXY = {
+        x: tick.attr("x") || "0",
+        y: tick.attr("y") || "0",
+      };
+    }
+
     this._axisG.selectAll(".tick").each(function (this: SVGElement) {
       this.querySelector("text").setAttribute("x", "0");
       this.querySelector("text").setAttribute("y", "0");
@@ -326,11 +358,9 @@ export class Axis {
     let translate;
 
     const previousTransform = this._titleG.attr("transform");
-
     const prevTranslate = /translate\((-?\d+),\s*(-?\d+)/.exec(
       previousTransform
     );
-
     const [prevTX, prevTY] = prevTranslate?.slice(1) || [0, 0];
 
     switch (this.params.placement) {
@@ -355,7 +385,7 @@ export class Axis {
   }
 
   private _handleTickLabelsAngleUpdate(
-    angle: number = this.params.tickLabelsAngle
+    angle: number = this.params.tickLabelsAngle || 0
   ) {
     let translate = "";
 

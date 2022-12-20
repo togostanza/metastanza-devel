@@ -147,10 +147,10 @@ class TestAxis extends Stanza {
     this.xAxisGen.update(xParams);
     this.yAxisGen.update(yParams);
 
-    // this.interval = setInterval(() => {
-    //   this.xAxisGen.update({ domain: [0.01, Math.random() * 10000] });
-    //   this.yAxisGen.update({ domain: [0.01, Math.random() * 100] });
-    // }, 1000);
+    this.interval = setInterval(() => {
+      this.xAxisGen.update({ domain: [0.01, Math.random() * 10000] });
+      this.yAxisGen.update({ domain: [0.01, Math.random() * 100] });
+    }, 1000);
   }
 }
 
