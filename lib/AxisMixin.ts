@@ -111,6 +111,7 @@ export class Axis {
   _gridGen: d3.Axis<d3.AxisDomain>;
   _axisLength: number;
   _tickTextXY: { x: string; y: string };
+
   private _getTickValues(interval: number) {
     if (interval) {
       if (this.params.scale === "linear" || this.params.scale === "log10") {
@@ -224,9 +225,6 @@ export class Axis {
     });
 
     this._handleTickLabelsAngleUpdate();
-
-    //this._handleTitlePaddingUpdate(this.params.titlePadding);
-    // TODO update here ticks angles and paddings
   }
 
   private get HEIGHT() {
@@ -238,7 +236,6 @@ export class Axis {
 
   update(params: Partial<AxisParamsI>) {
     this.params = { ...this.params, ...params };
-    // TODO handle tick labels rotation -> when updating domain!
   }
 
   get scale() {
@@ -294,8 +291,6 @@ export class Axis {
     this._gridG.call(this._gridGen.bind(this));
 
     this._callDrawAxis();
-
-    this._handleTickLabelsAngleUpdate();
   }
 
   private _handlePlacementUpdate() {
@@ -431,8 +426,13 @@ export class Axis {
     this._axisScale = getScale(newScale);
     this._axisScale.domain(prevDomain);
     this._axisScale.range(prevRange);
+    this._axisGen = getAxisGen(this.params.placement)(
+      this._axisScale as d3.AxisScale<d3.AxisDomain>
+    );
+    this._handleTicksIntervalUpdate();
+    this._handleTicksLabelsFormatUpdate();
 
-    this._redrawAxis();
+    this._callDrawAxis();
   }
 
   private _handleTicksLabelsFormatUpdate() {
