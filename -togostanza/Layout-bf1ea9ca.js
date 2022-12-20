@@ -24637,7 +24637,7 @@ n(css,{});
 var name = "metastanza";
 var version = "0.0.1";
 var license = "MIT";
-var repository = "https://github.com/togostanza/metastanza.git";
+var repository = "https://github.com/togostanza/metastanza-devel.git";
 var scripts = {
 	lint: "npm-run-all --aggregate-output --continue-on-error --parallel 'lint:!(fix)'",
 	"lint:fix": "npm-run-all --continue-on-error lint:*:fix",
@@ -24772,4 +24772,4 @@ script.render = render;
 script.__file = "node_modules/togostanza/src/components/Layout.vue";
 
 export { unref as A, normalizeStyle as B, Fragment as F, createElementBlock as a, renderList as b, createBlock as c, defineComponent as d, createBaseVNode as e, createCommentVNode as f, createApp as g, ref as h, octicons as i, createTextVNode as j, computed as k, watch as l, mergeProps as m, normalizeProps as n, openBlock as o, guardReactiveProps as p, resolveDynamicComponent as q, resolveComponent as r, script as s, toDisplayString as t, createVNode as u, pushScopeId as v, withCtx as w, popScopeId as x, n as y, normalizeClass as z };
-//# sourceMappingURL=Layout-62ad8381.js.map
+//# sourceMappingURL=Layout-bf1ea9ca.js.map
