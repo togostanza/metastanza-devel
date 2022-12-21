@@ -154,6 +154,20 @@ export class Axis {
     return [];
   }
 
+  private get tickTextXY() {
+    const tick = this._axisG.select(".tick")?.select("text");
+    if (tick.empty()) {
+      return {
+        x: "0",
+        y: "0",
+      };
+    }
+    return {
+      x: tick.attr("x") || "0",
+      y: tick.attr("y") || "0",
+    };
+  }
+
   private get scaleType() {
     if (this.params.scale === "ordinal") {
       return "ordinal";
@@ -238,19 +252,8 @@ export class Axis {
 
   private _callDrawAxis() {
     this._axisG.call(this._axisGen.bind(this));
-    const tick = this._axisG.select(".tick")?.select("text");
-    if (tick.empty()) {
-      this._tickTextXY = {
-        x: "0",
-        y: "0",
-      };
-    } else {
-      this._tickTextXY = {
-        x: tick.attr("x") || "0",
-        y: tick.attr("y") || "0",
-      };
-    }
 
+    this._tickTextXY = this.tickTextXY;
     this._axisG.selectAll(".tick").each(function (this: SVGElement) {
       this.querySelector("text").setAttribute("x", "0");
       this.querySelector("text").setAttribute("y", "0");
@@ -260,6 +263,10 @@ export class Axis {
       this._handleTickLabelsAngleUpdate();
       this._handleTitlePaddingUpdate();
     });
+  }
+
+  private _callDrawGridlines() {
+    this._gridG.call(this._gridGen.bind(this));
   }
 
   private get HEIGHT() {
@@ -304,7 +311,7 @@ export class Axis {
     this._calcAxisMargins();
 
     this._callDrawAxis();
-    this._gridG.call(this._gridGen.bind(this));
+    this._callDrawGridlines();
 
     this._g.attr(
       "transform",
@@ -323,9 +330,9 @@ export class Axis {
 
     this._updateGrid();
 
-    this._gridG.call(this._gridGen.bind(this));
-
     this._callDrawAxis();
+
+    this._callDrawGridlines();
   }
 
   private _handlePlacementUpdate() {
@@ -464,10 +471,17 @@ export class Axis {
     this._axisGen = getAxisGen(this.params.placement)(
       this._axisScale as d3.AxisScale<d3.AxisDomain>
     );
-    this._handleTicksIntervalUpdate();
-    this._handleTicksLabelsFormatUpdate();
+    this._axisGen.tickFormat(this.ticksLabelsFormatter);
+
+    this._gridGen = getAxisGen(this.params.placement)(
+      this._axisScale as d3.AxisScale<d3.AxisDomain>
+    );
+
+    this._updateTicks();
+    this._updateGrid();
 
     this._callDrawAxis();
+    this._callDrawGridlines();
   }
 
   private _handleTicksLabelsFormatUpdate() {
@@ -507,16 +521,13 @@ export class Axis {
     }
 
     this._axisG = this._g.append("g").classed("axis", true);
-
-    this._callDrawAxis();
+    this._gridG = this._g.append("g").classed("grid-lines", true);
 
     this._updateTicks();
     this._updateGrid();
 
-    this._gridG = this._g
-      .append("g")
-      .classed("grid-lines", true)
-      .call(this._gridGen);
+    this._callDrawAxis();
+    this._callDrawGridlines();
   }
 
   private _updateGrid() {
@@ -560,7 +571,6 @@ export class Axis {
         this._axisMargin.TOP = this._height - this.params.margins.BOTTOM;
         this._axisLength = this.WIDTH;
         this._axisScale.range([0, this._axisLength]);
-
         break;
       case "top":
         this._axisMargin.LEFT = this.params.margins.LEFT;
@@ -585,7 +595,6 @@ export class Axis {
       default:
         break;
     }
-    this._gridGen.tickSize(this.tickSize);
   }
 }
 

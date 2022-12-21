@@ -131,7 +131,7 @@
       "stanza:type": "number",
       "stanza:example": null,
       "stanza:computed": true,
-      "stanza:description": "Axis gridlines interval. If set to 0, show gridlines at axis ticks values, if not set, not show gridlines.",
+      "stanza:description": "Axis gridlines interval. If not set, show gridlines at axis ticks values, if set to 0, not show gridlines.",
       "stanza:required": false
     },
     {
@@ -227,7 +227,7 @@
       "stanza:type": "number",
       "stanza:example": null,
       "stanza:computed": true,
-      "stanza:description": "Axis gridlines interval. If set to 0, show gridlines at axis ticks values, if not set, not show gridlines.",
+      "stanza:description": "Axis gridlines interval. If not set, show gridlines at axis ticks values, if set to 0, not show gridlines.",
       "stanza:required": false
     }
   ],
