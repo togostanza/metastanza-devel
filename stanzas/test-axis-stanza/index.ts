@@ -103,18 +103,16 @@ class TestAxis extends Stanza {
 
     svg.attr("width", width).attr("height", height);
 
-    console.log(MARGIN);
-
     const xParams: AxisParamsI = {
       placement: params["axis-x-placement"],
-      domain: [0.01, 100],
+      domain: ["a", "b", "c"],
       range: [0, width],
       showTicks: !params["axis-x-ticks_hide"],
       margins: MARGIN,
       tickLabelsAngle: params["axis-x-ticks_label_angle"],
       title: params["axis-x-title"],
       titlePadding: params["axis-x-title_padding"],
-      scale: params["axis-x-scale"],
+      scale: "ordinal", //params["axis-x-scale"],
       gridInterval: params["axis-x-gridlines_interval"],
       ticksInterval: params["axis-x-ticks_interval"],
       ticksLabelsFormat: params["axis-x-ticks_labels_format"],
@@ -149,10 +147,21 @@ class TestAxis extends Stanza {
     this.xAxisGen.update(xParams);
     this.yAxisGen.update(yParams);
 
-    // this.interval = setInterval(() => {
-    //   this.xAxisGen.update({ domain: [0.01, Math.random() * 10000] });
-    //   this.yAxisGen.update({ domain: [0.01, Math.random() * 100] });
-    // }, 1000);
+    const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
+
+    function getRandomDomain(n: number) {
+      return alphabet.slice(0, n - 1);
+    }
+
+    this.interval = setInterval(() => {
+      const domain = getRandomDomain(Math.floor(Math.random() * 15));
+
+      this.xAxisGen.update({
+        domain,
+        scale: "ordinal",
+      });
+      this.yAxisGen.update({ domain: [0.01, Math.random() * 100] });
+    }, 1000);
   }
 }
 

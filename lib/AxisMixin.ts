@@ -76,37 +76,47 @@ const proxyfy = (init: object, callbackMap: Map<string, (val) => void>) => {
   return new Proxy(init, {
     set(target: object, key: string, val: Partial<AxisParamsI>) {
       if (key === "params") {
-        const oldParams = target[key];
-        Object.entries(val).forEach(([pKey, pValue]) => {
-          // const oldType = typeof oldParams[pKey];
-          const newType = typeof pValue;
+        const oldParams: Partial<AxisParamsI> = target[key];
+        // process scale change first
+        if (val.scale) {
+          target[key] = val;
+          callbackMap.get("scale")(val.scale);
+        }
+        if (val.margins) {
+          target[key] = val;
+          callbackMap.get("margins")(val.margins);
+        }
+        Object.entries(val)
+          .filter(([key]) => key !== "scale" && key !== "margins")
+          .forEach(([pKey, pValue]) => {
+            const newType = typeof pValue;
 
-          if (newType !== "object") {
-            if (oldParams[pKey] !== pValue && callbackMap.has(pKey)) {
-              target[key] = val;
-              callbackMap.get(pKey)(pValue);
-            }
-          } else if (Array.isArray(pValue)) {
-            const isChanged =
-              (pValue.length !== oldParams[pKey].length ||
-                oldParams[pKey].toString() !== pValue.toString()) &&
-              callbackMap.has(pKey);
-            if (isChanged) {
-              target[key] = val;
-              callbackMap.get(pKey)(pValue);
-            }
-          } else {
-            const ifChanged =
-              Object.entries(pValue).some(([subKey, subVal]) => {
-                oldParams[pKey][subKey] !== subVal;
-              }) && callbackMap.has(pKey);
+            if (newType !== "object") {
+              if (oldParams[pKey] !== pValue && callbackMap.has(pKey)) {
+                target[key] = val;
+                callbackMap.get(pKey)(pValue);
+              }
+            } else if (Array.isArray(pValue)) {
+              const isChanged =
+                (pValue.length !== oldParams[pKey].length ||
+                  oldParams[pKey].toString() !== pValue.toString()) &&
+                callbackMap.has(pKey);
+              if (isChanged) {
+                target[key] = val;
+                callbackMap.get(pKey)(pValue);
+              }
+            } else {
+              const ifChanged =
+                Object.entries(pValue).some(([subKey, subVal]) => {
+                  oldParams[pKey][subKey] !== subVal;
+                }) && callbackMap.has(pKey);
 
-            if (ifChanged) {
-              target[key] = val;
-              callbackMap.get(pKey)(pValue);
+              if (ifChanged) {
+                target[key] = val;
+                callbackMap.get(pKey)(pValue);
+              }
             }
-          }
-        });
+          });
       }
 
       return true;
@@ -175,7 +185,10 @@ export class Axis {
   }
 
   private get ticksLabelsFormatter() {
-    return d3.format(this.params.ticksLabelsFormat);
+    if (this.params.scale !== "ordinal") {
+      return d3.format(this.params.ticksLabelsFormat);
+    }
+    return (val) => val;
   }
 
   private get gridTickValues() {
@@ -192,20 +205,20 @@ export class Axis {
     this._width = svg.getBoundingClientRect().width;
     this._height = svg.getBoundingClientRect().height;
 
-    this._axisScale = getScale(AxisScaleE.linear);
-    this._axisScale.domain([0, 1]);
-    this._axisScale.range([0, this.WIDTH]);
+    // this._axisScale = getScale(AxisScaleE.linear);
+    // this._axisScale.domain([0, 1]);
+    // this._axisScale.range([0, this.WIDTH]);
 
-    this._axisGen = getAxisGen(AxisPlacementE.bottom)(
-      this._axisScale as d3.AxisScale<d3.AxisDomain>
-    );
+    // this._axisGen = getAxisGen(AxisPlacementE.bottom)(
+    //   this._axisScale as d3.AxisScale<d3.AxisDomain>
+    // );
 
-    this._gridGen = getAxisGen(AxisPlacementE.bottom)(
-      this._axisScale as d3.AxisScale<d3.AxisDomain>
-    );
+    // this._gridGen = getAxisGen(AxisPlacementE.bottom)(
+    //   this._axisScale as d3.AxisScale<d3.AxisDomain>
+    // );
 
-    this._gridGen.tickFormat(() => "");
-    this._gridGen.tickSize(-this.HEIGHT);
+    // this._gridGen.tickFormat(() => "");
+    // this._gridGen.tickSize(-this.HEIGHT);
 
     this._init();
 
@@ -292,12 +305,9 @@ export class Axis {
     const svg = d3.select(this._svg);
     this._g = svg.append("g").classed("axis-container", true);
 
-    this._axisG = this._g.append("g").classed("axis", true).call(this._axisGen);
+    this._axisG = this._g.append("g").classed("axis", true);
 
-    this._gridG = this._g
-      .append("g")
-      .classed("grid-lines", true)
-      .call(this._gridGen);
+    this._gridG = this._g.append("g").classed("grid-lines", true);
 
     this._titleG = this._g.append("g").classed("title-conatiner", true);
 
@@ -323,7 +333,7 @@ export class Axis {
     );
   }
 
-  private _handleDomainUpdate(domain: d3.AxisDomain[]) {
+  private _handleDomainUpdate(domain: d3.AxisDomain[] = this.params.domain) {
     this._axisScale.domain(domain);
 
     this._updateTicks();
@@ -462,12 +472,10 @@ export class Axis {
   }
 
   private _handleScaleUpdate(newScale: ScaleType) {
-    const prevDomain = this._axisScale.domain();
-    const prevRange = this._axisScale.range();
-
     this._axisScale = getScale(newScale);
-    this._axisScale.domain(prevDomain);
-    this._axisScale.range(prevRange);
+    this._axisScale.domain(this.params.domain);
+
+    this._axisScale.range(this.params.range);
     this._axisGen = getAxisGen(this.params.placement)(
       this._axisScale as d3.AxisScale<d3.AxisDomain>
     );
