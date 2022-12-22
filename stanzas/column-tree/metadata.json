@@ -76,12 +76,6 @@
       "stanza:description": "Show path in suggestions"
     },
     {
-      "stanza:key": "column-fixed_width",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:description": "Make all columns a fixed width set by [--togostanza-column-width] at the styles section"
-    },
-    {
       "stanza:key": "show_path_explanation",
       "stanza:type": "boolean",
       "stanza:example": true,

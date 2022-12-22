@@ -42,7 +42,6 @@
         :value-obj="valueObj"
         :node-show-borders="state.nodeShowBorders"
         :node-content-alignment="state.nodeContentAlignment"
-        :column-fixed-width="state.columnFixedWidth"
         @set-parent="updatePartialColumnData"
         @set-checked-node="updateCheckedNodes"
       />
@@ -104,7 +103,6 @@ export default defineComponent({
         value: params?.nodeValueKey?.value,
       },
       fallbackInCaseOfNoValue: params?.nodeValueFallback.value,
-      columnFixedWidth: params?.columnFixedWidth?.value,
       nodeValueShow: params?.nodeValueShow?.value,
       searchShowPath: params?.searchShowPath?.value,
       showPathExplanation: params?.showPathExplanation?.value,
