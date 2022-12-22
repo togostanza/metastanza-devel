@@ -27,11 +27,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "custom_css_url",
-      "stanza:example": "",
-      "stanza:description": "Custom css to apply"
-    },
-    {
       "stanza:key": "sort-key",
       "stanza:type": "text",
       "stanza:example": "id",
@@ -111,6 +106,11 @@
       "stanza:type": "text",
       "stanza:example": "name",
       "stanza:description": "Data key to use as tooltip text"
+    },
+    {
+      "stanza:key": "togostanza-custom_css_url",
+      "stanza:example": "",
+      "stanza:description": "Custom css to apply"
     }
   ],
   "stanza:menu-placement": "bottom-right",
