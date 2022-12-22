@@ -30,11 +30,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "custom_css_url",
-      "stanza:example": "",
-      "stanza:description": "Stylesheet(css file) URL to override current style"
-    },
-    {
       "stanza:key": "node-value_key",
       "stanza:type": "text",
       "stanza:example": "n",
@@ -83,6 +78,11 @@
       "stanza:type": "number",
       "stanza:example": 3,
       "stanza:description": "Maximum depth to show"
+    },
+    {
+      "stanza:key": "togostanza-custom_css_url",
+      "stanza:example": "",
+      "stanza:description": "Stylesheet(css file) URL to override current style"
     }
   ],
   "stanza:menu-placement": "bottom-right",
