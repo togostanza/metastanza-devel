@@ -105,7 +105,7 @@ export default defineComponent({
       },
       fallbackInCaseOfNoValue: params?.nodeValueFallback.value,
       columnFixedWidth: params?.columnFixedWidth?.value,
-      nodeShowValue: params?.nodeShowValue?.value,
+      nodeValueShow: params?.nodeValueShow?.value,
       searchShowPath: params?.searchShowPath?.value,
       showPathExplanation: params?.showPathExplanation?.value,
       nodeShowBorders: params?.nodeShowBorders?.value,
@@ -163,7 +163,7 @@ export default defineComponent({
     }
     const valueObj = computed(() => {
       return {
-        show: state.nodeShowValue,
+        show: state.nodeValueShow,
         fallback: state.fallbackInCaseOfNoValue,
       };
     });

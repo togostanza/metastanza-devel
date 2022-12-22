@@ -49,7 +49,7 @@
       "stanza:description": "Set alignment of node content"
     },
     {
-      "stanza:key": "node-show_value",
+      "stanza:key": "node-value-show",
       "stanza:type": "boolean",
       "stanza:example": true,
       "stanza:description": "Show value set by [node-value-key] in tree and suggestions"
