@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
 import { StanzaCirculateColorGenerator } from "@/lib/ColorGenerator";
+import { getMarginsFromCSSString } from "../../lib/utils";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -55,6 +56,7 @@ export default class Tree extends Stanza {
     appendCustomCss(this, this.params["custom_css_url"]);
     const width = parseFloat(css("--togostanza-outline-width")),
       height = parseFloat(css("--togostanza-outline-height")),
+      padding = getMarginsFromCSSString(css("--togostanza-outline-padding")),
       sortKey = this.params["sort-key"],
       sortOrder = this.params["sort-order"],
       isLeafNodesAlign = this.params["graph-align_leaf_nodes"],
@@ -173,8 +175,8 @@ export default class Tree extends Stanza {
     const svg = d3
       .select(el)
       .append("svg")
-      .attr("width", width)
-      .attr("height", height);
+      .attr("width", padding.LEFT + width + padding.RIGHT)
+      .attr("height", padding.TOP + height + padding.BOTTOM);
 
     //Get width of root label
     const rootGroup = svg
