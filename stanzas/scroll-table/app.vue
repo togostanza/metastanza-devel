@@ -107,28 +107,14 @@ export default defineComponent({
 
     async function fetchData() {
       state.isFetching = true;
-      const urlParams = {
-        limit: params.pageSize,
-        offset: state.offset,
-      };
-
-      const url = new URL(params.dataUrl);
-      const searchParams = new URLSearchParams(url.search);
-
-      const rightParams = [];
-      searchParams.forEach((param, name) => {
-        if (name !== "limit" && name !== "offset") {
-          rightParams.push([name, param]);
-        }
-      });
-      rightParams.push(...Object.entries(urlParams));
-
-      const rightsearchParams = new URLSearchParams(rightParams);
 
       const data = await loadData(
-        `${url.origin}${url.pathname}?${rightsearchParams.toString()}`,
+        params.dataUrl,
         params.dataType,
-        params.main
+        params.main,
+        undefined,
+        params.pageSize,
+        state.offset
       );
 
       if (params.columns) {
