@@ -1,10 +1,9 @@
-import { a as s, y, h as b, w, S as Stanza, d as defineStanzaElement } from './transform-237e281d.js';
-import { f as appendCustomCss } from './index-86482d2c.js';
-import { o, e, n } from './ref-31a5cf03.js';
-import { a as applyConstructor } from './utils-505f6a92.js';
-import { l as loadData } from './load-data-60693126.js';
-import { F as FAIcons } from './index-c774cef2.js';
-import './axios-70c5a559.js';
+import { a as s, y, h as b, w, S as Stanza, d as defineStanzaElement } from './transform-4eef39d8.js';
+import { f as appendCustomCss } from './index-0a21be6d.js';
+import { o, e, n } from './ref-333ed382.js';
+import { a as applyConstructor } from './utils-2d338be2.js';
+import { l as loadData } from './load-data-13013bfb.js';
+import { F as FAIcons } from './index-461cb806.js';
 
 class Breadcrumbs extends s {
   static get properties() {

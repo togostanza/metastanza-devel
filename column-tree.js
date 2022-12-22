@@ -1,9 +1,9 @@
-import { S as Stanza, d as defineStanzaElement } from './transform-237e281d.js';
-import { d as defineComponent, c as createElementBlock, F as Fragment, r as renderList, n as normalizeClass, o as openBlock, a as createBaseVNode, t as toDisplayString, b as createCommentVNode, e as createBlock, f as resolveComponent, w as withDirectives, v as vShow, g as createTextVNode, h as toRefs, i as ref, j as reactive, k as watchEffect, l as computed, m as vModelText, p as createVNode, q as createApp } from './runtime-dom.esm-bundler-f53c2341.js';
-import { l as loadData } from './load-data-60693126.js';
-import { l as library$1, F as FontAwesomeIcon } from './index.es-7f8ef021.js';
-import { f as faChevronRight, a as faClipboard } from './index-c774cef2.js';
-import { f as appendCustomCss } from './index-86482d2c.js';
+import { S as Stanza, d as defineStanzaElement } from './transform-4eef39d8.js';
+import { d as defineComponent, c as createElementBlock, F as Fragment, r as renderList, n as normalizeClass, o as openBlock, a as createBaseVNode, t as toDisplayString, b as createCommentVNode, e as createBlock, f as resolveComponent, w as withDirectives, v as vShow, g as createTextVNode, h as toRefs, i as ref, j as reactive, k as watchEffect, l as computed, m as vModelText, p as createVNode, q as createApp } from './runtime-dom.esm-bundler-daf8e087.js';
+import { l as loadData } from './load-data-13013bfb.js';
+import { l as library$1, F as FontAwesomeIcon } from './index.es-8a230f23.js';
+import { f as faChevronRight, a as faClipboard } from './index-461cb806.js';
+import { f as appendCustomCss } from './index-0a21be6d.js';
 
 var metadata$1 = {
 	"@context": {

@@ -1,10 +1,14 @@
-import { S as Stanza, d as defineStanzaElement } from './transform-237e281d.js';
-import { l as loadData } from './load-data-60693126.js';
-import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-86482d2c.js';
-import { T as ToolTip } from './ToolTip-4322f509.js';
-import { L as Legend } from './Legend-b72327d8.js';
+import { S as Stanza, d as defineStanzaElement } from './transform-4eef39d8.js';
+import { l as loadData } from './load-data-13013bfb.js';
+import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-0a21be6d.js';
+import { T as ToolTip } from './ToolTip-4cb3e663.js';
+import { L as Legend } from './Legend-abff0a8e.js';
 
-var colorString$1 = {exports: {}};
+var colorStringExports = {};
+var colorString$1 = {
+  get exports(){ return colorStringExports; },
+  set exports(v){ colorStringExports = v; },
+};
 
 var colorName = {
 	"aliceblue": [240, 248, 255],
@@ -157,7 +161,11 @@ var colorName = {
 	"yellowgreen": [154, 205, 50]
 };
 
-var simpleSwizzle = {exports: {}};
+var simpleSwizzleExports = {};
+var simpleSwizzle = {
+  get exports(){ return simpleSwizzleExports; },
+  set exports(v){ simpleSwizzleExports = v; },
+};
 
 var isArrayish$1 = function isArrayish(obj) {
 	if (!obj || typeof obj === 'string') {
@@ -200,10 +208,10 @@ swizzle$1.wrap = function (fn) {
 /* MIT license */
 
 var colorNames = colorName;
-var swizzle = simpleSwizzle.exports;
+var swizzle = simpleSwizzleExports;
 var hasOwnProperty = Object.hasOwnProperty;
 
-var reverseNames = {};
+var reverseNames = Object.create(null);
 
 // create a list of reverse color names
 for (var name in colorNames) {
@@ -1461,7 +1469,7 @@ models.forEach(fromModel => {
 
 var colorConvert = convert$1;
 
-const colorString = colorString$1.exports;
+const colorString = colorStringExports;
 const convert = colorConvert;
 
 const skippedModels = [
@@ -2189,8 +2197,8 @@ class VennStanza extends Stanza {
 }
 
 var stanzaModule = /*#__PURE__*/Object.freeze({
-	__proto__: null,
-	'default': VennStanza
+  __proto__: null,
+  'default': VennStanza
 });
 
 var metadata = {

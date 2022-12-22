@@ -1,23 +1,22 @@
-import { a as s, a8 as i, y, S as Stanza, s as select, d as defineStanzaElement } from './transform-237e281d.js';
-import { a as brushX, c as brushY } from './brush-a9413098.js';
-import { l as loadData } from './load-data-60693126.js';
-import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-86482d2c.js';
-import { S as StanzaColorGenerator } from './ColorGenerator-4f5c41b8.js';
-import { g as getMarginsFromCSSString } from './utils-505f6a92.js';
+import { a as s, a8 as i, y, S as Stanza, s as select, d as defineStanzaElement } from './transform-4eef39d8.js';
+import { a as brushX, c as brushY } from './brush-eb938c0b.js';
+import { l as loadData } from './load-data-13013bfb.js';
+import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-0a21be6d.js';
+import { S as StanzaColorGenerator } from './ColorGenerator-d3ec3154.js';
+import { g as getMarginsFromCSSString } from './utils-2d338be2.js';
 import { v as v4 } from './v4-1d7bfe79.js';
-import { S as Symbol, d as circle, an as timeFormat, t as time, q as utcSecond, W as utcMinute, Y as utcHour, _ as utcDay, a0 as utcSunday, ae as utcMonth, ag as utcYear } from './symbol-b2442318.js';
-import { o as ordinal, f as format } from './ordinal-47cefe3e.js';
+import { S as Symbol, d as circle, ap as timeFormat, t as time, r as second, z as utcMinute, D as utcHour, H as utcDay, _ as utcSunday, ae as utcMonth, ai as utcYear } from './symbol-71a78367.js';
+import { o as ordinal, f as format } from './ordinal-b6827cf8.js';
 import { a as axisBottom, b as axisLeft } from './axis-3dba94d9.js';
 import { e as extent } from './extent-14a1e8e9.js';
-import { l as line$2 } from './line-5ff356a1.js';
-import { l as linear } from './linear-1fd12819.js';
-import { l as log } from './log-29c2fff6.js';
-import { b as band } from './band-41e12cc2.js';
-import './nodrag-a0553c9f.js';
-import './axios-70c5a559.js';
+import { l as line$2 } from './line-fbadf484.js';
+import { l as linear } from './linear-71965c16.js';
+import { l as log } from './log-8bc7969e.js';
+import { b as band } from './band-aff94bb6.js';
+import './nodrag-6b0c6080.js';
 import './constant-c49047a5.js';
+import './path-f2817c20.js';
 import './math-24162d65.js';
-import './path-a78af922.js';
 import './array-80a7907a.js';
 import './point-7945b9d0.js';
 import './range-e15c6861.js';
@@ -1655,7 +1654,7 @@ class Linechart extends Stanza {
 }
 
 const intervalMap = {
-  second: () => utcSecond,
+  second: () => second,
   minute: () => utcMinute,
   hour: () => utcHour,
   day: () => utcDay,

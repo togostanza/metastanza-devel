@@ -1,40 +1,40 @@
-import { s as select, n as creator, o as Selection, r as root$1, p as array$2, q as SCHEDULED, T as Transition, u as rgbBasis, v as rgb, m as dispatch, x as identity$3, z as Transform, A as interrupt, e as color, B as hsl, C as cubicInOut, D as cubicIn, E as cubicOut, F as basis, G as basisClosed, i as interpolateNumber, g as interpolateString, H as interpolateTransformCss, I as interpolateTransformSvg, f as interpolateRgb, J as rgbBasisClosed, K as matcher, M as namespace, N as namespaces, O as selection, P as selector, Q as selectorAll, R as styleValue, U as defaultView, V as now, l as timer, W as timerFlush, X as timeout, Y as transition, Z as transform$1, S as Stanza, d as defineStanzaElement } from './transform-237e281d.js';
-import { b as brush, a as brushX, c as brushY, d as brushSelection } from './brush-a9413098.js';
-import { s as sort, q as quantile, d as deviation, a as ascendingDefined, c as compareDefined, m as minIndex, b as maxIndex, e as clipRectangle, A as Adder, g as geoStream, n as noop$1, f as atan2, h as sqrt, i as sin, j as cos, r as radians, k as abs, l as epsilon2, p as polygonContains, o as asin, t as haversin, u as degrees, v as cubehelixLong, w as cubehelix$1, x as area$2, y as interpolateZoom, z as fsum, B as fcumsum, C as mean, D as median, E as medianIndex, F as merge, G as permute, H as quantileIndex, I as quantileSorted, J as quickselect, K as greatest, L as variance, M as lab, N as hcl, O as lch, P as gray, Q as Delaunay, V as Voronoi, R as forceX, S as forceY, T as geoArea$1, U as geoBounds$1, W as geoCentroid$1, X as geoCircle, Y as clipAntimeridian, Z as clipCircle, _ as graticule, $ as graticule10, a0 as geoPath, a1 as geoAlbers, a2 as geoAlbersUsa, a3 as geoAzimuthalEqualArea, a4 as azimuthalEqualAreaRaw, a5 as geoAzimuthalEquidistant, a6 as azimuthalEquidistantRaw, a7 as geoConicConformal, a8 as conicConformalRaw, a9 as geoConicEqualArea, aa as conicEqualAreaRaw, ab as geoConicEquidistant, ac as conicEquidistantRaw, ad as geoEqualEarth, ae as equalEarthRaw, af as geoEquirectangular, ag as equirectangularRaw, ah as geoGnomonic, ai as gnomonicRaw, aj as geoIdentity, ak as projection, al as projectionMutator, am as geoMercator, an as mercatorRaw, ao as geoNaturalEarth1, ap as naturalEarth1Raw, aq as geoOrthographic, ar as orthographicRaw, as as geoStereographic, at as stereographicRaw, au as geoTransverseMercator, av as transverseMercatorRaw, aw as rotation, ax as transform, ay as pack, az as siblings, aA as enclose, aB as treemapBinary, aC as treemapSliceDice, aD as treemapResquarify, aE as discrete, aF as hue, aG as hsl$1, aH as hslLong, aI as lab$1, aJ as hcl$1, aK as hclLong, aL as cubehelix$2, aM as piecewise, aN as quantize, aO as identity$4, aP as symlog, aQ as quantile$1, aR as quantize$1, aS as threshold, aT as utcTime, aU as sequential, aV as sequentialLog, aW as sequentialPow, aX as sequentialSqrt, aY as sequentialSymlog, aZ as diverging$1, a_ as divergingLog, a$ as divergingPow, b0 as divergingSqrt, b1 as divergingSymlog, b2 as curveBasisClosed, b3 as curveBasisOpen, b4 as curveBundle, b5 as curveCardinalClosed, b6 as curveCardinalOpen, b7 as curveCardinal, b8 as curveCatmullRomClosed, b9 as curveCatmullRomOpen, ba as curveCatmullRom, bb as curveLinearClosed, bc as monotoneX, bd as monotoneY, be as curveNatural, bf as curveStep, bg as stepAfter, bh as stepBefore, bi as interval } from './step-926b589e.js';
-import { s as sourceEvent, p as pointer, d as dragDisable, y as yesdrag } from './nodrag-a0553c9f.js';
-import { e as ascending$2, f as tickIncrement, a as ticks, g as bisect, h as tickStep, j as continuous, n as number, b as linearish, i as identity$2, k as bisectRight, m as bisectLeft, o as bisectCenter, p as bisector, d as descending$2, q as precisionFixed, r as precisionPrefix, s as precisionRound, u as interpolateRound, l as linear$1, v as tickFormat } from './linear-1fd12819.js';
-import { r as rollup, g as group, i as identity$1, n as none, a as none$1, f as flatGroup, b as flatRollup, c as groups, d as index, e as indexes, h as rollups, s as stack } from './stack-e06828d4.js';
+import { s as select, n as creator, o as Selection, r as root$1, p as array$2, q as SCHEDULED, T as Transition, u as rgbBasis, v as rgb, m as dispatch, x as identity$3, z as Transform, A as interrupt, e as color, B as hsl, C as cubicInOut, D as cubicIn, E as cubicOut, F as basis, G as basisClosed, i as interpolateNumber, g as interpolateString, H as interpolateTransformCss, I as interpolateTransformSvg, f as interpolateRgb, J as rgbBasisClosed, K as matcher, M as namespace, N as namespaces, O as selection, P as selector, Q as selectorAll, R as styleValue, U as defaultView, V as now, l as timer, W as timerFlush, X as timeout, Y as transition, Z as transform$1, S as Stanza, d as defineStanzaElement } from './transform-4eef39d8.js';
+import { b as brush, a as brushX, c as brushY, d as brushSelection } from './brush-eb938c0b.js';
+import { s as sort, q as quantile, d as deviation, a as ascendingDefined, c as compareDefined, m as minIndex, b as maxIndex, e as clipRectangle, A as Adder, g as geoStream, n as noop$1, f as atan2, h as sqrt, i as sin, j as cos, r as radians, k as abs, l as epsilon2, p as polygonContains, o as asin, t as haversin, u as degrees, v as cubehelixLong, w as cubehelix$1, x as area$2, y as interpolateZoom, z as fsum, B as fcumsum, C as mean, D as median, E as medianIndex, F as merge, G as permute, H as quantileIndex, I as quantileSorted, J as quickselect, K as greatest, L as variance, M as lab, N as hcl, O as lch, P as gray, Q as Delaunay, V as Voronoi, R as forceX, S as forceY, T as geoArea$1, U as geoBounds$1, W as geoCentroid$1, X as geoCircle, Y as clipAntimeridian, Z as clipCircle, _ as graticule, $ as graticule10, a0 as geoPath, a1 as geoAlbers, a2 as geoAlbersUsa, a3 as geoAzimuthalEqualArea, a4 as azimuthalEqualAreaRaw, a5 as geoAzimuthalEquidistant, a6 as azimuthalEquidistantRaw, a7 as geoConicConformal, a8 as conicConformalRaw, a9 as geoConicEqualArea, aa as conicEqualAreaRaw, ab as geoConicEquidistant, ac as conicEquidistantRaw, ad as geoEqualEarth, ae as equalEarthRaw, af as geoEquirectangular, ag as equirectangularRaw, ah as geoGnomonic, ai as gnomonicRaw, aj as geoIdentity, ak as projection, al as projectionMutator, am as geoMercator, an as mercatorRaw, ao as geoNaturalEarth1, ap as naturalEarth1Raw, aq as geoOrthographic, ar as orthographicRaw, as as geoStereographic, at as stereographicRaw, au as geoTransverseMercator, av as transverseMercatorRaw, aw as rotation, ax as transform, ay as pack, az as siblings, aA as enclose, aB as treemapBinary, aC as treemapSliceDice, aD as treemapResquarify, aE as discrete, aF as hue, aG as hsl$1, aH as hslLong, aI as lab$1, aJ as hcl$1, aK as hclLong, aL as cubehelix$2, aM as piecewise, aN as quantize, aO as identity$4, aP as symlog, aQ as quantile$1, aR as quantize$1, aS as threshold, aT as utcTime, aU as sequential, aV as sequentialLog, aW as sequentialPow, aX as sequentialSqrt, aY as sequentialSymlog, aZ as diverging$1, a_ as divergingLog, a$ as divergingPow, b0 as divergingSqrt, b1 as divergingSymlog, b2 as curveBasisClosed, b3 as curveBasisOpen, b4 as curveBundle, b5 as curveCardinalClosed, b6 as curveCardinalOpen, b7 as curveCardinal, b8 as curveCatmullRomClosed, b9 as curveCatmullRomOpen, ba as curveCatmullRom, bb as curveLinearClosed, bc as monotoneX, bd as monotoneY, be as curveNatural, bf as curveStep, bg as stepAfter, bh as stepBefore, bi as interval } from './step-26b6bdfc.js';
+import { s as sourceEvent, p as pointer, d as dragDisable, y as yesdrag } from './nodrag-6b0c6080.js';
+import { e as ascending$2, f as tickIncrement, a as ticks, g as bisect, h as tickStep, j as continuous, n as number, b as linearish, i as identity$2, k as bisectRight, m as bisectLeft, o as bisectCenter, p as bisector, d as descending$2, q as precisionFixed, r as precisionPrefix, s as precisionRound, u as interpolateRound, l as linear$1, v as tickFormat } from './linear-71965c16.js';
+import { r as rollup, g as group, i as identity$1, n as none, a as none$1, f as flatGroup, b as flatRollup, c as groups, d as index, e as indexes, h as rollups, s as stack } from './stack-1c404ac3.js';
 import { e as extent$1 } from './extent-14a1e8e9.js';
-import { I as InternMap, d as InternSet, i as initRange, g as initInterpolator, h as defaultLocale, f as format, c as formatPrefix, j as formatLocale, b as formatSpecifier, F as FormatSpecifier, a as interpolate$1, k as array$4, l as date, n as numberArray, m as object$1, o as ordinal, p as implicit } from './ordinal-47cefe3e.js';
+import { I as InternMap, d as InternSet, i as initRange, g as initInterpolator, h as defaultLocale, f as format, c as formatPrefix, j as formatLocale, b as formatSpecifier, F as FormatSpecifier, a as interpolate$1, k as array$4, l as date, n as numberArray, m as object$1, o as ordinal, p as implicit } from './ordinal-b6827cf8.js';
 import { m as min, c as cluster, t as tree } from './tree-0236e2eb.js';
-import { t as text, d as dsvFormat, c as csvParse, a as csvParseRows, b as csvFormat, e as csvFormatBody, f as csvFormatRows, g as csvFormatRow, h as csvFormatValue, i as tsvParse, j as tsvParseRows, k as tsvFormat, m as tsvFormatBody, n as tsvFormatRows, o as tsvFormatRow, p as tsvFormatValue, q as dsv, r as csv, s as tsv, l as loadData } from './load-data-60693126.js';
-import { u as utcFormat, a as utcParse, t as time, S as Symbol$1, s as symbolsStroke, b as symbolsFill, c as asterisk, d as circle, e as cross$2, f as diamond, g as diamond2, p as plus, h as square$1, i as square2, j as star, k as triangle$1, l as triangle2, w as wye, x as x$1, n as newInterval, m as utcMillisecond, o as milliseconds, q as utcSecond, r as seconds, v as timeMinute, y as minutes, z as timeHour, A as hours, B as timeDay, C as days, D as sunday, E as sundays, F as monday, G as mondays, H as tuesday, I as tuesdays, J as wednesday, K as wednesdays, L as thursday, M as thursdays, N as friday, O as fridays, P as saturday, Q as saturdays, R as timeMonth, T as months, U as timeYear, V as years, W as utcMinute, X as utcMinutes, Y as utcHour, Z as utcHours, _ as utcDay, $ as utcDays, a0 as utcSunday, a1 as utcSundays, a2 as utcMonday, a3 as utcMondays, a4 as utcTuesday, a5 as utcTuesdays, a6 as utcWednesday, a7 as utcWednesdays, a8 as utcThursday, a9 as utcThursdays, aa as utcFriday, ab as utcFridays, ac as utcSaturday, ad as utcSaturdays, ae as utcMonth, af as utcMonths, ag as utcYear, ah as utcYears, ai as utcTicks, aj as utcTickInterval, ak as timeTicks, al as timeTickInterval, am as defaultLocale$1, an as timeFormat, ao as timeParse, ap as formatLocale$1 } from './symbol-b2442318.js';
+import { t as text, d as dsvFormat, c as csvParse, a as csvParseRows, b as csvFormat, e as csvFormatBody, f as csvFormatRows, g as csvFormatRow, h as csvFormatValue, i as tsvParse, j as tsvParseRows, k as tsvFormat, m as tsvFormatBody, n as tsvFormatRows, o as tsvFormatRow, p as tsvFormatValue, q as dsv, r as csv, s as tsv, l as loadData } from './load-data-13013bfb.js';
+import { u as utcFormat, a as utcParse, t as time, S as Symbol$1, s as symbolsStroke, b as symbolsFill, c as asterisk, d as circle, e as cross$2, f as diamond, g as diamond2, p as plus, h as square$1, i as square2, j as star, k as triangle$1, l as triangle2, w as wye, m as times, n as timeInterval, o as millisecond, q as milliseconds, r as second, v as seconds, x as timeMinute, y as timeMinutes, z as utcMinute, A as utcMinutes, B as timeHour, C as timeHours, D as utcHour, E as utcHours, F as timeDay, G as timeDays, H as utcDay, I as utcDays, J as unixDay, K as unixDays, L as timeSunday, M as timeSundays, N as timeMonday, O as timeMondays, P as timeTuesday, Q as timeTuesdays, R as timeWednesday, T as timeWednesdays, U as timeThursday, V as timeThursdays, W as timeFriday, X as timeFridays, Y as timeSaturday, Z as timeSaturdays, _ as utcSunday, $ as utcSundays, a0 as utcMonday, a1 as utcMondays, a2 as utcTuesday, a3 as utcTuesdays, a4 as utcWednesday, a5 as utcWednesdays, a6 as utcThursday, a7 as utcThursdays, a8 as utcFriday, a9 as utcFridays, aa as utcSaturday, ab as utcSaturdays, ac as timeMonth, ad as timeMonths, ae as utcMonth, af as utcMonths, ag as timeYear, ah as timeYears, ai as utcYear, aj as utcYears, ak as utcTicks, al as utcTickInterval, am as timeTicks, an as timeTickInterval, ao as defaultLocale$1, ap as timeFormat, aq as timeParse, ar as formatLocale$1 } from './symbol-71a78367.js';
 import { m as max } from './max-2c042256.js';
 import { r as range } from './range-e15c6861.js';
 import { s as sum$1 } from './sum-44e7480e.js';
 import { c as axisTop, d as axisRight, a as axisBottom, b as axisLeft } from './axis-3dba94d9.js';
-import { a as chord, b as chordTranspose, c as chordDirected, d as ribbon, r as ribbonArrow } from './ribbon-bbaf0468.js';
-import { d as drag } from './drag-366d1884.js';
-import { e as constant$3, b as forceCenter, d as forceCollide, c as forceLink, a as forceManyBody, f as forceSimulation, q as quadtree } from './manyBody-55426ba5.js';
+import { a as chord, b as chordTranspose, c as chordDirected, d as ribbon, r as ribbonArrow } from './ribbon-368f465b.js';
+import { d as drag } from './drag-511f2e84.js';
+import { e as constant$3, b as forceCenter, d as forceCollide, c as forceLink, a as forceManyBody, f as forceSimulation, q as quadtree } from './manyBody-1419e474.js';
 import { h as hierarchy, N as Node, s as stratify } from './stratify-7050dfd9.js';
 import { p as partition } from './partition-e955ad6c.js';
 import { t as treemap, a as treemapSlice, b as treemapSquarify } from './index-c76c1b89.js';
 import { t as treemapDice } from './dice-7bdb0652.js';
-import { p as path } from './path-a78af922.js';
-import { b as band, p as point$1 } from './band-41e12cc2.js';
-import { l as log } from './log-29c2fff6.js';
-import { p as pow, s as sqrt$1 } from './pow-742a7e38.js';
-import { a as arc$2 } from './arc-8a3c109f.js';
-import { c as curveLinear, l as line$2 } from './line-5ff356a1.js';
+import { P as Path, p as path, a as pathRound } from './path-f2817c20.js';
+import { b as band, p as point$1 } from './band-aff94bb6.js';
+import { l as log } from './log-8bc7969e.js';
+import { p as pow, s as sqrt$1 } from './pow-5639b38f.js';
+import { a as arc$2 } from './arc-b062fe01.js';
+import { c as curveLinear, l as line$2 } from './line-fbadf484.js';
 import { a as array$3 } from './array-80a7907a.js';
 import { c as constant$4 } from './constant-c49047a5.js';
 import { t as tau$1 } from './math-24162d65.js';
-import { p as pointRadial, l as link, a as linkHorizontal, b as linkVertical, c as linkRadial, d as bumpX, e as bumpY } from './link-3796f00e.js';
+import { p as pointRadial, l as link, a as linkHorizontal, b as linkVertical, c as linkRadial, d as bumpX, e as bumpY } from './link-6b6edf98.js';
 import { c as curveBasis } from './basis-0dde91c7.js';
-import { T as ToolTip } from './ToolTip-4322f509.js';
-import { S as StanzaColorGenerator } from './ColorGenerator-4f5c41b8.js';
-import { p as prepareGraphData, g as get3DEdges, a as getGroupPlanes } from './prepareGraphData-b5bcb296.js';
-import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-86482d2c.js';
+import { T as ToolTip } from './ToolTip-4cb3e663.js';
+import { S as StanzaColorGenerator } from './ColorGenerator-d3ec3154.js';
+import { p as prepareGraphData, g as get3DEdges, a as getGroupPlanes } from './prepareGraphData-b70d31c9.js';
+import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-0a21be6d.js';
 import './point-7945b9d0.js';
 import './v4-1d7bfe79.js';
 
@@ -309,9 +309,11 @@ function bin() {
     }
 
     // Remove any thresholds outside the domain.
-    var m = tz.length;
-    while (tz[0] <= x0) tz.shift(), --m;
-    while (tz[m - 1] > x1) tz.pop(), --m;
+    // Be careful not to mutate an array owned by the user!
+    var m = tz.length, a = 0, b = m;
+    while (tz[a] <= x0) ++a;
+    while (tz[b - 1] > x1) --b;
+    if (a || b < m) tz = tz.slice(a, b), m = b - a;
 
     var bins = new Array(m + 1),
         bin;
@@ -359,7 +361,7 @@ function bin() {
   };
 
   histogram.thresholds = function(_) {
-    return arguments.length ? (threshold = typeof _ === "function" ? _ : Array.isArray(_) ? constant$2(slice$1.call(_)) : constant$2(_), histogram) : threshold;
+    return arguments.length ? (threshold = typeof _ === "function" ? _ : constant$2(Array.isArray(_) ? slice$1.call(_) : _), histogram) : threshold;
   };
 
   return histogram;
@@ -3689,7 +3691,9 @@ var d3 = /*#__PURE__*/Object.freeze({
   interpolateCubehelixLong: cubehelixLong,
   piecewise: piecewise,
   quantize: quantize,
+  Path: Path,
   path: path,
+  pathRound: pathRound,
   polygonArea: area,
   polygonCentroid: centroid$1,
   polygonHull: hull,
@@ -3861,7 +3865,8 @@ var d3 = /*#__PURE__*/Object.freeze({
   symbolTriangle: triangle$1,
   symbolTriangle2: triangle2,
   symbolWye: wye,
-  symbolX: x$1,
+  symbolTimes: times,
+  symbolX: times,
   curveBasisClosed: curveBasisClosed,
   curveBasisOpen: curveBasisOpen,
   curveBasis: curveBasis,
@@ -3894,47 +3899,45 @@ var d3 = /*#__PURE__*/Object.freeze({
   stackOrderInsideOut: insideOut,
   stackOrderNone: none$1,
   stackOrderReverse: reverse,
-  timeInterval: newInterval,
-  timeMillisecond: utcMillisecond,
-  timeMilliseconds: milliseconds,
-  utcMillisecond: utcMillisecond,
+  timeInterval: timeInterval,
+  utcMillisecond: millisecond,
   utcMilliseconds: milliseconds,
-  timeSecond: utcSecond,
-  timeSeconds: seconds,
-  utcSecond: utcSecond,
+  timeMillisecond: millisecond,
+  timeMilliseconds: milliseconds,
+  utcSecond: second,
   utcSeconds: seconds,
+  timeSecond: second,
+  timeSeconds: seconds,
   timeMinute: timeMinute,
-  timeMinutes: minutes,
-  timeHour: timeHour,
-  timeHours: hours,
-  timeDay: timeDay,
-  timeDays: days,
-  timeWeek: sunday,
-  timeWeeks: sundays,
-  timeSunday: sunday,
-  timeSundays: sundays,
-  timeMonday: monday,
-  timeMondays: mondays,
-  timeTuesday: tuesday,
-  timeTuesdays: tuesdays,
-  timeWednesday: wednesday,
-  timeWednesdays: wednesdays,
-  timeThursday: thursday,
-  timeThursdays: thursdays,
-  timeFriday: friday,
-  timeFridays: fridays,
-  timeSaturday: saturday,
-  timeSaturdays: saturdays,
-  timeMonth: timeMonth,
-  timeMonths: months,
-  timeYear: timeYear,
-  timeYears: years,
+  timeMinutes: timeMinutes,
   utcMinute: utcMinute,
   utcMinutes: utcMinutes,
+  timeHour: timeHour,
+  timeHours: timeHours,
   utcHour: utcHour,
   utcHours: utcHours,
+  timeDay: timeDay,
+  timeDays: timeDays,
   utcDay: utcDay,
   utcDays: utcDays,
+  unixDay: unixDay,
+  unixDays: unixDays,
+  timeWeek: timeSunday,
+  timeWeeks: timeSundays,
+  timeSunday: timeSunday,
+  timeSundays: timeSundays,
+  timeMonday: timeMonday,
+  timeMondays: timeMondays,
+  timeTuesday: timeTuesday,
+  timeTuesdays: timeTuesdays,
+  timeWednesday: timeWednesday,
+  timeWednesdays: timeWednesdays,
+  timeThursday: timeThursday,
+  timeThursdays: timeThursdays,
+  timeFriday: timeFriday,
+  timeFridays: timeFridays,
+  timeSaturday: timeSaturday,
+  timeSaturdays: timeSaturdays,
   utcWeek: utcSunday,
   utcWeeks: utcSundays,
   utcSunday: utcSunday,
@@ -3951,8 +3954,12 @@ var d3 = /*#__PURE__*/Object.freeze({
   utcFridays: utcFridays,
   utcSaturday: utcSaturday,
   utcSaturdays: utcSaturdays,
+  timeMonth: timeMonth,
+  timeMonths: timeMonths,
   utcMonth: utcMonth,
   utcMonths: utcMonths,
+  timeYear: timeYear,
+  timeYears: timeYears,
   utcYear: utcYear,
   utcYears: utcYears,
   utcTicks: utcTicks,

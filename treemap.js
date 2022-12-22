@@ -1,14 +1,13 @@
-import { S as Stanza, s as select, d as defineStanzaElement } from './transform-237e281d.js';
-import { l as loadData } from './load-data-60693126.js';
-import { S as StanzaColorGenerator } from './ColorGenerator-4f5c41b8.js';
-import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-86482d2c.js';
-import { g as getMarginsFromCSSString } from './utils-505f6a92.js';
-import { o as ordinal, f as format, a as interpolate$1 } from './ordinal-47cefe3e.js';
+import { S as Stanza, s as select, d as defineStanzaElement } from './transform-4eef39d8.js';
+import { l as loadData } from './load-data-13013bfb.js';
+import { S as StanzaColorGenerator } from './ColorGenerator-d3ec3154.js';
+import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-0a21be6d.js';
+import { g as getMarginsFromCSSString } from './utils-2d338be2.js';
+import { o as ordinal, f as format, a as interpolate$1 } from './ordinal-b6827cf8.js';
 import { s as stratify, h as hierarchy } from './stratify-7050dfd9.js';
-import { l as linear } from './linear-1fd12819.js';
+import { l as linear } from './linear-71965c16.js';
 import { s as sum } from './sum-44e7480e.js';
 import { t as treemap } from './index-c76c1b89.js';
-import './axios-70c5a559.js';
 import './dice-7bdb0652.js';
 
 var count = 0;

@@ -1,6 +1,6 @@
-import { S as Stanza, d as defineStanzaElement } from './transform-237e281d.js';
-import { l as loadData } from './load-data-60693126.js';
-import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, f as appendCustomCss } from './index-86482d2c.js';
+import { S as Stanza, d as defineStanzaElement } from './transform-4eef39d8.js';
+import { l as loadData } from './load-data-13013bfb.js';
+import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, f as appendCustomCss } from './index-0a21be6d.js';
 
 class Scorecard extends Stanza {
   menu() {
@@ -20,42 +20,26 @@ class Scorecard extends Stanza {
       this.params["data-type"],
       this.root.querySelector("main")
     );
-    const width = +css("--togostanza-outline-width");
-    const height = +css("--togostanza-outline-height");
-    const padding = +css("--togostanza-outline-padding");
 
-    const [key, value] = Object.entries(dataset)[0];
-    this._data = { [key]: value };
+    const scoreKey = this.params["score-key"];
+    const titleKey = this.params["title-key"];
+    const scoreValue = dataset[scoreKey];
+    this._data = { [scoreKey]: scoreValue };
+
+    const titleText =
+      this.params["title-text"] || dataset[titleKey] || scoreKey;
 
     this.renderTemplate({
       template: "stanza.html.hbs",
       parameters: {
         scorecards: [
           {
-            key,
-            value,
+            titleText,
+            scoreValue,
           },
         ],
-        width,
-        height,
-        padding,
       },
     });
-
-    const chartWrapper = this.root.querySelector(".chart-wrapper");
-    chartWrapper.setAttribute(
-      `style`,
-      `width: ${width}px; height: ${height}px; padding: ${padding}px`
-    );
-
-    const scorecardSvg = this.root.querySelector("#scorecardSvg");
-    scorecardSvg.setAttribute(
-      "height",
-      `${
-        Number(css("--togostanza-fonts-font_size_secondary")) +
-        Number(css("--togostanza-fonts-font_size_primary"))
-      }`
-    );
 
     const keyElement = this.root.querySelector("#key");
     const valueElement = this.root.querySelector("#value");
@@ -88,6 +72,14 @@ class Scorecard extends Stanza {
       "font-size",
       css("--togostanza-fonts-font_size_primary")
     );
+    keyElement.setAttribute(
+      "font-weight",
+      css("--togostanza-fonts-font_weight_secondary")
+    );
+    valueElement.setAttribute(
+      "font-weight",
+      css("--togostanza-fonts-font_weight_primary")
+    );
   }
 }
 
@@ -115,7 +107,7 @@ var metadata = {
 	"stanza:parameter": [
 	{
 		"stanza:key": "data-url",
-		"stanza:example": "https://sparql-support.dbcls.jp/sparqlist/api/metastanza_scorecard?tax_id=9606&gene_id=BRCA1",
+		"stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/main/samples/json/scorecard.json",
 		"stanza:description": "Data source URL",
 		"stanza:required": true
 	},
@@ -133,29 +125,34 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "custom_css_url",
-		"stanza:example": "",
-		"stanza:description": "Stylesheet(css file) URL to override current style",
-		"stanza:required": false
-	},
-	{
 		"stanza:key": "score-key",
 		"stanza:type": "text",
-		"stanza:example": "",
+		"stanza:example": "value",
 		"stanza:description": "Data key for score",
-		"stanza:required": false
+		"stanza:required": true
+	},
+	{
+		"stanza:key": "title-key",
+		"stanza:type": "text",
+		"stanza:example": "key",
+		"stanza:description": "Key of the title text. If not set, fallback to score-key param value"
 	},
 	{
 		"stanza:key": "title-text",
 		"stanza:type": "text",
-		"stanza:example": "title",
-		"stanza:description": "Title text"
+		"stanza:example": "seq_length",
+		"stanza:description": "Title of the score card"
 	},
 	{
 		"stanza:key": "title-show",
 		"stanza:type": "boolean",
 		"stanza:example": true,
 		"stanza:description": "Show key name"
+	},
+	{
+		"stanza:key": "togostanza-custom_css_url",
+		"stanza:example": "",
+		"stanza:description": "Stylesheet(css file) URL to override current style"
 	}
 ],
 	"stanza:menu-placement": "bottom-right",
@@ -163,7 +160,7 @@ var metadata = {
 	{
 		"stanza:key": "--togostanza-outline-width",
 		"stanza:type": "number",
-		"stanza:default": 200,
+		"stanza:default": 300,
 		"stanza:description": "Metastanza width in px"
 	},
 	{
@@ -175,14 +172,38 @@ var metadata = {
 	{
 		"stanza:key": "--togostanza-outline-padding",
 		"stanza:type": "text",
-		"stanza:default": 50,
-		"stanza:description": "Metastanza padding"
+		"stanza:default": "50px",
+		"stanza:description": "Padding of a stanza. CSS padding-like text (10px 10px 10px 10px)"
+	},
+	{
+		"stanza:key": "--togostanza-theme-background_color",
+		"stanza:type": "color",
+		"stanza:default": "rgba(255,255,255,0)",
+		"stanza:description": "Background color"
 	},
 	{
 		"stanza:key": "--togostanza-fonts-font_family",
 		"stanza:type": "text",
 		"stanza:default": "Helvetica Neue",
 		"stanza:description": "Font family"
+	},
+	{
+		"stanza:key": "--togostanza-fonts-font_color_primary",
+		"stanza:type": "color",
+		"stanza:default": "#4E5059",
+		"stanza:description": "Font color for value"
+	},
+	{
+		"stanza:key": "--togostanza-fonts-font_size_primary",
+		"stanza:type": "number",
+		"stanza:default": 36,
+		"stanza:description": "Font size for value"
+	},
+	{
+		"stanza:key": "--togostanza-fonts-font_weight_primary",
+		"stanza:type": "number",
+		"stanza:default": 500,
+		"stanza:description": "Font weight for value"
 	},
 	{
 		"stanza:key": "--togostanza-fonts-font_color_secondary",
@@ -201,30 +222,6 @@ var metadata = {
 		"stanza:type": "number",
 		"stanza:default": 400,
 		"stanza:description": "Font weight for key"
-	},
-	{
-		"stanza:key": "--togostanza-fonts-font_color_primary",
-		"stanza:type": "color",
-		"stanza:default": "#4E5059",
-		"stanza:description": "Font color for value"
-	},
-	{
-		"stanza:key": "--togostanza-fonts-font_size_primary",
-		"stanza:type": "number",
-		"stanza:default": 36,
-		"stanza:description": "Font size for value"
-	},
-	{
-		"stanza:key": "--togostanza-fonts-font_weight_primary",
-		"stanza:type": "number",
-		"stanza:default": 600,
-		"stanza:description": "Font weight for value"
-	},
-	{
-		"stanza:key": "--togostanza-theme-background_color",
-		"stanza:type": "color",
-		"stanza:default": "rgba(255,255,255,0)",
-		"stanza:description": "Background color"
 	}
 ]
 };
@@ -239,9 +236,9 @@ var templates = [
     };
 
   return "    <svg id=\"scorecardSvg\" class=\"scorecard-svg\">\n      <text id=\"text\" x=\"50%\" y=\"50%\" text-anchor=\"middle\">\n        <tspan id=\"key\" x=\"50%\" y=\"16px\" font-size=\"16px\">\n          "
-    + alias2(alias1(((stack1 = blockParams[0][0]) != null ? lookupProperty(stack1,"key") : stack1), depth0))
+    + alias2(alias1(((stack1 = blockParams[0][0]) != null ? lookupProperty(stack1,"titleText") : stack1), depth0))
     + "\n        </tspan>\n        <tspan id=\"value\" x=\"50%\" y=\"48px\" font-size=\"32px\">\n          "
-    + alias2(alias1(((stack1 = blockParams[0][0]) != null ? lookupProperty(stack1,"value") : stack1), depth0))
+    + alias2(alias1(((stack1 = blockParams[0][0]) != null ? lookupProperty(stack1,"scoreValue") : stack1), depth0))
     + "\n        </tspan>\n      </text>\n    </svg>\n";
 },"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data,blockParams) {
     var stack1, lookupProperty = container.lookupProperty || function(parent, propertyName) {

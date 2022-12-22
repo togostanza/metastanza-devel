@@ -1,5 +1,5 @@
-import { c as commonjsGlobal, S as Stanza, d as defineStanzaElement } from './transform-237e281d.js';
-import { f as appendCustomCss } from './index-86482d2c.js';
+import { c as commonjsGlobal, S as Stanza, d as defineStanzaElement } from './transform-4eef39d8.js';
+import { f as appendCustomCss } from './index-0a21be6d.js';
 import { s as spinner } from './spinner-0571803e.js';
 
 function isContainer(node) {
@@ -8839,7 +8839,7 @@ const DEFAULT_KEYWORD_SCOPE = "keyword";
  * @param {boolean} caseInsensitive
  */
 function compileKeywords(rawKeywords, caseInsensitive, scopeName = DEFAULT_KEYWORD_SCOPE) {
-  /** @type KeywordDict */
+  /** @type {import("highlight.js/private").KeywordDict} */
   const compiledKeywords = Object.create(null);
 
   // input can be a string of keywords, an array of keywords, or a object with
@@ -9498,7 +9498,7 @@ function expandOrCloneMode(mode) {
   return mode;
 }
 
-var version = "11.6.0";
+var version = "11.7.0";
 
 class HTMLInjectionError extends Error {
   constructor(reason, html) {
@@ -15079,7 +15079,7 @@ function requireBash () {
 	    end: /'/
 	  };
 	  const ARITHMETIC = {
-	    begin: /\$\(\(/,
+	    begin: /\$?\(\(/,
 	    end: /\)\)/,
 	    contains: [
 	      {
@@ -16861,6 +16861,7 @@ function requireCmake () {
 	        begin: /\$\{/,
 	        end: /\}/
 	      },
+	      hljs.COMMENT(/#\[\[/, /]]/),
 	      hljs.HASH_COMMENT_MODE,
 	      hljs.QUOTE_STRING_MODE,
 	      hljs.NUMBER_MODE
@@ -20502,11 +20503,11 @@ function requireMarkdown () {
 	    contains: [], // defined later
 	    variants: [
 	      {
-	        begin: /_{2}/,
+	        begin: /_{2}(?!\s)/,
 	        end: /_{2}/
 	      },
 	      {
-	        begin: /\*{2}/,
+	        begin: /\*{2}(?!\s)/,
 	        end: /\*{2}/
 	      }
 	    ]
@@ -20516,11 +20517,11 @@ function requireMarkdown () {
 	    contains: [], // defined later
 	    variants: [
 	      {
-	        begin: /\*(?!\*)/,
+	        begin: /\*(?![*\s])/,
 	        end: /\*/
 	      },
 	      {
-	        begin: /_(?!_)/,
+	        begin: /_(?![_\s])/,
 	        end: /_/,
 	        relevance: 0
 	      }
@@ -22408,10 +22409,23 @@ function requireRuby () {
 	  )
 	  ;
 	  const CLASS_NAME_WITH_NAMESPACE_RE = regex.concat(CLASS_NAME_RE, /(::\w+)*/);
+	  // very popular ruby built-ins that one might even assume
+	  // are actual keywords (despite that not being the case)
+	  const PSEUDO_KWS = [
+	    "include",
+	    "extend",
+	    "prepend",
+	    "public",
+	    "private",
+	    "protected",
+	    "raise",
+	    "throw"
+	  ];
 	  const RUBY_KEYWORDS = {
 	    "variable.constant": [
 	      "__FILE__",
-	      "__LINE__"
+	      "__LINE__",
+	      "__ENCODING__"
 	    ],
 	    "variable.language": [
 	      "self",
@@ -22420,9 +22434,6 @@ function requireRuby () {
 	    keyword: [
 	      "alias",
 	      "and",
-	      "attr_accessor",
-	      "attr_reader",
-	      "attr_writer",
 	      "begin",
 	      "BEGIN",
 	      "break",
@@ -22438,7 +22449,6 @@ function requireRuby () {
 	      "for",
 	      "if",
 	      "in",
-	      "include",
 	      "module",
 	      "next",
 	      "not",
@@ -22455,10 +22465,17 @@ function requireRuby () {
 	      "when",
 	      "while",
 	      "yield",
+	      ...PSEUDO_KWS
 	    ],
 	    built_in: [
 	      "proc",
-	      "lambda"
+	      "lambda",
+	      "attr_accessor",
+	      "attr_reader",
+	      "attr_writer",
+	      "define_method",
+	      "private_constant",
+	      "module_function"
 	    ],
 	    literal: [
 	      "true",
@@ -22617,6 +22634,17 @@ function requireRuby () {
 	    ]
 	  };
 
+	  const INCLUDE_EXTEND = {
+	    match: [
+	      /(include|extend)\s+/,
+	      CLASS_NAME_WITH_NAMESPACE_RE
+	    ],
+	    scope: {
+	      2: "title.class"
+	    },
+	    keywords: RUBY_KEYWORDS
+	  };
+
 	  const CLASS_DEFINITION = {
 	    variants: [
 	      {
@@ -22629,7 +22657,7 @@ function requireRuby () {
 	      },
 	      {
 	        match: [
-	          /class\s+/,
+	          /\b(class|module)\s+/,
 	          CLASS_NAME_WITH_NAMESPACE_RE
 	        ]
 	      }
@@ -22665,18 +22693,27 @@ function requireRuby () {
 	    relevance: 0,
 	    match: [
 	      CLASS_NAME_WITH_NAMESPACE_RE,
-	      /\.new[ (]/
+	      /\.new[. (]/
 	    ],
 	    scope: {
 	      1: "title.class"
 	    }
 	  };
 
+	  // CamelCase
+	  const CLASS_REFERENCE = {
+	    relevance: 0,
+	    match: CLASS_NAME_RE,
+	    scope: "title.class"
+	  };
+
 	  const RUBY_DEFAULT_CONTAINS = [
 	    STRING,
 	    CLASS_DEFINITION,
+	    INCLUDE_EXTEND,
 	    OBJECT_CREATION,
 	    UPPER_CASE_CONSTANT,
+	    CLASS_REFERENCE,
 	    METHOD_DEFINITION,
 	    {
 	      // swallow namespace qualifiers before symbols
@@ -34070,7 +34107,9 @@ function requireJava () {
 	    'requires',
 	    'exports',
 	    'do',
-	    'sealed'
+	    'sealed',
+	    'yield',
+	    'permits'
 	  ];
 
 	  const BUILT_INS = [
@@ -34462,7 +34501,8 @@ function requireJavascript () {
 	        nextChar === "<" ||
 	        // the , gives away that this is not HTML
 	        // `<T, A extends keyof T, V>`
-	        nextChar === ",") {
+	        nextChar === ","
+	        ) {
 	        response.ignoreMatch();
 	        return;
 	      }
@@ -34480,10 +34520,18 @@ function requireJavascript () {
 	      // `<blah />` (self-closing)
 	      // handled by simpleSelfClosing rule
 
-	      // `<From extends string>`
-	      // technically this could be HTML, but it smells like a type
 	      let m;
 	      const afterMatch = match.input.substring(afterMatchIndex);
+
+	      // some more template typing stuff
+	      //  <T = any>(key?: string) => Modify<
+	      if ((m = afterMatch.match(/^\s*=/))) {
+	        response.ignoreMatch();
+	        return;
+	      }
+
+	      // `<From extends string>`
+	      // technically this could be HTML, but it smells like a type
 	      // NOTE: This is ugh, but added specifically for https://github.com/highlightjs/highlight.js/issues/3276
 	      if ((m = afterMatch.match(/^\s+extends\s+/))) {
 	        if (m.index === 0) {
@@ -34626,6 +34674,8 @@ function requireJavascript () {
 	    HTML_TEMPLATE,
 	    CSS_TEMPLATE,
 	    TEMPLATE_STRING,
+	    // Skip numbers when they are part of a variable name
+	    { match: /\$\d+/ },
 	    NUMBER,
 	    // This is intentional:
 	    // See https://github.com/highlightjs/highlight.js/issues/3288
@@ -34775,7 +34825,8 @@ function requireJavascript () {
 	      /\b/,
 	      noneOf([
 	        ...BUILT_IN_GLOBALS,
-	        "super"
+	        "super",
+	        "import"
 	      ]),
 	      IDENT_RE$1, regex.lookahead(/\(/)),
 	    className: "title.function",
@@ -34858,6 +34909,8 @@ function requireJavascript () {
 	      CSS_TEMPLATE,
 	      TEMPLATE_STRING,
 	      COMMENT,
+	      // Skip numbers when they are part of a variable name
+	      { match: /\$\d+/ },
 	      NUMBER,
 	      CLASS_REFERENCE,
 	      {
@@ -48018,6 +48071,10 @@ function requireNix () {
 	    end: /\}/,
 	    keywords: KEYWORDS
 	  };
+	  const ESCAPED_DOLLAR = {
+	    className: 'char.escape',
+	    begin: /''\$/,
+	  };
 	  const ATTRS = {
 	    begin: /[a-zA-Z0-9-_]+(\s*=)/,
 	    returnBegin: true,
@@ -48032,7 +48089,7 @@ function requireNix () {
 	  };
 	  const STRING = {
 	    className: 'string',
-	    contains: [ ANTIQUOTE ],
+	    contains: [ ESCAPED_DOLLAR, ANTIQUOTE ],
 	    variants: [
 	      {
 	        begin: "''",
@@ -53474,7 +53531,7 @@ function requireRoboconf () {
 }
 
 /*
-Language: Microtik RouterOS script
+Language: MikroTik RouterOS script
 Author: Ivan Dementev <ivan_div@mail.ru>
 Description: Scripting host provides a way to automate some router maintenance tasks by means of executing user-defined scripts bounded to some event occurrence
 Website: https://wiki.mikrotik.com/wiki/Manual:Scripting
@@ -53536,7 +53593,7 @@ function requireRouteros () {
 	  };
 
 	  return {
-	    name: 'Microtik RouterOS script',
+	    name: 'MikroTik RouterOS script',
 	    aliases: [ 'mikrotik' ],
 	    case_insensitive: true,
 	    keywords: {
@@ -55140,6 +55197,7 @@ function requireScheme () {
 
 	  return {
 	    name: 'Scheme',
+	    aliases: ['scm'],
 	    illegal: /\S/,
 	    contains: [
 	      hljs.SHEBANG(),
@@ -63171,7 +63229,8 @@ function requireTypescript () {
 	        nextChar === "<" ||
 	        // the , gives away that this is not HTML
 	        // `<T, A extends keyof T, V>`
-	        nextChar === ",") {
+	        nextChar === ","
+	        ) {
 	        response.ignoreMatch();
 	        return;
 	      }
@@ -63189,10 +63248,18 @@ function requireTypescript () {
 	      // `<blah />` (self-closing)
 	      // handled by simpleSelfClosing rule
 
-	      // `<From extends string>`
-	      // technically this could be HTML, but it smells like a type
 	      let m;
 	      const afterMatch = match.input.substring(afterMatchIndex);
+
+	      // some more template typing stuff
+	      //  <T = any>(key?: string) => Modify<
+	      if ((m = afterMatch.match(/^\s*=/))) {
+	        response.ignoreMatch();
+	        return;
+	      }
+
+	      // `<From extends string>`
+	      // technically this could be HTML, but it smells like a type
 	      // NOTE: This is ugh, but added specifically for https://github.com/highlightjs/highlight.js/issues/3276
 	      if ((m = afterMatch.match(/^\s+extends\s+/))) {
 	        if (m.index === 0) {
@@ -63335,6 +63402,8 @@ function requireTypescript () {
 	    HTML_TEMPLATE,
 	    CSS_TEMPLATE,
 	    TEMPLATE_STRING,
+	    // Skip numbers when they are part of a variable name
+	    { match: /\$\d+/ },
 	    NUMBER,
 	    // This is intentional:
 	    // See https://github.com/highlightjs/highlight.js/issues/3288
@@ -63484,7 +63553,8 @@ function requireTypescript () {
 	      /\b/,
 	      noneOf([
 	        ...BUILT_IN_GLOBALS,
-	        "super"
+	        "super",
+	        "import"
 	      ]),
 	      IDENT_RE$1, regex.lookahead(/\(/)),
 	    className: "title.function",
@@ -63567,6 +63637,8 @@ function requireTypescript () {
 	      CSS_TEMPLATE,
 	      TEMPLATE_STRING,
 	      COMMENT,
+	      // Skip numbers when they are part of a variable name
+	      { match: /\$\d+/ },
 	      NUMBER,
 	      CLASS_REFERENCE,
 	      {
@@ -75325,8 +75397,7 @@ defineFunction({
   names: ["\\\\"],
   props: {
     numArgs: 0,
-    numOptionalArgs: 1,
-    argTypes: ["size"],
+    numOptionalArgs: 0,
     allowedInText: true
   },
 
@@ -75334,7 +75405,7 @@ defineFunction({
     var {
       parser
     } = _ref;
-    var size = optArgs[0];
+    var size = parser.gullet.future().text === "[" ? parser.parseSizeGroup(true) : null;
     var newLine = !parser.settings.displayMode || !parser.settings.useStrictBehavior("newLineInDisplayMode", "In LaTeX, \\\\ or \\newline " + "does nothing in display mode");
     return {
       type: "cr",
@@ -85073,7 +85144,7 @@ var katex = {
   /**
    * Current KaTeX version
    */
-  version: "0.16.3",
+  version: "0.16.4",
 
   /**
    * Renders the given LaTeX into an HTML+MathML combination, and adds

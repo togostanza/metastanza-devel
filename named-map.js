@@ -1,25 +1,25 @@
-import { F as basis, G as basisClosed, i as interpolateNumber, g as interpolateString, H as interpolateTransformCss, I as interpolateTransformSvg, f as interpolateRgb, u as rgbBasis, J as rgbBasisClosed, v as rgb, B as hsl$1, S as Stanza, d as defineStanzaElement } from './transform-237e281d.js';
-import { U as timeYear, R as timeMonth, D as sunday, B as timeDay, z as timeHour, v as timeMinute, q as utcSecond, m as utcMillisecond, ag as utcYear, ae as utcMonth, a0 as utcSunday, _ as utcDay, Y as utcHour, W as utcMinute, an as timeFormat$2, ao as timeParse$1, u as utcFormat$1, a as utcParse$1, ap as formatLocale$1, t as time$1, S as Symbol$1 } from './symbol-b2442318.js';
-import { u as interpolateRound, p as bisector$1, h as tickStep, q as precisionFixed, s as precisionRound, r as precisionPrefix, e as ascending$3, l as linear$1, k as bisectRight$1, v as tickFormat$1, g as bisect$1, m as bisectLeft$1 } from './linear-1fd12819.js';
-import { a as interpolate$1$1, k as array$3, l as date, n as numberArray, m as object$1, b as formatSpecifier, f as format$3, c as formatPrefix, j as formatLocale, o as ordinal, p as implicit, d as InternSet } from './ordinal-47cefe3e.js';
-import { d as dsvFormat, l as loadData } from './load-data-60693126.js';
-import { aE as discrete$1, aF as hue, y as interpolateZoom, aG as hsl, aH as hslLong, aI as lab, aJ as hcl, aK as hclLong, aL as cubehelix, v as cubehelixLong, aM as piecewise, aN as quantize$1, I as quantileSorted, d as deviation, q as quantile, D as median, C as mean, aO as identity$2, aP as symlog$1, aT as utcTime, aU as sequential, aV as sequentialLog, aW as sequentialPow, aX as sequentialSqrt, aY as sequentialSymlog, aZ as diverging, a_ as divergingLog, a$ as divergingPow, b0 as divergingSqrt, b1 as divergingSymlog, aQ as quantile$1, aR as quantize$2, aS as threshold, x as area$2$1, b2 as curveBasisClosed, b3 as curveBasisOpen, b4 as curveBundle, b7 as curveCardinal, b6 as curveCardinalOpen, b5 as curveCardinalClosed, ba as curveCatmullRom, b8 as curveCatmullRomClosed, b9 as curveCatmullRomOpen, bb as curveLinearClosed, bd as monotoneY, bc as monotoneX, be as curveNatural, bf as curveStep, bg as stepAfter, bh as stepBefore, ak as projection$1, a0 as geoPath, a1 as geoAlbers, a2 as geoAlbersUsa, a3 as geoAzimuthalEqualArea, a5 as geoAzimuthalEquidistant, a7 as geoConicConformal, a9 as geoConicEqualArea, ab as geoConicEquidistant, ad as geoEqualEarth, af as geoEquirectangular, ah as geoGnomonic, aj as geoIdentity, am as geoMercator, ao as geoNaturalEarth1, aq as geoOrthographic, as as geoStereographic, au as geoTransverseMercator, _ as graticule, R as forceX, S as forceY, ay as pack, aB as treemapBinary, aC as treemapSliceDice, aD as treemapResquarify, Q as Delaunay, G as permute, M as lab$1, N as hcl$1, T as geoArea$1, U as geoBounds$1, W as geoCentroid$1, bi as interval$1 } from './step-926b589e.js';
+import { F as basis, G as basisClosed, i as interpolateNumber, g as interpolateString, H as interpolateTransformCss, I as interpolateTransformSvg, f as interpolateRgb, u as rgbBasis, J as rgbBasisClosed, v as rgb, B as hsl$1, S as Stanza, d as defineStanzaElement } from './transform-4eef39d8.js';
+import { ag as timeYear, ac as timeMonth, L as timeSunday, F as timeDay, B as timeHour, x as timeMinute, r as second, o as millisecond, ai as utcYear, ae as utcMonth, _ as utcSunday, H as utcDay, D as utcHour, z as utcMinute, ap as timeFormat$2, aq as timeParse$1, u as utcFormat$1, a as utcParse$1, ar as formatLocale$1, t as time$1, S as Symbol$1 } from './symbol-71a78367.js';
+import { u as interpolateRound, p as bisector$1, h as tickStep, q as precisionFixed, s as precisionRound, r as precisionPrefix, e as ascending$3, l as linear$1, k as bisectRight$1, v as tickFormat$1, g as bisect$1, m as bisectLeft$1 } from './linear-71965c16.js';
+import { a as interpolate$1$1, k as array$3, l as date, n as numberArray, m as object$1, b as formatSpecifier, f as format$3, c as formatPrefix, j as formatLocale, o as ordinal, p as implicit, d as InternSet } from './ordinal-b6827cf8.js';
+import { d as dsvFormat, l as loadData } from './load-data-13013bfb.js';
+import { aE as discrete$1, aF as hue, y as interpolateZoom, aG as hsl, aH as hslLong, aI as lab, aJ as hcl, aK as hclLong, aL as cubehelix, v as cubehelixLong, aM as piecewise, aN as quantize$1, I as quantileSorted, d as deviation, q as quantile, D as median, C as mean, aO as identity$2, aP as symlog$1, aT as utcTime, aU as sequential, aV as sequentialLog, aW as sequentialPow, aX as sequentialSqrt, aY as sequentialSymlog, aZ as diverging, a_ as divergingLog, a$ as divergingPow, b0 as divergingSqrt, b1 as divergingSymlog, aQ as quantile$1, aR as quantize$2, aS as threshold, x as area$2$1, b2 as curveBasisClosed, b3 as curveBasisOpen, b4 as curveBundle, b7 as curveCardinal, b6 as curveCardinalOpen, b5 as curveCardinalClosed, ba as curveCatmullRom, b8 as curveCatmullRomClosed, b9 as curveCatmullRomOpen, bb as curveLinearClosed, bd as monotoneY, bc as monotoneX, be as curveNatural, bf as curveStep, bg as stepAfter, bh as stepBefore, ak as projection$1, a0 as geoPath, a1 as geoAlbers, a2 as geoAlbersUsa, a3 as geoAzimuthalEqualArea, a5 as geoAzimuthalEquidistant, a7 as geoConicConformal, a9 as geoConicEqualArea, ab as geoConicEquidistant, ad as geoEqualEarth, af as geoEquirectangular, ah as geoGnomonic, aj as geoIdentity, am as geoMercator, ao as geoNaturalEarth1, aq as geoOrthographic, as as geoStereographic, au as geoTransverseMercator, _ as graticule, R as forceX, S as forceY, ay as pack, aB as treemapBinary, aC as treemapSliceDice, aD as treemapResquarify, Q as Delaunay, G as permute, M as lab$1, N as hcl$1, T as geoArea$1, U as geoBounds$1, W as geoCentroid$1, bi as interval$1 } from './step-26b6bdfc.js';
 import { r as range$3 } from './range-e15c6861.js';
 import { m as min$1, t as tree$1, c as cluster } from './tree-0236e2eb.js';
 import { m as max$1 } from './max-2c042256.js';
-import { l as log$3 } from './log-29c2fff6.js';
-import { p as pow$2, s as sqrt$1 } from './pow-742a7e38.js';
-import { a as arc$2$1 } from './arc-8a3c109f.js';
-import { l as line$2$1, c as curveLinear } from './line-5ff356a1.js';
-import { p as path$3 } from './path-a78af922.js';
+import { l as log$3 } from './log-8bc7969e.js';
+import { p as pow$2, s as sqrt$1 } from './pow-5639b38f.js';
+import { a as arc$2$1 } from './arc-b062fe01.js';
+import { l as line$2$1, c as curveLinear } from './line-fbadf484.js';
+import { p as path$3 } from './path-f2817c20.js';
 import { c as curveBasis } from './basis-0dde91c7.js';
 import { s as sum } from './sum-44e7480e.js';
-import { f as forceSimulation, b as forceCenter, d as forceCollide, a as forceManyBody, c as forceLink } from './manyBody-55426ba5.js';
+import { f as forceSimulation, b as forceCenter, d as forceCollide, a as forceManyBody, c as forceLink } from './manyBody-1419e474.js';
 import { h as hierarchy, s as stratify } from './stratify-7050dfd9.js';
 import { p as partition$4 } from './partition-e955ad6c.js';
 import { t as treemap, a as treemapSlice, b as treemapSquarify } from './index-c76c1b89.js';
 import { t as treemapDice } from './dice-7bdb0652.js';
-import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem } from './index-86482d2c.js';
+import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem } from './index-0a21be6d.js';
 import './constant-c49047a5.js';
 import './math-24162d65.js';
 import './array-80a7907a.js';
@@ -2085,7 +2085,7 @@ function localDayOfYear(d) {
   return timeDay.count(localYear(d.getFullYear()) - 1, d);
 }
 function localWeekNum(d) {
-  return sunday.count(localYear(d.getFullYear()) - 1, d);
+  return timeSunday.count(localYear(d.getFullYear()) - 1, d);
 }
 function localFirst(y) {
   return localYear(y).getDay();
@@ -2211,14 +2211,14 @@ const timeIntervals = {
   [YEAR]: timeYear,
   [QUARTER]: timeMonth.every(3),
   [MONTH]: timeMonth,
-  [WEEK]: sunday,
+  [WEEK]: timeSunday,
   [DATE]: timeDay,
   [DAY]: timeDay,
   [DAYOFYEAR]: timeDay,
   [HOURS]: timeHour,
   [MINUTES]: timeMinute,
-  [SECONDS]: utcSecond,
-  [MILLISECONDS]: utcMillisecond
+  [SECONDS]: second,
+  [MILLISECONDS]: millisecond
 };
 const utcIntervals = {
   [YEAR]: utcYear,
@@ -2230,8 +2230,8 @@ const utcIntervals = {
   [DAYOFYEAR]: utcDay,
   [HOURS]: utcHour,
   [MINUTES]: utcMinute,
-  [SECONDS]: utcSecond,
-  [MILLISECONDS]: utcMillisecond
+  [SECONDS]: second,
+  [MILLISECONDS]: millisecond
 };
 function timeInterval(unit) {
   return timeIntervals[unit];
@@ -34131,7 +34131,11 @@ var pkg$1 = {
 	engines: engines
 };
 
-var clone = {exports: {}};
+var cloneExports = {};
+var clone = {
+  get exports(){ return cloneExports; },
+  set exports(v){ cloneExports = v; },
+};
 
 (function (module) {
 	var clone = (function() {
@@ -34392,7 +34396,7 @@ var clone = {exports: {}};
 	}
 } (clone));
 
-var clone_ = clone.exports;
+var clone_ = cloneExports;
 
 // do not edit .js files directly - edit src/index.jst
 
@@ -53211,7 +53215,7 @@ var vegaLiteImport = /*#__PURE__*/Object.freeze({
 function e(e){const[n,r]=/schema\/([\w-]+)\/([\w\.\-]+)\.json$/g.exec(e).slice(1,3);return {library:n,version:r}}
 
 var name = "vega-themes";
-var version = "2.10.0";
+var version$1 = "2.10.0";
 var description = "Themes for stylized Vega and Vega-Lite visualizations.";
 var keywords = [
 	"vega",
@@ -53262,29 +53266,32 @@ var scripts = {
 	"copy:data": "rsync -r node_modules/vega-datasets/data/* examples/data",
 	"copy:build": "rsync -r build/* examples/build",
 	"deploy:gh": "yarn build && mkdir -p examples/build && rsync -r build/* examples/build && gh-pages -d examples",
-	prepublishOnly: "yarn clean && yarn build",
 	preversion: "yarn lint",
 	serve: "browser-sync start -s -f build examples --serveStatic examples",
 	start: "yarn build && concurrently --kill-others -n Server,Rollup 'yarn serve' 'rollup -c -w'",
 	prepare: "beemo create-config",
 	eslintbase: "beemo eslint .",
 	format: "yarn eslintbase --fix",
-	lint: "yarn eslintbase"
+	lint: "yarn eslintbase",
+	release: "auto shipit"
 };
 var devDependencies = {
+	"@auto-it/conventional-commits": "^10.32.2",
+	"@auto-it/first-time-contributor": "^10.32.2",
 	"@rollup/plugin-json": "^4.1.0",
-	"@rollup/plugin-node-resolve": "^11.2.0",
-	"@wessberg/rollup-plugin-ts": "^1.3.8",
-	"browser-sync": "^2.26.14",
-	concurrently: "^6.0.0",
-	"gh-pages": "^3.1.0",
-	rollup: "^2.39.1",
+	"@rollup/plugin-node-resolve": "^13.0.6",
+	"rollup-plugin-ts": "^1.4.7",
+	auto: "^10.32.2",
+	"browser-sync": "^2.27.7",
+	concurrently: "^6.4.0",
+	"gh-pages": "^3.2.3",
+	rollup: "^2.60.0",
 	"rollup-plugin-bundle-size": "^1.0.3",
 	"rollup-plugin-terser": "^7.0.2",
-	typescript: "^4.2.2",
+	typescript: "^4.4.4",
 	vega: "^5.19.1",
 	"vega-lite": "^5.0.0",
-	"vega-lite-dev-config": "^0.16.1"
+	"vega-lite-dev-config": "^0.20.0"
 };
 var peerDependencies = {
 	vega: "*",
@@ -53292,7 +53299,7 @@ var peerDependencies = {
 };
 var pkg = {
 	name: name,
-	version: version,
+	version: version$1,
 	description: description,
 	keywords: keywords,
 	license: license,
@@ -53316,7 +53323,7 @@ const darkTheme = {
     background: '#333',
     title: {
         color: lightColor,
-        subtitleColor: lightColor
+        subtitleColor: lightColor,
     },
     style: {
         'guide-label': {
@@ -53333,16 +53340,16 @@ const darkTheme = {
     },
 };
 
-const markColor = '#4572a7';
+const markColor$7 = '#4572a7';
 const excelTheme = {
     background: '#fff',
-    arc: { fill: markColor },
-    area: { fill: markColor },
-    line: { stroke: markColor, strokeWidth: 2 },
-    path: { stroke: markColor },
-    rect: { fill: markColor },
-    shape: { stroke: markColor },
-    symbol: { fill: markColor, strokeWidth: 1.5, size: 50 },
+    arc: { fill: markColor$7 },
+    area: { fill: markColor$7 },
+    line: { stroke: markColor$7, strokeWidth: 2 },
+    path: { stroke: markColor$7 },
+    rect: { fill: markColor$7 },
+    shape: { stroke: markColor$7 },
+    symbol: { fill: markColor$7, strokeWidth: 1.5, size: 50 },
     axis: {
         bandPosition: 0.5,
         grid: true,
@@ -53379,24 +53386,24 @@ const excelTheme = {
     },
 };
 
-const markColor$1 = '#30a2da';
-const axisColor = '#cbcbcb';
+const markColor$6 = '#30a2da';
+const axisColor$2 = '#cbcbcb';
 const guideLabelColor = '#999';
 const guideTitleColor = '#333';
-const backgroundColor = '#f0f0f0';
+const backgroundColor$2 = '#f0f0f0';
 const blackTitle = '#333';
 const fiveThirtyEightTheme = {
-    arc: { fill: markColor$1 },
-    area: { fill: markColor$1 },
+    arc: { fill: markColor$6 },
+    area: { fill: markColor$6 },
     axis: {
-        domainColor: axisColor,
+        domainColor: axisColor$2,
         grid: true,
-        gridColor: axisColor,
+        gridColor: axisColor$2,
         gridWidth: 1,
         labelColor: guideLabelColor,
         labelFontSize: 10,
         titleColor: guideTitleColor,
-        tickColor: axisColor,
+        tickColor: axisColor$2,
         tickSize: 10,
         titleFontSize: 14,
         titlePadding: 10,
@@ -53405,9 +53412,9 @@ const fiveThirtyEightTheme = {
     axisBand: {
         grid: false,
     },
-    background: backgroundColor,
+    background: backgroundColor$2,
     group: {
-        fill: backgroundColor,
+        fill: backgroundColor$2,
     },
     legend: {
         labelColor: blackTitle,
@@ -53420,11 +53427,11 @@ const fiveThirtyEightTheme = {
         titlePadding: 10,
     },
     line: {
-        stroke: markColor$1,
+        stroke: markColor$6,
         strokeWidth: 2,
     },
-    path: { stroke: markColor$1, strokeWidth: 0.5 },
-    rect: { fill: markColor$1 },
+    path: { stroke: markColor$6, strokeWidth: 0.5 },
+    rect: { fill: markColor$6 },
     range: {
         category: [
             '#30a2da',
@@ -53447,10 +53454,10 @@ const fiveThirtyEightTheme = {
         filled: true,
         shape: 'circle',
     },
-    shape: { stroke: markColor$1 },
+    shape: { stroke: markColor$6 },
     bar: {
         binSpacing: 2,
-        fill: markColor$1,
+        fill: markColor$6,
         stroke: null,
     },
     title: {
@@ -53461,18 +53468,18 @@ const fiveThirtyEightTheme = {
     },
 };
 
-const markColor$2 = '#000';
+const markColor$5 = '#000';
 const ggplot2Theme = {
     group: {
         fill: '#e5e5e5',
     },
-    arc: { fill: markColor$2 },
-    area: { fill: markColor$2 },
-    line: { stroke: markColor$2 },
-    path: { stroke: markColor$2 },
-    rect: { fill: markColor$2 },
-    shape: { stroke: markColor$2 },
-    symbol: { fill: markColor$2, size: 40 },
+    arc: { fill: markColor$5 },
+    area: { fill: markColor$5 },
+    line: { stroke: markColor$5 },
+    path: { stroke: markColor$5 },
+    rect: { fill: markColor$5 },
+    shape: { stroke: markColor$5 },
+    symbol: { fill: markColor$5, size: 40 },
     axis: {
         domain: false,
         grid: true,
@@ -53508,17 +53515,17 @@ const ggplot2Theme = {
 
 const headlineFontSize = 22;
 const headlineFontWeight = 'normal';
-const labelFont = 'Benton Gothic, sans-serif';
+const labelFont$1 = 'Benton Gothic, sans-serif';
 const labelFontSize = 11.5;
 const labelFontWeight = 'normal';
-const markColor$3 = '#82c6df';
+const markColor$4 = '#82c6df';
 // const markHighlight = '#006d8f';
 // const markDemocrat = '#5789b8';
 // const markRepublican = '#d94f54';
 const titleFont = 'Benton Gothic Bold, sans-serif';
 const titleFontWeight = 'normal';
-const titleFontSize = 13;
-const colorSchemes = {
+const titleFontSize$1 = 13;
+const colorSchemes$1 = {
     'category-6': ['#ec8431', '#829eb1', '#c89d29', '#3580b1', '#adc839', '#ab7fb4'],
     'fire-7': ['#fbf2c7', '#f9e39c', '#f8d36e', '#f4bb6a', '#e68a4f', '#d15a40', '#ab4232'],
     'fireandice-6': ['#e68a4f', '#f4bb6a', '#f9e39c', '#dadfe2', '#a6b7c6', '#849eae'],
@@ -53533,19 +53540,19 @@ const latimesTheme = {
         fontSize: headlineFontSize,
         fontWeight: headlineFontWeight,
     },
-    arc: { fill: markColor$3 },
-    area: { fill: markColor$3 },
-    line: { stroke: markColor$3, strokeWidth: 2 },
-    path: { stroke: markColor$3 },
-    rect: { fill: markColor$3 },
-    shape: { stroke: markColor$3 },
-    symbol: { fill: markColor$3, size: 30 },
+    arc: { fill: markColor$4 },
+    area: { fill: markColor$4 },
+    line: { stroke: markColor$4, strokeWidth: 2 },
+    path: { stroke: markColor$4 },
+    rect: { fill: markColor$4 },
+    shape: { stroke: markColor$4 },
+    symbol: { fill: markColor$4, size: 30 },
     axis: {
-        labelFont,
+        labelFont: labelFont$1,
         labelFontSize,
         labelFontWeight,
         titleFont,
-        titleFontSize,
+        titleFontSize: titleFontSize$1,
         titleFontWeight,
     },
     axisX: {
@@ -53564,33 +53571,33 @@ const latimesTheme = {
         titleY: -11,
     },
     legend: {
-        labelFont,
+        labelFont: labelFont$1,
         labelFontSize,
         symbolType: 'square',
         titleFont,
-        titleFontSize,
+        titleFontSize: titleFontSize$1,
         titleFontWeight,
     },
     range: {
-        category: colorSchemes['category-6'],
-        diverging: colorSchemes['fireandice-6'],
-        heatmap: colorSchemes['fire-7'],
-        ordinal: colorSchemes['fire-7'],
-        ramp: colorSchemes['fire-7'],
+        category: colorSchemes$1['category-6'],
+        diverging: colorSchemes$1['fireandice-6'],
+        heatmap: colorSchemes$1['fire-7'],
+        ordinal: colorSchemes$1['fire-7'],
+        ramp: colorSchemes$1['fire-7'],
     },
 };
 
-const markColor$4 = '#ab5787';
+const markColor$3 = '#ab5787';
 const axisColor$1 = '#979797';
 const quartzTheme = {
     background: '#f9f9f9',
-    arc: { fill: markColor$4 },
-    area: { fill: markColor$4 },
-    line: { stroke: markColor$4 },
-    path: { stroke: markColor$4 },
-    rect: { fill: markColor$4 },
-    shape: { stroke: markColor$4 },
-    symbol: { fill: markColor$4, size: 30 },
+    arc: { fill: markColor$3 },
+    area: { fill: markColor$3 },
+    line: { stroke: markColor$3 },
+    path: { stroke: markColor$3 },
+    rect: { fill: markColor$3 },
+    shape: { stroke: markColor$3 },
+    symbol: { fill: markColor$3, size: 30 },
     axis: {
         domainColor: axisColor$1,
         domainWidth: 0.5,
@@ -53634,16 +53641,16 @@ const quartzTheme = {
     },
 };
 
-const markColor$5 = '#3e5c69';
+const markColor$2 = '#3e5c69';
 const voxTheme = {
     background: '#fff',
-    arc: { fill: markColor$5 },
-    area: { fill: markColor$5 },
-    line: { stroke: markColor$5 },
-    path: { stroke: markColor$5 },
-    rect: { fill: markColor$5 },
-    shape: { stroke: markColor$5 },
-    symbol: { fill: markColor$5 },
+    arc: { fill: markColor$2 },
+    area: { fill: markColor$2 },
+    line: { stroke: markColor$2 },
+    path: { stroke: markColor$2 },
+    rect: { fill: markColor$2 },
+    shape: { stroke: markColor$2 },
+    symbol: { fill: markColor$2 },
     axis: {
         domainWidth: 0.5,
         grid: true,
@@ -53672,15 +53679,15 @@ const voxTheme = {
     },
 };
 
-const markColor$6 = '#1696d2';
-const axisColor$2 = '#000000';
+const markColor$1 = '#1696d2';
+const axisColor = '#000000';
 const backgroundColor$1 = '#FFFFFF';
 const font = 'Lato';
-const labelFont$1 = 'Lato';
+const labelFont = 'Lato';
 const sourceFont = 'Lato';
-const gridColor = '#DEDDDD';
-const titleFontSize$1 = 18;
-const colorSchemes$1 = {
+const gridColor$1 = '#DEDDDD';
+const titleFontSize = 18;
+const colorSchemes = {
     'main-colors': ['#1696d2', '#d2d2d2', '#000000', '#fdbf11', '#ec008b', '#55b748', '#5c5859', '#db2b27'],
     'shades-blue': ['#CFE8F3', '#A2D4EC', '#73BFE2', '#46ABDB', '#1696D2', '#12719E', '#0A4C6A', '#062635'],
     'shades-gray': ['#F5F5F5', '#ECECEC', '#E3E3E3', '#DCDBDB', '#D2D2D2', '#9D9D9D', '#696969', '#353535'],
@@ -53711,18 +53718,18 @@ const urbanInstituteTheme = {
     background: backgroundColor$1,
     title: {
         anchor: 'start',
-        fontSize: titleFontSize$1,
+        fontSize: titleFontSize,
         font: font,
     },
     axisX: {
         domain: true,
-        domainColor: axisColor$2,
+        domainColor: axisColor,
         domainWidth: 1,
         grid: false,
         labelFontSize: 12,
-        labelFont: labelFont$1,
+        labelFont: labelFont,
         labelAngle: 0,
-        tickColor: axisColor$2,
+        tickColor: axisColor,
         tickSize: 5,
         titleFontSize: 12,
         titlePadding: 10,
@@ -53732,10 +53739,10 @@ const urbanInstituteTheme = {
         domain: false,
         domainWidth: 1,
         grid: true,
-        gridColor: gridColor,
+        gridColor: gridColor$1,
         gridWidth: 1,
         labelFontSize: 12,
-        labelFont: labelFont$1,
+        labelFont: labelFont,
         labelPadding: 8,
         ticks: false,
         titleFontSize: 12,
@@ -53747,7 +53754,7 @@ const urbanInstituteTheme = {
     },
     legend: {
         labelFontSize: 12,
-        labelFont: labelFont$1,
+        labelFont: labelFont,
         symbolSize: 100,
         titleFontSize: 12,
         titlePadding: 10,
@@ -53759,31 +53766,31 @@ const urbanInstituteTheme = {
         stroke: 'transparent',
     },
     range: {
-        category: colorSchemes$1['six-groups-cat-1'],
-        diverging: colorSchemes$1['diverging-colors'],
-        heatmap: colorSchemes$1['diverging-colors'],
-        ordinal: colorSchemes$1['six-groups-seq'],
-        ramp: colorSchemes$1['shades-blue'],
+        category: colorSchemes['six-groups-cat-1'],
+        diverging: colorSchemes['diverging-colors'],
+        heatmap: colorSchemes['diverging-colors'],
+        ordinal: colorSchemes['six-groups-seq'],
+        ramp: colorSchemes['shades-blue'],
     },
     area: {
-        fill: markColor$6,
+        fill: markColor$1,
     },
     rect: {
-        fill: markColor$6,
+        fill: markColor$1,
     },
     line: {
-        color: markColor$6,
-        stroke: markColor$6,
+        color: markColor$1,
+        stroke: markColor$1,
         strokeWidth: 5,
     },
     trail: {
-        color: markColor$6,
-        stroke: markColor$6,
+        color: markColor$1,
+        stroke: markColor$1,
         strokeWidth: 0,
         size: 1,
     },
     path: {
-        stroke: markColor$6,
+        stroke: markColor$1,
         strokeWidth: 0.5,
     },
     point: {
@@ -53791,7 +53798,7 @@ const urbanInstituteTheme = {
     },
     text: {
         font: sourceFont,
-        color: markColor$6,
+        color: markColor$1,
         fontSize: 11,
         align: 'center',
         fontWeight: 400,
@@ -53799,13 +53806,13 @@ const urbanInstituteTheme = {
     },
     style: {
         bar: {
-            fill: markColor$6,
+            fill: markColor$1,
             stroke: null,
         },
     },
-    arc: { fill: markColor$6 },
-    shape: { stroke: markColor$6 },
-    symbol: { fill: markColor$6, size: 30 },
+    arc: { fill: markColor$1 },
+    shape: { stroke: markColor$1 },
+    symbol: { fill: markColor$1, size: 30 },
 };
 
 /**
@@ -53815,17 +53822,17 @@ const urbanInstituteTheme = {
  * license that can be found in the LICENSE file or at
  * https://developers.google.com/open-source/licenses/bsd
  */
-const markColor$7 = '#3366CC';
-const gridColor$1 = '#ccc';
+const markColor = '#3366CC';
+const gridColor = '#ccc';
 const defaultFont = 'Arial, sans-serif';
 const googlechartsTheme = {
-    arc: { fill: markColor$7 },
-    area: { fill: markColor$7 },
-    path: { stroke: markColor$7 },
-    rect: { fill: markColor$7 },
-    shape: { stroke: markColor$7 },
-    symbol: { stroke: markColor$7 },
-    circle: { fill: markColor$7 },
+    arc: { fill: markColor },
+    area: { fill: markColor },
+    path: { stroke: markColor },
+    rect: { fill: markColor },
+    shape: { stroke: markColor },
+    symbol: { stroke: markColor },
+    circle: { fill: markColor },
     background: '#fff',
     padding: {
         top: 10,
@@ -53855,8 +53862,8 @@ const googlechartsTheme = {
         anchor: 'start',
     },
     axis: {
-        gridColor: gridColor$1,
-        tickColor: gridColor$1,
+        gridColor: gridColor,
+        tickColor: gridColor,
         domain: false,
         grid: true,
     },
@@ -53879,7 +53886,115 @@ const googlechartsTheme = {
     },
 };
 
-const version$1 = pkg.version;
+const ptToPx = (value) => value * (1 / 3 + 1);
+const fontSmallPx = ptToPx(9);
+const legendFontPx = ptToPx(10);
+const fontLargePx = ptToPx(12);
+const fontStandard = 'Segoe UI';
+const fontTitle = 'wf_standard-font, helvetica, arial, sans-serif';
+const firstLevelElementColor = '#252423';
+const secondLevelElementColor = '#605E5C';
+const backgroundColor = 'transparent';
+const backgroundSecondaryColor = '#C8C6C4';
+const paletteColor1 = '#118DFF';
+const paletteColor2 = '#12239E';
+const paletteColor3 = '#E66C37';
+const paletteColor4 = '#6B007B';
+const paletteColor5 = '#E044A7';
+const paletteColor6 = '#744EC2';
+const paletteColor7 = '#D9B300';
+const paletteColor8 = '#D64550';
+const divergentColorMax = paletteColor1;
+const divergentColorMin = '#DEEFFF';
+const divergentPalette = [divergentColorMin, divergentColorMax];
+const ordinalPalette = [
+    divergentColorMin,
+    '#c7e4ff',
+    '#b0d9ff',
+    '#9aceff',
+    '#83c3ff',
+    '#6cb9ff',
+    '#55aeff',
+    '#3fa3ff',
+    '#2898ff',
+    divergentColorMax,
+];
+const powerbiTheme = {
+    view: { stroke: backgroundColor },
+    background: backgroundColor,
+    font: fontStandard,
+    header: {
+        titleFont: fontTitle,
+        titleFontSize: fontLargePx,
+        titleColor: firstLevelElementColor,
+        labelFont: fontStandard,
+        labelFontSize: legendFontPx,
+        labelColor: secondLevelElementColor,
+    },
+    axis: {
+        ticks: false,
+        grid: false,
+        domain: false,
+        labelColor: secondLevelElementColor,
+        labelFontSize: fontSmallPx,
+        titleFont: fontTitle,
+        titleColor: firstLevelElementColor,
+        titleFontSize: fontLargePx,
+        titleFontWeight: 'normal',
+    },
+    axisQuantitative: {
+        tickCount: 3,
+        grid: true,
+        gridColor: backgroundSecondaryColor,
+        gridDash: [1, 5],
+        labelFlush: false,
+    },
+    axisBand: { tickExtra: true },
+    axisX: { labelPadding: 5 },
+    axisY: { labelPadding: 10 },
+    bar: { fill: paletteColor1 },
+    line: {
+        stroke: paletteColor1,
+        strokeWidth: 3,
+        strokeCap: 'round',
+        strokeJoin: 'round',
+    },
+    text: { font: fontStandard, fontSize: fontSmallPx, fill: secondLevelElementColor },
+    arc: { fill: paletteColor1 },
+    area: { fill: paletteColor1, line: true, opacity: 0.6 },
+    path: { stroke: paletteColor1 },
+    rect: { fill: paletteColor1 },
+    point: { fill: paletteColor1, filled: true, size: 75 },
+    shape: { stroke: paletteColor1 },
+    symbol: { fill: paletteColor1, strokeWidth: 1.5, size: 50 },
+    legend: {
+        titleFont: fontStandard,
+        titleFontWeight: 'bold',
+        titleColor: secondLevelElementColor,
+        labelFont: fontStandard,
+        labelFontSize: legendFontPx,
+        labelColor: secondLevelElementColor,
+        symbolType: 'circle',
+        symbolSize: 75,
+    },
+    range: {
+        category: [
+            paletteColor1,
+            paletteColor2,
+            paletteColor3,
+            paletteColor4,
+            paletteColor5,
+            paletteColor6,
+            paletteColor7,
+            paletteColor8,
+        ],
+        diverging: divergentPalette,
+        heatmap: divergentPalette,
+        ordinal: ordinalPalette,
+    },
+};
+
+const version = pkg.version;
 
 var themes = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -53889,9 +54004,10 @@ var themes = /*#__PURE__*/Object.freeze({
     ggplot2: ggplot2Theme,
     googlecharts: googlechartsTheme,
     latimes: latimesTheme,
+    powerbi: powerbiTheme,
     quartz: quartzTheme,
     urbaninstitute: urbanInstituteTheme,
-    version: version$1,
+    version: version,
     vox: voxTheme
 });
 
