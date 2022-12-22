@@ -1,6 +1,7 @@
 import Stanza from "togostanza/stanza";
 import * as d3 from "d3";
 import loadData from "togostanza-utils/load-data";
+import { getMarginsFromCSSString } from "../../lib/utils";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -66,6 +67,9 @@ export default class Sunburst extends Stanza {
 
     const width = parseFloat(css("--togostanza-outline-width"));
     const height = parseFloat(css("--togostanza-outline-height"));
+    const padding = getMarginsFromCSSString(
+      css("--togostanza-outline-padding")
+    );
     const colorScale = [];
 
     const labelKey = this.params["node-label_key"];
@@ -258,9 +262,15 @@ export default class Sunburst extends Stanza {
     const svg = d3
       .select(el)
       .append("svg")
-      .style("width", width)
-      .style("height", height)
-      .attr("viewBox", `${-width / 2} ${-height / 2} ${width} ${height}`);
+      .attr("width", padding.LEFT + width + padding.RIGHT)
+      .attr("height", padding.TOP + height + padding.BOTTOM)
+      .attr(
+        "viewBox",
+        `${(-width - padding.LEFT) / 2}
+        ${(-height - padding.TOP) / 2}
+        ${width + padding.RIGHT}
+        ${height + padding.BOTTOM}`
+      );
 
     //Get character width
     const testText = svg
