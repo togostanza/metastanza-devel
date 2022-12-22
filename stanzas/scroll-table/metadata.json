@@ -21,7 +21,13 @@
     {
       "stanza:key": "data-type",
       "stanza:type": "single-choice",
-      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
+      "stanza:choice": [
+        "json",
+        "tsv",
+        "csv",
+        "sparql-results-json",
+        "elasticsearch"
+      ],
       "stanza:example": "json",
       "stanza:description": "Data type",
       "stanza:required": true
