@@ -48,12 +48,6 @@
       "stanza:description": "Number of gradation colors between color-min and color-max"
     },
     {
-      "stanza:key": "custom_css_url",
-      "stanza:type": "text",
-      "stanza:example": "",
-      "stanza:description": "custom css to apply"
-    },
-    {
       "stanza:key": "axis-hide",
       "stanza:type": "boolean",
       "stanza:example": true,
@@ -154,6 +148,12 @@
       "stanza:type": "text",
       "stanza:example": "value",
       "stanza:description": "Data key to use as tooltip"
+    },
+    {
+      "stanza:key": "togostanza-custom_css_url",
+      "stanza:type": "text",
+      "stanza:example": "",
+      "stanza:description": "custom css to apply"
     }
   ],
   "stanza:menu-placement": "bottom-right",
