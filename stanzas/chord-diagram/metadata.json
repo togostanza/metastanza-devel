@@ -4,7 +4,7 @@
   },
   "@id": "chord-diagram",
   "stanza:label": "Chord diagram",
-  "stanza:definition": "",
+  "stanza:definition": "Chord diagram MetaStanza",
   "stanza:license": "MIT",
   "stanza:author": "永野 朗夫",
   "stanza:contributor": [],
@@ -18,7 +18,7 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "custom-css-url",
+      "stanza:key": "custom_css_url",
       "stanza:example": "",
       "stanza:description": "Stylesheet(css file) URL to override current style",
       "stanza:required": false

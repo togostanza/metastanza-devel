@@ -18,7 +18,7 @@ export default class Scorecard extends Stanza {
   }
 
   async render() {
-    appendCustomCss(this, this.params["custom-css-url"]);
+    appendCustomCss(this, this.params["custom_css_url"]);
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
     const dataset = await loadData(
@@ -26,9 +26,9 @@ export default class Scorecard extends Stanza {
       this.params["data-type"],
       this.root.querySelector("main")
     );
-    const width = this.params["width"];
-    const height = this.params["height"];
-    const padding = this.params["padding"];
+    const width = +css("--togostanza-outline-width");
+    const height = +css("--togostanza-outline-height");
+    const padding = +css("--togostanza-outline-padding");
 
     const [key, value] = Object.entries(dataset)[0];
     this._data = { [key]: value };
@@ -58,26 +58,41 @@ export default class Scorecard extends Stanza {
     scorecardSvg.setAttribute(
       "height",
       `${
-        Number(css("--togostanza-key-font-size")) +
-        Number(css("--togostanza-value-font-size"))
+        Number(css("--togostanza-fonts-font_size_secondary")) +
+        Number(css("--togostanza-fonts-font_size_primary"))
       }`
     );
 
     const keyElement = this.root.querySelector("#key");
     const valueElement = this.root.querySelector("#value");
-    if (this.params["legend"] === "false") {
+    if (this.params["title-show"] === false) {
       keyElement.setAttribute(`style`, `display: none;`);
     }
 
-    keyElement.setAttribute("y", Number(css("--togostanza-key-font-size")));
-    keyElement.setAttribute("fill", "var(--togostanza-key-font-color)");
+    keyElement.setAttribute(
+      "y",
+      Number(css("--togostanza-fonts-font_size_secondary"))
+    );
+    keyElement.setAttribute(
+      "fill",
+      "var(--togostanza-fonts-font_color_secondary)"
+    );
     valueElement.setAttribute(
       "y",
-      Number(css("--togostanza-key-font-size")) +
-        Number(css("--togostanza-value-font-size"))
+      Number(css("--togostanza-fonts-font_size_secondary")) +
+        Number(css("--togostanza-fonts-font_size_primary"))
     );
-    valueElement.setAttribute("fill", "var(--togostanza-value-font-color)");
-    keyElement.setAttribute("font-size", css("--togostanza-key-font-size"));
-    valueElement.setAttribute("font-size", css("--togostanza-value-font-size"));
+    valueElement.setAttribute(
+      "fill",
+      "var(--togostanza-fonts-font_color_primary)"
+    );
+    keyElement.setAttribute(
+      "font-size",
+      css("--togostanza-fonts-font_size_secondary")
+    );
+    valueElement.setAttribute(
+      "font-size",
+      css("--togostanza-fonts-font_size_primary")
+    );
   }
 }

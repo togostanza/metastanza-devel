@@ -50,7 +50,7 @@ export default class Tree extends Stanza {
     );
     this._data = values;
 
-    appendCustomCss(this, this.params["misc-custom_css_url"]);
+    appendCustomCss(this, this.params["custom_css_url"]);
     const width = parseInt(this.params["width"]),
       height = parseInt(this.params["height"]),
       sortKey = this.params["sort-key"],

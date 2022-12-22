@@ -1,5 +1,5 @@
 // Load the repository-wide global style here. The actual file is located at ../common.scss for details.
-@use '@/common.scss';
+@use "@/common.scss";
 
 .group {
   display: flex;
@@ -22,7 +22,7 @@ main {
   align-items: center;
   justify-content: center;
   position: relative;
-  background-color: var(--togostanza-background-color);
+  background-color: var(--togostanza-theme-background_color);
 }
 
 svg.scorecard-svg {
@@ -68,7 +68,7 @@ div#dl_list {
   border: solid 1px #444444;
   background-color: #ffffff;
   font-size: 12px;
-  font-family: var(--togostanza-font-family);
+  font-family: var(--togostanza-fonts-font_family);
   &.dl-top-left {
     top: 20px;
     left: 10px;

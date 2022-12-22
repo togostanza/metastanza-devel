@@ -60,7 +60,7 @@ export default class Sunburst extends Stanza {
 
     const dispatcher = this.element;
 
-    appendCustomCss(this, this.params["custom-css-url"]);
+    appendCustomCss(this, this.params["custom_css_url"]);
     // get value of css vars
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
