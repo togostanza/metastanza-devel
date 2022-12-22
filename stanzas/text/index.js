@@ -52,11 +52,7 @@ export default class Text extends Stanza {
   async render() {
     const main = this.root.querySelector("main");
 
-    const value = await loadData(
-      this.params["data-url"],
-      this.params["data-type"],
-      main
-    );
+    const value = await loadData(this.params["data-url"], "text", main);
     this._dataset = value;
 
     appendCustomCss(this, this.params["custom_css_url"]);

@@ -19,14 +19,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "data-type",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json", "text"],
-      "stanza:example": "text",
-      "stanza:description": "Data type",
-      "stanza:required": true
-    },
-    {
       "stanza:key": "custom_css_url",
       "stanza:example": "",
       "stanza:description": "Stylesheet (css file) URL to override current style"
