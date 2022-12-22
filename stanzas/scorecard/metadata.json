@@ -27,11 +27,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "custom_css_url",
-      "stanza:example": "",
-      "stanza:description": "Stylesheet(css file) URL to override current style"
-    },
-    {
       "stanza:key": "score-key",
       "stanza:type": "text",
       "stanza:example": "value",
@@ -55,6 +50,11 @@
       "stanza:type": "boolean",
       "stanza:example": true,
       "stanza:description": "Show key name"
+    },
+    {
+      "stanza:key": "togostanza-custom_css_url",
+      "stanza:example": "",
+      "stanza:description": "Stylesheet(css file) URL to override current style"
     }
   ],
   "stanza:menu-placement": "bottom-right",
