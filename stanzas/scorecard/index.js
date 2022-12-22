@@ -5,6 +5,8 @@ import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
   downloadJSONMenuItem,
+  downloadCSVMenuItem,
+  downloadTSVMenuItem,
   appendCustomCss,
 } from "togostanza-utils";
 
@@ -14,6 +16,8 @@ export default class Scorecard extends Stanza {
       downloadSvgMenuItem(this, "scorecard"),
       downloadPngMenuItem(this, "scorecard"),
       downloadJSONMenuItem(this, "scorecard", this._data),
+      downloadCSVMenuItem(this, "scorecard", this._data),
+      downloadTSVMenuItem(this, "scorecard", this._data),
     ];
   }
 
@@ -30,7 +34,7 @@ export default class Scorecard extends Stanza {
     const scoreKey = this.params["score-key"];
     const titleKey = this.params["title-key"];
     const scoreValue = dataset[scoreKey];
-    this._data = { [scoreKey]: scoreValue };
+    this._data = [{ [scoreKey]: scoreValue }];
 
     const titleText =
       this.params["title-text"] || dataset[titleKey] || scoreKey;
