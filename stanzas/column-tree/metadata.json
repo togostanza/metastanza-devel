@@ -76,12 +76,6 @@
       "stanza:description": "Show path in suggestions"
     },
     {
-      "stanza:key": "show_path_explanation",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:description": "Show explanation on how to use id path for searching"
-    },
-    {
       "stanza:key": "togostanza-custom_css_url",
       "stanza:example": "",
       "stanza:description": "Stylesheet(css file) URL to override current style"

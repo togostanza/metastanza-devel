@@ -12,10 +12,6 @@
         @focus="toggleSuggestionsIfValid"
         @input="toggleSuggestionsIfValid"
       />
-      <small v-if="state.showPathExplanation"
-        >*When searching by path please use the <em>id</em> followed by a
-        <em>/</em>. E.G.: 1/2/3</small
-      >
       <search-suggestions
         :show-suggestions="state.showSuggestions"
         :search-show-path="state.searchShowPath"
@@ -105,7 +101,6 @@ export default defineComponent({
       fallbackInCaseOfNoValue: params?.nodeValueFallback.value,
       nodeValueShow: params?.nodeValueShow?.value,
       searchShowPath: params?.searchShowPath?.value,
-      showPathExplanation: params?.showPathExplanation?.value,
       nodeShowBorders: params?.nodeShowBorders?.value,
       nodeContentAlignment: params?.nodeContentAlignment?.value,
       showSuggestions: false,
