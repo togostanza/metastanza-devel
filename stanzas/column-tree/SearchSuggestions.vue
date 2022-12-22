@@ -14,11 +14,7 @@
           </span>
         </span>
         <span v-if="searchShowPath" class="value">
-          Path :
-          <ruby v-for="(item, pathIndex) of node.path" :key="pathIndex">
-            {{ item.label }}/<rp>(</rp><rt> {{ item.id }}</rt
-            ><rp>)</rp>
-          </ruby>
+          {{ getShowingPath(node.path) }}
         </span>
       </li>
       <li v-if="data.length < 1" class="no-results">
@@ -29,7 +25,7 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, toRefs } from "vue";
 
 export default defineComponent({
   props: {
@@ -67,5 +63,17 @@ export default defineComponent({
     },
   },
   emits: ["selectNode"],
+  setup(params) {
+    params = toRefs(params);
+
+    function getShowingPath(pathArray) {
+      // pathArray.join("/").length < 200 ?
+      return "Transcript variant/ ... / ... / Coding var... ";
+    }
+
+    return {
+      getShowingPath,
+    };
+  },
 });
 </script>
