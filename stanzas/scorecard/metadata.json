@@ -62,13 +62,13 @@
     {
       "stanza:key": "--togostanza-outline-width",
       "stanza:type": "number",
-      "stanza:default": 300,
+      "stanza:default": 320,
       "stanza:description": "Metastanza width in px"
     },
     {
       "stanza:key": "--togostanza-outline-height",
       "stanza:type": "number",
-      "stanza:default": 70,
+      "stanza:default": 110,
       "stanza:description": "Metastanza height in px"
     },
     {

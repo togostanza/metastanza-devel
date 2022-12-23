@@ -1,6 +1,6 @@
 import Stanza from "togostanza/stanza";
-
 import loadData from "togostanza-utils/load-data";
+import { getMarginsFromCSSString } from "../../lib/utils";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -25,11 +25,25 @@ export default class Scorecard extends Stanza {
     appendCustomCss(this, this.params["custom_css_url"]);
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
+    this.renderTemplate({
+      template: "stanza.html.hbs",
+    });
+    const main = this.root.querySelector("main");
+    const el = this.root.getElementById("scorecard");
+
     const dataset = await loadData(
       this.params["data-url"],
       this.params["data-type"],
-      this.root.querySelector("main")
+      main
     );
+
+    const width = parseFloat(css("--togostanza-outline-width")) || 0;
+    const height = parseFloat(css("--togostanza-outline-height")) || 0;
+    const padding = getMarginsFromCSSString(
+      css("--togostanza-outline-padding")
+    );
+    const fontSizePrimary =
+      parseFloat(css("--togostanza-fonts-font_size_primary")) || 0;
 
     const scoreKey = this.params["score-key"];
     const titleKey = this.params["title-key"];
@@ -39,56 +53,37 @@ export default class Scorecard extends Stanza {
     const titleText =
       this.params["title-text"] || dataset[titleKey] || scoreKey;
 
-    this.renderTemplate({
-      template: "stanza.html.hbs",
-      parameters: {
-        scorecards: [
-          {
-            titleText,
-            scoreValue,
-          },
-        ],
-      },
-    });
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("width", padding.LEFT + width + padding.RIGHT);
+    svg.setAttribute("height", padding.TOP + height + padding.BOTTOM);
+    svg.setAttribute(
+      "viewBox",
+      `-${width / 2}
+      -${height / 2} ${width} ${height}`
+    );
+    svg.classList.add("svg");
+    el.appendChild(svg);
 
-    const keyElement = this.root.querySelector("#key");
-    const valueElement = this.root.querySelector("#value");
+    const titleKeyText = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "text"
+    );
+    titleKeyText.classList.add("title-key");
+    titleKeyText.textContent = titleText;
+    titleKeyText.setAttribute("text-anchor", "middle");
+    svg.append(titleKeyText);
     if (this.params["title-show"] === false) {
-      keyElement.setAttribute(`style`, `display: none;`);
+      titleKeyText.setAttribute(`style`, `display: none;`);
     }
 
-    keyElement.setAttribute(
-      "y",
-      Number(css("--togostanza-fonts-font_size_secondary"))
+    const scoreValueText = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "text"
     );
-    keyElement.setAttribute(
-      "fill",
-      "var(--togostanza-fonts-font_color_secondary)"
-    );
-    valueElement.setAttribute(
-      "y",
-      Number(css("--togostanza-fonts-font_size_secondary")) +
-        Number(css("--togostanza-fonts-font_size_primary"))
-    );
-    valueElement.setAttribute(
-      "fill",
-      "var(--togostanza-fonts-font_color_primary)"
-    );
-    keyElement.setAttribute(
-      "font-size",
-      css("--togostanza-fonts-font_size_secondary")
-    );
-    valueElement.setAttribute(
-      "font-size",
-      css("--togostanza-fonts-font_size_primary")
-    );
-    keyElement.setAttribute(
-      "font-weight",
-      css("--togostanza-fonts-font_weight_secondary")
-    );
-    valueElement.setAttribute(
-      "font-weight",
-      css("--togostanza-fonts-font_weight_primary")
-    );
+    scoreValueText.classList.add("score-value");
+    scoreValueText.textContent = scoreValue;
+    scoreValueText.setAttribute("text-anchor", "middle");
+    scoreValueText.setAttribute("y", fontSizePrimary);
+    svg.append(scoreValueText);
   }
 }
