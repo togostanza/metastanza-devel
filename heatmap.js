@@ -51,6 +51,8 @@ class Heatmap extends Stanza {
       root
     );
 
+    this._data = dataset;
+
     appendCustomCss(this, this.params["custom_css_url"]);
     const cellColorKey = this.params["cell-color-key"];
     const xKey = this.params["axis-x-key"];
@@ -65,16 +67,15 @@ class Heatmap extends Stanza {
     const legendTitle = this.params["legend-title"];
     const legendGroups = this.params["legend-groups"];
     const tooltipKey = this.params["tooltips-key"];
-    const tooltipHTML = (d) =>
-      `<span><strong>${d[xKey]},${d[yKey]}: </strong>${d[tooltipKey]}</span>`;
+    const tooltipHTML = (d) => d[tooltipKey];
 
     // Color scale
-    const cellColorMin = this.params["cell-color_min"];
-    const cellColorMid = this.params["cell-color_mid"];
-    const cellColorMax = this.params["cell-color_max"];
-    let cellDomainMin = parseFloat(this.params["cell-value_min"]);
-    let cellDomainMid = parseFloat(this.params["cell-value_mid"]);
-    let cellDomainMax = parseFloat(this.params["cell-value_max"]);
+    const cellColorMin = this.params["cell-color-min"];
+    const cellColorMid = this.params["cell-color-mid"];
+    const cellColorMax = this.params["cell-color-max"];
+    let cellDomainMin = parseFloat(this.params["cell-value-min"]);
+    let cellDomainMid = parseFloat(this.params["cell-value-mid"]);
+    let cellDomainMax = parseFloat(this.params["cell-value-max"]);
     const values = dataset.map((d) => parseFloat(d[cellColorKey]));
 
     if (isNaN(parseFloat(cellDomainMin))) {
@@ -94,11 +95,12 @@ class Heatmap extends Stanza {
     );
 
     //Styles
-    const fontSize = +this.css("--togostanza-fonts-font_size_primary");
-    const width = +this.css("--togostanza-outline-width");
-    const height = +this.css("--togostanza-outline-height");
-    const borderWidth = +this.css("--togostanza-border-width") || 0;
-    const borderRadius = +this.css("--togostanza-border-radius");
+    const fontSize = parseFloat(
+      this.css("--togostanza-fonts-font_size_primary")
+    );
+    const width = parseFloat(this.css("--togostanza-outline-width"));
+    const height = parseFloat(this.css("--togostanza-outline-height"));
+    const borderWidth = parseFloat(this.css("--togostanza-border-width") || 0);
     const tickSize = 2;
 
     // x-axis scale
@@ -160,8 +162,6 @@ class Heatmap extends Stanza {
       .attr("data-tooltip", (d) => tooltipHTML(d))
       .attr("width", x.bandwidth())
       .attr("height", y.bandwidth())
-      .attr("rx", borderRadius)
-      .attr("ry", borderRadius)
       .style("fill", (d) => setColor(d[cellColorKey]))
       .on("mouseover", mouseover)
       .on("mouseleave", mouseleave);
@@ -173,6 +173,7 @@ class Heatmap extends Stanza {
       .attr("transform", `translate(0, ${height})`);
     xaxisArea
       .append("g")
+      .attr("class", "x-axis-label")
       .call(xAxisGenerator)
       .selectAll("text")
       .attr("transform", `rotate(${xLabelAngle})`);
@@ -186,6 +187,7 @@ class Heatmap extends Stanza {
     const yaxisArea = graphArea.append("g").attr("class", "y-axis");
     yaxisArea
       .append("g")
+      .attr("class", "y-axis-label")
       .call(yAxisGenerator)
       .selectAll("text")
       .attr("transform", `rotate(${yLabelAngle})`);
@@ -303,76 +305,10 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "custom_css_url",
-		"stanza:type": "text",
-		"stanza:example": "",
-		"stanza:description": "custom css to apply"
-	},
-	{
-		"stanza:key": "cell-color-key",
-		"stanza:type": "text",
-		"stanza:example": "value",
-		"stanza:description": "Data key to color the data points"
-	},
-	{
-		"stanza:key": "axis-x-key",
-		"stanza:type": "text",
-		"stanza:example": "group",
-		"stanza:description": "What key in data to use",
-		"stanza:required": true
-	},
-	{
-		"stanza:key": "axis-y-key",
-		"stanza:type": "text",
-		"stanza:example": "variable",
-		"stanza:description": "What key in data to use",
-		"stanza:required": true
-	},
-	{
-		"stanza:key": "axis-x-title",
-		"stanza:type": "text",
-		"stanza:description": "X axis title"
-	},
-	{
-		"stanza:key": "axis-y-title",
-		"stanza:type": "text",
-		"stanza:description": "Y axis title"
-	},
-	{
-		"stanza:key": "axis-x-ticks_labels_angle",
-		"stanza:type": "number",
-		"stanza:example": 0,
-		"stanza:description": "X ticks labels angle (in degree)"
-	},
-	{
-		"stanza:key": "axis-y-ticks_labels_angle",
-		"stanza:type": "number",
-		"stanza:example": 0,
-		"stanza:description": "Y ticks labels angle (in degree)"
-	},
-	{
-		"stanza:key": "axis-x-title_padding",
-		"stanza:type": "number",
-		"stanza:example": 10,
-		"stanza:description": "Axis title padding"
-	},
-	{
-		"stanza:key": "axis-y-title_padding",
-		"stanza:type": "number",
-		"stanza:example": 10,
-		"stanza:description": "Axis title padding"
-	},
-	{
-		"stanza:key": "axis-hide",
-		"stanza:type": "boolean",
-		"stanza:example": true,
-		"stanza:description": "Show axis lines and ticks"
-	},
-	{
 		"stanza:key": "legend-show",
 		"stanza:type": "boolean",
 		"stanza:example": true,
-		"stanza:description": "whether show the legend"
+		"stanza:description": "Whether show the legend"
 	},
 	{
 		"stanza:key": "legend-title",
@@ -384,40 +320,100 @@ var metadata = {
 		"stanza:key": "legend-groups",
 		"stanza:type": "number",
 		"stanza:example": 10,
-		"stanza:description": "Amount of groups for legend"
+		"stanza:description": "Number of gradation colors between color-min and color-max"
 	},
 	{
-		"stanza:key": "cell-color_min",
+		"stanza:key": "axis-hide",
+		"stanza:type": "boolean",
+		"stanza:example": true,
+		"stanza:description": "Show axis lines and ticks"
+	},
+	{
+		"stanza:key": "axis-x-key",
+		"stanza:type": "text",
+		"stanza:example": "group",
+		"stanza:description": "What X key in data to use",
+		"stanza:required": true
+	},
+	{
+		"stanza:key": "axis-x-title",
+		"stanza:type": "text",
+		"stanza:description": "X axis title"
+	},
+	{
+		"stanza:key": "axis-x-title_padding",
+		"stanza:type": "number",
+		"stanza:example": 10,
+		"stanza:description": "Title and X axis gap in px"
+	},
+	{
+		"stanza:key": "axis-x-ticks_labels_angle",
+		"stanza:type": "number",
+		"stanza:example": 0,
+		"stanza:description": "X ticks labels angle (in degree)"
+	},
+	{
+		"stanza:key": "axis-y-key",
+		"stanza:type": "text",
+		"stanza:example": "variable",
+		"stanza:description": "What Y key in data to use",
+		"stanza:required": true
+	},
+	{
+		"stanza:key": "axis-y-title",
+		"stanza:type": "text",
+		"stanza:description": "Y axis title"
+	},
+	{
+		"stanza:key": "axis-y-title_padding",
+		"stanza:type": "number",
+		"stanza:example": 10,
+		"stanza:description": "Title and Y axis gap in px"
+	},
+	{
+		"stanza:key": "axis-y-ticks_labels_angle",
+		"stanza:type": "number",
+		"stanza:example": 0,
+		"stanza:description": "Y ticks labels angle (in degree)"
+	},
+	{
+		"stanza:key": "cell-color-key",
+		"stanza:type": "text",
+		"stanza:example": "value",
+		"stanza:description": "Data key to color the data points. if all data keys values includes hex color, use that color, otherwise use ordinal scale from the theme colors."
+	},
+	{
+		"stanza:key": "cell-color-min",
 		"stanza:type": "text",
 		"stanza:example": "#6590e6",
 		"stanza:description": "Cell color range min"
 	},
 	{
-		"stanza:key": "cell-color_mid",
+		"stanza:key": "cell-color-mid",
 		"stanza:type": "text",
 		"stanza:example": "#ffffff",
 		"stanza:description": "Cell color range mid"
 	},
 	{
-		"stanza:key": "cell-color_max",
+		"stanza:key": "cell-color-max",
 		"stanza:type": "text",
 		"stanza:example": "#F75976",
 		"stanza:description": "Cell color range max"
 	},
 	{
-		"stanza:key": "cell-value_min",
+		"stanza:key": "cell-value-min",
 		"stanza:type": "number",
 		"stanza:example": -50,
 		"stanza:description": "Cell color domain min"
 	},
 	{
-		"stanza:key": "cell-value_mid",
+		"stanza:key": "cell-value-mid",
 		"stanza:type": "number",
 		"stanza:example": 0,
 		"stanza:description": "Cell color domain mid"
 	},
 	{
-		"stanza:key": "cell-value_max",
+		"stanza:key": "cell-value-max",
 		"stanza:type": "number",
 		"stanza:example": 100,
 		"stanza:description": "Cell color domain max"
@@ -427,28 +423,16 @@ var metadata = {
 		"stanza:type": "text",
 		"stanza:example": "value",
 		"stanza:description": "Data key to use as tooltip"
+	},
+	{
+		"stanza:key": "togostanza-custom_css_url",
+		"stanza:type": "text",
+		"stanza:example": "",
+		"stanza:description": "custom css to apply"
 	}
 ],
 	"stanza:menu-placement": "bottom-right",
 	"stanza:style": [
-	{
-		"stanza:key": "--togostanza-fonts-font_family",
-		"stanza:type": "text",
-		"stanza:default": "Helvetica Neue",
-		"stanza:description": "Font family"
-	},
-	{
-		"stanza:key": "--togostanza-fonts-font_color",
-		"stanza:type": "color",
-		"stanza:default": "#000000",
-		"stanza:description": "Title font color"
-	},
-	{
-		"stanza:key": "--togostanza-fonts-font_size_primary",
-		"stanza:type": "number",
-		"stanza:default": 12,
-		"stanza:description": "Font size primary"
-	},
 	{
 		"stanza:key": "--togostanza-outline-width",
 		"stanza:type": "number",
@@ -465,31 +449,7 @@ var metadata = {
 		"stanza:key": "--togostanza-outline-padding",
 		"stanza:type": "text",
 		"stanza:default": "20px",
-		"stanza:description": "outline padding"
-	},
-	{
-		"stanza:key": "--togostanza-border-width",
-		"stanza:type": "number",
-		"stanza:default": 0,
-		"stanza:description": "border width"
-	},
-	{
-		"stanza:key": "--togostanza-border-color",
-		"stanza:type": "color",
-		"stanza:default": "#000000",
-		"stanza:description": "border color"
-	},
-	{
-		"stanza:key": "--togostanza-hover-border-color",
-		"stanza:type": "color",
-		"stanza:default": "#FFDF3D",
-		"stanza:description": "Hover border color"
-	},
-	{
-		"stanza:key": "--togostanza-axis-color",
-		"stanza:type": "color",
-		"stanza:default": "#000000",
-		"stanza:description": "Axis color"
+		"stanza:description": "Padding of a stanza. CSS padding-like text (10px 10px 10px 10px)"
 	},
 	{
 		"stanza:key": "--togostanza-theme-series_0_color",
@@ -532,6 +492,48 @@ var metadata = {
 		"stanza:type": "color",
 		"stanza:default": "#F8F9FA",
 		"stanza:description": "Background color"
+	},
+	{
+		"stanza:key": "--togostanza-fonts-font_family",
+		"stanza:type": "text",
+		"stanza:default": "Helvetica Neue",
+		"stanza:description": "Font family"
+	},
+	{
+		"stanza:key": "--togostanza-fonts-font_color",
+		"stanza:type": "color",
+		"stanza:default": "#000000",
+		"stanza:description": "Title font color"
+	},
+	{
+		"stanza:key": "--togostanza-fonts-font_size_primary",
+		"stanza:type": "number",
+		"stanza:default": 12,
+		"stanza:description": "Font size primary"
+	},
+	{
+		"stanza:key": "--togostanza-fonts-font_size_secondary",
+		"stanza:type": "number",
+		"stanza:default": 10,
+		"stanza:description": "Secondary (axes ticks, legend, tooltips) font size"
+	},
+	{
+		"stanza:key": "--togostanza-border-color",
+		"stanza:type": "color",
+		"stanza:default": "#000000",
+		"stanza:description": "Border color for everything that have a border"
+	},
+	{
+		"stanza:key": "--togostanza-border-width",
+		"stanza:type": "number",
+		"stanza:default": 0,
+		"stanza:description": "Border width"
+	},
+	{
+		"stanza:key": "--togostanza-cell-border_hover_color",
+		"stanza:type": "color",
+		"stanza:default": "#FFDF3D",
+		"stanza:description": "Hover border color"
 	}
 ],
 	"stanza:incomingEvent": [

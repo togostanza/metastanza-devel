@@ -27,27 +27,21 @@ svg text {
 
 main {
   padding: var(--togostanza-outline-padding);
-  background-color: var(--togostanza-theme-background_color);
-}
-main .titles {
-  font-family: var(--togostanza-fonts-font_family);
 }
 main .domain,
 main .tick {
-  color: var(--togostanza-axis-color);
+  color: #333;
 }
 main .text {
   font-family: var(--togostanza-fonts-font_family);
   font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
-  color: var(--togostanza-fonts-font_color);
 }
-main .x-axis {
-  font-family: var(--togostanza-fonts-font_family);
-  font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
-  color: var(--togostanza-fonts-font_color);
+main .x-axis-label .tick .text,
+main .y-axis-label .tick .text {
+  font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
 }
 main .highlighted {
-  stroke: var(--togostanza-hover-border-color);
+  stroke: var(--togostanza-cell-border_hover_color);
 }
 main rect {
   stroke: var(--togostanza-border-color);
