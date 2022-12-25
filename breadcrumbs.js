@@ -501,7 +501,19 @@ class Node extends s {
     this.arrowWidth = 2;
   }
 
-  firstUpdated() {
+  willUpdate() {
+    if (!this.svg.value) {
+      this.svg.value = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "svg"
+      );
+      this.svg.value.setAttribute("width", 0);
+      this.svg.value.setAttribute("height", 0);
+      this.renderRoot.append(this.svg.value);
+    }
+
+    this.icon = FAIcons[`fa${this.iconName}`]?.icon;
+
     let { textWidth, textHeight } = this._getTextRect(this.node.label);
 
     if (textHeight === 0) {
@@ -581,13 +593,13 @@ class Node extends s {
     if (!text) {
       return { textWidth: 0, textHeight: 0 };
     }
-    const svg = this.svg.value;
+
     const textEl = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "text"
     );
 
-    svg.append(textEl);
+    this.svg.value.append(textEl);
 
     textEl.textContent = text;
 
@@ -630,10 +642,6 @@ class Node extends s {
   }
   _handleMenuLeave() {
     this._unhover();
-  }
-
-  willUpdate() {
-    this.icon = FAIcons[`fa${this.iconName}`]?.icon;
   }
 
   render() {
