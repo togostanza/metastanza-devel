@@ -7,6 +7,7 @@ import {
   downloadJSONMenuItem,
   downloadCSVMenuItem,
   downloadTSVMenuItem,
+  appendCustomCss,
 } from "togostanza-utils";
 
 const areas = new Map([
@@ -47,8 +48,9 @@ export default class regionGeographicMap extends Stanza {
       this.params["data-type"],
       this.root.querySelector("main")
     );
-
     this._data = values;
+
+    appendCustomCss(this, this.params["custom_css_url"]);
 
     const valObj = {
       name: "userData",

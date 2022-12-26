@@ -26,7 +26,7 @@ export default class VennStanza extends Stanza {
   }
 
   async render() {
-    appendCustomCss(this, this.params["custom_css_url"]);
+    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
     this.colorSeries = this.getColorSeries();
 
     this.renderTemplate({ template: "stanza.html.hbs" });

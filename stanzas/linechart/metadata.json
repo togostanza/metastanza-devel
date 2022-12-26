@@ -14,14 +14,6 @@
   "stanza:parameter": [
     { "stanza:include": "togostanza-utils/params/data-chart.json" },
     {
-      "stanza:key": "custom_css_url",
-      "stanza:type": "text",
-      "stanza:example": "",
-      "stanza:default": "",
-      "stanza:description": "Stylesheet(css file) URL to override current style",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "axis-x-key",
       "stanza:type": "text",
       "stanza:example": "chromosome",
@@ -263,7 +255,6 @@
       "stanza:description": "Data key to map color to the data series. If includes hex color, that color will be used, if not - color from the ordinal scale from the theme colors will be used.",
       "stanza:required": false
     },
-
     {
       "stanza:key": "legend-show",
       "stanza:type": "boolean",
@@ -287,6 +278,14 @@
       "stanza:example": "",
       "stanza:default": "",
       "stanza:description": "Legend title. If not set explicitly, shows a data grouoping data key. If set to empty string ('') no title will be shown.",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "togostanza-custom_css_url",
+      "stanza:type": "text",
+      "stanza:example": "",
+      "stanza:default": "",
+      "stanza:description": "Stylesheet(css file) URL to override current style",
       "stanza:required": false
     }
   ],

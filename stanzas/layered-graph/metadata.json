@@ -27,12 +27,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "custom_css_url",
-      "stanza:example": "",
-      "stanza:description": "Stylesheet(scss file) URL to override current style",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "group_planes-sort-key",
       "stanza:type": "string",
       "stanza:example": "group",
@@ -58,7 +52,6 @@
       "stanza:example": "ascending",
       "stanza:description": "Nodes sorting order"
     },
-
     {
       "stanza:key": "node-size-key",
       "stanza:type": "string",
@@ -96,7 +89,6 @@
       "stanza:example": "value",
       "stanza:description": "Set width of the edge  data key"
     },
-
     {
       "stanza:key": "edge-width-min",
       "stanza:type": "number",
@@ -139,6 +131,12 @@
       "stanza:type": "string",
       "stanza:example": "id",
       "stanza:description": "Node tooltips data key. If empty, no tooltips will be shown"
+    },
+    {
+      "stanza:key": "togostanza-custom_css_url",
+      "stanza:example": "",
+      "stanza:description": "Stylesheet(scss file) URL to override current style",
+      "stanza:required": false
     }
   ],
   "stanza:menu-placement": "bottom-right",
