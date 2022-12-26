@@ -56,13 +56,15 @@ export default class Scorecard extends Stanza {
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("width", padding.LEFT + width + padding.RIGHT);
     svg.setAttribute("height", padding.TOP + height + padding.BOTTOM);
-    svg.setAttribute(
-      "viewBox",
-      `-${width / 2}
-      -${height / 2} ${width} ${height}`
-    );
     svg.classList.add("svg");
     el.appendChild(svg);
+
+    const wrapper = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    wrapper.setAttribute(
+      "transform",
+      `translate(${padding.LEFT + width / 2}, ${padding.TOP + height / 2})`
+    );
+    svg.appendChild(wrapper);
 
     const titleKeyText = document.createElementNS(
       "http://www.w3.org/2000/svg",
@@ -71,7 +73,7 @@ export default class Scorecard extends Stanza {
     titleKeyText.classList.add("title-key");
     titleKeyText.textContent = titleText;
     titleKeyText.setAttribute("text-anchor", "middle");
-    svg.append(titleKeyText);
+    wrapper.append(titleKeyText);
     if (this.params["title-show"] === false) {
       titleKeyText.setAttribute(`style`, `display: none;`);
     }
@@ -84,6 +86,6 @@ export default class Scorecard extends Stanza {
     scoreValueText.textContent = scoreValue;
     scoreValueText.setAttribute("text-anchor", "middle");
     scoreValueText.setAttribute("y", fontSizePrimary);
-    svg.append(scoreValueText);
+    wrapper.append(scoreValueText);
   }
 }
