@@ -26,42 +26,26 @@ export default class Scorecard extends Stanza {
       this.params["data-type"],
       this.root.querySelector("main")
     );
-    const width = +css("--togostanza-outline-width");
-    const height = +css("--togostanza-outline-height");
-    const padding = +css("--togostanza-outline-padding");
 
-    const [key, value] = Object.entries(dataset)[0];
-    this._data = { [key]: value };
+    const scoreKey = this.params["score-key"];
+    const titleKey = this.params["title-key"];
+    const scoreValue = dataset[scoreKey];
+    this._data = { [scoreKey]: scoreValue };
+
+    const titleText =
+      this.params["title-text"] || dataset[titleKey] || scoreKey;
 
     this.renderTemplate({
       template: "stanza.html.hbs",
       parameters: {
         scorecards: [
           {
-            key,
-            value,
+            titleText,
+            scoreValue,
           },
         ],
-        width,
-        height,
-        padding,
       },
     });
-
-    const chartWrapper = this.root.querySelector(".chart-wrapper");
-    chartWrapper.setAttribute(
-      `style`,
-      `width: ${width}px; height: ${height}px; padding: ${padding}px`
-    );
-
-    const scorecardSvg = this.root.querySelector("#scorecardSvg");
-    scorecardSvg.setAttribute(
-      "height",
-      `${
-        Number(css("--togostanza-fonts-font_size_secondary")) +
-        Number(css("--togostanza-fonts-font_size_primary"))
-      }`
-    );
 
     const keyElement = this.root.querySelector("#key");
     const valueElement = this.root.querySelector("#value");
@@ -93,6 +77,14 @@ export default class Scorecard extends Stanza {
     valueElement.setAttribute(
       "font-size",
       css("--togostanza-fonts-font_size_primary")
+    );
+    keyElement.setAttribute(
+      "font-weight",
+      css("--togostanza-fonts-font_weight_secondary")
+    );
+    valueElement.setAttribute(
+      "font-weight",
+      css("--togostanza-fonts-font_weight_primary")
     );
   }
 }
