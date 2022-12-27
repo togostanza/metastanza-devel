@@ -21,14 +21,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "axis-x-visible",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:default": true,
-      "stanza:description": "Show the axis",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "axis-x-title",
       "stanza:type": "text",
       "stanza:example": "Category",
@@ -125,14 +117,6 @@
       "stanza:example": "count",
       "stanza:description": "Variable to be assigned as y axis value. Ignored if data-type is CSV of TSV",
       "stanza:required": true
-    },
-    {
-      "stanza:key": "axis-y-visible",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:default": true,
-      "stanza:description": "Hide the axis",
-      "stanza:required": false
     },
     {
       "stanza:key": "axis-y-title",
