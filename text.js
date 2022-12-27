@@ -1,6 +1,6 @@
 import { c as commonjsGlobal, S as Stanza, d as defineStanzaElement } from './transform-4eef39d8.js';
+import { l as loadData } from './load-data-13013bfb.js';
 import { f as appendCustomCss } from './index-0a21be6d.js';
-import { s as spinner } from './spinner-0571803e.js';
 
 function isContainer(node) {
     switch (node._type) {
@@ -85518,9 +85518,12 @@ class Text extends Stanza {
   async render() {
     const main = this.root.querySelector("main");
 
-    this._dataset = await this._loadText(this.params["data-url"], main);
+    const value = await loadData(this.params["data-url"], "text", main);
+    this._dataset = value;
 
-    const value = this._dataset;
+    appendCustomCss(this, this.params["custom_css_url"]);
+    appendHighlightCss(this, this.params["highlight-css-url"]);
+
     if (this._isMarkdownMode()) {
       const parser = new Parser$1();
       const renderer = new HtmlRenderer();
@@ -85534,7 +85537,6 @@ class Text extends Stanza {
       main.querySelectorAll("pre code").forEach((el) => {
         HighlightJS.highlightElement(el);
       });
-      console.log("MATH", main);
       renderMathInElement(main);
     } else {
       const text = this._dataset;
@@ -85545,58 +85547,31 @@ class Text extends Stanza {
         },
       });
     }
+  }
+}
 
-    appendCustomCss(this, this.params["highlight-css-url"]);
-    appendCustomCss(this, this.params["custom_css_url"]);
-
-    const width = this.params["width"];
-    const height = this.params["height"];
-    const padding = this.params["padding"];
-    const container = this.root.querySelector(".container");
-    main.setAttribute("style", `padding: ${padding}px;`);
-    container.setAttribute(`style`, `width: ${width}px; height: ${height}px;`);
+function appendHighlightCss(stanza, highlightCssUrl) {
+  const links = stanza.root.querySelectorAll(
+    "link[data-togostanza-highlight-css]"
+  );
+  for (const link of links) {
+    link.remove();
   }
 
-  async _loadText(url, main) {
-    const spinnerDiv = document.createElement("div");
+  if (highlightCssUrl) {
+    const link = document.createElement("link");
+    stanza.root.appendChild(link);
 
-    Object.assign(spinnerDiv, {
-      className: "metastanza-loading-icon-div",
-      id: "metastanza-loading-icon-div",
-    });
-    spinnerDiv.style = `
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    `;
-
-    const spinnerImg = document.createElement("img");
-    Object.assign(spinnerImg, {
-      className: "metastanza-loading-icon",
-      id: "metastanza-loading-icon",
-      src: spinner,
-    });
-
-    spinnerImg.style = `
-    width: 30px;
-    height: auto;
-    display: block;
-    `;
-
-    spinnerDiv.appendChild(spinnerImg);
-    main.appendChild(spinnerDiv);
-
-    const response = await fetch(url).then((res) => res.text());
-
-    main.removeChild(spinnerDiv);
-
-    return response;
+    link.setAttribute("rel", "stylesheet");
+    link.setAttribute("href", highlightCssUrl);
+    link.setAttribute("data-togostanza-highlight-css", "");
   }
 }
 
 var stanzaModule = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    'default': Text
+    'default': Text,
+    appendHighlightCss: appendHighlightCss
 });
 
 var metadata = {
@@ -85622,6 +85597,11 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
+		"stanza:key": "highlight_css_url",
+		"stanza:example": "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/atom-one-light.min.css",
+		"stanza:description": "Stylesheet (css file) URL of highlight.js theme (only effective in markdown mode)"
+	},
+	{
 		"stanza:key": "mode",
 		"stanza:type": "single-choice",
 		"stanza:choice": [
@@ -85629,71 +85609,63 @@ var metadata = {
 			"markdown"
 		],
 		"stanza:example": "text",
-		"stanza:description": "Mode",
-		"stanza:required": true
+		"stanza:description": "Mode"
 	},
 	{
-		"stanza:key": "highlight-css-url",
-		"stanza:example": "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/atom-one-light.min.css",
-		"stanza:description": "Stylesheet (css file) URL of highlight.js theme (only effective in markdown mode)",
-		"stanza:required": false
-	},
-	{
-		"stanza:key": "custom_css_url",
+		"stanza:key": "togostanza-custom_css_url",
 		"stanza:example": "",
-		"stanza:description": "Stylesheet (css file) URL to override current style",
-		"stanza:required": false
-	},
-	{
-		"stanza:key": "width",
-		"stanza:type": "text",
-		"stanza:example": 800,
-		"stanza:description": "Width"
-	},
-	{
-		"stanza:key": "height",
-		"stanza:type": "text",
-		"stanza:example": "auto",
-		"stanza:description": "Height"
-	},
-	{
-		"stanza:key": "padding",
-		"stanza:type": "text",
-		"stanza:example": "0",
-		"stanza:description": "Padding"
+		"stanza:description": "Stylesheet (css file) URL to override current style"
 	}
 ],
 	"stanza:menu-placement": "bottom-right",
 	"stanza:style": [
 	{
-		"stanza:key": "--togostanza-font-family",
+		"stanza:key": "--togostanza-outline-width",
+		"stanza:type": "number",
+		"stanza:default": 800,
+		"stanza:description": "Outline width"
+	},
+	{
+		"stanza:key": "--togostanza-outline-height",
+		"stanza:type": "number",
+		"stanza:default": 450,
+		"stanza:description": "Outline height"
+	},
+	{
+		"stanza:key": "--togostanza-outline-padding",
+		"stanza:type": "text",
+		"stanza:default": "20px",
+		"stanza:description": "Padding of a stanza. CSS padding-like text (10px 10px 10px 10px)"
+	},
+	{
+		"stanza:key": "--togostanza-theme-background_color",
+		"stanza:type": "color",
+		"stanza:default": "rgba(255,255,255,0)",
+		"stanza:description": "Background color"
+	},
+	{
+		"stanza:key": "--togostanza-fonts-font_family",
 		"stanza:type": "text",
 		"stanza:default": "Helvetica Neue",
 		"stanza:description": "Font family"
 	},
 	{
-		"stanza:key": "--togostanza-text-font-color",
+		"stanza:key": "--togostanza-fonts-font_color",
 		"stanza:type": "color",
 		"stanza:default": "#4E5059",
 		"stanza:description": "Font color"
 	},
 	{
-		"stanza:key": "--togostanza-text-font-size",
-		"stanza:type": "text",
-		"stanza:default": "12px",
+		"stanza:key": "--togostanza-fonts-font_size_primary",
+		"stanza:type": "number",
+		"stanza:default": 12,
 		"stanza:description": "Font size"
 	},
 	{
-		"stanza:key": "--togostanza-text-font-weight",
-		"stanza:type": "text",
-		"stanza:default": "400",
+		"stanza:key": "--togostanza-fonts-font_weight",
+		"stanza:type": "number",
+		"stanza:default": 400,
 		"stanza:description": "Font weight"
-	},
-	{
-		"stanza:key": "--togostanza-background-color",
-		"stanza:type": "color",
-		"stanza:default": "rgba(255,255,255,0)",
-		"stanza:description": "Background color"
 	}
 ]
 };
