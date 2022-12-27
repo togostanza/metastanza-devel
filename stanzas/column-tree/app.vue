@@ -12,20 +12,16 @@
         @focus="toggleSuggestionsIfValid"
         @input="toggleSuggestionsIfValid"
       />
-      <small v-if="state.showPathExplanation"
-        >*When searching by path please use the <em>id</em> followed by a
-        <em>/</em>. E.G.: 1/2/3</small
-      >
       <search-suggestions
         :show-suggestions="state.showSuggestions"
-        :show-path="state.showPath"
+        :search-show-path="state.searchShowPath"
         :search-input="state.searchTerm"
         :data="suggestions"
         :keys="state.keys"
         :value-obj="valueObj"
-        :show-border-nodes="state.showBorderNodes"
+        :node-show-borders="state.nodeShowBorders"
         :node-content-alignment="state.nodeContentAlignment"
-        @selectNode="selectNode"
+        @select-node="selectNode"
       />
     </div>
     <div id="tree">
@@ -40,11 +36,10 @@
         :keys="state.keys"
         :highlighted-node="state.highligthedNodes[index]"
         :value-obj="valueObj"
-        :show-border-nodes="state.showBorderNodes"
+        :node-show-borders="state.nodeShowBorders"
         :node-content-alignment="state.nodeContentAlignment"
-        :fixed-width-columns="state.fixedWidthColumns"
-        @setParent="updatePartialColumnData"
-        @setCheckedNode="updateCheckedNodes"
+        @set-parent="updatePartialColumnData"
+        @set-checked-node="updateCheckedNodes"
       />
     </div>
   </section>
@@ -59,53 +54,65 @@ import {
   ref,
   computed,
 } from "vue";
-import loadData from "togostanza-utils/load-data";
 import metadata from "./metadata.json";
 import NodeColumn from "./NodeColumn.vue";
 import SearchSuggestions from "./SearchSuggestions.vue";
+import { camelCase } from "lodash";
 
 function isRootNode(parent) {
   return !parent || isNaN(parent);
 }
-function isTruthBool(str) {
-  return str === "true";
-}
+
+const getType = (stanzaType) => {
+  switch (stanzaType) {
+    case "boolean":
+      return Boolean;
+    case "number":
+      return Number;
+    default:
+      return String;
+  }
+};
+const typeArray = metadata["stanza:parameter"].map((param) => {
+  return {
+    name: camelCase(param["stanza:key"]),
+    type: getType(param["stanza:type"]),
+  };
+});
+const typeObject = typeArray.reduce(
+  (objects, current) => ({ ...objects, [current.name]: current.type }),
+  {}
+);
 
 // TODO: set path for data objects
 export default defineComponent({
   components: { NodeColumn, SearchSuggestions },
-  props: metadata["stanza:parameter"].map((p) => p["stanza:key"]),
+  props: { ...typeObject, data: { type: Array, default: () => [] } },
   emits: ["resetHighlightedNode"],
   setup(params) {
     params = toRefs(params);
+
     const layerRefs = ref([]);
     const state = reactive({
       keys: {
-        label: params?.labelKey?.value,
-        value: params?.valueKey?.value,
+        label: params?.nodeLabelKey?.value,
+        value: params?.nodeValueKey?.value,
       },
-      fallbackInCaseOfNoValue: params?.valueFallback.value,
-      fixedWidthColumns: isTruthBool(params?.fixedWidthColumns?.value),
-      showValue: isTruthBool(params?.showValue?.value),
-      showPath: isTruthBool(params?.showPath?.value),
-      showPathExplanation: isTruthBool(params?.showPathExplanation?.value),
-      showBorderNodes: isTruthBool(params?.showBorderNodes?.value),
+      fallbackInCaseOfNoValue: params?.nodeValueFallback.value,
+      nodeValueShow: params?.nodeValueShow?.value,
+      searchShowPath: params?.searchShowPath?.value,
+      nodeShowBorders: params?.nodeShowBorders?.value,
       nodeContentAlignment: params?.nodeContentAlignment?.value,
       showSuggestions: false,
-      responseJSON: null,
+      responseJSON: [],
       columnData: [],
       checkedNodes: new Map(),
       searchTerm: "",
       highligthedNodes: [],
     });
     watchEffect(
-      async () => {
-        state.responseJSON = await loadData(
-          params?.dataUrl?.value,
-          params?.dataType?.value,
-          params?.main
-        );
-        state.responseJSON = state.responseJSON.map((node) => {
+      () => {
+        state.responseJSON = params?.data?.value?.map((node) => {
           return { ...node, path: getPath(node) };
         });
         state.checkedNodes = new Map();
@@ -148,7 +155,10 @@ export default defineComponent({
         .startsWith(state.searchTerm.toLowerCase());
     }
     const valueObj = computed(() => {
-      return { show: state.showValue, fallback: state.fallbackInCaseOfNoValue };
+      return {
+        show: state.nodeValueShow,
+        fallback: state.fallbackInCaseOfNoValue,
+      };
     });
     const isValidSearchNode = computed(() => {
       return state.searchTerm.length > 0;

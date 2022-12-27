@@ -1,5 +1,5 @@
 <template>
-  <div class="column" :class="{ '-fixed': fixedWidthColumns }">
+  <div class="column">
     <span
       v-for="node in nodes"
       :key="node.id"
@@ -9,7 +9,7 @@
           '-highlighted':
             node.id === highlightedNode && hasChildren(node.children),
         },
-        { '-with-border': showBorderNodes },
+        { '-with-border': nodeShowBorders },
       ]"
     >
       <input
@@ -78,17 +78,13 @@ export default defineComponent({
       type: [Number, String, null],
       default: null,
     },
-    showBorderNodes: {
+    nodeShowBorders: {
       type: Boolean,
       default: false,
     },
     nodeContentAlignment: {
       type: String,
       default: "horizontal",
-    },
-    fixedWidthColumns: {
-      type: Boolean,
-      default: false,
     },
   },
   emits: ["setParent", "setCheckedNode"],
