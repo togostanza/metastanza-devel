@@ -1,11 +1,10 @@
 import Stanza from "togostanza/stanza";
+import loadData from "togostanza-utils/load-data";
 import * as commonmark from "commonmark";
 import hljs from "highlight.js";
 import "katex/dist/katex.mjs";
 import renderMathInElement from "katex/dist/contrib/auto-render.mjs";
-
 import { appendCustomCss } from "togostanza-utils";
-import spinner from "togostanza-utils/spinner.png";
 
 export default class Text extends Stanza {
   constructor() {
@@ -53,9 +52,12 @@ export default class Text extends Stanza {
   async render() {
     const main = this.root.querySelector("main");
 
-    this._dataset = await this._loadText(this.params["data-url"], main);
+    const value = await loadData(this.params["data-url"], "text", main);
+    this._dataset = value;
 
-    const value = this._dataset;
+    appendCustomCss(this, this.params["custom_css_url"]);
+    appendHighlightCss(this, this.params["highlight-css-url"]);
+
     if (this._isMarkdownMode()) {
       const parser = new commonmark.Parser();
       const renderer = new commonmark.HtmlRenderer();
@@ -69,7 +71,6 @@ export default class Text extends Stanza {
       main.querySelectorAll("pre code").forEach((el) => {
         hljs.highlightElement(el);
       });
-      console.log("MATH", main);
       renderMathInElement(main);
     } else {
       const text = this._dataset;
@@ -80,51 +81,23 @@ export default class Text extends Stanza {
         },
       });
     }
+  }
+}
 
-    appendCustomCss(this, this.params["highlight-css-url"]);
-    appendCustomCss(this, this.params["custom_css_url"]);
-
-    const width = this.params["width"];
-    const height = this.params["height"];
-    const padding = this.params["padding"];
-    const container = this.root.querySelector(".container");
-    main.setAttribute("style", `padding: ${padding}px;`);
-    container.setAttribute(`style`, `width: ${width}px; height: ${height}px;`);
+export function appendHighlightCss(stanza, highlightCssUrl) {
+  const links = stanza.root.querySelectorAll(
+    "link[data-togostanza-highlight-css]"
+  );
+  for (const link of links) {
+    link.remove();
   }
 
-  async _loadText(url, main) {
-    const spinnerDiv = document.createElement("div");
+  if (highlightCssUrl) {
+    const link = document.createElement("link");
+    stanza.root.appendChild(link);
 
-    Object.assign(spinnerDiv, {
-      className: "metastanza-loading-icon-div",
-      id: "metastanza-loading-icon-div",
-    });
-    spinnerDiv.style = `
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    `;
-
-    const spinnerImg = document.createElement("img");
-    Object.assign(spinnerImg, {
-      className: "metastanza-loading-icon",
-      id: "metastanza-loading-icon",
-      src: spinner,
-    });
-
-    spinnerImg.style = `
-    width: 30px;
-    height: auto;
-    display: block;
-    `;
-
-    spinnerDiv.appendChild(spinnerImg);
-    main.appendChild(spinnerDiv);
-
-    const response = await fetch(url).then((res) => res.text());
-
-    main.removeChild(spinnerDiv);
-
-    return response;
+    link.setAttribute("rel", "stylesheet");
+    link.setAttribute("href", highlightCssUrl);
+    link.setAttribute("data-togostanza-highlight-css", "");
   }
 }
