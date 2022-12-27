@@ -46,8 +46,8 @@ export default class Linechart extends Stanza {
     const hideYAxis = !this._validatedParams.get("axis-y-visible").value;
     const hideXAxisTicks = this._validatedParams.get("axis-x-ticks_hide").value;
     const hideYAxisTicks = this._validatedParams.get("axis-y-ticks_hide").value;
-    const showPoints = this._validatedParams.get("points-show").value;
-    const pointsSize = this._validatedParams.get("points-size").value;
+    const pointsSize = this.params["points_size"];
+    const showPoints = pointsSize && !isNaN(parseFloat(pointsSize));
 
     const errorKeyName = this._validatedParams.get("error_bars-key").value;
 
@@ -152,7 +152,10 @@ export default class Linechart extends Stanza {
     }
 
     // Data symbols
-    const symbolGenerator = d3.symbol().size(pointsSize).type(d3.symbolCircle);
+    const symbolGenerator = d3
+      .symbol()
+      .size(() => pointsSize * pointsSize)
+      .type(d3.symbolCircle);
 
     const width = css("--togostanza-outline-width");
     const height = css("--togostanza-outline-height");

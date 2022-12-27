@@ -216,20 +216,12 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "points-show",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:description": "Show data points",
-      "stanza:required": false,
-      "stanza:default": false
-    },
-    {
-      "stanza:key": "points-size",
+      "stanza:key": "points_size",
       "stanza:type": "number",
-      "stanza:example": 10,
-      "stanza:description": "Data points size",
+      "stanza:example": 5,
+      "stanza:description": "Data points size in px",
       "stanza:required": false,
-      "stanza:default": 10
+      "stanza:default": 5
     },
     {
       "stanza:key": "error_bars-key",
