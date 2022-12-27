@@ -44,6 +44,8 @@ export default class Scorecard extends Stanza {
     );
     const fontSizePrimary =
       parseFloat(css("--togostanza-fonts-font_size_primary")) || 0;
+    const fontSizeSecondary =
+      parseFloat(css("--togostanza-fonts-font_size_secondary")) || 0;
 
     const scoreKey = this.params["score-key"];
     const titleKey = this.params["title-key"];
@@ -60,10 +62,6 @@ export default class Scorecard extends Stanza {
     el.appendChild(svg);
 
     const wrapper = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    wrapper.setAttribute(
-      "transform",
-      `translate(${padding.LEFT + width / 2}, ${padding.TOP + height / 2})`
-    );
     svg.appendChild(wrapper);
 
     const titleKeyText = document.createElementNS(
@@ -74,9 +72,6 @@ export default class Scorecard extends Stanza {
     titleKeyText.textContent = titleText;
     titleKeyText.setAttribute("text-anchor", "middle");
     wrapper.append(titleKeyText);
-    if (this.params["title-show"] === false) {
-      titleKeyText.setAttribute(`style`, `display: none;`);
-    }
 
     const scoreValueText = document.createElementNS(
       "http://www.w3.org/2000/svg",
@@ -85,7 +80,20 @@ export default class Scorecard extends Stanza {
     scoreValueText.classList.add("score-value");
     scoreValueText.textContent = scoreValue;
     scoreValueText.setAttribute("text-anchor", "middle");
-    scoreValueText.setAttribute("y", fontSizePrimary);
     wrapper.append(scoreValueText);
+
+    if (this.params["title-show"]) {
+      titleKeyText.setAttribute("y", fontSizeSecondary);
+      scoreValueText.setAttribute("y", fontSizePrimary + fontSizeSecondary);
+    } else {
+      titleKeyText.setAttribute(`style`, `display: none;`);
+      scoreValueText.setAttribute("y", fontSizePrimary);
+    }
+
+    wrapper.setAttribute(
+      "transform",
+      `translate(${padding.LEFT + width / 2},
+      ${padding.TOP + height / 2 - wrapper.getBBox().height / 2})`
+    );
   }
 }
