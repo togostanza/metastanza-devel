@@ -2,6 +2,7 @@ import { S as Stanza, s as select, d as defineStanzaElement } from './transform-
 import { l as loadData } from './load-data-13013bfb.js';
 import { T as ToolTip } from './ToolTip-4cb3e663.js';
 import { b as StanzaCirculateColorGenerator } from './ColorGenerator-d3ec3154.js';
+import { g as getMarginsFromCSSString } from './utils-2d338be2.js';
 import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-0a21be6d.js';
 import { m as min, t as tree, c as cluster } from './tree-0236e2eb.js';
 import { s as stratify } from './stratify-7050dfd9.js';
@@ -53,22 +54,25 @@ class Tree extends Stanza {
     );
     this._data = values;
 
+    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
+
     appendCustomCss(this, this.params["custom_css_url"]);
-    const width = parseInt(this.params["width"]),
-      height = parseInt(this.params["height"]),
+    const width = parseFloat(css("--togostanza-outline-width")),
+      height = parseFloat(css("--togostanza-outline-height")),
+      padding = getMarginsFromCSSString(css("--togostanza-outline-padding")),
       sortKey = this.params["sort-key"],
       sortOrder = this.params["sort-order"],
       isLeafNodesAlign = this.params["graph-align_leaf_nodes"],
-      layout = this.params["layout"],
+      layout = this.params["graph-layout"],
       nodeKey = this.params["node-label-key"],
       labelMargin = this.params["node-label-margin"],
       sizeKey = this.params["node-size-key"],
       minRadius = this.params["node-size-min"] / 2,
       maxRadius = this.params["node-size-max"] / 2,
       aveRadius = (minRadius + maxRadius) / 2,
-      colorKey = this.params["color-key"],
-      colorGroup = this.params["color-group"],
-      colorMode = this.params["color-blend"];
+      colorKey = this.params["node-color-key"],
+      colorGroup = this.params["node-color-group"],
+      colorMode = this.params["node-color-blend"];
 
     let colorModeProperty, colorModeValue;
     switch (colorMode) {
@@ -86,7 +90,7 @@ class Tree extends Stanza {
         break;
     }
 
-    const tooltipKey = this.params["tooltips-data_key"];
+    const tooltipKey = this.params["tooltips-key"];
     const showToolTips =
       !!tooltipKey && values.some((item) => item[tooltipKey]);
     this.tooltip = new ToolTip();
@@ -169,8 +173,8 @@ class Tree extends Stanza {
     //Setting svg area
     const svg = select(el)
       .append("svg")
-      .attr("width", width)
-      .attr("height", height);
+      .attr("width", padding.LEFT + width + padding.RIGHT)
+      .attr("height", padding.TOP + height + padding.BOTTOM);
 
     //Get width of root label
     const rootGroup = svg
@@ -431,6 +435,10 @@ class Tree extends Stanza {
           )
           .attr("fill", setColor);
 
+        if (showToolTips) {
+          this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
+        }
+
         //Drawing labels
         const nodeLabelsUpdate = gLabels
           .selectAll("g")
@@ -661,10 +669,6 @@ class Tree extends Stanza {
 
     //Drawing
     draw();
-
-    if (showToolTips) {
-      this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
-    }
   }
 }
 
@@ -711,27 +715,13 @@ var metadata = {
 	{
 		"stanza:key": "custom_css_url",
 		"stanza:example": "",
-		"stanza:description": "Custom CSS URL",
-		"stanza:required": false
-	},
-	{
-		"stanza:key": "width",
-		"stanza:type": "number",
-		"stanza:example": 600,
-		"stanza:description": "Width in px"
-	},
-	{
-		"stanza:key": "height",
-		"stanza:type": "number",
-		"stanza:example": 1800,
-		"stanza:description": "Height in px"
+		"stanza:description": "Custom css to apply"
 	},
 	{
 		"stanza:key": "sort-key",
 		"stanza:type": "text",
 		"stanza:example": "id",
-		"stanza:description": "sort data points by this data key",
-		"stanza:required": false
+		"stanza:description": "Sort data points by this data key"
 	},
 	{
 		"stanza:key": "sort-order",
@@ -741,16 +731,16 @@ var metadata = {
 			"descending"
 		],
 		"stanza:example": "ascending",
-		"stanza:description": "sorting order"
+		"stanza:description": "Sorting order"
 	},
 	{
 		"stanza:key": "graph-align_leaf_nodes",
 		"stanza:type": "boolean",
 		"stanza:example": false,
-		"stanza:description": "align leaf nodes"
+		"stanza:description": "Whether to align leaf nodes"
 	},
 	{
-		"stanza:key": "layout",
+		"stanza:key": "graph-layout",
 		"stanza:type": "single-choice",
 		"stanza:choice": [
 			"horizontal",
@@ -764,53 +754,46 @@ var metadata = {
 		"stanza:key": "node-label-key",
 		"stanza:type": "text",
 		"stanza:example": "name",
-		"stanza:description": "Data key in data to map labels",
-		"stanza:required": false
+		"stanza:description": "Data key to map labels"
 	},
 	{
 		"stanza:key": "node-label-margin",
 		"stanza:type": "number",
 		"stanza:example": 8,
-		"stanza:description": "Margin in px from node to label",
-		"stanza:required": false
+		"stanza:description": "Margin in px from point to label"
 	},
 	{
 		"stanza:key": "node-size-key",
 		"stanza:type": "text",
 		"stanza:example": "size",
-		"stanza:description": "Sets the size of the node circle based on the data key. If not set, the sizes will be the same.",
-		"stanza:required": false
+		"stanza:description": "What data key value to use to scale size of the node"
 	},
 	{
 		"stanza:key": "node-size-min",
 		"stanza:type": "number",
 		"stanza:example": 8,
-		"stanza:description": "Minimum node diameter in px",
-		"stanza:required": false
+		"stanza:description": "Minimum node diameter in px"
 	},
 	{
 		"stanza:key": "node-size-max",
 		"stanza:type": "number",
 		"stanza:example": 8,
-		"stanza:description": "Maximum node diameter in px",
-		"stanza:required": false
+		"stanza:description": "Maximum node diameter in px"
 	},
 	{
-		"stanza:key": "color-key",
+		"stanza:key": "node-color-key",
 		"stanza:type": "text",
 		"stanza:example": "color",
-		"stanza:description": "Set color on the node circle based on the data key.",
-		"stanza:required": false
+		"stanza:description": "Data key to color the data points. if all data keys values includes hex color, use that color, otherwise use ordinal scale from the theme colors."
 	},
 	{
-		"stanza:key": "color-group",
+		"stanza:key": "node-color-group",
 		"stanza:type": "text",
 		"stanza:example": "group",
-		"stanza:description": "Set color on the node circle based on the group.",
-		"stanza:required": false
+		"stanza:description": "Data key to use to define group color"
 	},
 	{
-		"stanza:key": "color-blend",
+		"stanza:key": "node-color-blend",
 		"stanza:type": "single-choice",
 		"stanza:choice": [
 			"normal",
@@ -825,12 +808,29 @@ var metadata = {
 		"stanza:key": "tooltips-key",
 		"stanza:type": "text",
 		"stanza:example": "name",
-		"stanza:description": "Data key to use as tooltip text",
-		"stanza:required": false
+		"stanza:description": "Data key to use as tooltip text"
 	}
 ],
 	"stanza:menu-placement": "bottom-right",
 	"stanza:style": [
+	{
+		"stanza:key": "--togostanza-outline-width",
+		"stanza:type": "number",
+		"stanza:default": 600,
+		"stanza:description": "outline width"
+	},
+	{
+		"stanza:key": "--togostanza-outline-height",
+		"stanza:type": "number",
+		"stanza:default": 1800,
+		"stanza:description": "outline height"
+	},
+	{
+		"stanza:key": "--togostanza-outline-padding",
+		"stanza:type": "text",
+		"stanza:default": "20px",
+		"stanza:description": "Padding of a stanza. CSS padding-like text (10px 10px 10px 10px)"
+	},
 	{
 		"stanza:key": "--togostanza-theme-series_0_color",
 		"stanza:type": "color",
@@ -868,18 +868,6 @@ var metadata = {
 		"stanza:description": "Node circle color. Valid when node-color-data_key exists."
 	},
 	{
-		"stanza:key": "--togostanza-border-color",
-		"stanza:type": "color",
-		"stanza:default": "#CDCDCD",
-		"stanza:description": "Path color"
-	},
-	{
-		"stanza:key": "--togostanza-fonts-font_color",
-		"stanza:type": "color",
-		"stanza:default": "#4E5059",
-		"stanza:description": "Font color"
-	},
-	{
 		"stanza:key": "--togostanza-theme-background_color",
 		"stanza:type": "color",
 		"stanza:default": "rgba(255,255,255,0)",
@@ -892,10 +880,28 @@ var metadata = {
 		"stanza:description": "Font family"
 	},
 	{
+		"stanza:key": "--togostanza-fonts-font_color",
+		"stanza:type": "color",
+		"stanza:default": "#4E5059",
+		"stanza:description": "Font color"
+	},
+	{
 		"stanza:key": "--togostanza-fonts-font_size_primary",
 		"stanza:type": "number",
 		"stanza:default": 9,
-		"stanza:description": "Primary font size in px"
+		"stanza:description": "Primary font size"
+	},
+	{
+		"stanza:key": "--togostanza-fonts-font_size_secondary",
+		"stanza:type": "number",
+		"stanza:default": 10,
+		"stanza:description": "Secondary (tooltips) font size"
+	},
+	{
+		"stanza:key": "--togostanza-border-color",
+		"stanza:type": "color",
+		"stanza:default": "#CDCDCD",
+		"stanza:description": "Border color for everything that have a border"
 	},
 	{
 		"stanza:key": "--togostanza-border-width",
