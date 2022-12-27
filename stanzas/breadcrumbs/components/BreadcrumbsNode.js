@@ -58,6 +58,10 @@ class Node extends LitElement {
       this.renderRoot.append(this.svg.value);
     }
 
+    if (this.mode === "invisible") {
+      this.renderRoot.style = "position: absolute; visibility: hidden";
+    }
+
     this.icon = FAIcons[`fa${this.iconName}`]?.icon;
 
     let { textWidth, textHeight } = this._getTextRect(this.node.label);
@@ -99,7 +103,7 @@ class Node extends LitElement {
   }
 
   _getPolygon() {
-    if (this.width < this.emW * 2) {
+    if (this.width < this.emW * 2 && this.mode !== "invisible") {
       throw new Error("Width must be greater than arrow length");
     }
 
@@ -149,7 +153,7 @@ class Node extends LitElement {
 
     const textWidth = textEl.getBBox().width;
     const textHeight = textEl.getBBox().height;
-    textEl.remove();
+    this.svg.value.removeChild(textEl);
 
     return { textWidth, textHeight };
   }

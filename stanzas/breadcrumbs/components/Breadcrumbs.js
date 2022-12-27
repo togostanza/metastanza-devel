@@ -1,6 +1,7 @@
 import { LitElement, html } from "lit";
 import { map } from "lit/directives/map.js";
 import { applyConstructor } from "@/lib/utils";
+import { ref, createRef } from "lit/directives/ref.js";
 
 export class Breadcrumbs extends LitElement {
   static get properties() {
@@ -23,6 +24,10 @@ export class Breadcrumbs extends LitElement {
 
     this.rootNodeId = null;
     this.pathToCopy = "/";
+    this.observedStyle = null;
+    this.observer = null;
+
+    this.invisibleNode = createRef();
   }
 
   updateParams(params, data) {
@@ -71,6 +76,35 @@ export class Breadcrumbs extends LitElement {
       const itemWithoutParent = this.nodesMap.get("" + id);
       itemWithoutParent.parent = this.rootNodeId;
     });
+  }
+
+  firstUpdated() {
+    // create invisible node to watch for style changes
+
+    this.observedStyle = getComputedStyle(this.invisibleNode.value);
+
+    this.observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === "childList") {
+          if (
+            this.observedStyle["font-size"] &&
+            !isNaN(parseFloat(this.observedStyle["font-size"]))
+          ) {
+            this.requestUpdate();
+          }
+        }
+      });
+    });
+
+    this.observer.observe(this.parentElement, {
+      attributes: true,
+      subtree: false,
+      childList: true,
+    });
+  }
+
+  disconnectedCallback() {
+    this.observer.disconnect();
   }
 
   willUpdate(changed) {
@@ -135,47 +169,55 @@ export class Breadcrumbs extends LitElement {
 
   render() {
     return html` ${this.showCopyButton &&
-    html`<breadcrumbs-node
-      .node="${{
-        label: "",
-        id: "copy",
-      }}"
-      .iconName=${"Copy"}
-      .menuItems="${[]}"
-      mode="copy"
-      @click=${this._handleCopy}
-    ></breadcrumbs-node>`}
-    ${map(this.pathToShow, (node) => {
-      return html`
-        <breadcrumbs-node
-          @click=${() => {
-            this.currentId = "" + node[this.nodeKey];
-            this.dispatchEvent(
-              new CustomEvent("selectedDatumChanged", {
-                detail: { id: "" + node[this.nodeKey] },
-                bubbles: true,
-                composed: true,
-              })
-            );
-          }}
-          @node-hover=${this._handleNodeHover}
-          @menu-item-clicked=${({ detail }) =>
-            (this.currentId = "" + detail.id)}
-          data-id="${node[this.nodeKey]}"
-          .node="${{
-            label: node[this.nodeLabelKey],
-            id: node[this.nodeKey],
-          }}"
-          .menuItems=${this._getByParent(node.parent).filter(
-            (d) => d[this.nodeKey] !== node[this.nodeKey]
-          )}
-          .showDropdown=${this.nodeShowDropdown}
-          .iconName=${node[this.nodeKey] === this.rootNodeId
-            ? this.rootNodeLabelIcon
-            : null}
-        />
-      `;
-    })}`;
+      html`<breadcrumbs-node
+        .node="${{
+          label: "",
+          id: "copy",
+        }}"
+        .iconName=${"Copy"}
+        .menuItems="${[]}"
+        mode="copy"
+        @click=${this._handleCopy}
+      ></breadcrumbs-node>`}
+      <breadcrumbs-node
+        ${ref(this.invisibleNode)}
+        mode="invisible"
+        .node="${{
+          label: "a",
+          id: 1,
+        }}"
+      ></breadcrumbs-node>
+      ${map(this.pathToShow, (node) => {
+        return html`
+          <breadcrumbs-node
+            @click=${() => {
+              this.currentId = "" + node[this.nodeKey];
+              this.dispatchEvent(
+                new CustomEvent("selectedDatumChanged", {
+                  detail: { id: "" + node[this.nodeKey] },
+                  bubbles: true,
+                  composed: true,
+                })
+              );
+            }}
+            @node-hover=${this._handleNodeHover}
+            @menu-item-clicked=${({ detail }) =>
+              (this.currentId = "" + detail.id)}
+            data-id="${node[this.nodeKey]}"
+            .node="${{
+              label: node[this.nodeLabelKey],
+              id: node[this.nodeKey],
+            }}"
+            .menuItems=${this._getByParent(node.parent).filter(
+              (d) => d[this.nodeKey] !== node[this.nodeKey]
+            )}
+            .showDropdown=${this.nodeShowDropdown}
+            .iconName=${node[this.nodeKey] === this.rootNodeId
+              ? this.rootNodeLabelIcon
+              : null}
+          />
+        `;
+      })}`;
   }
 }
 
