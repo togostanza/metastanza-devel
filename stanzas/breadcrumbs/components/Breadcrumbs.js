@@ -71,8 +71,6 @@ export class Breadcrumbs extends LitElement {
       const itemWithoutParent = this.nodesMap.get("" + id);
       itemWithoutParent.parent = this.rootNodeId;
     });
-
-    this.requestUpdate();
   }
 
   willUpdate(changed) {

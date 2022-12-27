@@ -96,8 +96,6 @@ class Node extends LitElement {
     this.height =
       this.textHeight + this.textMargin.top + this.textMargin.bottom;
     this.pathD = roundPathCorners(this._getPolygon(), this.emW / 2, 0);
-
-    this.requestUpdate();
   }
 
   _getPolygon() {
