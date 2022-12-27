@@ -1,19 +1,18 @@
-import { a as s, a8 as i, y, S as Stanza, s as select, d as defineStanzaElement } from './transform-4eef39d8.js';
-import { a as brushX, c as brushY } from './brush-eb938c0b.js';
-import { l as loadData } from './load-data-13013bfb.js';
-import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-0a21be6d.js';
-import { S as StanzaColorGenerator } from './ColorGenerator-d3ec3154.js';
-import { g as getMarginsFromCSSString } from './utils-2d338be2.js';
+import { h as s, ae as i, y, S as Stanza, d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss, s as select, g as defineStanzaElement } from './index-fc9be1e0.js';
+import { a as brushX, c as brushY } from './brush-d1e16dc2.js';
+import { l as loadData } from './load-data-f54bc782.js';
+import { S as StanzaColorGenerator } from './ColorGenerator-d0ebc27b.js';
+import { g as getMarginsFromCSSString } from './utils-05600bba.js';
 import { v as v4 } from './v4-1d7bfe79.js';
-import { S as Symbol, d as circle, ap as timeFormat, t as time, r as second, z as utcMinute, D as utcHour, H as utcDay, _ as utcSunday, ae as utcMonth, ai as utcYear } from './symbol-71a78367.js';
-import { o as ordinal, f as format } from './ordinal-b6827cf8.js';
+import { S as Symbol, d as circle, ap as timeFormat, t as time, r as second, z as utcMinute, D as utcHour, H as utcDay, _ as utcSunday, ae as utcMonth, ai as utcYear } from './symbol-a163bb56.js';
+import { o as ordinal, f as format } from './ordinal-6c362192.js';
 import { a as axisBottom, b as axisLeft } from './axis-3dba94d9.js';
 import { e as extent } from './extent-14a1e8e9.js';
 import { l as line$2 } from './line-fbadf484.js';
-import { l as linear } from './linear-71965c16.js';
-import { l as log } from './log-8bc7969e.js';
-import { b as band } from './band-aff94bb6.js';
-import './nodrag-6b0c6080.js';
+import { l as linear } from './linear-50729249.js';
+import { l as log } from './log-b6be01ad.js';
+import { b as band } from './band-a1512b35.js';
+import './nodrag-1252a27a.js';
 import './constant-c49047a5.js';
 import './path-f2817c20.js';
 import './math-24162d65.js';
@@ -333,7 +332,7 @@ class Linechart extends Stanza {
   async render() {
     this._hideError();
 
-    appendCustomCss(this, this.params["custom_css_url"]);
+    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
@@ -1706,14 +1705,6 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "custom_css_url",
-		"stanza:type": "text",
-		"stanza:example": "",
-		"stanza:default": "",
-		"stanza:description": "Stylesheet(css file) URL to override current style",
-		"stanza:required": false
-	},
-	{
 		"stanza:key": "axis-x-key",
 		"stanza:type": "text",
 		"stanza:example": "chromosome",
@@ -1990,6 +1981,14 @@ var metadata = {
 		"stanza:example": "",
 		"stanza:default": "",
 		"stanza:description": "Legend title. If not set explicitly, shows a data grouoping data key. If set to empty string ('') no title will be shown.",
+		"stanza:required": false
+	},
+	{
+		"stanza:key": "togostanza-custom_css_url",
+		"stanza:type": "text",
+		"stanza:example": "",
+		"stanza:default": "",
+		"stanza:description": "Stylesheet(css file) URL to override current style",
 		"stanza:required": false
 	}
 ],

@@ -35,12 +35,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "custom_css_url",
-      "stanza:example": "",
-      "stanza:description": "Stylesheet(scss file) URL to override current style",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "group_planes-sort-key",
       "stanza:type": "string",
       "stanza:example": "group",
@@ -159,6 +153,12 @@
       "stanza:type": "string",
       "stanza:example": "id",
       "stanza:description": "Node tooltips data key. If empty, no tooltips will be shown"
+    },
+    {
+      "stanza:key": "togostanza-custom_css_url",
+      "stanza:example": "",
+      "stanza:description": "Stylesheet(scss file) URL to override current style",
+      "stanza:required": false
     }
   ],
   "stanza:menu-placement": "bottom-right",

@@ -1,6 +1,5 @@
-import { k as e, j as i, t, a9 as x, h as b, a as s$1, a8 as i$1, y, S as Stanza, d as defineStanzaElement } from './transform-4eef39d8.js';
-import { f as appendCustomCss } from './index-0a21be6d.js';
-import { m, u as u$1, r, p, s, c as c$1, e as e$1, n, o } from './ref-333ed382.js';
+import { q as e, p as i, t, af as x, o as b, h as s$1, ae as i$1, y, S as Stanza, f as appendCustomCss, g as defineStanzaElement } from './index-fc9be1e0.js';
+import { m, u as u$1, r, p, s, c as c$1, e as e$1, n, o } from './ref-2e8425fb.js';
 
 function bind(fn, thisArg) {
   return function wrap() {
@@ -4633,7 +4632,7 @@ class Linechart extends Stanza {
   }
 
   render() {
-    appendCustomCss(this, this.params["custom_css_url"]);
+    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     const root = this.root.querySelector("main");
 
@@ -4673,13 +4672,6 @@ var metadata = {
 		"stanza:example": "https://hpo.jax.org/api/hpo/term/<>",
 		"stanza:description": "Get node details and relations API endpoint",
 		"stanza:required": true
-	},
-	{
-		"stanza:key": "custom_css_url",
-		type: "string",
-		"stanza:example": "",
-		"stanza:description": "URL of custom CSS",
-		"stanza:required": false
 	},
 	{
 		"stanza:key": "initial_id",
@@ -4757,6 +4749,13 @@ var metadata = {
 		"stanza:type": "boolean",
 		"stanza:example": true,
 		"stanza:description": "Whether to show history of navigation",
+		"stanza:required": false
+	},
+	{
+		"stanza:key": "togostanza-custom_css_url",
+		type: "string",
+		"stanza:example": "",
+		"stanza:description": "URL of custom CSS",
 		"stanza:required": false
 	}
 ],

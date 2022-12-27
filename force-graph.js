@@ -1,22 +1,21 @@
-import { s as select, S as Stanza, d as defineStanzaElement } from './transform-4eef39d8.js';
-import { l as loadData } from './load-data-13013bfb.js';
-import { T as ToolTip } from './ToolTip-4cb3e663.js';
+import { s as select, S as Stanza, d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss, g as defineStanzaElement } from './index-fc9be1e0.js';
+import { l as loadData } from './load-data-f54bc782.js';
+import { T as ToolTip } from './ToolTip-55019059.js';
 import { l as line$2 } from './line-fbadf484.js';
-import { f as forceSimulation, a as forceManyBody, b as forceCenter, c as forceLink, d as forceCollide } from './manyBody-1419e474.js';
-import { d as drag } from './drag-511f2e84.js';
-import { p as prepareGraphData } from './prepareGraphData-b70d31c9.js';
-import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-0a21be6d.js';
-import { o as ordinal } from './ordinal-b6827cf8.js';
+import { f as forceSimulation, a as forceManyBody, b as forceCenter, c as forceLink, d as forceCollide } from './manyBody-b89f73b3.js';
+import { d as drag } from './drag-412d95fb.js';
+import { p as prepareGraphData } from './prepareGraphData-61c09b2e.js';
+import { o as ordinal } from './ordinal-6c362192.js';
 import './array-80a7907a.js';
 import './constant-c49047a5.js';
 import './path-f2817c20.js';
 import './point-7945b9d0.js';
-import './nodrag-6b0c6080.js';
+import './nodrag-1252a27a.js';
 import './extent-14a1e8e9.js';
 import './v4-1d7bfe79.js';
-import './linear-71965c16.js';
-import './log-8bc7969e.js';
-import './pow-5639b38f.js';
+import './linear-50729249.js';
+import './log-b6be01ad.js';
+import './pow-6737992e.js';
 
 function straightLink(d) {
   const start = { x: d.source.x, y: d.source.y };
@@ -312,7 +311,7 @@ class ForceGraph extends Stanza {
   }
 
   async render() {
-    appendCustomCss(this, this.params["custom_css_url"]);
+    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
@@ -523,12 +522,6 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "custom_css_url",
-		"stanza:example": "",
-		"stanza:description": "Stylesheet(scss file) URL to override current style",
-		"stanza:required": false
-	},
-	{
 		"stanza:key": "node-size-key",
 		"stanza:type": "string",
 		"stanza:example": "",
@@ -609,6 +602,12 @@ var metadata = {
 		"stanza:type": "string",
 		"stanza:example": "id",
 		"stanza:description": "Node tooltips data key. If empty, no tooltips will be shown"
+	},
+	{
+		"stanza:key": "togostanza-custom_css_url",
+		"stanza:example": "",
+		"stanza:description": "Stylesheet(scss file) URL to override current style",
+		"stanza:required": false
 	}
 ],
 	"stanza:menu-placement": "bottom-right",

@@ -1,7 +1,6 @@
-import { S as Stanza, d as defineStanzaElement } from './transform-4eef39d8.js';
-import { f as appendCustomCss } from './index-0a21be6d.js';
+import { S as Stanza, f as appendCustomCss, g as defineStanzaElement } from './index-fc9be1e0.js';
 import { d as defineComponent, c as createElementBlock, a as createBaseVNode, B as normalizeStyle, t as toDisplayString, F as Fragment, o as openBlock, p as createVNode, b as createCommentVNode, e as createBlock, g as createTextVNode, f as resolveComponent, j as reactive, x as onMounted, i as ref, D as onRenderTriggered, r as renderList, n as normalizeClass, q as createApp } from './runtime-dom.esm-bundler-daf8e087.js';
-import { l as loadData } from './load-data-13013bfb.js';
+import { l as loadData } from './load-data-f54bc782.js';
 
 var script$2 = defineComponent({
   props: {
@@ -175,12 +174,6 @@ var metadata$1 = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "custom_css_url",
-		"stanza:example": "",
-		"stanza:description": "Stylesheet(css file) URL to override current style",
-		"stanza:required": false
-	},
-	{
 		"stanza:key": "width",
 		"stanza:type": "number",
 		"stanza:description": "Width"
@@ -217,6 +210,12 @@ var metadata$1 = {
 		"stanza:key": "columns",
 		"stanza:example": "[{\"id\":\"variant_and_risk_allele\",\"label\":\"rs# and risk allele\"},{\"id\":\"raf\",\"label\":\"RAF\"},{\"id\":\"p_value\",\"label\":\"P-Value\",\"type\":\"number\"},{\"id\":\"odds_ratio\",\"label\":\"OR\"},{\"id\":\"ci_text\",\"label\":\"CI\"},{\"id\":\"beta\",\"label\":\"Beta\"},{\"id\":\"mapped_trait\",\"label\":\"Trait(s)\",\"escape\":false},{\"id\":\"pubmed_id\",\"label\":\"PubMed ID\",\"link\":\"pubmed_uri\"},{\"id\":\"study_detail\",\"label\":\"Study details\",\"link\":\"study\"},{\"id\":\"initial_sample_size\",\"label\":\"Discovery sample description\"},{\"id\":\"replication_sample_size\",\"label\":\"Replication sample description\",\"line-clamp\": 3}]",
 		"stanza:description": "Columns' options"
+	},
+	{
+		"stanza:key": "togostanza-custom_css_url",
+		"stanza:example": "",
+		"stanza:description": "Stylesheet(css file) URL to override current style",
+		"stanza:required": false
 	}
 ],
 	"stanza:menu-placement": "bottom-right",
@@ -528,7 +527,7 @@ script.__file = "stanzas/scroll-table/app.vue";
 
 class ScrollTable extends Stanza {
   async render() {
-    appendCustomCss(this, this.params["custom_css_url"]);
+    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     const main = this.root.querySelector("main");
     main.parentNode.style.backgroundColor =
@@ -584,12 +583,6 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "custom_css_url",
-		"stanza:example": "",
-		"stanza:description": "Stylesheet(css file) URL to override current style",
-		"stanza:required": false
-	},
-	{
 		"stanza:key": "width",
 		"stanza:type": "number",
 		"stanza:description": "Width"
@@ -626,6 +619,12 @@ var metadata = {
 		"stanza:key": "columns",
 		"stanza:example": "[{\"id\":\"variant_and_risk_allele\",\"label\":\"rs# and risk allele\"},{\"id\":\"raf\",\"label\":\"RAF\"},{\"id\":\"p_value\",\"label\":\"P-Value\",\"type\":\"number\"},{\"id\":\"odds_ratio\",\"label\":\"OR\"},{\"id\":\"ci_text\",\"label\":\"CI\"},{\"id\":\"beta\",\"label\":\"Beta\"},{\"id\":\"mapped_trait\",\"label\":\"Trait(s)\",\"escape\":false},{\"id\":\"pubmed_id\",\"label\":\"PubMed ID\",\"link\":\"pubmed_uri\"},{\"id\":\"study_detail\",\"label\":\"Study details\",\"link\":\"study\"},{\"id\":\"initial_sample_size\",\"label\":\"Discovery sample description\"},{\"id\":\"replication_sample_size\",\"label\":\"Replication sample description\",\"line-clamp\": 3}]",
 		"stanza:description": "Columns' options"
+	},
+	{
+		"stanza:key": "togostanza-custom_css_url",
+		"stanza:example": "",
+		"stanza:description": "Stylesheet(css file) URL to override current style",
+		"stanza:required": false
 	}
 ],
 	"stanza:menu-placement": "bottom-right",

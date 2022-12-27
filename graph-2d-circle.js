@@ -1,17 +1,16 @@
-import { s as select, S as Stanza, d as defineStanzaElement } from './transform-4eef39d8.js';
-import { l as loadData } from './load-data-13013bfb.js';
-import { T as ToolTip } from './ToolTip-4cb3e663.js';
-import { p as prepareGraphData } from './prepareGraphData-b70d31c9.js';
-import { p as point } from './band-aff94bb6.js';
+import { s as select, S as Stanza, d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss, g as defineStanzaElement } from './index-fc9be1e0.js';
+import { l as loadData } from './load-data-f54bc782.js';
+import { T as ToolTip } from './ToolTip-55019059.js';
+import { p as prepareGraphData } from './prepareGraphData-61c09b2e.js';
+import { p as point } from './band-a1512b35.js';
 import { l as line$2 } from './line-fbadf484.js';
 import { c as curveBasis } from './basis-0dde91c7.js';
-import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-0a21be6d.js';
-import { o as ordinal } from './ordinal-b6827cf8.js';
+import { o as ordinal } from './ordinal-6c362192.js';
 import './extent-14a1e8e9.js';
 import './v4-1d7bfe79.js';
-import './linear-71965c16.js';
-import './log-8bc7969e.js';
-import './pow-5639b38f.js';
+import './linear-50729249.js';
+import './log-b6be01ad.js';
+import './pow-6737992e.js';
 import './range-e15c6861.js';
 import './array-80a7907a.js';
 import './constant-c49047a5.js';
@@ -224,7 +223,7 @@ class ForceGraph extends Stanza {
   }
 
   async render() {
-    appendCustomCss(this, this.params["custom-css-url"]);
+    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
@@ -583,6 +582,12 @@ var metadata = {
 		"stanza:default": "id",
 		"stanza:example": "id",
 		"stanza:description": "Node tooltips data key. If empty, no tooltips will be shown"
+	},
+	{
+		"stanza:key": "togostanza-custom_css_url",
+		"stanza:example": "",
+		"stanza:description": "Stylesheet(scss file) URL to override current style",
+		"stanza:required": false
 	}
 ],
 	"stanza:menu-placement": "bottom-right",

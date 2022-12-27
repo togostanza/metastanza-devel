@@ -1,11 +1,10 @@
-import { S as Stanza, s as select, d as defineStanzaElement } from './transform-4eef39d8.js';
-import { l as loadData } from './load-data-13013bfb.js';
-import { S as StanzaColorGenerator } from './ColorGenerator-d3ec3154.js';
-import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-0a21be6d.js';
-import { g as getMarginsFromCSSString } from './utils-2d338be2.js';
-import { o as ordinal, f as format, a as interpolate$1 } from './ordinal-b6827cf8.js';
+import { S as Stanza, d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss, s as select, g as defineStanzaElement } from './index-fc9be1e0.js';
+import { l as loadData } from './load-data-f54bc782.js';
+import { S as StanzaColorGenerator } from './ColorGenerator-d0ebc27b.js';
+import { g as getMarginsFromCSSString } from './utils-05600bba.js';
+import { o as ordinal, f as format, a as interpolate$1 } from './ordinal-6c362192.js';
 import { s as stratify, h as hierarchy } from './stratify-7050dfd9.js';
-import { l as linear } from './linear-71965c16.js';
+import { l as linear } from './linear-50729249.js';
 import { s as sum } from './sum-44e7480e.js';
 import { t as treemap } from './index-c76c1b89.js';
 import './dice-7bdb0652.js';
@@ -129,7 +128,7 @@ class TreeMapStanza extends Stanza {
   async render() {
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
-    appendCustomCss(this, this.params["custom_css_url"]);
+    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     const width = parseInt(css("--togostanza-outline-width"));
     const height = parseInt(css("--togostanza-outline-height"));
@@ -633,12 +632,6 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "custom_css_url",
-		"stanza:example": "",
-		"stanza:description": "Stylesheet(css file) URL to override current style",
-		"stanza:required": false
-	},
-	{
 		"stanza:key": "node-gap_width",
 		"stanza:type": "number",
 		"stanza:example": 2,
@@ -655,6 +648,12 @@ var metadata = {
 		"stanza:type": "text",
 		"stanza:example": "n",
 		"stanza:description": "Node value key"
+	},
+	{
+		"stanza:key": "togostanza-custom_css_url",
+		"stanza:example": "",
+		"stanza:description": "Stylesheet(css file) URL to override current style",
+		"stanza:required": false
 	}
 ],
 	"stanza:menu-placement": "bottom-right",

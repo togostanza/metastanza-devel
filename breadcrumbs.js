@@ -1,8 +1,7 @@
-import { a as s, y, h as b, w, S as Stanza, d as defineStanzaElement } from './transform-4eef39d8.js';
-import { f as appendCustomCss } from './index-0a21be6d.js';
-import { o, e, n } from './ref-333ed382.js';
-import { a as applyConstructor } from './utils-2d338be2.js';
-import { l as loadData } from './load-data-13013bfb.js';
+import { h as s, y, o as b, w, S as Stanza, f as appendCustomCss, g as defineStanzaElement } from './index-fc9be1e0.js';
+import { o, e, n } from './ref-2e8425fb.js';
+import { a as applyConstructor } from './utils-05600bba.js';
+import { l as loadData } from './load-data-f54bc782.js';
 import { F as FAIcons } from './index-461cb806.js';
 
 class Breadcrumbs extends s {
@@ -692,7 +691,7 @@ class BreadcrumbsLit extends Stanza {
   }
 
   async render() {
-    appendCustomCss(this, this.params["custom_css_url"]);
+    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     const root = this.root.querySelector("main");
 
@@ -791,12 +790,6 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "custom_css_url",
-		"stanza:example": "",
-		"stanza:description": "Stylesheet(css file) URL to override current style",
-		"stanza:required": false
-	},
-	{
 		"stanza:key": "node-key",
 		"stanza:type": "string",
 		"stanza:description": "Key of node unique id",
@@ -843,6 +836,12 @@ var metadata = {
 		"stanza:type": "boolean",
 		"stanza:description": "Show copy path button",
 		"stanza:example": false,
+		"stanza:required": false
+	},
+	{
+		"stanza:key": "togostanza-custom_css_url",
+		"stanza:example": "",
+		"stanza:description": "Stylesheet(css file) URL to override current style",
 		"stanza:required": false
 	}
 ],

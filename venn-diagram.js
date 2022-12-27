@@ -1,8 +1,7 @@
-import { S as Stanza, d as defineStanzaElement } from './transform-4eef39d8.js';
-import { l as loadData } from './load-data-13013bfb.js';
-import { d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-0a21be6d.js';
-import { T as ToolTip } from './ToolTip-4cb3e663.js';
-import { L as Legend } from './Legend-abff0a8e.js';
+import { S as Stanza, d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss, g as defineStanzaElement } from './index-fc9be1e0.js';
+import { l as loadData } from './load-data-f54bc782.js';
+import { T as ToolTip } from './ToolTip-55019059.js';
+import { L as Legend } from './Legend-e553fe69.js';
 
 var colorStringExports = {};
 var colorString$1 = {
@@ -1982,7 +1981,7 @@ class VennStanza extends Stanza {
   }
 
   async render() {
-    appendCustomCss(this, this.params["custom_css_url"]);
+    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
     this.colorSeries = this.getColorSeries();
 
     this.renderTemplate({ template: "stanza.html.hbs" });
@@ -2240,12 +2239,6 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "custom_css_url",
-		"stanza:example": "",
-		"stanza:description": "Stylesheet(css file) URL to override current style",
-		"stanza:required": false
-	},
-	{
 		"stanza:key": "color-blend",
 		"stanza:type": "single-choice",
 		"stanza:choice": [
@@ -2255,6 +2248,12 @@ var metadata = {
 		],
 		"stanza:example": "screen",
 		"stanza:description": "How to mix colors in overlapping areas"
+	},
+	{
+		"stanza:key": "togostanza-custom_css_url",
+		"stanza:example": "",
+		"stanza:description": "Stylesheet(css file) URL to override current style",
+		"stanza:required": false
 	}
 ],
 	"stanza:menu-placement": "bottom-right",

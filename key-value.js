@@ -1,6 +1,5 @@
-import { S as Stanza, d as defineStanzaElement } from './transform-4eef39d8.js';
-import { l as loadData } from './load-data-13013bfb.js';
-import { b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss } from './index-0a21be6d.js';
+import { S as Stanza, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss, g as defineStanzaElement } from './index-fc9be1e0.js';
+import { l as loadData } from './load-data-f54bc782.js';
 
 class KeyValue extends Stanza {
   menu() {
@@ -12,7 +11,7 @@ class KeyValue extends Stanza {
   }
 
   async render() {
-    appendCustomCss(this, this.params["custom_css_url"]);
+    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     const dataset = (
       await loadData(
@@ -97,12 +96,6 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "custom_css_url",
-		"stanza:example": "",
-		"stanza:description": "Stylesheet(scss file) URL to override current style",
-		"stanza:required": false
-	},
-	{
 		"stanza:key": "columns",
 		"stanza:example": "[{\"id\": \"title\"}, {\"id\": \"dataset_uri\", \"label\": \"Dataset ID\", \"link\": \"dataset_uri\"},{\"id\": \"description\"}, {\"id\": \"species\", \"escape\": false}, {\"id\": \"number_of_protein\", \"label\": \"#protein\"}]",
 		"stanza:description": "Columns' options"
@@ -112,6 +105,12 @@ var metadata = {
 		"stanza:type": "boolean",
 		"stanza:example": true,
 		"stanza:description": "Capitalize the acronym and convert underscore to blank"
+	},
+	{
+		"stanza:key": "togostanza-custom_css_url",
+		"stanza:example": "",
+		"stanza:description": "Stylesheet(scss file) URL to override current style",
+		"stanza:required": false
 	}
 ],
 	"stanza:menu-placement": "bottom-right",
