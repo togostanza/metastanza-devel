@@ -343,12 +343,10 @@ class Linechart extends Stanza {
     const yKeyName = this._validatedParams.get("axis-y-key").value;
     const xAxisTitle = this._validatedParams.get("axis-x-title").value;
     const yAxisTitle = this._validatedParams.get("axis-y-title").value || "";
-    const hideXAxis = !this._validatedParams.get("axis-x-visible").value;
-    const hideYAxis = !this._validatedParams.get("axis-y-visible").value;
     const hideXAxisTicks = this._validatedParams.get("axis-x-ticks_hide").value;
     const hideYAxisTicks = this._validatedParams.get("axis-y-ticks_hide").value;
-    const showPoints = this._validatedParams.get("points-show").value;
-    const pointsSize = this._validatedParams.get("points-size").value;
+    const pointsSize = this.params["points_size"];
+    const showPoints = pointsSize && !isNaN(parseFloat(pointsSize));
 
     const errorKeyName = this._validatedParams.get("error_bars-key").value;
 
@@ -453,7 +451,9 @@ class Linechart extends Stanza {
     }
 
     // Data symbols
-    const symbolGenerator = Symbol().size(pointsSize).type(circle);
+    const symbolGenerator = Symbol()
+      .size(() => pointsSize * pointsSize)
+      .type(circle);
 
     const width = css("--togostanza-outline-width");
     const height = css("--togostanza-outline-height");
@@ -1241,11 +1241,11 @@ class Linechart extends Stanza {
               .call(updateSymbolTranslate.bind(this));
           }
 
-          if (!hideXAxis && !hideXAxisTicks) {
+          if (!hideXAxisTicks) {
             graphXAxisG.call(xAxis).call(rotateXTickLabels);
           }
 
-          if (!hideYAxis && !hideYAxisTicks) {
+          if (!hideYAxisTicks) {
             graphYAxisG.call(yAxis);
           }
         };
@@ -1264,11 +1264,11 @@ class Linechart extends Stanza {
 
           this._scaleY.domain(extent(y0y1));
 
-          if (!hideXAxis && !hideXAxisTicks) {
+          if (!hideXAxisTicks) {
             graphXAxisG.call(xAxis).call(rotateXTickLabels);
           }
 
-          if (!hideYAxis && !hideYAxisTicks) {
+          if (!hideYAxisTicks) {
             graphYAxisG.call(yAxis);
           }
 
@@ -1469,24 +1469,6 @@ class Linechart extends Stanza {
             previewYAxisYG.call(yAxisY);
           }
 
-          if (hideXAxis) {
-            graphXAxisG.call(hideTicks);
-            graphXAxisG.call((g) => g.select(".domain").remove());
-            if (showXPreview) {
-              previewXAxisXG.call(hideTicks);
-              previewXAxisXG.call((g) => g.select(".domain").remove());
-            }
-            xAxisTitleGroup.call((g) => g.select(".text").remove());
-          }
-          if (hideYAxis) {
-            graphYAxisG.call(hideTicks);
-            graphYAxisG.call((g) => g.select(".domain").remove());
-            if (showXPreview) {
-              previewXAxisYG.call(hideTicks);
-              previewXAxisYG.call((g) => g.select(".domain").remove());
-            }
-            yAxisTitleGroup.call((g) => g.select(".text").remove());
-          }
           if (hideXAxisTicks) {
             graphXAxisG.call(hideTicks);
             if (showXPreview) {
@@ -1712,14 +1694,6 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "axis-x-visible",
-		"stanza:type": "boolean",
-		"stanza:example": true,
-		"stanza:default": true,
-		"stanza:description": "Show the axis",
-		"stanza:required": false
-	},
-	{
 		"stanza:key": "axis-x-title",
 		"stanza:type": "text",
 		"stanza:example": "Category",
@@ -1822,14 +1796,6 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "axis-y-visible",
-		"stanza:type": "boolean",
-		"stanza:example": true,
-		"stanza:default": true,
-		"stanza:description": "Hide the axis",
-		"stanza:required": false
-	},
-	{
 		"stanza:key": "axis-y-title",
 		"stanza:type": "text",
 		"stanza:example": "Data",
@@ -1914,20 +1880,12 @@ var metadata = {
 		"stanza:required": false
 	},
 	{
-		"stanza:key": "points-show",
-		"stanza:type": "boolean",
-		"stanza:example": true,
-		"stanza:description": "Show data points",
-		"stanza:required": false,
-		"stanza:default": false
-	},
-	{
-		"stanza:key": "points-size",
+		"stanza:key": "points_size",
 		"stanza:type": "number",
-		"stanza:example": 10,
-		"stanza:description": "Data points size",
+		"stanza:example": 5,
+		"stanza:description": "Data points size in px",
 		"stanza:required": false,
-		"stanza:default": 10
+		"stanza:default": 5
 	},
 	{
 		"stanza:key": "error_bars-key",
