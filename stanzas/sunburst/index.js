@@ -2,6 +2,7 @@ import Stanza from "togostanza/stanza";
 import * as d3 from "d3";
 import loadData from "togostanza-utils/load-data";
 import { getMarginsFromCSSString } from "../../lib/utils";
+import { StanzaColorGenerator } from "../../lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -70,7 +71,6 @@ export default class Sunburst extends Stanza {
     const padding = getMarginsFromCSSString(
       css("--togostanza-outline-padding")
     );
-    const colorScale = [];
 
     const labelKey = this.params["node-label_key"];
     const valueKey = this.params["node-value_key"];
@@ -89,12 +89,10 @@ export default class Sunburst extends Stanza {
       this.params["data-type"],
       this.root.querySelector("main")
     );
-
     this._data = data;
 
-    for (let i = 0; i <= 5; i++) {
-      colorScale.push(`--togostanza-theme-series_${i}_color`);
-    }
+    const colorScale = new StanzaColorGenerator(this).stanzaColor;
+    const color = d3.scaleOrdinal(colorScale);
 
     this.renderTemplate({
       template: "stanza.html.hbs",
@@ -149,8 +147,6 @@ export default class Sunburst extends Stanza {
       })(dataset);
 
     const formatNumber = d3.format(",d");
-
-    const color = d3.scaleOrdinal(colorScale);
 
     const partition = (data) => {
       const root = d3.hierarchy(data);
@@ -296,7 +292,7 @@ export default class Sunburst extends Stanza {
           return "none";
         }
 
-        return css(color(d.data.data.id));
+        return color(d.data.data.id);
       })
       .attr("fill-opacity", (d) =>
         arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0
@@ -449,7 +445,7 @@ export default class Sunburst extends Stanza {
         }
 
         return b.data?.data?.[labelKey]
-          ? css(color(b.data.data.id))
+          ? color(b.data.data.id)
           : "rgba(0,0,0,0)";
       });
 
