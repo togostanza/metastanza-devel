@@ -119,7 +119,6 @@ export class Breadcrumbs extends LitElement {
     const pathToShow = [];
     const traverse = (id) => {
       const currentNode = this.nodesMap.get(id);
-      console.log(currentNode);
       if (currentNode) {
         pathToShow.push(currentNode);
         traverse("" + (currentNode.parent || -1));
