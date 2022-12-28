@@ -58,24 +58,19 @@ export class Breadcrumbs extends LitElement {
 
     if (idsWithoutParent.length > 1) {
       this.rootNodeId = "root";
-    } else if (idsWithoutParent.length === 1) {
-      this.rootNodeId = idsWithoutParent[0];
-    } else {
+      const rootNode = {
+        [this.nodeKey]: this.rootNodeId,
+        [this.nodeLabelKey]: this.rootNodeLabelText,
+      };
+      this.nodesMap.set(this.rootNodeId, rootNode);
+      this.data.push(rootNode);
+      idsWithoutParent.forEach((id) => {
+        const itemWithoutParent = this.nodesMap.get("" + id);
+        itemWithoutParent.parent = this.rootNodeId;
+      });
+    } else if (idsWithoutParent.length === 0) {
       throw new Error("Root node not found");
     }
-
-    const rootNode = {
-      [this.nodeKey]: this.rootNodeId,
-      [this.nodeLabelKey]: this.rootNodeLabelText,
-    };
-
-    this.nodesMap.set(this.rootNodeId, rootNode);
-    this.data.push(rootNode);
-
-    idsWithoutParent.forEach((id) => {
-      const itemWithoutParent = this.nodesMap.get("" + id);
-      itemWithoutParent.parent = this.rootNodeId;
-    });
   }
 
   firstUpdated() {
@@ -124,9 +119,10 @@ export class Breadcrumbs extends LitElement {
     const pathToShow = [];
     const traverse = (id) => {
       const currentNode = this.nodesMap.get(id);
+      console.log(currentNode);
       if (currentNode) {
         pathToShow.push(currentNode);
-        traverse("" + currentNode.parent);
+        traverse("" + (currentNode.parent || -1));
       }
     };
     traverse(currentId);
@@ -208,9 +204,14 @@ export class Breadcrumbs extends LitElement {
               label: node[this.nodeLabelKey],
               id: node[this.nodeKey],
             }}"
-            .menuItems=${this._getByParent(node.parent).filter(
-              (d) => d[this.nodeKey] !== node[this.nodeKey]
-            )}
+            .menuItems=${this._getByParent(node.parent)
+              .filter((d) => d[this.nodeKey] !== node[this.nodeKey])
+              .map((node) => {
+                return {
+                  label: node[this.nodeLabelKey],
+                  id: node[this.nodeKey],
+                };
+              })}
             .showDropdown=${this.nodeShowDropdown}
             .iconName=${node[this.nodeKey] === this.rootNodeId
               ? this.rootNodeLabelIcon
