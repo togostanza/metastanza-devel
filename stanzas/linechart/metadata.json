@@ -21,14 +21,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "axis-x-visible",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:default": true,
-      "stanza:description": "Show the axis",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "axis-x-title",
       "stanza:type": "text",
       "stanza:example": "Category",
@@ -127,14 +119,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "axis-y-visible",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:default": true,
-      "stanza:description": "Hide the axis",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "axis-y-title",
       "stanza:type": "text",
       "stanza:example": "Data",
@@ -216,20 +200,12 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "points-show",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:description": "Show data points",
-      "stanza:required": false,
-      "stanza:default": false
-    },
-    {
-      "stanza:key": "points-size",
+      "stanza:key": "points_size",
       "stanza:type": "number",
-      "stanza:example": 10,
-      "stanza:description": "Data points size",
+      "stanza:example": 5,
+      "stanza:description": "Data points size in px",
       "stanza:required": false,
-      "stanza:default": 10
+      "stanza:default": 5
     },
     {
       "stanza:key": "error_bars-key",
