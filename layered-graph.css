@@ -70,9 +70,6 @@ svg > defs > marker > path {
   pointer-events: none;
   opacity: 0.8;
 }
-.link.dashed {
-  stroke-dasharray: 2;
-}
 .link.active {
   opacity: 1;
 }
