@@ -1,8 +1,8 @@
 import { h as s, y, r as b, w, S as Stanza, f as appendCustomCss, g as defineStanzaElement } from './index-b37241ec.js';
 import { o } from './map-c0e24c36.js';
 import { a as applyConstructor } from './utils-1a48cc93.js';
-import { l as loadData } from './load-data-0ddebadb.js';
 import { e, n } from './ref-3a8fb5e8.js';
+import { l as loadData } from './load-data-0ddebadb.js';
 import { F as FAIcons } from './index-461cb806.js';
 
 class Breadcrumbs extends s {
@@ -26,6 +26,10 @@ class Breadcrumbs extends s {
 
     this.rootNodeId = null;
     this.pathToCopy = "/";
+    this.observedStyle = null;
+    this.observer = null;
+
+    this.invisibleNode = e();
   }
 
   updateParams(params, data) {
@@ -74,8 +78,35 @@ class Breadcrumbs extends s {
       const itemWithoutParent = this.nodesMap.get("" + id);
       itemWithoutParent.parent = this.rootNodeId;
     });
+  }
 
-    this.requestUpdate();
+  firstUpdated() {
+    // create invisible node to watch for style changes
+
+    this.observedStyle = getComputedStyle(this.invisibleNode.value);
+
+    this.observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === "childList") {
+          if (
+            this.observedStyle["font-size"] &&
+            !isNaN(parseFloat(this.observedStyle["font-size"]))
+          ) {
+            this.requestUpdate();
+          }
+        }
+      });
+    });
+
+    this.observer.observe(this.parentElement, {
+      attributes: true,
+      subtree: false,
+      childList: true,
+    });
+  }
+
+  disconnectedCallback() {
+    this.observer.disconnect();
   }
 
   willUpdate(changed) {
@@ -140,47 +171,55 @@ class Breadcrumbs extends s {
 
   render() {
     return y` ${this.showCopyButton &&
-    y`<breadcrumbs-node
-      .node="${{
-        label: "",
-        id: "copy",
-      }}"
-      .iconName=${"Copy"}
-      .menuItems="${[]}"
-      mode="copy"
-      @click=${this._handleCopy}
-    ></breadcrumbs-node>`}
-    ${o(this.pathToShow, (node) => {
-      return y`
-        <breadcrumbs-node
-          @click=${() => {
-            this.currentId = "" + node[this.nodeKey];
-            this.dispatchEvent(
-              new CustomEvent("selectedDatumChanged", {
-                detail: { id: "" + node[this.nodeKey] },
-                bubbles: true,
-                composed: true,
-              })
-            );
-          }}
-          @node-hover=${this._handleNodeHover}
-          @menu-item-clicked=${({ detail }) =>
-            (this.currentId = "" + detail.id)}
-          data-id="${node[this.nodeKey]}"
-          .node="${{
-            label: node[this.nodeLabelKey],
-            id: node[this.nodeKey],
-          }}"
-          .menuItems=${this._getByParent(node.parent).filter(
-            (d) => d[this.nodeKey] !== node[this.nodeKey]
-          )}
-          .showDropdown=${this.nodeShowDropdown}
-          .iconName=${node[this.nodeKey] === this.rootNodeId
-            ? this.rootNodeLabelIcon
-            : null}
-        />
-      `;
-    })}`;
+      y`<breadcrumbs-node
+        .node="${{
+          label: "",
+          id: "copy",
+        }}"
+        .iconName=${"Copy"}
+        .menuItems="${[]}"
+        mode="copy"
+        @click=${this._handleCopy}
+      ></breadcrumbs-node>`}
+      <breadcrumbs-node
+        ${n(this.invisibleNode)}
+        mode="invisible"
+        .node="${{
+          label: "a",
+          id: 1,
+        }}"
+      ></breadcrumbs-node>
+      ${o(this.pathToShow, (node) => {
+        return y`
+          <breadcrumbs-node
+            @click=${() => {
+              this.currentId = "" + node[this.nodeKey];
+              this.dispatchEvent(
+                new CustomEvent("selectedDatumChanged", {
+                  detail: { id: "" + node[this.nodeKey] },
+                  bubbles: true,
+                  composed: true,
+                })
+              );
+            }}
+            @node-hover=${this._handleNodeHover}
+            @menu-item-clicked=${({ detail }) =>
+              (this.currentId = "" + detail.id)}
+            data-id="${node[this.nodeKey]}"
+            .node="${{
+              label: node[this.nodeLabelKey],
+              id: node[this.nodeKey],
+            }}"
+            .menuItems=${this._getByParent(node.parent).filter(
+              (d) => d[this.nodeKey] !== node[this.nodeKey]
+            )}
+            .showDropdown=${this.nodeShowDropdown}
+            .iconName=${node[this.nodeKey] === this.rootNodeId
+              ? this.rootNodeLabelIcon
+              : null}
+          />
+        `;
+      })}`;
   }
 }
 
@@ -512,6 +551,10 @@ class Node extends s {
       this.renderRoot.append(this.svg.value);
     }
 
+    if (this.mode === "invisible") {
+      this.renderRoot.style = "position: absolute; visibility: hidden";
+    }
+
     this.icon = FAIcons[`fa${this.iconName}`]?.icon;
 
     let { textWidth, textHeight } = this._getTextRect(this.node.label);
@@ -550,12 +593,10 @@ class Node extends s {
     this.height =
       this.textHeight + this.textMargin.top + this.textMargin.bottom;
     this.pathD = roundPathCorners(this._getPolygon(), this.emW / 2, 0);
-
-    this.requestUpdate();
   }
 
   _getPolygon() {
-    if (this.width < this.emW * 2) {
+    if (this.width < this.emW * 2 && this.mode !== "invisible") {
       throw new Error("Width must be greater than arrow length");
     }
 
@@ -605,7 +646,7 @@ class Node extends s {
 
     const textWidth = textEl.getBBox().width;
     const textHeight = textEl.getBBox().height;
-    textEl.remove();
+    this.svg.value.removeChild(textEl);
 
     return { textWidth, textHeight };
   }
