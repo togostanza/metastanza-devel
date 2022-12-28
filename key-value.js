@@ -1,5 +1,5 @@
-import { S as Stanza, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss, g as defineStanzaElement } from './index-fc9be1e0.js';
-import { l as loadData } from './load-data-f54bc782.js';
+import { S as Stanza, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss, g as defineStanzaElement } from './index-b37241ec.js';
+import { l as loadData } from './load-data-0ddebadb.js';
 
 class KeyValue extends Stanza {
   menu() {

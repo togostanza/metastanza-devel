@@ -1,8 +1,8 @@
-import { i as commonjsGlobal, S as Stanza, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss, g as defineStanzaElement } from './index-fc9be1e0.js';
+import { j as commonjsGlobal, S as Stanza, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss, g as defineStanzaElement } from './index-b37241ec.js';
 import { d as defineComponent, c as createElementBlock, F as Fragment, r as renderList, o as openBlock, n as normalizeClass, a as createBaseVNode, t as toDisplayString, b as createCommentVNode, e as createBlock, f as resolveComponent, w as withDirectives, v as vShow, g as createTextVNode, h as toRefs, i as ref, j as reactive, k as watchEffect, l as computed, m as vModelText, p as createVNode, q as createApp } from './runtime-dom.esm-bundler-daf8e087.js';
 import { l as library$1, F as FontAwesomeIcon } from './index.es-8a230f23.js';
 import { f as faChevronRight, a as faClipboard } from './index-461cb806.js';
-import { l as loadData } from './load-data-f54bc782.js';
+import { l as loadData } from './load-data-0ddebadb.js';
 
 var metadata$1 = {
 	"@context": {
