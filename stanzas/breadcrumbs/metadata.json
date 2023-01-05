@@ -71,13 +71,6 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "show_copy_button",
-      "stanza:type": "boolean",
-      "stanza:description": "Show copy path button",
-      "stanza:example": false,
-      "stanza:required": false
-    },
-    {
       "stanza:key": "togostanza-custom_css_url",
       "stanza:example": "",
       "stanza:description": "Stylesheet(css file) URL to override current style",
