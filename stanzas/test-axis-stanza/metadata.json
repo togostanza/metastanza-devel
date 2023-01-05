@@ -52,14 +52,7 @@
       "stanza:description": "axis placement",
       "stanza:required": true
     },
-    {
-      "stanza:key": "axis-x-visible",
-      "stanza:type": "boolean",
-      "stanza:example": false,
-      "stanza:default": false,
-      "stanza:description": "Show the axis",
-      "stanza:required": false
-    },
+
     {
       "stanza:key": "axis-x-title",
       "stanza:type": "text",
@@ -148,14 +141,6 @@
       "stanza:example": "left",
       "stanza:description": "Y axis placement",
       "stanza:required": true
-    },
-    {
-      "stanza:key": "axis-y-visible",
-      "stanza:type": "boolean",
-      "stanza:example": false,
-      "stanza:default": false,
-      "stanza:description": "Hide the axis",
-      "stanza:required": false
     },
     {
       "stanza:key": "axis-y-title",
