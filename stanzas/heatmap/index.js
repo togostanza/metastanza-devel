@@ -101,8 +101,8 @@ export default class Heatmap extends Stanza {
     const fontSize = parseFloat(
       this.css("--togostanza-fonts-font_size_primary")
     );
-    const width = parseFloat(this.css("--togostanza-outline-width"));
-    const height = parseFloat(this.css("--togostanza-outline-height"));
+    const width = parseFloat(this.css("--togostanza-canvas-width"));
+    const height = parseFloat(this.css("--togostanza-canvas-height"));
     const borderWidth = parseFloat(this.css("--togostanza-border-width") || 0);
     const tickSize = 2;
 

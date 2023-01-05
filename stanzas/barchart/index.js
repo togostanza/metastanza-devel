@@ -104,11 +104,11 @@ export default class Barchart extends Stanza {
 
     const axisYScale = this.params["axis-y-scale"] || "linear";
 
-    const width = parseInt(css("--togostanza-outline-width"));
-    const height = parseInt(css("--togostanza-outline-height"));
+    const width = parseInt(css("--togostanza-canvas-width"));
+    const height = parseInt(css("--togostanza-canvas-height"));
 
     let inputMargin = getMarginsFromCSSString(
-      css("--togostanza-outline-padding")
+      css("--togostanza-canvas-padding")
     );
 
     inputMargin = {
