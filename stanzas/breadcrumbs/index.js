@@ -52,11 +52,12 @@ export default class BreadcrumbsLit extends Stanza {
 
 function isExamplePage() {
   const hostname = window.location.hostname;
-  const pageName = window.location.pathname.match(/([^/]+)(?=\.\w+$)/gi)[0];
+  const pageName = window.location.pathname.match(/([^/]+)(?=\.\w+$)/gi);
   const stanzaId = this.metadata["@id"];
 
   if (
-    pageName === stanzaId &&
+    pageName &&
+    pageName[0] === stanzaId &&
     (hostname.includes("metastanza") ||
       hostname.includes("localhost") ||
       hostname.includes("togostanza"))

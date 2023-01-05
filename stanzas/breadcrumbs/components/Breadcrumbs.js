@@ -37,13 +37,15 @@ export class Breadcrumbs extends LitElement {
     applyConstructor.call(this, params);
 
     //check if nodes without parents are present
-
     if (this.data.some((d) => d[this.nodeKey])) {
       this.data.forEach((d) => {
-        this.nodesMap.set("" + d[this.nodeKey], d);
+        d.parent =
+          typeof d.parent === "undefined" ? undefined : d.parent.toString();
+        d[this.nodeKey] = d[this.nodeKey].toString();
+        this.nodesMap.set(d[this.nodeKey], d);
       });
 
-      this.currentId = "" + this.nodeInitialId;
+      this.currentId = this.nodeInitialId.toString();
     } else {
       throw new Error("Key not found");
     }
@@ -51,8 +53,8 @@ export class Breadcrumbs extends LitElement {
     const idsWithoutParent = [];
 
     this.nodesMap.forEach((d) => {
-      if (!d.parent) {
-        idsWithoutParent.push("" + d[this.nodeKey]);
+      if (typeof d.parent === "undefined") {
+        idsWithoutParent.push(d[this.nodeKey]);
       }
     });
 
@@ -65,7 +67,7 @@ export class Breadcrumbs extends LitElement {
       this.nodesMap.set(this.rootNodeId, rootNode);
       this.data.push(rootNode);
       idsWithoutParent.forEach((id) => {
-        const itemWithoutParent = this.nodesMap.get("" + id);
+        const itemWithoutParent = this.nodesMap.get(id);
         itemWithoutParent.parent = this.rootNodeId;
       });
     } else if (idsWithoutParent.length === 0) {
