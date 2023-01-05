@@ -67,7 +67,7 @@ const initialState: AxisParamsI = {
   ticksLabelsMargin: 0,
   ticksInterval: 0,
   title: "",
-  ticksLabelsFormat: "",
+  ticksLabelsFormat: "%s",
   titlePadding: 0,
   gridInterval: 0,
 };
@@ -185,6 +185,9 @@ export class Axis {
   }
 
   private get ticksLabelsFormatter() {
+    if (this.params.scale === "time") {
+      return d3.timeFormat(this.params.ticksLabelsFormat || "%b %d %I %p");
+    }
     if (this.params.scale !== "ordinal") {
       return d3.format(this.params.ticksLabelsFormat);
     }
@@ -472,6 +475,7 @@ export class Axis {
   }
 
   private _handleScaleUpdate(newScale: ScaleType) {
+    console.log("scale update", newScale);
     this._axisScale = getScale(newScale);
     this._axisScale.domain(this.params.domain);
 
@@ -534,8 +538,10 @@ export class Axis {
     this._updateTicks();
     this._updateGrid();
 
-    this._callDrawAxis();
-    this._callDrawGridlines();
+    queueMicrotask(() => {
+      this._callDrawAxis();
+      this._callDrawGridlines();
+    });
   }
 
   private _updateGrid() {

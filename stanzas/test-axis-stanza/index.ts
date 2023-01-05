@@ -105,14 +105,14 @@ class TestAxis extends Stanza {
 
     const xParams: AxisParamsI = {
       placement: params["axis-x-placement"],
-      domain: ["a", "b", "c"],
+      domain: [new Date(2000, 0, 1), new Date(2000, 0, 2)],
       range: [0, width],
       showTicks: !params["axis-x-ticks_hide"],
       margins: MARGIN,
       tickLabelsAngle: params["axis-x-ticks_label_angle"],
       title: params["axis-x-title"],
       titlePadding: params["axis-x-title_padding"],
-      scale: "ordinal", //params["axis-x-scale"],
+      scale: "time", //params["axis-x-scale"],
       gridInterval: params["axis-x-gridlines_interval"],
       ticksInterval: params["axis-x-ticks_interval"],
       ticksLabelsFormat: params["axis-x-ticks_labels_format"],
@@ -153,15 +153,15 @@ class TestAxis extends Stanza {
       return alphabet.slice(0, n - 1);
     }
 
-    this.interval = setInterval(() => {
-      const domain = getRandomDomain(Math.floor(Math.random() * 15));
+    // this.interval = setInterval(() => {
+    //   const domain = getRandomDomain(Math.floor(Math.random() * 15));
 
-      this.xAxisGen.update({
-        domain,
-        scale: "ordinal",
-      });
-      this.yAxisGen.update({ domain: [0.01, Math.random() * 100] });
-    }, 1000);
+    //   this.xAxisGen.update({
+    //     domain,
+    //     scale: "ordinal",
+    //   });
+    //   this.yAxisGen.update({ domain: [0.01, Math.random() * 100] });
+    // }, 1000);
   }
 }
 

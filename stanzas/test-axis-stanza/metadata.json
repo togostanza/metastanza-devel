@@ -97,7 +97,7 @@
       "stanza:type": "number",
       "stanza:example": null,
       "stanza:computed": true,
-      "stanza:description": "Axis ticks interval. if not set, show 5 ticks at automatically chosen values. If set to 0, hide all ticks.",
+      "stanza:description": "Axis ticks interval. if not set, show 5 ticks at automatically chosen values. If set to 0, hide all ticks. In case of `ordinal` scale, setting this parameter to any value will hide all ticks",
       "stanza:required": false
     },
     {
@@ -122,7 +122,7 @@
       "stanza:key": "axis-x-ticks_labels_format",
       "stanza:type": "text",
       "stanza:example": "",
-      "stanza:description": "Axis ticks interval format, in d3.format string form",
+      "stanza:description": "Axis ticks format, in d3.format or d3.timeFormat string form. In case of time scale, use d3.timeFormat format string (https://pubs.opengroup.org/onlinepubs/009695399/functions/strptime.html)",
       "stanza:required": false
     },
 
@@ -211,7 +211,7 @@
       "stanza:type": "number",
       "stanza:example": null,
       "stanza:computed": true,
-      "stanza:description": "Axis ticks interval. if not set, show 5 ticks at automatically chosen values. If set to 0, hide all ticks.",
+      "stanza:description": "Axis ticks interval. if not set, show 5 ticks at automatically chosen values. If set to 0, hide all ticks. In case of `ordinal` scale, setting this parameter to any value will hide all ticks",
       "stanza:required": false
     },
     {
