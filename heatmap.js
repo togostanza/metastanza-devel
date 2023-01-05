@@ -2,12 +2,11 @@ import { S as Stanza, d as downloadSvgMenuItem, a as downloadPngMenuItem, b as d
 import { l as loadData } from './load-data-0ddebadb.js';
 import { T as ToolTip } from './ToolTip-8932448c.js';
 import { L as Legend } from './Legend-949ef6e4.js';
-import { a as getGradationColor } from './ColorGenerator-8371282f.js';
-import { b as band } from './band-7fb06463.js';
+import { a as getGradationColor } from './ColorGenerator-8b50b614.js';
+import { b as band } from './band-d0e670ee.js';
 import { a as axisBottom, b as axisLeft } from './axis-3dba94d9.js';
 import './ref-3a8fb5e8.js';
-import './ordinal-372d4ef5.js';
-import './linear-664f4f6c.js';
+import './linear-13370298.js';
 import './range-e15c6861.js';
 
 class Heatmap extends Stanza {

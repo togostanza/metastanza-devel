@@ -1,5 +1,5 @@
 import { v as dispatch, H as interrupt, s as select } from './index-b37241ec.js';
-import { a as interpolate$1 } from './ordinal-372d4ef5.js';
+import { D as interpolate$1 } from './linear-13370298.js';
 import { p as pointer, d as dragDisable, y as yesdrag } from './nodrag-ae00e796.js';
 
 var constant = x => () => x;
@@ -644,4 +644,4 @@ function brush$1(dim) {
 }
 
 export { brushX as a, brush as b, brushY as c, brushSelection as d };
-//# sourceMappingURL=brush-d4aae8ea.js.map
+//# sourceMappingURL=brush-4d2a9838.js.map

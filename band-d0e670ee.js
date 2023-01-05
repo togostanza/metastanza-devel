@@ -1,4 +1,4 @@
-import { o as ordinal, i as initRange } from './ordinal-372d4ef5.js';
+import { o as ordinal, i as initRange } from './linear-13370298.js';
 import { r as range } from './range-e15c6861.js';
 
 function band() {
@@ -100,4 +100,4 @@ function point() {
 }
 
 export { band as b, point as p };
-//# sourceMappingURL=band-7fb06463.js.map
+//# sourceMappingURL=band-d0e670ee.js.map

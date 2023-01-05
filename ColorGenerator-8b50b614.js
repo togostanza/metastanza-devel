@@ -1,6 +1,5 @@
 import './index-b37241ec.js';
-import { o as ordinal } from './ordinal-372d4ef5.js';
-import { l as linear } from './linear-664f4f6c.js';
+import { o as ordinal, l as linear } from './linear-13370298.js';
 
 //Parent class for stanza
 class StanzaColorGenerator {
@@ -107,4 +106,4 @@ function getStanzaInterpolateColor(self, colorNum) {
 }
 
 export { StanzaColorGenerator as S, getGradationColor as a, StanzaCirculateColorGenerator as b, getStanzaInterpolateColor as g };
-//# sourceMappingURL=ColorGenerator-8371282f.js.map
+//# sourceMappingURL=ColorGenerator-8b50b614.js.map

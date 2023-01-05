@@ -1,5 +1,6 @@
-import { S as Stanza, d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, f as appendCustomCss, g as defineStanzaElement } from './index-b37241ec.js';
+import { S as Stanza, d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss, g as defineStanzaElement } from './index-b37241ec.js';
 import { l as loadData } from './load-data-0ddebadb.js';
+import { g as getMarginsFromCSSString } from './utils-1a48cc93.js';
 
 class Scorecard extends Stanza {
   menu() {
@@ -7,6 +8,8 @@ class Scorecard extends Stanza {
       downloadSvgMenuItem(this, "scorecard"),
       downloadPngMenuItem(this, "scorecard"),
       downloadJSONMenuItem(this, "scorecard", this._data),
+      downloadCSVMenuItem(this, "scorecard", this._data),
+      downloadTSVMenuItem(this, "scorecard", this._data),
     ];
   }
 
@@ -14,70 +17,75 @@ class Scorecard extends Stanza {
     appendCustomCss(this, this.params["custom_css_url"]);
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
+    this.renderTemplate({
+      template: "stanza.html.hbs",
+    });
+    const main = this.root.querySelector("main");
+    const el = this.root.getElementById("scorecard");
+
     const dataset = await loadData(
       this.params["data-url"],
       this.params["data-type"],
-      this.root.querySelector("main")
+      main
     );
+
+    const width = parseFloat(css("--togostanza-outline-width")) || 0;
+    const height = parseFloat(css("--togostanza-outline-height")) || 0;
+    const padding = getMarginsFromCSSString(
+      css("--togostanza-outline-padding")
+    );
+    const fontSizePrimary =
+      parseFloat(css("--togostanza-fonts-font_size_primary")) || 0;
+    const fontSizeSecondary =
+      parseFloat(css("--togostanza-fonts-font_size_secondary")) || 0;
 
     const scoreKey = this.params["score-key"];
     const titleKey = this.params["title-key"];
     const scoreValue = dataset[scoreKey];
-    this._data = { [scoreKey]: scoreValue };
+    this._data = [{ [scoreKey]: scoreValue }];
 
     const titleText =
       this.params["title-text"] || dataset[titleKey] || scoreKey;
 
-    this.renderTemplate({
-      template: "stanza.html.hbs",
-      parameters: {
-        scorecards: [
-          {
-            titleText,
-            scoreValue,
-          },
-        ],
-      },
-    });
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("width", padding.LEFT + width + padding.RIGHT);
+    svg.setAttribute("height", padding.TOP + height + padding.BOTTOM);
+    svg.classList.add("svg");
+    el.appendChild(svg);
 
-    const keyElement = this.root.querySelector("#key");
-    const valueElement = this.root.querySelector("#value");
-    if (this.params["title-show"] === false) {
-      keyElement.setAttribute(`style`, `display: none;`);
+    const wrapper = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    svg.appendChild(wrapper);
+
+    const titleKeyText = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "text"
+    );
+    titleKeyText.classList.add("title-key");
+    titleKeyText.textContent = titleText;
+    titleKeyText.setAttribute("text-anchor", "middle");
+    wrapper.append(titleKeyText);
+
+    const scoreValueText = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "text"
+    );
+    scoreValueText.classList.add("score-value");
+    scoreValueText.textContent = scoreValue;
+    scoreValueText.setAttribute("text-anchor", "middle");
+    wrapper.append(scoreValueText);
+
+    if (this.params["title-show"]) {
+      titleKeyText.setAttribute("y", fontSizeSecondary);
+      scoreValueText.setAttribute("y", fontSizePrimary + fontSizeSecondary);
+    } else {
+      titleKeyText.setAttribute(`style`, `display: none;`);
+      scoreValueText.setAttribute("y", fontSizePrimary);
     }
 
-    keyElement.setAttribute(
-      "y",
-      Number(css("--togostanza-fonts-font_size_secondary"))
-    );
-    keyElement.setAttribute(
-      "fill",
-      "var(--togostanza-fonts-font_color_secondary)"
-    );
-    valueElement.setAttribute(
-      "y",
-      Number(css("--togostanza-fonts-font_size_secondary")) +
-        Number(css("--togostanza-fonts-font_size_primary"))
-    );
-    valueElement.setAttribute(
-      "fill",
-      "var(--togostanza-fonts-font_color_primary)"
-    );
-    keyElement.setAttribute(
-      "font-size",
-      css("--togostanza-fonts-font_size_secondary")
-    );
-    valueElement.setAttribute(
-      "font-size",
-      css("--togostanza-fonts-font_size_primary")
-    );
-    keyElement.setAttribute(
-      "font-weight",
-      css("--togostanza-fonts-font_weight_secondary")
-    );
-    valueElement.setAttribute(
-      "font-weight",
-      css("--togostanza-fonts-font_weight_primary")
+    wrapper.setAttribute(
+      "transform",
+      `translate(${padding.LEFT + width / 2},
+      ${padding.TOP + height / 2 - wrapper.getBBox().height / 2})`
     );
   }
 }
@@ -159,13 +167,13 @@ var metadata = {
 	{
 		"stanza:key": "--togostanza-outline-width",
 		"stanza:type": "number",
-		"stanza:default": 300,
+		"stanza:default": 320,
 		"stanza:description": "Metastanza width in px"
 	},
 	{
 		"stanza:key": "--togostanza-outline-height",
 		"stanza:type": "number",
-		"stanza:default": 70,
+		"stanza:default": 110,
 		"stanza:description": "Metastanza height in px"
 	},
 	{
@@ -226,31 +234,9 @@ var metadata = {
 };
 
 var templates = [
-  ["stanza.html.hbs", {"1":function(container,depth0,helpers,partials,data,blockParams) {
-    var stack1, alias1=container.lambda, alias2=container.escapeExpression, lookupProperty = container.lookupProperty || function(parent, propertyName) {
-        if (Object.prototype.hasOwnProperty.call(parent, propertyName)) {
-          return parent[propertyName];
-        }
-        return undefined
-    };
-
-  return "    <svg id=\"scorecardSvg\" class=\"scorecard-svg\">\n      <text id=\"text\" x=\"50%\" y=\"50%\" text-anchor=\"middle\">\n        <tspan id=\"key\" x=\"50%\" y=\"16px\" font-size=\"16px\">\n          "
-    + alias2(alias1(((stack1 = blockParams[0][0]) != null ? lookupProperty(stack1,"titleText") : stack1), depth0))
-    + "\n        </tspan>\n        <tspan id=\"value\" x=\"50%\" y=\"48px\" font-size=\"32px\">\n          "
-    + alias2(alias1(((stack1 = blockParams[0][0]) != null ? lookupProperty(stack1,"scoreValue") : stack1), depth0))
-    + "\n        </tspan>\n      </text>\n    </svg>\n";
-},"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data,blockParams) {
-    var stack1, lookupProperty = container.lookupProperty || function(parent, propertyName) {
-        if (Object.prototype.hasOwnProperty.call(parent, propertyName)) {
-          return parent[propertyName];
-        }
-        return undefined
-    };
-
-  return "<div class=\"chart-wrapper\">\n"
-    + ((stack1 = lookupProperty(helpers,"each").call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? lookupProperty(depth0,"scorecards") : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 1, blockParams),"inverse":container.noop,"data":data,"blockParams":blockParams,"loc":{"start":{"line":2,"column":2},"end":{"line":13,"column":11}}})) != null ? stack1 : "")
-    + "</div>";
-},"useData":true,"useBlockParams":true}]
+  ["stanza.html.hbs", {"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data) {
+    return "<div id=\"scorecard\"></div>";
+},"useData":true}]
 ];
 
 const url = import.meta.url.replace(/\?.*$/, '');

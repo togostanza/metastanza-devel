@@ -1,4 +1,4 @@
-import { I as InternMap } from './ordinal-372d4ef5.js';
+import { I as InternMap } from './linear-13370298.js';
 import { a as array } from './array-80a7907a.js';
 import { c as constant } from './constant-c49047a5.js';
 
@@ -140,4 +140,4 @@ function stack() {
 }
 
 export { none as a, flatRollup as b, groups as c, index as d, indexes as e, flatGroup as f, group as g, rollups as h, identity as i, none$1 as n, rollup as r, stack as s };
-//# sourceMappingURL=stack-c4d483c7.js.map
+//# sourceMappingURL=stack-8c19205e.js.map

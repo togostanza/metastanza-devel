@@ -1,7 +1,9 @@
 import { S as Stanza, d as downloadSvgMenuItem, a as downloadPngMenuItem, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss, s as select, g as defineStanzaElement } from './index-b37241ec.js';
 import { l as loadData } from './load-data-0ddebadb.js';
+import { g as getMarginsFromCSSString } from './utils-1a48cc93.js';
+import { S as StanzaColorGenerator } from './ColorGenerator-8b50b614.js';
+import { o as ordinal, f as format, D as interpolate$1 } from './linear-13370298.js';
 import { s as stratify, h as hierarchy } from './stratify-7050dfd9.js';
-import { f as format, o as ordinal, a as interpolate$1 } from './ordinal-372d4ef5.js';
 import { m as max } from './max-2c042256.js';
 import { a as arc$2 } from './arc-b062fe01.js';
 import { s as sum } from './sum-44e7480e.js';
@@ -44,7 +46,7 @@ class Sunburst extends Stanza {
         if (key === "currentId") {
           updateId(getNodeById(value));
         }
-        return Reflect.set(...arguments);
+        return Reflect.set;
       },
       get: Reflect.get,
     });
@@ -65,28 +67,33 @@ class Sunburst extends Stanza {
     // get value of css vars
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
-    const width = this.params["width"];
-    const height = this.params["height"];
-    const colorScale = [];
+    const width = parseFloat(css("--togostanza-outline-width"));
+    const height = parseFloat(css("--togostanza-outline-height"));
+    const padding = getMarginsFromCSSString(
+      css("--togostanza-outline-padding")
+    );
 
-    const borderWidth = this.params["gap-width"] || 2;
-    const nodesGapWidth = this.params["nodes-gap-width"] || 8;
-    const cornerRadius = this.params["nodes-corner-radius"] || 0;
-    const showNumbers = this.params["show-numbers"];
-    let depthLim = +this.params["max-depth"] || 0;
-    const scalingMethod = this.params["scaling"];
+    const labelKey = this.params["node-label_key"];
+    const valueKey = this.params["node-value_key"];
+    const showNumbers = this.params["node-show_values"];
+    const borderWidth = this.params["node-levels_gap_width"] || 2;
+    const nodesGapWidth = this.params["node-gap_width"] || 8;
+    const cornerRadius = this.params["node-corner_radius"] || 0;
+    const scalingMethod = this.params["scaling"] || "By value";
+    let depthLim =
+      parseFloat(this.params["max_depth"]) > 0
+        ? parseFloat(this.params["max_depth"])
+        : 1;
 
     const data = await loadData(
       this.params["data-url"],
       this.params["data-type"],
       this.root.querySelector("main")
     );
-
     this._data = data;
 
-    for (let i = 0; i <= 5; i++) {
-      colorScale.push(`--togostanza-series-${i}-color`);
-    }
+    const colorScale = new StanzaColorGenerator(this).stanzaColor;
+    const color = ordinal(colorScale);
 
     this.renderTemplate({
       template: "stanza.html.hbs",
@@ -124,7 +131,9 @@ class Sunburst extends Stanza {
 
     const dataset = data.filter(
       (item) =>
-        (item.children && !item.n) || (item.n && item.n > 0) || item.id === "-1"
+        (item.children && !item[valueKey]) ||
+        (item[valueKey] && item[valueKey] > 0) ||
+        item.id === "-1"
     );
 
     const el = this.root.querySelector("#sunburst");
@@ -139,13 +148,11 @@ class Sunburst extends Stanza {
 
     const formatNumber = format(",d");
 
-    const color = ordinal(colorScale);
-
     const partition$1 = (data) => {
       const root = hierarchy(data);
       switch (scalingMethod) {
-        case "Natural":
-          root.sum((d) => d.data.n);
+        case "By value":
+          root.sum((d) => d.data[valueKey]);
           break;
         case "Equal children":
           root.sum((d) => (d.children ? 0 : 1));
@@ -163,7 +170,7 @@ class Sunburst extends Stanza {
       root
         .sort((a, b) => b.value - a.value)
         // store real values for number labels in d.value2
-        .each((d) => (d.value2 = sum(d, (dd) => dd.data.data.n)));
+        .each((d) => (d.value2 = sum(d, (dd) => dd.data.data[valueKey])));
       return partition().size([2 * Math.PI, root.height + 1])(root);
     };
 
@@ -237,6 +244,9 @@ class Sunburst extends Stanza {
     };
 
     function textFits(d, charWidth, text) {
+      if (!text || !text.length) {
+        return true;
+      }
       const deltaAngle = d.x1 - d.x0;
       const r = Math.max(0, ((d.y0 + d.y1) * radius) / 2);
       const perimeter = r * deltaAngle;
@@ -246,9 +256,15 @@ class Sunburst extends Stanza {
 
     const svg = select(el)
       .append("svg")
-      .style("width", width)
-      .style("height", height)
-      .attr("viewBox", `${-width / 2} ${-height / 2} ${width} ${height}`);
+      .attr("width", padding.LEFT + width + padding.RIGHT)
+      .attr("height", padding.TOP + height + padding.BOTTOM)
+      .attr(
+        "viewBox",
+        `${(-width - padding.LEFT) / 2}
+        ${(-height - padding.TOP) / 2}
+        ${width + padding.RIGHT}
+        ${height + padding.BOTTOM}`
+      );
 
     //Get character width
     const testText = svg
@@ -274,7 +290,7 @@ class Sunburst extends Stanza {
           return "none";
         }
 
-        return css(color(d.data.data.label));
+        return color(d.data.data.id);
       })
       .attr("fill-opacity", (d) =>
         arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0
@@ -289,7 +305,7 @@ class Sunburst extends Stanza {
     path.append("title").text((d) => {
       return `${d
         .ancestors()
-        .map((d) => d.data.data.label)
+        .map((d) => d.data.data[labelKey])
         .reverse()
         .join("/")}\n${formatNumber(d.value2)}`;
     });
@@ -332,12 +348,13 @@ class Sunburst extends Stanza {
       .join("text")
       .attr(
         "fill-opacity",
-        (d) => +(labelVisible(d) && textFits(d, CHAR_SPACE, d.data.data.label))
+        (d) =>
+          +(labelVisible(d) && textFits(d, CHAR_SPACE, d.data.data[labelKey]))
       )
       .append("textPath")
       .attr("startOffset", "50%")
       .attr("href", (_, i) => `#hiddenLabelArc${i}`)
-      .text((d) => d.data.data.label);
+      .text((d) => d.data.data[labelKey]);
 
     //Number labels
     const numLabels = g
@@ -352,7 +369,7 @@ class Sunburst extends Stanza {
         (d) =>
           +(
             labelVisible(d) &&
-            textFits(d, CHAR_SPACE, d.data.data.label) &&
+            textFits(d, CHAR_SPACE, d.data.data[labelKey]) &&
             showNumbers
           )
       )
@@ -425,8 +442,8 @@ class Sunburst extends Stanza {
           b = b.parent;
         }
 
-        return b.data?.data?.label
-          ? css(color(b.data.data.label))
+        return b.data?.data?.[labelKey]
+          ? color(b.data.data.id)
           : "rgba(0,0,0,0)";
       });
 
@@ -440,7 +457,7 @@ class Sunburst extends Stanza {
           (d) =>
             +(
               labelVisible(d.target) &&
-              textFits(d.target, CHAR_SPACE, d.data.data.label)
+              textFits(d.target, CHAR_SPACE, d.data.data[labelKey])
             )
         );
 
@@ -458,7 +475,7 @@ class Sunburst extends Stanza {
           (d) =>
             +(
               labelVisible(d.target) &&
-              textFits(d.target, CHAR_SPACE, d.data.data.label) &&
+              textFits(d.target, CHAR_SPACE, d.data.data[labelKey]) &&
               showNumbers
             )
         );
@@ -522,168 +539,150 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "scaling",
-		"stanza:type": "single-choice",
-		"stanza:choice": [
-			"Natural",
-			"Equal children",
-			"Equal parents"
-		],
-		"stanza:example": "Natural",
-		"stanza:description": "Scaling of nodes",
+		"stanza:key": "node-value_key",
+		"stanza:type": "text",
+		"stanza:example": "n",
+		"stanza:description": "Data key to use as a value",
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "max-depth",
-		"stanza:type": "number",
-		"stanza:example": 3,
-		"stanza:description": "Maximum depth to show",
-		"stanza:required": false
+		"stanza:key": "node-label_key",
+		"stanza:type": "text",
+		"stanza:example": "label",
+		"stanza:description": "Data key to use as a title"
 	},
 	{
-		"stanza:key": "show-numbers",
+		"stanza:key": "node-show_values",
 		"stanza:type": "boolean",
 		"stanza:example": true,
-		"stanza:description": "Show numbers under labels",
-		"stanza:required": false
+		"stanza:description": "Show numbers under labels"
 	},
 	{
-		"stanza:key": "gap-width",
+		"stanza:key": "node-levels_gap_width",
 		"stanza:type": "number",
 		"stanza:example": 2,
-		"stanza:description": "Gap between chart nodes levels, in px",
-		"stanza:required": false
+		"stanza:description": "Width of gap between different levels"
 	},
 	{
-		"stanza:key": "nodes-gap-width",
+		"stanza:key": "node-gap_width",
 		"stanza:type": "number",
 		"stanza:example": 8,
-		"stanza:description": "Gap between chart nodes that are on same level, unitless coefficient",
-		"stanza:required": false
+		"stanza:description": "Gap between chart nodes that are on same level, unitless coefficient"
 	},
 	{
-		"stanza:key": "nodes-corner-radius",
+		"stanza:key": "node-corner_radius",
 		"stanza:type": "number",
 		"stanza:example": 0,
-		"stanza:description": "Corner radius of nodes",
-		"stanza:required": false
+		"stanza:description": "Corner radius on a node"
 	},
 	{
-		"stanza:key": "custom_css_url",
+		"stanza:key": "scaling",
+		"stanza:type": "single-choice",
+		"stanza:choice": [
+			"By value",
+			"Equal children",
+			"Equal parents"
+		],
+		"stanza:example": "By value",
+		"stanza:description": "Scaling of the nodes"
+	},
+	{
+		"stanza:key": "max_depth",
+		"stanza:type": "number",
+		"stanza:example": 3,
+		"stanza:description": "Maximum depth to show"
+	},
+	{
+		"stanza:key": "togostanza-custom_css_url",
 		"stanza:example": "",
-		"stanza:description": "Stylesheet(css file) URL to override current style",
-		"stanza:required": false
-	},
-	{
-		"stanza:key": "width",
-		"stanza:type": "number",
-		"stanza:example": 400,
-		"stanza:description": "Width"
-	},
-	{
-		"stanza:key": "height",
-		"stanza:type": "number",
-		"stanza:example": 400,
-		"stanza:description": "Height"
+		"stanza:description": "Stylesheet(css file) URL to override current style"
 	}
 ],
 	"stanza:menu-placement": "bottom-right",
 	"stanza:style": [
 	{
-		"stanza:key": "--togostanza-background-color",
-		"stanza:type": "color",
-		"stanza:default": "#eeeeee",
-		"stanza:description": "Background color"
+		"stanza:key": "--togostanza-outline-width",
+		"stanza:type": "number",
+		"stanza:default": 400,
+		"stanza:description": "Outline width"
 	},
 	{
-		"stanza:key": "--togostanza-label-text-outline",
-		"stanza:type": "color",
-		"stanza:default": "rgba(0,0,0,0)",
-		"stanza:description": "Label text outline. 'rgba(0,0,0,0)' for no outline"
+		"stanza:key": "--togostanza-outline-height",
+		"stanza:type": "number",
+		"stanza:default": 400,
+		"stanza:description": "Outline height"
 	},
 	{
-		"stanza:key": "--togostanza-label-font-family",
+		"stanza:key": "--togostanza-outline-padding",
 		"stanza:type": "text",
-		"stanza:default": "Helvetica Neue",
-		"stanza:description": "Label font family"
+		"stanza:default": "20px",
+		"stanza:description": "Padding of a stanza. CSS padding-like text (10px 10px 10px 10px)"
 	},
 	{
-		"stanza:key": "--togostanza-label-font-color",
-		"stanza:type": "color",
-		"stanza:default": "#4E5059",
-		"stanza:description": "Label font color"
-	},
-	{
-		"stanza:key": "--togostanza-label-font-size",
-		"stanza:type": "string",
-		"stanza:default": "11px",
-		"stanza:description": "Label font size"
-	},
-	{
-		"stanza:key": "--togostanza-label-font-weight",
-		"stanza:type": "string",
-		"stanza:default": "normal",
-		"stanza:description": "Label font weight"
-	},
-	{
-		"stanza:key": "--togostanza-number-label-font-family",
-		"stanza:type": "text",
-		"stanza:default": "Helvetica Neue",
-		"stanza:description": "Number label font family"
-	},
-	{
-		"stanza:key": "--togostanza-number-label-font-color",
-		"stanza:type": "color",
-		"stanza:default": "#4E5059",
-		"stanza:description": "Number label font color"
-	},
-	{
-		"stanza:key": "--togostanza-number-label-font-size",
-		"stanza:type": "string",
-		"stanza:default": "7px",
-		"stanza:description": "Number label font size"
-	},
-	{
-		"stanza:key": "--togostanza-number-label-font-weight",
-		"stanza:type": "string",
-		"stanza:default": "normal",
-		"stanza:description": "Number label font weight"
-	},
-	{
-		"stanza:key": "--togostanza-series-0-color",
+		"stanza:key": "--togostanza-theme-series_0_color",
 		"stanza:type": "color",
 		"stanza:default": "#6590e6",
 		"stanza:description": "Color 1"
 	},
 	{
-		"stanza:key": "--togostanza-series-1-color",
+		"stanza:key": "--togostanza-theme-series_1_color",
 		"stanza:type": "color",
 		"stanza:default": "#3ac9b6",
 		"stanza:description": "Color 2"
 	},
 	{
-		"stanza:key": "--togostanza-series-2-color",
+		"stanza:key": "--togostanza-theme-series_2_color",
 		"stanza:type": "color",
 		"stanza:default": "#9ede2f",
 		"stanza:description": "Color 3"
 	},
 	{
-		"stanza:key": "--togostanza-series-3-color",
+		"stanza:key": "--togostanza-theme-series_3_color",
 		"stanza:type": "color",
 		"stanza:default": "#F5DA64",
 		"stanza:description": "Color 4"
 	},
 	{
-		"stanza:key": "--togostanza-series-4-color",
+		"stanza:key": "--togostanza-theme-series_4_color",
 		"stanza:type": "color",
 		"stanza:default": "#F57F5B",
 		"stanza:description": "Color 5"
 	},
 	{
-		"stanza:key": "--togostanza-series-5-color",
+		"stanza:key": "--togostanza-theme-series_5_color",
 		"stanza:type": "color",
 		"stanza:default": "#F75976",
 		"stanza:description": "Color 6"
+	},
+	{
+		"stanza:key": "--togostanza-theme-background_color",
+		"stanza:type": "color",
+		"stanza:default": "rgba(255,255,255,0)",
+		"stanza:description": "Background color"
+	},
+	{
+		"stanza:key": "--togostanza-fonts-font_family",
+		"stanza:type": "text",
+		"stanza:default": "Helvetica Neue",
+		"stanza:description": "Label font family"
+	},
+	{
+		"stanza:key": "--togostanza-fonts-font_color",
+		"stanza:type": "color",
+		"stanza:default": "#4E5059",
+		"stanza:description": "Label font color"
+	},
+	{
+		"stanza:key": "--togostanza-fonts-font_size_primary",
+		"stanza:type": "number",
+		"stanza:default": 11,
+		"stanza:description": "Label font size"
+	},
+	{
+		"stanza:key": "--togostanza-fonts-font_size_secondary",
+		"stanza:type": "number",
+		"stanza:default": 7,
+		"stanza:description": "Number label font size"
 	}
 ],
 	"stanza:incomingEvent": [

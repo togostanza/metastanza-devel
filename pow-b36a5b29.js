@@ -1,5 +1,4 @@
-import { t as transformer, c as copy, i as identity, b as linearish } from './linear-664f4f6c.js';
-import { i as initRange } from './ordinal-372d4ef5.js';
+import { t as transformer, c as copy, i as initRange, e as identity, g as linearish } from './linear-13370298.js';
 
 function transformPow(exponent) {
   return function(x) {
@@ -49,4 +48,4 @@ function sqrt() {
 }
 
 export { powish as a, pow as p, sqrt as s };
-//# sourceMappingURL=pow-9d3c1fd1.js.map
+//# sourceMappingURL=pow-b36a5b29.js.map

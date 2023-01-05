@@ -1,11 +1,10 @@
 import { S as Stanza, f as appendCustomCss, s as select, g as defineStanzaElement } from './index-b37241ec.js';
 import { l as loadData } from './load-data-0ddebadb.js';
-import { g as getStanzaInterpolateColor } from './ColorGenerator-8371282f.js';
-import { d as descending } from './linear-664f4f6c.js';
+import { g as getStanzaInterpolateColor } from './ColorGenerator-8b50b614.js';
+import { d as descending } from './linear-13370298.js';
 import { s as sum } from './sum-44e7480e.js';
 import { r as ribbonArrow, c as chordDirected } from './ribbon-368f465b.js';
 import { a as arc$2 } from './arc-b062fe01.js';
-import './ordinal-372d4ef5.js';
 import './path-f2817c20.js';
 import './constant-c49047a5.js';
 import './math-24162d65.js';

@@ -1,5 +1,4 @@
-import { t as transformer, c as copy, a as ticks } from './linear-664f4f6c.js';
-import { i as initRange, b as formatSpecifier, f as format } from './ordinal-372d4ef5.js';
+import { t as transformer, c as copy, i as initRange, a as ticks, b as formatSpecifier, f as format } from './linear-13370298.js';
 
 function nice(domain, interval) {
   domain = domain.slice();
@@ -156,4 +155,4 @@ function log() {
 }
 
 export { loggish as a, log as l, nice as n };
-//# sourceMappingURL=log-1efe83bd.js.map
+//# sourceMappingURL=log-4dfecd56.js.map

@@ -3885,7 +3885,7 @@ return (_ctx, _cache) => {
                 choices: param['stanza:choice'],
                 required: param['stanza:required'],
                 "help-text": param['stanza:description'],
-                label: params['stanza:label']
+                label: param['stanza:label']
               }, null, 8 /* PROPS */, ["input", "name", "type", "choices", "required", "help-text", "label"])
             ]))
           }), 128 /* KEYED_FRAGMENT */))
