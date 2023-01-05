@@ -50,13 +50,6 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "node-show_dropdown",
-      "stanza:type": "boolean",
-      "stanza:description": "Show node dropdown (neighbour nodes)",
-      "stanza:example": true,
-      "stanza:required": false
-    },
-    {
       "stanza:key": "root_node-label_text",
       "stanza:type": "string",
       "stanza:description": "Text to show on root node",
