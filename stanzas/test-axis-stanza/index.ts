@@ -1,8 +1,13 @@
 import Stanza from "togostanza/stanza";
 import * as d3 from "d3";
 import loadData from "togostanza-utils/load-data";
-import { z } from "zod";
-import { Axis, AxisParamsI } from "../../lib/AxisMixin";
+import {
+  Axis,
+  AxisParamsI,
+  AxisParamsModelT,
+  MarginsI,
+  paramsModel,
+} from "../../lib/AxisMixin";
 
 import { getMarginsFromCSSString } from "../../lib/utils";
 
@@ -31,14 +36,15 @@ class TestAxis extends Stanza {
   }
 
   async render() {
-    console.log(this.params);
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
     if (this.interval) {
       clearInterval(this.interval);
     }
 
-    const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
+    const MARGIN = getMarginsFromCSSString(
+      css("--togostanza-outline-padding")
+    ) as MarginsI;
 
     const width = 500;
     const height = 200;
@@ -49,44 +55,7 @@ class TestAxis extends Stanza {
       this.root.querySelector("main")
     );
 
-    const paramsModel = z
-      .object({
-        "axis-x-ticks_label_angle": z.number().min(-90).max(90).default(0),
-        "axis-y-ticks_label_angle": z.number().min(-90).max(90).default(0),
-        "axis-x-key": z.string(),
-        "axis-y-key": z.string(),
-        "axis-x-title_padding": z.number().default(0),
-        "axis-y-title_padding": z.number().default(0),
-        "axis-x-title": z.string(),
-        "axis-y-title": z.string(),
-        "axis-x-placement": z
-          .union([z.literal("top"), z.literal("bottom")])
-          .default("bottom"),
-        "axis-y-placement": z
-          .union([z.literal("left"), z.literal("right")])
-          .default("left"),
-        "axis-x-scale": z.union([
-          z.literal("linear"),
-          z.literal("log10"),
-          z.literal("time"),
-          z.literal("ordinal"),
-        ]),
-        "axis-y-scale": z.union([
-          z.literal("linear"),
-          z.literal("log10"),
-          z.literal("time"),
-          z.literal("ordinal"),
-        ]),
-        "axis-x-gridlines_interval": z.number().optional(),
-        "axis-y-gridlines_interval": z.number().optional(),
-        "axis-x-ticks_interval": z.number().optional(),
-        "axis-y-ticks_interval": z.number().optional(),
-        "axis-x-ticks_labels_format": z.string().optional(),
-        "axis-y-ticks_labels_format": z.string().optional(),
-      })
-      .passthrough();
-
-    let params: z.infer<typeof paramsModel>;
+    let params: AxisParamsModelT;
     try {
       params = paramsModel.parse(this.params);
     } catch (error) {
@@ -115,6 +84,7 @@ class TestAxis extends Stanza {
       scale: "time", //params["axis-x-scale"],
       gridInterval: params["axis-x-gridlines_interval"],
       ticksInterval: params["axis-x-ticks_interval"],
+      ticksIntervalUtins: params["axis-x-ticks_interval_units"],
       ticksLabelsFormat: params["axis-x-ticks_labels_format"],
     };
 
@@ -130,6 +100,7 @@ class TestAxis extends Stanza {
       scale: params["axis-y-scale"],
       gridInterval: params["axis-y-gridlines_interval"],
       ticksInterval: params["axis-y-ticks_interval"],
+      ticksIntervalUtins: params["axis-y-ticks_interval_units"],
       ticksLabelsFormat: params["axis-y-ticks_labels_format"],
     };
 

@@ -1,12 +1,64 @@
 import * as d3 from "d3";
+import { z } from "zod";
 
-enum AxisScaleE {
+export const ticksIntervalUnitsSchema = z
+  .union([
+    z.literal("second"),
+    z.literal("minute"),
+    z.literal("hour"),
+    z.literal("day"),
+    z.literal("week"),
+    z.literal("month"),
+    z.literal("year"),
+    z.literal("none"),
+  ])
+  .nullable()
+  .optional();
+
+export const scaleSchema = z.union([
+  z.literal("linear"),
+  z.literal("log10"),
+  z.literal("time"),
+  z.literal("ordinal"),
+]);
+
+export const paramsModel = z
+  .object({
+    "axis-x-ticks_label_angle": z.number().min(-90).max(90).default(0),
+    "axis-y-ticks_label_angle": z.number().min(-90).max(90).default(0),
+    "axis-x-title_padding": z.number().default(0),
+    "axis-y-title_padding": z.number().default(0),
+    "axis-x-title": z.string(),
+    "axis-y-title": z.string(),
+    "axis-x-placement": z
+      .union([z.literal("top"), z.literal("bottom")])
+      .default("bottom"),
+    "axis-y-placement": z
+      .union([z.literal("left"), z.literal("right")])
+      .default("left"),
+    "axis-x-scale": scaleSchema,
+    "axis-y-scale": scaleSchema,
+    "axis-x-gridlines_interval": z.number().optional(),
+    "axis-y-gridlines_interval": z.number().optional(),
+    "axis-x-ticks_interval": z.number().optional(),
+    "axis-x-ticks_interval_units": ticksIntervalUnitsSchema,
+    "axis-y-ticks_interval": z.number().optional(),
+    "axis-y-ticks_interval_units": ticksIntervalUnitsSchema,
+    "axis-x-ticks_labels_format": z.string().optional(),
+    "axis-y-ticks_labels_format": z.string().optional(),
+  })
+  .passthrough();
+
+export type AxisParamsModelT = z.infer<typeof paramsModel>;
+
+export enum AxisScaleE {
   linear = "linear",
   log10 = "log10",
   time = "time",
   ordinal = "ordinal",
 }
-enum AxisPlacementE {
+
+export enum AxisPlacementE {
   left = "left",
   right = "right",
   top = "top",
@@ -14,16 +66,16 @@ enum AxisPlacementE {
   default = "",
 }
 
-type AxisPlacementT = "left" | "right" | "top" | "bottom" | "";
+export type AxisPlacementT = "left" | "right" | "top" | "bottom" | "";
 
-interface MarginsI {
+export interface MarginsI {
   LEFT: number;
   RIGHT: number;
   TOP: number;
   BOTTOM: number;
 }
 
-type ScaleType = `${AxisScaleE}`;
+export type ScaleType = `${AxisScaleE}`;
 
 export interface AxisParamsI {
   domain: d3.AxisDomain[];
@@ -35,6 +87,7 @@ export interface AxisParamsI {
   tickLabelsAngle?: number;
   ticksLabelsMargin?: number;
   ticksInterval?: number;
+  ticksIntervalUtins?: TimeIntervalUnitsT;
   ticksLabelsFormat?: string;
   title?: string;
   titlePadding?: number;
@@ -56,6 +109,8 @@ const initialMargins: MarginsI = {
   RIGHT: 0,
 };
 
+type TimeIntervalUnitsT = z.infer<typeof ticksIntervalUnitsSchema>;
+
 const initialState: AxisParamsI = {
   domain: [],
   range: [],
@@ -66,6 +121,7 @@ const initialState: AxisParamsI = {
   tickLabelsAngle: 0,
   ticksLabelsMargin: 0,
   ticksInterval: 0,
+  ticksIntervalUtins: "none",
   title: "",
   ticksLabelsFormat: "%s",
   titlePadding: 0,
@@ -158,6 +214,8 @@ export class Axis {
         }
 
         return [];
+      } else if (this.params.scale === "time") {
+        return intervalMap[this.params.ticksIntervalUtins]().every(interval);
       }
     }
 
@@ -548,7 +606,11 @@ export class Axis {
     this._gridGen.tickFormat(() => "");
     this._gridGen.tickSize(this.tickSize);
     if (this.gridTickValues.length > 0) {
-      this._gridGen.tickValues(this.gridTickValues);
+      if (this.params.scale === "time") {
+        this._gridGen.ticks(this.gridTickValues);
+      } else {
+        this._gridGen.tickValues(this.gridTickValues as number[]);
+      }
     } else if (typeof this.params.gridInterval === "undefined") {
       // if not set, show automatically chosen 5 grid lines
       this._gridGen.tickValues(null).ticks(5);
@@ -560,7 +622,18 @@ export class Axis {
 
   private _updateTicks() {
     if (this.axisTickValues.length > 0) {
-      this._axisGen.tickValues(this.axisTickValues);
+      if (this.params.scale === "time") {
+        if (
+          this.params.ticksIntervalUtins &&
+          this.params.ticksIntervalUtins !== "none"
+        ) {
+          this._axisGen.ticks(this.axisTickValues);
+        } else {
+          this._axisGen.tickValues(null).ticks(5);
+        }
+      } else {
+        this._axisGen.tickValues(this.axisTickValues as number[]);
+      }
     } else if (typeof this.params.ticksInterval === "undefined") {
       this._axisGen.tickValues(null).ticks(5);
     } else {
@@ -678,3 +751,13 @@ function formatPower(x) {
   if (e !== Math.floor(e)) return; // Ignore non-exact power of ten.
   return `10${(e + "").replace(/./g, (c) => "⁰¹²³⁴⁵⁶⁷⁸⁹"[c] || "⁻")}`;
 }
+
+const intervalMap = {
+  second: () => d3.utcSecond,
+  minute: () => d3.utcMinute,
+  hour: () => d3.utcHour,
+  day: () => d3.utcDay,
+  week: () => d3.utcWeek,
+  month: () => d3.utcMonth,
+  year: () => d3.utcYear,
+};
