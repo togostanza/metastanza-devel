@@ -48,6 +48,10 @@ export const paramsModel = z
     "axis-y-ticks_interval_units": timeIntervalUnitsSchema,
     "axis-x-ticks_labels_format": z.string().optional(),
     "axis-y-ticks_labels_format": z.string().optional(),
+    "axis-x-range_min": z.number().optional(),
+    "axis-y-range_min": z.number().optional(),
+    "axis-x-range_max": z.number().optional(),
+    "axis-y-range_max": z.number().optional(),
   })
   .passthrough();
 
@@ -248,12 +252,6 @@ export class Axis {
     };
   }
 
-  private get scaleType() {
-    if (this.params.scale === "ordinal") {
-      return "ordinal";
-    } else return "quantitaive";
-  }
-
   private get ticksLabelsFormatter() {
     if (this.params.scale === "time") {
       return d3.timeFormat(this.params.ticksLabelsFormat || "%b %d %I %p");
@@ -261,7 +259,7 @@ export class Axis {
     if (this.params.scale !== "ordinal") {
       return d3.format(this.params.ticksLabelsFormat);
     }
-    return (val) => val;
+    return (val: string) => val;
   }
 
   private get gridTickValues() {
@@ -366,6 +364,8 @@ export class Axis {
     this._axisG = this._g.append("g").classed("axis", true);
 
     this._gridG = this._g.append("g").classed("grid-lines", true);
+
+    this._gridG.attr("opacity", 0.1);
 
     this._titleG = this._g.append("g").classed("title-conatiner", true);
 
@@ -588,6 +588,7 @@ export class Axis {
 
     this._axisG = this._g.append("g").classed("axis", true);
     this._gridG = this._g.append("g").classed("grid-lines", true);
+    this._gridG.attr("opacity", 0.1);
 
     this._updateTicks();
     this._updateGrid();
