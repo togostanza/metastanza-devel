@@ -36,33 +36,33 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "node-show_borders",
-      "stanza:type": "boolean",
-      "stanza:example": false,
-      "stanza:description": "Show border between nodes"
+      "stanza:key": "node-value_key",
+      "stanza:example": "size",
+      "stanza:description": "Key for data attribute to display as value"
     },
     {
-      "stanza:key": "node-content_alignment",
+      "stanza:key": "node-value_alignment",
       "stanza:type": "single-choice",
       "stanza:choice": ["vertical", "horizontal"],
       "stanza:example": "horizontal",
       "stanza:description": "Set alignment of node content"
     },
     {
-      "stanza:key": "node-value-show",
+      "stanza:key": "node-value_fallback",
+      "stanza:example": "no data",
+      "stanza:description": "Message in case there is no data for data set by [node-value-key]"
+    },
+    {
+      "stanza:key": "node-show_borders",
+      "stanza:type": "boolean",
+      "stanza:example": false,
+      "stanza:description": "Show border between nodes"
+    },
+    {
+      "stanza:key": "node-value_show",
       "stanza:type": "boolean",
       "stanza:example": true,
       "stanza:description": "Show value set by [node-value-key] in tree and suggestions"
-    },
-    {
-      "stanza:key": "node-value-key",
-      "stanza:example": "n",
-      "stanza:description": "Key for data attribute to display as value"
-    },
-    {
-      "stanza:key": "node-value-fallback",
-      "stanza:example": "no data",
-      "stanza:description": "Message in case there is no data for data set by [node-value-key]"
     },
     {
       "stanza:key": "search-key",

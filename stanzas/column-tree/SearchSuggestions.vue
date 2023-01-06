@@ -7,7 +7,7 @@
         :class="{ '-with-border': nodeShowBorders }"
         @click="$emit('selectNode', node)"
       >
-        <span class="label" :class="`-${nodeContentAlignment}`">
+        <span class="label" :class="`-${nodeValueAlignment}`">
           <strong class="title">{{ node[keys.label] }}</strong>
           <span v-if="valueObj.show" class="value">
             {{ node[keys.value] ?? valueObj.fallback }}
@@ -57,7 +57,7 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    nodeContentAlignment: {
+    nodeValueAlignment: {
       type: String,
       default: "horizontal",
     },

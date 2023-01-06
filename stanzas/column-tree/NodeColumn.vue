@@ -20,7 +20,7 @@
 
       <span
         class="label"
-        :class="`-${nodeContentAlignment}`"
+        :class="`-${nodeValueAlignment}`"
         @click="hasChildren(node.children) ? setParent(node.id) : null"
       >
         <strong class="title">
@@ -82,7 +82,7 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    nodeContentAlignment: {
+    nodeValueAlignment: {
       type: String,
       default: "horizontal",
     },

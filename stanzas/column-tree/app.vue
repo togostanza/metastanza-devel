@@ -20,7 +20,7 @@
         :keys="state.keys"
         :value-obj="valueObj"
         :node-show-borders="state.nodeShowBorders"
-        :node-content-alignment="state.nodeContentAlignment"
+        :node-value-alignment="state.nodeValueAlignment"
         @select-node="selectNode"
       />
     </div>
@@ -37,7 +37,7 @@
         :highlighted-node="state.highligthedNodes[index]"
         :value-obj="valueObj"
         :node-show-borders="state.nodeShowBorders"
-        :node-content-alignment="state.nodeContentAlignment"
+        :node-value-alignment="state.nodeValueAlignment"
         @set-parent="updatePartialColumnData"
         @set-checked-node="updateCheckedNodes"
       />
@@ -102,7 +102,7 @@ export default defineComponent({
       nodeValueShow: params?.nodeValueShow?.value,
       searchShowPath: params?.searchShowPath?.value,
       nodeShowBorders: params?.nodeShowBorders?.value,
-      nodeContentAlignment: params?.nodeContentAlignment?.value,
+      nodeValueAlignment: params?.nodeValueAlignment?.value,
       showSuggestions: false,
       responseJSON: [],
       columnData: [],
