@@ -188,6 +188,12 @@ const proxyfy = (init: object, callbackMap: Map<string, (val) => void>) => {
   });
 };
 
+/**
+ * Creates a new Axis instance
+ * @example <caption>Example usage</caption>
+ * this.xAxis = new Axis(this.root.querySelector("svg"))
+ * this.xAxis.update(xAxisParams)
+ */
 export class Axis {
   params: AxisParamsI;
   _svg: SVGSVGElement;
@@ -345,6 +351,10 @@ export class Axis {
     return this._width - this.params.margins.LEFT - this.params.margins.RIGHT;
   }
 
+  /**
+   * Updates params of an axis
+   * @param params - params to update
+   */
   update(params: Partial<AxisParamsI>) {
     this.params = { ...this.params, ...params };
   }
@@ -756,7 +766,7 @@ function getTitleTranslate(placement: AxisParamsI["placement"]): string {
   }
 }
 
-export function formatPower(x) {
+export function formatPower(x: number) {
   const e = Math.log10(x);
   if (e !== Math.floor(e)) return; // Ignore non-exact power of ten.
   return `10${(e + "").replace(/./g, (c) => "⁰¹²³⁴⁵⁶⁷⁸⁹"[c] || "⁻")}`;
