@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import { z } from "zod";
 
-export const ticksIntervalUnitsSchema = z
+export const timeIntervalUnitsSchema = z
   .union([
     z.literal("second"),
     z.literal("minute"),
@@ -39,11 +39,13 @@ export const paramsModel = z
     "axis-x-scale": scaleSchema,
     "axis-y-scale": scaleSchema,
     "axis-x-gridlines_interval": z.number().optional(),
+    "axis-x-gridlines_interval_units": timeIntervalUnitsSchema,
     "axis-y-gridlines_interval": z.number().optional(),
+    "axis-y-gridlines_interval_units": timeIntervalUnitsSchema,
     "axis-x-ticks_interval": z.number().optional(),
-    "axis-x-ticks_interval_units": ticksIntervalUnitsSchema,
+    "axis-x-ticks_interval_units": timeIntervalUnitsSchema,
     "axis-y-ticks_interval": z.number().optional(),
-    "axis-y-ticks_interval_units": ticksIntervalUnitsSchema,
+    "axis-y-ticks_interval_units": timeIntervalUnitsSchema,
     "axis-x-ticks_labels_format": z.string().optional(),
     "axis-y-ticks_labels_format": z.string().optional(),
   })
@@ -87,11 +89,12 @@ export interface AxisParamsI {
   tickLabelsAngle?: number;
   ticksLabelsMargin?: number;
   ticksInterval?: number;
-  ticksIntervalUtins?: TimeIntervalUnitsT;
+  ticksIntervalUnits?: TimeIntervalUnitsT;
   ticksLabelsFormat?: string;
   title?: string;
   titlePadding?: number;
   gridInterval?: number;
+  gridIntervalUnits: TimeIntervalUnitsT;
 }
 
 type d3Selection = d3.Selection<SVGElement, any, any, any>;
@@ -109,7 +112,7 @@ const initialMargins: MarginsI = {
   RIGHT: 0,
 };
 
-type TimeIntervalUnitsT = z.infer<typeof ticksIntervalUnitsSchema>;
+type TimeIntervalUnitsT = z.infer<typeof timeIntervalUnitsSchema>;
 
 const initialState: AxisParamsI = {
   domain: [],
@@ -121,11 +124,12 @@ const initialState: AxisParamsI = {
   tickLabelsAngle: 0,
   ticksLabelsMargin: 0,
   ticksInterval: 0,
-  ticksIntervalUtins: "none",
+  ticksIntervalUnits: "none",
   title: "",
   ticksLabelsFormat: "%s",
   titlePadding: 0,
   gridInterval: 0,
+  gridIntervalUnits: "none",
 };
 
 const proxyfy = (init: object, callbackMap: Map<string, (val) => void>) => {
@@ -198,7 +202,7 @@ export class Axis {
   _axisLength: number;
   _tickTextXY: { x: string; y: string };
 
-  private _getTickValues(interval: number) {
+  private _getTickValues(interval: number, ticksOrGrid: "ticks" | "grid") {
     if (interval) {
       if (this.params.scale === "linear" || this.params.scale === "log10") {
         const domain = this.params.domain as number[];
@@ -215,7 +219,15 @@ export class Axis {
 
         return [];
       } else if (this.params.scale === "time") {
-        return intervalMap[this.params.ticksIntervalUtins]().every(interval);
+        switch (ticksOrGrid) {
+          case "ticks":
+            return intervalMap[this.params.ticksIntervalUnits]().every(
+              interval
+            );
+
+          case "grid":
+            return intervalMap[this.params.gridIntervalUnits]().every(interval);
+        }
       }
     }
 
@@ -253,10 +265,10 @@ export class Axis {
   }
 
   private get gridTickValues() {
-    return this._getTickValues(this.params.gridInterval);
+    return this._getTickValues(this.params.gridInterval, "grid");
   }
   private get axisTickValues() {
-    return this._getTickValues(this.params.ticksInterval);
+    return this._getTickValues(this.params.ticksInterval, "ticks");
   }
 
   constructor(svg: SVGSVGElement) {
@@ -265,21 +277,6 @@ export class Axis {
 
     this._width = svg.getBoundingClientRect().width;
     this._height = svg.getBoundingClientRect().height;
-
-    // this._axisScale = getScale(AxisScaleE.linear);
-    // this._axisScale.domain([0, 1]);
-    // this._axisScale.range([0, this.WIDTH]);
-
-    // this._axisGen = getAxisGen(AxisPlacementE.bottom)(
-    //   this._axisScale as d3.AxisScale<d3.AxisDomain>
-    // );
-
-    // this._gridGen = getAxisGen(AxisPlacementE.bottom)(
-    //   this._axisScale as d3.AxisScale<d3.AxisDomain>
-    // );
-
-    // this._gridGen.tickFormat(() => "");
-    // this._gridGen.tickSize(-this.HEIGHT);
 
     this._init();
 
@@ -533,7 +530,6 @@ export class Axis {
   }
 
   private _handleScaleUpdate(newScale: ScaleType) {
-    console.log("scale update", newScale);
     this._axisScale = getScale(newScale);
     this._axisScale.domain(this.params.domain);
 
@@ -605,39 +601,52 @@ export class Axis {
   private _updateGrid() {
     this._gridGen.tickFormat(() => "");
     this._gridGen.tickSize(this.tickSize);
-    if (this.gridTickValues.length > 0) {
-      if (this.params.scale === "time") {
-        this._gridGen.ticks(this.gridTickValues);
-      } else {
-        this._gridGen.tickValues(this.gridTickValues as number[]);
-      }
-    } else if (typeof this.params.gridInterval === "undefined") {
-      // if not set, show automatically chosen 5 grid lines
-      this._gridGen.tickValues(null).ticks(5);
-    } else {
-      // else hide all grid lines
-      this._gridGen.tickValues([]);
+    switch (this.params.gridInterval) {
+      case 0:
+        this._gridGen.tickValues([]);
+        break;
+      case undefined:
+        this._gridGen.tickValues(null).ticks(5);
+        break;
+      default:
+        if (this.params.scale === "time") {
+          if (
+            this.params.gridInterval &&
+            this.params.gridIntervalUnits !== "none"
+          ) {
+            this._gridGen.ticks(this.gridTickValues);
+          } else {
+            this._gridGen.tickValues(null).ticks(5);
+          }
+        } else {
+          this._gridGen.tickValues(this.gridTickValues as number[]);
+        }
+        break;
     }
   }
 
   private _updateTicks() {
-    if (this.axisTickValues.length > 0) {
-      if (this.params.scale === "time") {
-        if (
-          this.params.ticksIntervalUtins &&
-          this.params.ticksIntervalUtins !== "none"
-        ) {
-          this._axisGen.ticks(this.axisTickValues);
+    switch (this.params.ticksInterval) {
+      case 0:
+        this._axisGen.tickValues([]);
+        break;
+      case undefined:
+        this._axisGen.tickValues(null).ticks(5);
+        break;
+      default:
+        if (this.params.scale === "time") {
+          if (
+            this.params.ticksIntervalUnits &&
+            this.params.ticksIntervalUnits !== "none"
+          ) {
+            this._axisGen.ticks(this.axisTickValues);
+          } else {
+            this._axisGen.tickValues(null).ticks(5);
+          }
         } else {
-          this._axisGen.tickValues(null).ticks(5);
+          this._axisGen.tickValues(this.axisTickValues as number[]);
         }
-      } else {
-        this._axisGen.tickValues(this.axisTickValues as number[]);
-      }
-    } else if (typeof this.params.ticksInterval === "undefined") {
-      this._axisGen.tickValues(null).ticks(5);
-    } else {
-      this._axisGen.tickValues([]);
+        break;
     }
   }
 
@@ -746,13 +755,13 @@ function getTitleTranslate(placement: AxisParamsI["placement"]): string {
   }
 }
 
-function formatPower(x) {
+export function formatPower(x) {
   const e = Math.log10(x);
   if (e !== Math.floor(e)) return; // Ignore non-exact power of ten.
   return `10${(e + "").replace(/./g, (c) => "⁰¹²³⁴⁵⁶⁷⁸⁹"[c] || "⁻")}`;
 }
 
-const intervalMap = {
+export const intervalMap = {
   second: () => d3.utcSecond,
   minute: () => d3.utcMinute,
   hour: () => d3.utcHour,

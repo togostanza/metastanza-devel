@@ -122,6 +122,24 @@
       "stanza:required": false
     },
     {
+      "stanza:key": "axis-x-gridlines_interval_units",
+      "stanza:type": "single-choice",
+      "stanza:choice": [
+        "none",
+        "year",
+        "month",
+        "week",
+        "day",
+        "hour",
+        "minute",
+        "second"
+      ],
+      "stanza:example": "none",
+      "stanza:default": "none",
+      "stanza:description": "Axis gridlines interval units (in case of time scale)",
+      "stanza:required": false
+    },
+    {
       "stanza:key": "axis-y-placement",
       "stanza:type": "single-choice",
       "stanza:choice": ["left", "right"],
@@ -200,6 +218,24 @@
       "stanza:example": null,
       "stanza:computed": true,
       "stanza:description": "Axis gridlines interval. If not set, show gridlines at axis ticks values, if set to 0, not show gridlines.",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "axis-y-gridlines_interval_units",
+      "stanza:type": "single-choice",
+      "stanza:choice": [
+        "none",
+        "year",
+        "month",
+        "week",
+        "day",
+        "hour",
+        "minute",
+        "second"
+      ],
+      "stanza:example": "none",
+      "stanza:default": "none",
+      "stanza:description": "Axis gridlines interval units (in case of time scale)",
       "stanza:required": false
     }
   ],

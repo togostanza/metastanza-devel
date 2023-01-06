@@ -83,8 +83,9 @@ class TestAxis extends Stanza {
       titlePadding: params["axis-x-title_padding"],
       scale: "time", //params["axis-x-scale"],
       gridInterval: params["axis-x-gridlines_interval"],
+      gridIntervalUnits: params["axis-x-gridlines_interval_units"],
       ticksInterval: params["axis-x-ticks_interval"],
-      ticksIntervalUtins: params["axis-x-ticks_interval_units"],
+      ticksIntervalUnits: params["axis-x-ticks_interval_units"],
       ticksLabelsFormat: params["axis-x-ticks_labels_format"],
     };
 
@@ -99,8 +100,9 @@ class TestAxis extends Stanza {
       titlePadding: params["axis-y-title_padding"],
       scale: params["axis-y-scale"],
       gridInterval: params["axis-y-gridlines_interval"],
+      gridIntervalUnits: params["axis-x-gridlines_interval_units"],
       ticksInterval: params["axis-y-ticks_interval"],
-      ticksIntervalUtins: params["axis-y-ticks_interval_units"],
+      ticksIntervalUnits: params["axis-y-ticks_interval_units"],
       ticksLabelsFormat: params["axis-y-ticks_labels_format"],
     };
 
