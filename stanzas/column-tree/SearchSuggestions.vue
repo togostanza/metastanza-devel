@@ -13,9 +13,6 @@
             {{ node[keys.value] ?? valueObj.fallback }}
           </span>
         </span>
-        <span v-if="searchShowPath" class="value">
-          {{ getShowingPath(node.path) }}
-        </span>
       </li>
       <li v-if="data.length < 1" class="no-results">
         {{ valueObj.fallback }}
@@ -25,15 +22,11 @@
 </template>
 
 <script>
-import { defineComponent, toRefs } from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   props: {
     showSuggestions: {
-      type: Boolean,
-      default: false,
-    },
-    searchShowPath: {
       type: Boolean,
       default: false,
     },
@@ -63,17 +56,5 @@ export default defineComponent({
     },
   },
   emits: ["selectNode"],
-  setup(params) {
-    params = toRefs(params);
-
-    function getShowingPath(pathArray) {
-      // pathArray.join("/").length < 200 ?
-      return "Transcript variant/ ... / ... / Coding var... ";
-    }
-
-    return {
-      getShowingPath,
-    };
-  },
 });
 </script>

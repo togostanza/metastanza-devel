@@ -7,14 +7,13 @@
       <input
         v-model="state.searchTerm"
         type="text"
-        placeholder="Search for keywords or path*"
+        placeholder="Search for keywords"
         class="search"
         @focus="toggleSuggestionsIfValid"
         @input="toggleSuggestionsIfValid"
       />
       <search-suggestions
         :show-suggestions="state.showSuggestions"
-        :search-show-path="state.searchShowPath"
         :search-input="state.searchTerm"
         :data="suggestions"
         :keys="state.keys"
@@ -100,7 +99,6 @@ export default defineComponent({
       },
       fallbackInCaseOfNoValue: params?.nodeValueFallback.value,
       nodeValueShow: params?.nodeValueShow?.value,
-      searchShowPath: params?.searchShowPath?.value,
       nodeShowBorders: params?.nodeShowBorders?.value,
       nodeValueAlignment: params?.nodeValueAlignment?.value,
       showSuggestions: false,
