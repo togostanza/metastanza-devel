@@ -126,6 +126,12 @@
       "stanza:description": "Background color for single column"
     },
     {
+      "stanza:key": "--togostanza-column-node_delimiter_width",
+      "stanza:type": "number",
+      "stanza:default": 0,
+      "stanza:description": "Border color between nodes"
+    },
+    {
       "stanza:key": "--togostanza-column-border_color",
       "stanza:type": "color",
       "stanza:default": "#D9D9D9",
@@ -160,12 +166,6 @@
       "stanza:type": "number",
       "stanza:default": 6,
       "stanza:description": "Horizontal padding for nodes"
-    },
-    {
-      "stanza:key": "--togostanza-node-borders_color",
-      "stanza:type": "color",
-      "stanza:default": "rgba(255,255,255,0)",
-      "stanza:description": "Border color between nodes"
     },
     {
       "stanza:key": "--togostanza-node-border_radius",
