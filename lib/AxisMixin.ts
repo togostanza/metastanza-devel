@@ -339,6 +339,10 @@ export class Axis {
     this._updateGrid();
 
     this._gridG.call(this._gridGen.bind(this));
+
+    this._gridG.selectAll(".tick text").classed("zero-line", (d) => {
+      return d === 0;
+    });
   }
 
   private _handleTicksIntervalUpdate() {
