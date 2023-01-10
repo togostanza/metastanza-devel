@@ -11,6 +11,7 @@
         },
         '-with-border',
       ]"
+      @click="hasChildren(node.children) ? setParent(node.id) : null"
     >
       <input
         type="checkbox"
@@ -18,11 +19,7 @@
         @input="setCheckedNode(node)"
       />
 
-      <span
-        class="label"
-        :class="`-${nodeValueAlignment}`"
-        @click="hasChildren(node.children) ? setParent(node.id) : null"
-      >
+      <span class="label" :class="`-${nodeValueAlignment}`">
         <strong class="title">
           {{ node[keys.label] }}
         </strong>
