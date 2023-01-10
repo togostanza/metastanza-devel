@@ -1,11 +1,14 @@
 import Stanza from "togostanza/stanza";
 import * as d3 from "d3";
+import { appendCustomCss } from "togostanza-utils";
 import loadData from "togostanza-utils/load-data";
 
 import { getStanzaInterpolateColor } from "@/lib/ColorGenerator";
 
 export default class ChordDiagram extends Stanza {
   async render() {
+    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
+
     // geometry
     // window.getComputedStyle(this.element).getPropertyValue('--width')
     const [width, height] = [this.params["width"], this.params["height"]];
