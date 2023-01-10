@@ -53,12 +53,6 @@
       "stanza:description": "Message in case there is no data for data set by [node-value-key]"
     },
     {
-      "stanza:key": "node-show_borders",
-      "stanza:type": "boolean",
-      "stanza:example": false,
-      "stanza:description": "Show border between nodes"
-    },
-    {
       "stanza:key": "node-value_show",
       "stanza:type": "boolean",
       "stanza:example": true,
@@ -172,6 +166,12 @@
       "stanza:type": "number",
       "stanza:default": 6,
       "stanza:description": "Horizontal padding for nodes"
+    },
+    {
+      "stanza:key": "--togostanza-node-borders_color",
+      "stanza:type": "color",
+      "stanza:default": "rgba(255,255,255,0)",
+      "stanza:description": "Border color between nodes"
     },
     {
       "stanza:key": "--togostanza-node-border_radius",

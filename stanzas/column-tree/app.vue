@@ -18,7 +18,6 @@
         :data="suggestions"
         :keys="state.keys"
         :value-obj="valueObj"
-        :node-show-borders="state.nodeShowBorders"
         :node-value-alignment="state.nodeValueAlignment"
         @select-node="selectNode"
       />
@@ -35,7 +34,6 @@
         :keys="state.keys"
         :highlighted-node="state.highligthedNodes[index]"
         :value-obj="valueObj"
-        :node-show-borders="state.nodeShowBorders"
         :node-value-alignment="state.nodeValueAlignment"
         @set-parent="updatePartialColumnData"
         @set-checked-node="updateCheckedNodes"
@@ -99,7 +97,6 @@ export default defineComponent({
       },
       fallbackInCaseOfNoValue: params?.nodeValueFallback.value,
       nodeValueShow: params?.nodeValueShow?.value,
-      nodeShowBorders: params?.nodeShowBorders?.value,
       nodeValueAlignment: params?.nodeValueAlignment?.value,
       showSuggestions: false,
       responseJSON: [],
