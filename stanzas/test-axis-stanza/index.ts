@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import loadData from "togostanza-utils/load-data";
 import {
   Axis,
+  AxisAreaT,
   AxisParamsI,
   AxisParamsModelT,
   MarginsI,
@@ -43,11 +44,11 @@ class TestAxis extends Stanza {
     }
 
     const MARGIN = getMarginsFromCSSString(
-      css("--togostanza-outline-padding")
+      css("--togostanza-canvas-padding")
     ) as MarginsI;
 
-    const width = 500;
-    const height = 200;
+    const width = +css("--togostanza-canvas-width");
+    const height = +css("--togostanza-canvas-height");
 
     this._data = await loadData(
       this.params["data-url"],
@@ -72,16 +73,18 @@ class TestAxis extends Stanza {
 
     svg.attr("width", width).attr("height", height);
 
+    const axisArea: AxisAreaT = { x: 100, y: 120, width: 200, height: 130 };
+
     const xParams: AxisParamsI = {
       placement: params["axis-x-placement"],
       domain: [new Date(2000, 0, 1), new Date(2000, 0, 2)],
-      range: [0, width],
+      drawArea: axisArea,
       showTicks: !params["axis-x-ticks_hide"],
       margins: MARGIN,
       tickLabelsAngle: params["axis-x-ticks_label_angle"],
       title: params["axis-x-title"],
       titlePadding: params["axis-x-title_padding"],
-      scale: "time", //params["axis-x-scale"],
+      scale: params["axis-x-scale"],
       gridInterval: params["axis-x-gridlines_interval"],
       gridIntervalUnits: params["axis-x-gridlines_interval_units"],
       ticksInterval: params["axis-x-ticks_interval"],
@@ -91,8 +94,8 @@ class TestAxis extends Stanza {
 
     const yParams: AxisParamsI = {
       placement: params["axis-y-placement"],
-      domain: [0.01, 100],
-      range: [0, width],
+      domain: [0.01, 3],
+      drawArea: axisArea,
       showTicks: !params["axis-y-ticks_hide"],
       margins: MARGIN,
       tickLabelsAngle: params["axis-y-ticks_label_angle"],

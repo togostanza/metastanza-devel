@@ -272,46 +272,22 @@
       "stanza:description": "Secondary font size"
     },
     {
-      "stanza:key": "--togostanza-outline-width",
-      "stanza:type": "text",
-      "stanza:default": "600px",
+      "stanza:key": "--togostanza-canvas-width",
+      "stanza:type": "number",
+      "stanza:default": 600,
       "stanza:description": "Togostanza element width"
     },
     {
-      "stanza:key": "--togostanza-outline-height",
-      "stanza:type": "text",
-      "stanza:default": "400px",
+      "stanza:key": "--togostanza-canvas-height",
+      "stanza:type": "number",
+      "stanza:default": 400,
       "stanza:description": "Togostanza element height"
     },
     {
-      "stanza:key": "--togostanza-outline-padding",
+      "stanza:key": "--togostanza-canvas-padding",
       "stanza:type": "text",
       "stanza:default": "30px",
       "stanza:description": "Togostanza element inner padding"
-    },
-    {
-      "stanza:key": "--togostanza-border-color",
-      "stanza:type": "color",
-      "stanza:default": "#4E5059",
-      "stanza:description": "Border color for everything that have a border"
-    },
-    {
-      "stanza:key": "--togostanza-border-width",
-      "stanza:type": "number",
-      "stanza:default": 0.5,
-      "stanza:description": "Border width"
-    },
-    {
-      "stanza:key": "--togostanza-axis-stroke_width",
-      "stanza:type": "number",
-      "stanza:default": 1,
-      "stanza:description": "Axis width"
-    },
-    {
-      "stanza:key": "--togostanza-error_bars-opacity",
-      "stanza:type": "number",
-      "stanza:default": 0.5,
-      "stanza:description": "Error bar stroke opacity "
     }
   ]
 }

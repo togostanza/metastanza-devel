@@ -1,0 +1,10 @@
+// Load the repository-wide global style here. The actual file is located at ../common.scss for details.
+@use "@/common.scss";
+
+.tick > text {
+  font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+}
+
+text.title {
+  font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+}

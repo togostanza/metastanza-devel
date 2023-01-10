@@ -22,6 +22,15 @@ export const scaleSchema = z.union([
   z.literal("ordinal"),
 ]);
 
+export const axisArea = z.object({
+  x: z.number(),
+  y: z.number(),
+  width: z.number(),
+  height: z.number(),
+});
+
+export type AxisAreaT = z.infer<typeof axisArea>;
+
 export const paramsModel = z
   .object({
     "axis-x-ticks_label_angle": z.number().min(-90).max(90).default(0),
@@ -85,7 +94,8 @@ export type ScaleType = `${AxisScaleE}`;
 
 export interface AxisParamsI {
   domain: d3.AxisDomain[];
-  range: number[];
+  // range: number[];
+  drawArea: AxisAreaT;
   margins?: MarginsI;
   showTicks?: boolean;
   scale?: ScaleType;
@@ -120,7 +130,8 @@ type TimeIntervalUnitsT = z.infer<typeof timeIntervalUnitsSchema>;
 
 const initialState: AxisParamsI = {
   domain: [],
-  range: [],
+  // range: [],
+  drawArea: { x: 0, y: 0, width: 0, height: 0 },
   margins: initialMargins,
   showTicks: true,
   scale: AxisScaleE.linear,
@@ -141,7 +152,7 @@ const proxyfy = (init: object, callbackMap: Map<string, (val) => void>) => {
     set(target: object, key: string, val: Partial<AxisParamsI>) {
       if (key === "params") {
         const oldParams: Partial<AxisParamsI> = target[key];
-        // process scale change first
+
         if (val.scale) {
           target[key] = val;
           callbackMap.get("scale")(val.scale);
@@ -149,6 +160,10 @@ const proxyfy = (init: object, callbackMap: Map<string, (val) => void>) => {
         if (val.margins) {
           target[key] = val;
           callbackMap.get("margins")(val.margins);
+        }
+        if (val.drawArea) {
+          target[key] = val;
+          callbackMap.get("drawArea")(val.drawArea);
         }
         Object.entries(val)
           .filter(([key]) => key !== "scale" && key !== "margins")
@@ -196,7 +211,7 @@ const proxyfy = (init: object, callbackMap: Map<string, (val) => void>) => {
  */
 export class Axis {
   params: AxisParamsI;
-  _svg: SVGSVGElement;
+  _svg: SVGSVGElement | SVGGElement;
   _g: d3Selection;
   _gridG: d3Selection;
   _axisG: d3Selection;
@@ -275,7 +290,7 @@ export class Axis {
     return this._getTickValues(this.params.ticksInterval, "ticks");
   }
 
-  constructor(svg: SVGSVGElement) {
+  constructor(svg: SVGSVGElement | SVGGElement) {
     this._svg = svg;
     this.params = initialState;
 
@@ -311,7 +326,13 @@ export class Axis {
       "ticksLabelsFormat",
       this._handleTicksLabelsFormatUpdate.bind(this)
     );
+    this.callbackMap.set("drawArea", this._handleDrawAreaUpdate.bind(this));
     return proxyfy(this, this.callbackMap) as Axis;
+  }
+
+  private _handleDrawAreaUpdate(newDrawArea: AxisAreaT) {
+    this._width = newDrawArea.width;
+    this._height = newDrawArea.height;
   }
 
   private _handleGridIntervalUpdate() {
@@ -543,7 +564,7 @@ export class Axis {
     this._axisScale = getScale(newScale);
     this._axisScale.domain(this.params.domain);
 
-    this._axisScale.range(this.params.range);
+    this._axisScale.range([0, 10]);
     this._axisGen = getAxisGen(this.params.placement)(
       this._axisScale as d3.AxisScale<d3.AxisDomain>
     );
@@ -674,27 +695,31 @@ export class Axis {
   private _calcAxisMargins() {
     switch (this.params.placement) {
       case "bottom":
-        this._axisMargin.LEFT = this.params.margins.LEFT;
-        this._axisMargin.TOP = this._height - this.params.margins.BOTTOM;
+        this._axisMargin.LEFT =
+          this.params.drawArea.x + this.params.margins.LEFT;
+        this._axisMargin.TOP =
+          this.params.drawArea.y + this._height - this.params.margins.BOTTOM;
         this._axisLength = this.WIDTH;
         this._axisScale.range([0, this._axisLength]);
         break;
       case "top":
-        this._axisMargin.LEFT = this.params.margins.LEFT;
-        this._axisMargin.TOP = this.params.margins.TOP;
+        this._axisMargin.LEFT =
+          this.params.drawArea.x + this.params.margins.LEFT;
+        this._axisMargin.TOP = this.params.drawArea.y + this.params.margins.TOP;
         this._axisLength = this.WIDTH;
         this._axisScale.range([0, this._axisLength]);
-
         break;
       case "left":
-        this._axisMargin.LEFT = this.params.margins.LEFT;
-        this._axisMargin.TOP = this.params.margins.TOP;
+        this._axisMargin.LEFT =
+          this.params.drawArea.x + this.params.margins.LEFT;
+        this._axisMargin.TOP = this.params.drawArea.y + this.params.margins.TOP;
         this._axisLength = this.HEIGHT;
         this._axisScale.range([this._axisLength, 0]);
         break;
       case "right":
-        this._axisMargin.LEFT = this._width - this.params.margins.RIGHT;
-        this._axisMargin.TOP = this.params.margins.TOP;
+        this._axisMargin.LEFT =
+          this.params.drawArea.x + this._width - this.params.margins.RIGHT;
+        this._axisMargin.TOP = this.params.drawArea.y + this.params.margins.TOP;
         this._axisLength = this.HEIGHT;
         this._axisScale.range([this._axisLength, 0]);
         break;
