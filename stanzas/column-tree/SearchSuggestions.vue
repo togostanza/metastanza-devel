@@ -9,7 +9,7 @@
       >
         <span class="label" :class="`-${nodeValueAlignment}`">
           <strong class="title">{{ node[keys.label] }}</strong>
-          <span v-if="valueObj.show" class="value">
+          <span class="value">
             {{ node[keys.value] ?? valueObj.fallback }}
           </span>
         </span>

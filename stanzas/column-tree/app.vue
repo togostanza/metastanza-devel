@@ -96,7 +96,6 @@ export default defineComponent({
         value: params?.nodeValueKey?.value,
       },
       fallbackInCaseOfNoValue: params?.nodeValueFallback.value,
-      nodeValueShow: params?.nodeValueShow?.value,
       nodeValueAlignment: params?.nodeValueAlignment?.value,
       showSuggestions: false,
       responseJSON: [],
@@ -152,7 +151,6 @@ export default defineComponent({
     }
     const valueObj = computed(() => {
       return {
-        show: state.nodeValueShow,
         fallback: state.fallbackInCaseOfNoValue,
       };
     });
