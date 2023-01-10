@@ -29,12 +29,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "custom_css_url",
-      "stanza:example": "",
-      "stanza:description": "Stylesheet(css file) URL to override current style",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "node-key",
       "stanza:type": "string",
       "stanza:description": "Key of node unique id",
@@ -81,6 +75,12 @@
       "stanza:type": "boolean",
       "stanza:description": "Show copy path button",
       "stanza:example": false,
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "togostanza-custom_css_url",
+      "stanza:example": "",
+      "stanza:description": "Stylesheet(css file) URL to override current style",
       "stanza:required": false
     }
   ],

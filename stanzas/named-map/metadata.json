@@ -83,6 +83,12 @@
       "stanza:choice": ["true", "false"],
       "stanza:example": "false",
       "stanza:description": "Format data as percentage"
+    },
+    {
+      "stanza:key": "togostanza-custom_css_url",
+      "stanza:type": "text",
+      "stanza:example": "",
+      "stanza:description": "custom css to apply"
     }
   ],
   "stanza:menu-placement": "bottom-right",

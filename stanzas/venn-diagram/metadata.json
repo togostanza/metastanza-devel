@@ -30,17 +30,17 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "custom_css_url",
-      "stanza:example": "",
-      "stanza:description": "Stylesheet(css file) URL to override current style",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "color-blend",
       "stanza:type": "single-choice",
       "stanza:choice": ["normal", "multiply", "screen"],
       "stanza:example": "screen",
       "stanza:description": "How to mix colors in overlapping areas"
+    },
+    {
+      "stanza:key": "togostanza-custom_css_url",
+      "stanza:example": "",
+      "stanza:description": "Stylesheet(css file) URL to override current style",
+      "stanza:required": false
     }
   ],
   "stanza:menu-placement": "bottom-right",

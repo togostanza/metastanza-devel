@@ -4,7 +4,6 @@ Use following data format to vizualize the graph in this stanza:
 
 ```json
 [
-
   {
     "id": 1,
     "name": "A",
