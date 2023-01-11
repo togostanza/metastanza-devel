@@ -409,10 +409,18 @@ export class Axis {
    */
   private get ticksLabelsFormatter() {
     if (this.params.scale === "time") {
-      return d3.timeFormat(this.params.ticksLabelsFormat || "%b %d %I %p");
+      try {
+        return d3.timeFormat(this.params.ticksLabelsFormat || "%b %d %I %p");
+      } catch (error) {
+        return d3.timeFormat("%b %d %I %p");
+      }
     }
     if (this.params.scale !== "ordinal") {
-      return d3.format(this.params.ticksLabelsFormat);
+      try {
+        return d3.format(this.params.ticksLabelsFormat);
+      } catch (error) {
+        return d3.format(null);
+      }
     }
     return (val: string) => val;
   }

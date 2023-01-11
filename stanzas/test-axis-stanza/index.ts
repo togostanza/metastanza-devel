@@ -83,7 +83,7 @@ class TestAxis extends Stanza {
       tickLabelsAngle: params["axis-x-ticks_label_angle"],
       title: params["axis-x-title"],
       titlePadding: params["axis-x-title_padding"],
-      scale: "ordinal", // params["axis-x-scale"],
+      scale: params["axis-x-scale"],
       gridInterval: params["axis-x-gridlines_interval"],
       gridIntervalUnits: params["axis-x-gridlines_interval_units"],
       ticksInterval: params["axis-x-ticks_interval"],
@@ -127,11 +127,53 @@ class TestAxis extends Stanza {
     }
 
     this.interval = setInterval(() => {
-      const domain = getRandomDomain(Math.floor(Math.random() * 15));
+      let domain = [];
+
+      switch (xParams.scale) {
+        case "ordinal":
+          domain = getRandomDomain(Math.floor(Math.random() * 15));
+          break;
+        case "time":
+          domain = [
+            new Date(
+              2000,
+              Math.floor(Math.random() * 11),
+              Math.floor(Math.random() * 30)
+            ),
+            new Date(
+              2000,
+              Math.floor(Math.random() * 11),
+              Math.floor(Math.random() * 30)
+            ),
+          ];
+
+          domain.sort((a, b) => a - b);
+          break;
+
+        case "linear":
+          let sign1 = 1;
+          let sign2 = 1;
+          if (Math.random() > 0.5) {
+            sign1 = -1;
+          }
+          if (Math.random() > 0.5) {
+            sign1 = -1;
+          }
+          domain = [
+            sign1 * Math.random() * 10,
+            sign2 * Math.random() * 10,
+          ].sort((a, b) => a - b);
+
+          break;
+        case "log10":
+          domain = [0.01, Math.random() * 10000];
+          break;
+        default:
+          break;
+      }
 
       this.xAxisGen.update({
         domain,
-        scale: "ordinal",
       });
       this.yAxisGen.update({ domain: [0.01, Math.random() * 100] });
     }, 1000);
