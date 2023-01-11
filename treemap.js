@@ -645,7 +645,7 @@ var metadata = {
 	{
 		"stanza:key": "node-value_key",
 		"stanza:type": "text",
-		"stanza:example": "n",
+		"stanza:example": "size",
 		"stanza:description": "Node value key"
 	},
 	{
