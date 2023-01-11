@@ -25,10 +25,6 @@ svg text {
   font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
 }
 
-main {
-  padding: var(--togostanza-outline-padding);
-}
-
 textPath {
   pointer-events: none;
   dominant-baseline: middle;
