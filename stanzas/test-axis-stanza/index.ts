@@ -77,7 +77,7 @@ class TestAxis extends Stanza {
 
     const xParams: AxisParamsI = {
       placement: params["axis-x-placement"],
-      domain: [1, 100],
+      domain: [-10, 100],
       drawArea: axisArea,
       margins: MARGIN,
       tickLabelsAngle: params["axis-x-ticks_label_angle"],
@@ -126,57 +126,57 @@ class TestAxis extends Stanza {
       return alphabet.slice(0, n - 1);
     }
 
-    this.interval = setInterval(() => {
-      let domain = [];
+    // this.interval = setInterval(() => {
+    //   let domain = [];
 
-      switch (xParams.scale) {
-        case "ordinal":
-          domain = getRandomDomain(Math.floor(Math.random() * 15));
-          break;
-        case "time":
-          domain = [
-            new Date(
-              2000,
-              Math.floor(Math.random() * 11),
-              Math.floor(Math.random() * 30)
-            ),
-            new Date(
-              2000,
-              Math.floor(Math.random() * 11),
-              Math.floor(Math.random() * 30)
-            ),
-          ];
+    //   switch (xParams.scale) {
+    //     case "ordinal":
+    //       domain = getRandomDomain(Math.floor(Math.random() * 15));
+    //       break;
+    //     case "time":
+    //       domain = [
+    //         new Date(
+    //           2000,
+    //           Math.floor(Math.random() * 11),
+    //           Math.floor(Math.random() * 30)
+    //         ),
+    //         new Date(
+    //           2000,
+    //           Math.floor(Math.random() * 11),
+    //           Math.floor(Math.random() * 30)
+    //         ),
+    //       ];
 
-          domain.sort((a, b) => a - b);
-          break;
+    //       domain.sort((a, b) => a - b);
+    //       break;
 
-        case "linear":
-          let sign1 = 1;
-          let sign2 = 1;
-          if (Math.random() > 0.5) {
-            sign1 = -1;
-          }
-          if (Math.random() > 0.5) {
-            sign1 = -1;
-          }
-          domain = [
-            sign1 * Math.random() * 10,
-            sign2 * Math.random() * 10,
-          ].sort((a, b) => a - b);
+    //     case "linear":
+    //       let sign1 = 1;
+    //       let sign2 = 1;
+    //       if (Math.random() > 0.5) {
+    //         sign1 = -1;
+    //       }
+    //       if (Math.random() > 0.5) {
+    //         sign1 = -1;
+    //       }
+    //       domain = [
+    //         sign1 * Math.random() * 10,
+    //         sign2 * Math.random() * 10,
+    //       ].sort((a, b) => a - b);
 
-          break;
-        case "log10":
-          domain = [0.01, Math.random() * 10000];
-          break;
-        default:
-          break;
-      }
+    //       break;
+    //     case "log10":
+    //       domain = [0.01, Math.random() * 10000];
+    //       break;
+    //     default:
+    //       break;
+    //   }
 
-      this.xAxisGen.update({
-        domain,
-      });
-      this.yAxisGen.update({ domain: [0.01, Math.random() * 100] });
-    }, 1000);
+    //   this.xAxisGen.update({
+    //     domain,
+    //   });
+    //   this.yAxisGen.update({ domain: [0.01, Math.random() * 100] });
+    // }, 1000);
   }
 }
 

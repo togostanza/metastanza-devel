@@ -8,3 +8,8 @@
 text.title {
   font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
 }
+
+line.zero-line {
+  stroke-width: calc(var(--togostanza-axis-zero_line_width) * 1px);
+  stroke: var(--togostanza-axis-zero_line_color);
+}

@@ -226,12 +226,6 @@
   "stanza:menu-placement": "bottom-right",
   "stanza:style": [
     {
-      "stanza:key": "--togostanza-theme-background_color",
-      "stanza:type": "color",
-      "stanza:default": "",
-      "stanza:description": "Background color"
-    },
-    {
       "stanza:key": "--togostanza-fonts-font_family",
       "stanza:type": "text",
       "stanza:default": "Helvetica Neue",
@@ -272,6 +266,18 @@
       "stanza:type": "text",
       "stanza:default": "30px",
       "stanza:description": "Togostanza element inner padding"
+    },
+    {
+      "stanza:key": "--togostanza-axis-zero_line_color",
+      "stanza:type": "color",
+      "stanza:default": "#FF0000",
+      "stanza:description": "Axis zero gridline color"
+    },
+    {
+      "stanza:key": "--togostanza-axis-zero_line_width",
+      "stanza:type": "number",
+      "stanza:default": 2,
+      "stanza:description": "Axis zero gridline width in px"
     }
   ]
 }
