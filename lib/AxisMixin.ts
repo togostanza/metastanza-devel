@@ -94,10 +94,8 @@ export type ScaleType = `${AxisScaleE}`;
 
 export interface AxisParamsI {
   domain: d3.AxisDomain[];
-  // range: number[];
   drawArea: AxisAreaT;
   margins?: MarginsI;
-  showTicks?: boolean;
   scale?: ScaleType;
   placement?: AxisPlacementT;
   tickLabelsAngle?: number;
@@ -130,10 +128,8 @@ type TimeIntervalUnitsT = z.infer<typeof timeIntervalUnitsSchema>;
 
 const initialState: AxisParamsI = {
   domain: [],
-  // range: [],
   drawArea: { x: 0, y: 0, width: 0, height: 0 },
   margins: initialMargins,
-  showTicks: true,
   scale: AxisScaleE.linear,
   placement: AxisPlacementE.default,
   tickLabelsAngle: 0,
@@ -204,94 +200,81 @@ const proxyfy = (init: object, callbackMap: Map<string, (val) => void>) => {
 };
 
 /**
+ *
  * Creates a new Axis instance
  * @example <caption>Example usage</caption>
- * this.xAxis = new Axis(this.root.querySelector("svg"))
- * this.xAxis.update(xAxisParams)
+ *  this.xAxis = new Axis(this.root.querySelector("svg"))
+ *  this.xAxis.update(xAxisParams)
+ *
+ * @author PENQE.Inc (Anton Zhuravlev)
+ *
  */
 export class Axis {
+  /** Axis reactive params object */
   params: AxisParamsI;
+  /** SVG element to where to render the Axis */
   _svg: SVGSVGElement | SVGGElement;
+  /** d3.Selection of the Axis */
   _g: d3Selection;
+  /** d3.Selection with grid svg g */
   _gridG: d3Selection;
+  /** d3.Selection with axis svg g (without title) */
   _axisG: d3Selection;
+  /** d3.Selection with axis title container svg g */
   _titleG: d3Selection;
+  /** d3.Selection with axis title svg text */
   _titleText: d3Selection;
+  /** Axis container paddings */
   _axisMargin: MarginsI = { LEFT: 0, TOP: 0, BOTTOM: 0, RIGHT: 0 };
+  /** Height of the axis box */
   _height: number;
+  /** Width of the axis box */
   _width: number;
+  /** Callback Map for every param */
   callbackMap: Map<keyof AxisParamsI, (val) => void>;
+  /** d3.scale instance */
   _axisScale: GetScaleT;
+  /** d3.axis generator instance */
   _axisGen: d3.Axis<d3.AxisDomain>;
+  /** d3.axis generator instance for grid lines */
   _gridGen: d3.Axis<d3.AxisDomain>;
+  /** Axis length in px, after all paddings calculations */
   _axisLength: number;
   _tickTextXY: { x: string; y: string };
 
-  private _getTickValues(interval: number, ticksOrGrid: "ticks" | "grid") {
-    if (interval) {
-      if (this.params.scale === "linear" || this.params.scale === "log10") {
-        const domain = this.params.domain as number[];
-        const domainSize = Math.abs(domain[0] - domain[1]);
-
-        const intervalsCount = Math.floor(domainSize / interval);
-
-        if (intervalsCount !== 0) {
-          const tickValues = [...Array(intervalsCount + 1)]
-            .slice(1)
-            .map((_, i) => Math.min(...domain) + (i + 1) * interval);
-          return tickValues;
-        }
-
-        return [];
-      } else if (this.params.scale === "time") {
-        switch (ticksOrGrid) {
-          case "ticks":
-            return intervalMap[this.params.ticksIntervalUnits]().every(
-              interval
-            );
-
-          case "grid":
-            return intervalMap[this.params.gridIntervalUnits]().every(interval);
-        }
-      }
-    }
-
-    return [];
+  /**
+   * Updates params of the axis
+   * @param {Object} params - updated params object
+   */
+  update(params: Partial<AxisParamsI>): void {
+    this.params = { ...this.params, ...params };
   }
 
-  private get tickTextXY() {
-    const tick = this._axisG.select(".tick")?.select("text");
-    if (tick.empty()) {
-      return {
-        x: "0",
-        y: "0",
-      };
-    }
-    return {
-      x: tick.attr("x") || "0",
-      y: tick.attr("y") || "0",
-    };
+  /**
+   * Returns d3.scale instance used in the Axis
+   */
+  public get scale() {
+    return this._axisGen.scale;
   }
 
-  private get ticksLabelsFormatter() {
-    if (this.params.scale === "time") {
-      return d3.timeFormat(this.params.ticksLabelsFormat || "%b %d %I %p");
-    }
-    if (this.params.scale !== "ordinal") {
-      return d3.format(this.params.ticksLabelsFormat);
-    }
-    return (val: string) => val;
+  /**
+   * Returns d3.axis instance used in the Axis
+   */
+  public get axisGen() {
+    return this._axisGen;
   }
 
-  private get gridTickValues() {
-    return this._getTickValues(this.params.gridInterval, "grid");
-  }
-  private get axisTickValues() {
-    return this._getTickValues(this.params.ticksInterval, "ticks");
+  /**
+   * Returns d3.Selection with the Axis, including axis's title
+   */
+  public get axisGroupSelection() {
+    return this._g;
   }
 
   constructor(svg: SVGSVGElement | SVGGElement) {
+    /** @readonly */
     this._svg = svg;
+
     this.params = initialState;
 
     this._width = svg.getBoundingClientRect().width;
@@ -307,7 +290,6 @@ export class Axis {
       "titlePadding",
       this._handleTitlePaddingUpdate.bind(this)
     );
-    this.callbackMap.set("showTicks", this._handleShowTicksUpdate.bind(this));
     this.callbackMap.set("margins", this._handleMarginsUpdate.bind(this));
     this.callbackMap.set(
       "tickLabelsAngle",
@@ -330,6 +312,119 @@ export class Axis {
     return proxyfy(this, this.callbackMap) as Axis;
   }
 
+  private _init() {
+    const svg = d3.select(this._svg);
+    this._g = svg.append("g").classed("axis-container", true);
+
+    this._axisG = this._g.append("g").classed("axis", true);
+
+    this._gridG = this._g.append("g").classed("grid-lines", true);
+
+    this._gridG.attr("opacity", 0.1);
+
+    this._titleG = this._g.append("g").classed("title-conatiner", true);
+
+    this._titleText = this._titleG
+      .append("text")
+      .classed("title", true)
+      .attr("text-anchor", "middle");
+  }
+
+  /** Gets tick values to display
+   * @param {number} interval - interval of ticks / gridlines
+   * @param {string} ticksOrGrid - "grid" for grid lines interval, "ticks" for ticks's
+   */
+  private _getTickValues(interval: number, ticksOrGrid: "ticks" | "grid") {
+    if (interval) {
+      if (this.params.scale === "linear" || this.params.scale === "log10") {
+        const domain = this.params.domain as number[];
+        const domainSize = Math.abs(domain[0] - domain[1]);
+
+        const intervalsCount = Math.floor(domainSize / interval);
+
+        if (intervalsCount !== 0) {
+          const tickValues = [...Array(intervalsCount + 1)]
+            .slice(1)
+            .map((_, i) => Math.min(...domain) + (i + 1) * interval);
+          return tickValues;
+        }
+
+        return [];
+      } else if (this.params.scale === "ordinal") {
+        const domain = this.params.domain as any[];
+
+        const tickValues = domain.filter((_, i) => {
+          return i % interval === 0;
+        });
+
+        return tickValues;
+      } else if (this.params.scale === "time") {
+        switch (ticksOrGrid) {
+          case "ticks":
+            return intervalMap[this.params.ticksIntervalUnits]().every(
+              interval
+            );
+
+          case "grid":
+            return intervalMap[this.params.gridIntervalUnits]().every(interval);
+        }
+      }
+    }
+
+    return [];
+  }
+
+  /**
+   * Gets tick x and y
+   */
+  private get tickTextXY() {
+    const tick = this._axisG.select(".tick")?.select("text");
+    if (tick.empty()) {
+      return {
+        x: "0",
+        y: "0",
+      };
+    }
+    return {
+      x: tick.attr("x") || "0",
+      y: tick.attr("y") || "0",
+    };
+  }
+
+  /**
+   * Gets tick size for grid line axis generator
+   */
+  private get gridTickSize() {
+    if (
+      this.params.placement === AxisPlacementE.bottom ||
+      this.params.placement === AxisPlacementE.top
+    ) {
+      return -this.HEIGHT;
+    }
+    return -this.WIDTH;
+  }
+
+  /**
+   * Get d3.format tick label formatter
+   */
+  private get ticksLabelsFormatter() {
+    if (this.params.scale === "time") {
+      return d3.timeFormat(this.params.ticksLabelsFormat || "%b %d %I %p");
+    }
+    if (this.params.scale !== "ordinal") {
+      return d3.format(this.params.ticksLabelsFormat);
+    }
+    return (val: string) => val;
+  }
+
+  private get gridTickValues() {
+    return this._getTickValues(this.params.gridInterval, "grid");
+  }
+
+  private get axisTickValues() {
+    return this._getTickValues(this.params.ticksInterval, "ticks");
+  }
+
   private _handleDrawAreaUpdate(newDrawArea: AxisAreaT) {
     this._width = newDrawArea.width;
     this._height = newDrawArea.height;
@@ -350,6 +445,9 @@ export class Axis {
     this._callDrawAxis();
   }
 
+  /**
+   * Redraw axis
+   */
   private _callDrawAxis() {
     this._axisG.call(this._axisGen.bind(this));
 
@@ -374,40 +472,6 @@ export class Axis {
   }
   private get WIDTH() {
     return this._width - this.params.margins.LEFT - this.params.margins.RIGHT;
-  }
-
-  /**
-   * Updates params of an axis
-   * @param params - params to update
-   */
-  update(params: Partial<AxisParamsI>) {
-    this.params = { ...this.params, ...params };
-  }
-
-  get scale() {
-    return this._axisGen.scale;
-  }
-
-  get axisGen() {
-    return this._axisGen;
-  }
-
-  private _init() {
-    const svg = d3.select(this._svg);
-    this._g = svg.append("g").classed("axis-container", true);
-
-    this._axisG = this._g.append("g").classed("axis", true);
-
-    this._gridG = this._g.append("g").classed("grid-lines", true);
-
-    this._gridG.attr("opacity", 0.1);
-
-    this._titleG = this._g.append("g").classed("title-conatiner", true);
-
-    this._titleText = this._titleG
-      .append("text")
-      .classed("title", true)
-      .attr("text-anchor", "middle");
   }
 
   private _handleMarginsUpdate() {
@@ -559,11 +623,6 @@ export class Axis {
       .attr("transform", `${translate || ""} rotate(${angle})`);
   }
 
-  private _handleShowTicksUpdate(showTicks: boolean) {
-    this._axisGen.tickSize(!showTicks ? 0 : 6);
-    this._callDrawAxis();
-  }
-
   private _handleScaleUpdate(newScale: ScaleType) {
     this._axisScale = getScale(newScale);
     this._axisScale.domain(this.params.domain);
@@ -588,18 +647,6 @@ export class Axis {
   private _handleTicksLabelsFormatUpdate() {
     this._axisGen.tickFormat(this.ticksLabelsFormatter);
     this._callDrawAxis();
-  }
-
-  private _getTicksFormat() {
-    switch (this.params.scale) {
-      case AxisScaleE.linear:
-        return this.ticksLabelsFormatter;
-      case AxisScaleE.log10:
-        return formatPower;
-
-      default:
-        return (value: d3.AxisDomain) => value.toString();
-    }
   }
 
   private _redrawAxis() {
@@ -636,7 +683,7 @@ export class Axis {
 
   private _updateGrid() {
     this._gridGen.tickFormat(() => "");
-    this._gridGen.tickSize(this.tickSize);
+    this._gridGen.tickSize(this.gridTickSize);
     switch (this.params.gridInterval) {
       case 0:
         this._gridGen.tickValues([]);
@@ -655,7 +702,7 @@ export class Axis {
             this._gridGen.tickValues(null).ticks(5);
           }
         } else {
-          this._gridGen.tickValues(this.gridTickValues as number[]);
+          this._gridGen.tickValues(this.gridTickValues);
         }
         break;
     }
@@ -680,20 +727,10 @@ export class Axis {
             this._axisGen.tickValues(null).ticks(5);
           }
         } else {
-          this._axisGen.tickValues(this.axisTickValues as number[]);
+          this._axisGen.tickValues(this.axisTickValues);
         }
         break;
     }
-  }
-
-  private get tickSize() {
-    if (
-      this.params.placement === AxisPlacementE.bottom ||
-      this.params.placement === AxisPlacementE.top
-    ) {
-      return -this.HEIGHT;
-    }
-    return -this.WIDTH;
   }
 
   private _calcAxisMargins() {
@@ -775,7 +812,7 @@ function getTitleBaseline(placement: AxisParamsI["placement"]): string {
     case "right":
       return "hanging";
     default:
-      return "hangong";
+      return "hanging";
   }
 }
 
@@ -795,6 +832,11 @@ function getTitleTranslate(placement: AxisParamsI["placement"]): string {
   }
 }
 
+/**
+ *
+ * @param x - tick value
+ * @returns string with nice 10^n (useful function to logScale, not used for now)
+ */
 export function formatPower(x: number) {
   const e = Math.log10(x);
   if (e !== Math.floor(e)) return; // Ignore non-exact power of ten.

@@ -84,7 +84,7 @@
       "stanza:type": "number",
       "stanza:example": null,
       "stanza:computed": true,
-      "stanza:description": "Axis ticks interval. if not set, show 5 ticks at automatically chosen values. If set to 0, hide all ticks. In case of `ordinal` scale, setting this parameter to any value will hide all ticks",
+      "stanza:description": "Axis ticks interval. If not set, in case of `continuous` scales, show 5 ticks at automatically chosen `neat` values, in case of `ordinal` scale, show ticks at all domain values. If set to 0, hide all ticks. In case of `ordinal` scale, setting this parameter will show only n-th ticks of the domain (i.e.: domain = ['a', 'b', 'c', 'd', 'e'], ticks_interval set to 2 will show ticks at 'a', 'c' and 'e')",
       "stanza:required": false
     },
     {
@@ -102,14 +102,14 @@
       ],
       "stanza:example": "none",
       "stanza:default": "none",
-      "stanza:description": "Axis ticks interval units",
+      "stanza:description": "Axis ticks interval units. (Effective only for time scale)",
       "stanza:required": false
     },
     {
       "stanza:key": "axis-x-ticks_labels_format",
       "stanza:type": "text",
       "stanza:example": "",
-      "stanza:description": "Axis ticks format, in d3.format or d3.timeFormat string form. In case of time scale, use d3.timeFormat format string (https://pubs.opengroup.org/onlinepubs/009695399/functions/strptime.html)",
+      "stanza:description": "Axis ticks format, in d3.format or d3.timeFormat string form (time scale). In case of time scale, use d3.timeFormat format string (https://pubs.opengroup.org/onlinepubs/009695399/functions/strptime.html), fallback value for time scale is '%b %d %I %p'. Have no effect in case of ordinal scale)",
       "stanza:required": false
     },
 
