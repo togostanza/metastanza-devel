@@ -77,7 +77,7 @@ class TestAxis extends Stanza {
 
     const xParams: AxisParamsI = {
       placement: params["axis-x-placement"],
-      domain: getRandomDomain(10),
+      domain: [1, 100],
       drawArea: axisArea,
       margins: MARGIN,
       tickLabelsAngle: params["axis-x-ticks_label_angle"],

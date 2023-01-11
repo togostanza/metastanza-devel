@@ -118,7 +118,7 @@
       "stanza:type": "number",
       "stanza:example": null,
       "stanza:computed": true,
-      "stanza:description": "Axis gridlines interval. If not set, show gridlines at axis ticks values, if set to 0, not show gridlines.",
+      "stanza:description": "Axis gridlines interval. If not set, show 5 gridlines at `neat` values, if set to 0, not show gridlines.",
       "stanza:required": false
     },
     {
@@ -136,7 +136,7 @@
       ],
       "stanza:example": "none",
       "stanza:default": "none",
-      "stanza:description": "Axis gridlines interval units (in case of time scale)",
+      "stanza:description": "Axis grid lines interval units. (Effective only for time scale)",
       "stanza:required": false
     },
     {
@@ -181,27 +181,11 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "axis-y-range_min",
-      "stanza:type": "number",
-      "stanza:example": null,
-      "stanza:computed": true,
-      "stanza:description": "Axis range min",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "axis-y-range_max",
-      "stanza:type": "number",
-      "stanza:example": null,
-      "stanza:computed": true,
-      "stanza:description": "Axis range max",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "axis-y-ticks_interval",
       "stanza:type": "number",
       "stanza:example": null,
       "stanza:computed": true,
-      "stanza:description": "Axis ticks interval. if not set, show 5 ticks at automatically chosen values. If set to 0, hide all ticks. In case of `ordinal` scale, setting this parameter to any value will hide all ticks",
+      "stanza:description": "Axis ticks interval. If not set, in case of `continuous` scales, show 5 ticks at automatically chosen `neat` values, in case of `ordinal` scale, show ticks at all domain values. If set to 0, hide all ticks. In case of `ordinal` scale, setting this parameter will show only n-th ticks of the domain (i.e.: domain = ['a', 'b', 'c', 'd', 'e'], ticks_interval set to 2 will show ticks at 'a', 'c' and 'e')",
       "stanza:required": false
     },
     {
@@ -217,7 +201,7 @@
       "stanza:type": "number",
       "stanza:example": null,
       "stanza:computed": true,
-      "stanza:description": "Axis gridlines interval. If not set, show gridlines at axis ticks values, if set to 0, not show gridlines.",
+      "stanza:description": "Axis gridlines interval. If not set, show 5 gridlines at `neat` values, if set to 0, not show gridlines.",
       "stanza:required": false
     },
     {
@@ -235,7 +219,7 @@
       ],
       "stanza:example": "none",
       "stanza:default": "none",
-      "stanza:description": "Axis gridlines interval units (in case of time scale)",
+      "stanza:description": "Axis grid lines interval units. (Effective only for time scale)",
       "stanza:required": false
     }
   ],

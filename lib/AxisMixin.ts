@@ -161,6 +161,7 @@ const proxyfy = (init: object, callbackMap: Map<string, (val) => void>) => {
           target[key] = val;
           callbackMap.get("drawArea")(val.drawArea);
         }
+
         Object.entries(val)
           .filter(([key]) => key !== "scale" && key !== "margins")
           .forEach(([pKey, pValue]) => {
@@ -342,7 +343,7 @@ export class Axis {
 
         const intervalsCount = Math.floor(domainSize / interval);
 
-        if (intervalsCount !== 0) {
+        if (intervalsCount !== 0 && !isNaN(intervalsCount)) {
           const tickValues = [...Array(intervalsCount + 1)]
             .slice(1)
             .map((_, i) => Math.min(...domain) + (i + 1) * interval);
@@ -419,10 +420,12 @@ export class Axis {
       try {
         return d3.format(this.params.ticksLabelsFormat);
       } catch (error) {
-        return d3.format(null);
+        return (val: string | number | Date | { toString(): string }) =>
+          val.toString();
       }
     }
-    return (val: string) => val;
+    return (val: string | number | Date | { toString(): string }) =>
+      val.toString();
   }
 
   private get gridTickValues() {
