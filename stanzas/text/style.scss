@@ -5,14 +5,12 @@
   box-sizing: border-box;
 }
 
-main {
-  padding: var(--togostanza-outline-padding);
-}
 .container {
   display: flex;
   flex-direction: column;
   width: calc(var(--togostanza-outline-width) * 1px);
   height: calc(var(--togostanza-outline-height) * 1px);
+  padding: var(--togostanza-outline-padding);
 
   table {
     display: block;
