@@ -7,20 +7,18 @@
       <input
         v-model="state.searchTerm"
         type="text"
-        placeholder="Search for keywords or path*"
+        placeholder="Search for keywords"
         class="search"
         @focus="toggleSuggestionsIfValid"
         @input="toggleSuggestionsIfValid"
       />
       <search-suggestions
         :show-suggestions="state.showSuggestions"
-        :search-show-path="state.searchShowPath"
         :search-input="state.searchTerm"
         :data="suggestions"
         :keys="state.keys"
         :value-obj="valueObj"
-        :node-show-borders="state.nodeShowBorders"
-        :node-content-alignment="state.nodeContentAlignment"
+        :node-value-alignment="state.nodeValueAlignment"
         @select-node="selectNode"
       />
     </div>
@@ -36,8 +34,7 @@
         :keys="state.keys"
         :highlighted-node="state.highligthedNodes[index]"
         :value-obj="valueObj"
-        :node-show-borders="state.nodeShowBorders"
-        :node-content-alignment="state.nodeContentAlignment"
+        :node-value-alignment="state.nodeValueAlignment"
         @set-parent="updatePartialColumnData"
         @set-checked-node="updateCheckedNodes"
       />
@@ -99,10 +96,7 @@ export default defineComponent({
         value: params?.nodeValueKey?.value,
       },
       fallbackInCaseOfNoValue: params?.nodeValueFallback.value,
-      nodeValueShow: params?.nodeValueShow?.value,
-      searchShowPath: params?.searchShowPath?.value,
-      nodeShowBorders: params?.nodeShowBorders?.value,
-      nodeContentAlignment: params?.nodeContentAlignment?.value,
+      nodeValueAlignment: params?.nodeValueAlignment?.value,
       showSuggestions: false,
       responseJSON: [],
       columnData: [],
@@ -123,6 +117,7 @@ export default defineComponent({
       const data = state.responseJSON || [];
       state.columnData[0] = data.filter((obj) => isRootNode(obj.parent));
     });
+
     function updateCheckedNodes(node) {
       const { id, ...obj } = node;
       state.checkedNodes.has(id)
@@ -156,7 +151,6 @@ export default defineComponent({
     }
     const valueObj = computed(() => {
       return {
-        show: state.nodeValueShow,
         fallback: state.fallbackInCaseOfNoValue,
       };
     });
@@ -176,11 +170,14 @@ export default defineComponent({
     }
     function getPath(node) {
       const path = [];
-      let parent = { id: node.id, label: node.label };
-      while (parent.id) {
+      let parent = { id: node.id, label: node.label, parent: node.parent };
+      path.push(parent);
+      while (parent.parent) {
+        const obj = params?.data?.value?.find((obj) => {
+          return obj.id === parent.parent;
+        });
+        parent = { id: obj?.id, label: obj?.label, parent: obj?.parent };
         path.push(parent);
-        const obj = state.responseJSON.find((obj) => obj.id === parent.id);
-        parent = { id: obj?.parent, label: obj?.label };
       }
       return path.reverse();
     }
@@ -197,7 +194,7 @@ export default defineComponent({
       if (state.searchTerm.includes("/")) {
         return state.responseJSON.filter(isPathSearchHit);
       }
-      return state.responseJSON.filter(isNormalSearchHit);
+      return state.responseJSON.filter(isNormalSearchHit); // array of nodes.
     });
     return {
       isValidSearchNode,

@@ -4,21 +4,14 @@
       <li
         v-for="(node, index) of data"
         :key="index"
-        :class="{ '-with-border': nodeShowBorders }"
+        :class="'-with-border'"
         @click="$emit('selectNode', node)"
       >
-        <span class="label" :class="`-${nodeContentAlignment}`">
+        <span class="label" :class="`-${nodeValueAlignment}`">
           <strong class="title">{{ node[keys.label] }}</strong>
-          <span v-if="valueObj.show" class="value">
+          <span class="value">
             {{ node[keys.value] ?? valueObj.fallback }}
           </span>
-        </span>
-        <span v-if="searchShowPath" class="value">
-          Path :
-          <ruby v-for="(item, pathIndex) of node.path" :key="pathIndex">
-            {{ item.label }}/<rp>(</rp><rt> {{ item.id }}</rt
-            ><rp>)</rp>
-          </ruby>
         </span>
       </li>
       <li v-if="data.length < 1" class="no-results">
@@ -34,10 +27,6 @@ import { defineComponent } from "vue";
 export default defineComponent({
   props: {
     showSuggestions: {
-      type: Boolean,
-      default: false,
-    },
-    searchShowPath: {
       type: Boolean,
       default: false,
     },
@@ -57,11 +46,7 @@ export default defineComponent({
       type: Object,
       required: true,
     },
-    nodeShowBorders: {
-      type: Boolean,
-      default: false,
-    },
-    nodeContentAlignment: {
+    nodeValueAlignment: {
       type: String,
       default: "horizontal",
     },
