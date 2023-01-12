@@ -259,7 +259,19 @@ export class Axis {
    * Returns d3.scale instance used in the Axis
    */
   public get scale() {
-    return this._axisGen.scale;
+    return this._axisScale;
+  }
+
+  /**
+   * Returns area BBox of the axis
+   */
+  public get axisArea() {
+    return {
+      x: this.params.drawArea.x + this.params.margins.LEFT,
+      y: this.params.drawArea.y + this.params.margins.TOP,
+      width: this.WIDTH,
+      height: this.HEIGHT,
+    };
   }
 
   /**
@@ -443,6 +455,16 @@ export class Axis {
   private _handleDrawAreaUpdate(newDrawArea: AxisAreaT) {
     this._width = newDrawArea.width;
     this._height = newDrawArea.height;
+
+    console.log(
+      "drawArea",
+      getTitleTranslate.call(this, this.params.placement)
+    );
+
+    this._titleG.attr(
+      "transform",
+      getTitleTranslate.call(this, this.params.placement)
+    );
   }
 
   private _handleGridIntervalUpdate() {
@@ -502,6 +524,8 @@ export class Axis {
       "transform",
       `translate(${this._axisMargin.LEFT}, ${this._axisMargin.TOP})`
     );
+    console.log("margins", getTitleTranslate.call(this, this.params.placement));
+
     this._titleG.attr(
       "transform",
       getTitleTranslate.call(this, this.params.placement)
@@ -531,6 +555,11 @@ export class Axis {
     );
 
     this._redrawAxis();
+
+    console.log(
+      "placement",
+      getTitleTranslate.call(this, this.params.placement)
+    );
 
     this._titleG.attr(
       "transform",
@@ -856,15 +885,16 @@ function getTitleBaseline(placement: AxisParamsI["placement"]): string {
 }
 
 function getTitleTranslate(placement: AxisParamsI["placement"]): string {
+  const translate = Math.round(this._axisLength / 2);
   switch (placement) {
     case "top":
-      return `translate(${this._axisLength / 2}, 0)`;
+      return `translate(${translate}, 0)`;
     case "bottom":
-      return `translate(${this._axisLength / 2}, 0)`;
+      return `translate(${translate}, 0)`;
     case "left":
-      return `translate(0, ${this._axisLength / 2})`;
+      return `translate(0, ${translate})`;
     case "right":
-      return `translate(0, ${this._axisLength / 2})`;
+      return `translate(0, ${translate})`;
 
     default:
       break;
