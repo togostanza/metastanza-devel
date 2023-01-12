@@ -1,8 +1,8 @@
-import { h as s, y, r as b, w, S as Stanza, f as appendCustomCss, g as defineStanzaElement } from './index-b37241ec.js';
+import { h as s, y, r as b, w, S as Stanza, f as appendCustomCss, g as defineStanzaElement } from './index-ec45d824.js';
 import { o } from './map-c0e24c36.js';
-import { a as applyConstructor } from './utils-1a48cc93.js';
-import { e, n } from './ref-3a8fb5e8.js';
-import { l as loadData } from './load-data-0ddebadb.js';
+import { a as applyConstructor } from './utils-95f80352.js';
+import { e, n } from './ref-3bab6ed0.js';
+import { l as loadData } from './load-data-f1dd0e29.js';
 import { F as FAIcons } from './index-461cb806.js';
 
 class Breadcrumbs extends s {
