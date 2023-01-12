@@ -165,6 +165,7 @@ export default class VennStanza extends Stanza {
       group.dataset.tooltip = `<strong>${labels.join("∩")}</strong>: ${count}`;
       group.dataset.tooltipHtml = true;
     });
+
     this.tooltip.setup(selectedDiagram.querySelectorAll("[data-tooltip]"));
 
     // legend

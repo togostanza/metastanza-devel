@@ -92,8 +92,7 @@ export default class Tree extends Stanza {
     const tooltipKey = this.params["tooltips-key"];
     const showToolTips =
       !!tooltipKey && values.some((item) => item[tooltipKey]);
-    this.tooltip = new ToolTip();
-    root.append(this.tooltip);
+    this.tooltip = new ToolTip(root);
 
     //Sorting by user keywords
     const orderSym = Symbol("order");

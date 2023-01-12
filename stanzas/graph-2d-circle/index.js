@@ -80,8 +80,7 @@ export default class ForceGraph extends Stanza {
       .attr("width", width)
       .attr("height", height);
 
-    this.tooltip = new ToolTip();
-    root.append(this.tooltip);
+    this.tooltip = new ToolTip(root);
 
     const nodesSortParams = {
       sortBy: this.params["nodes-sort-by"],

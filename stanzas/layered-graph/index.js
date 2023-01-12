@@ -86,8 +86,7 @@ export default class ForceGraph extends Stanza {
       .attr("width", width)
       .attr("height", height);
 
-    this.tooltip = new ToolTip();
-    root.append(this.tooltip);
+    this.tooltip = new ToolTip(root);
 
     const constRarius = !!this.params["group_planes-constant_radius"];
 

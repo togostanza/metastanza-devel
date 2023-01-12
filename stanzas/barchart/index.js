@@ -146,10 +146,7 @@ export default class Barchart extends Stanza {
 
     // Add legend
 
-    if (showLegend) {
-      this.legend = new Legend();
-      root.append(this.legend);
-    }
+    this.legend = new Legend(root);
 
     const values = await loadData(
       this.params["data-url"],
@@ -173,9 +170,8 @@ export default class Barchart extends Stanza {
 
     const showBarTooltips = values.some((d) => d[tooltipsKey]);
 
-    if (!this.tooltip && showBarTooltips) {
-      this.tooltip = new ToolTip();
-      root.append(this.tooltip);
+    if (showBarTooltips) {
+      this.tooltip = new ToolTip(root);
     }
 
     // Check data

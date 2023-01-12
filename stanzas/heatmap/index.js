@@ -31,10 +31,7 @@ export default class Heatmap extends Stanza {
   async render() {
     const root = this.root.querySelector("main");
 
-    if (!this.tooltip) {
-      this.tooltip = new ToolTip();
-      root.append(this.tooltip);
-    }
+    this.tooltip = new ToolTip(root);
 
     const legendShow = this.params["legend-show"];
     const existingLegend = this.root.querySelector("togostanza--legend");
@@ -43,8 +40,7 @@ export default class Heatmap extends Stanza {
     }
 
     if (legendShow === true) {
-      this.legend = new Legend();
-      root.append(this.legend);
+      this.legend = new Legend(root);
     }
 
     // Parameters
