@@ -1,10 +1,11 @@
 // Load the repository-wide global style here. The actual file is located at ../common.scss for details.
-@use '@/common.scss';
+@use "@/common.scss";
 
 // The following is just an example. Feel free to modify it.
 // --greeting-color and --greeting-align are style variables, which are defined in metadata.json.
 main {
-  font: calc(var(--font-size) * 1px) var(--togostanza-font-family);
+  font: calc(var(--togostanza-fonts-font_size_primary) * 1px)
+    var(--togostanza-fonts-font_family);
 }
 
 .fullsircle {

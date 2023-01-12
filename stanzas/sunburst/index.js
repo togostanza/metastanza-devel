@@ -182,7 +182,20 @@ export default class Sunburst extends Stanza {
       depthLim = maxDepth;
     }
 
-    const radius = width / ((depthLim + 1) * 2);
+    const radius =
+      Math.min(
+        width - padding.LEFT - padding.RIGHT,
+        height - padding.TOP - padding.BOTTOM
+      ) /
+      ((depthLim + 1) * 2);
+
+    if (
+      padding.LEFT + padding.RIGHT >= width ||
+      padding.TOP + padding.BOTTOM >= height
+    ) {
+      el.innerHTML = "<p>Padding is too big for given width and height!</p>";
+      throw new Error("Padding is too big for given width and height!");
+    }
 
     const arc = d3
       .arc()
@@ -256,15 +269,9 @@ export default class Sunburst extends Stanza {
     const svg = d3
       .select(el)
       .append("svg")
-      .attr("width", padding.LEFT + width + padding.RIGHT)
-      .attr("height", padding.TOP + height + padding.BOTTOM)
-      .attr(
-        "viewBox",
-        `${(-width - padding.LEFT) / 2}
-        ${(-height - padding.TOP) / 2}
-        ${width + padding.RIGHT}
-        ${height + padding.BOTTOM}`
-      );
+      .attr("width", width)
+      .attr("height", height)
+      .attr("viewBox", `${-width / 2} ${-height / 2} ${width} ${height}`);
 
     //Get character width
     const testText = svg
