@@ -15,26 +15,30 @@ export const timeIntervalUnitsSchema = z
   .nullable()
   .optional();
 
-export const scaleSchema = z.union([
-  z.literal("linear"),
-  z.literal("log10"),
-  z.literal("time"),
-  z.literal("ordinal"),
-]);
+export const scaleSchema = z
+  .union([
+    z.literal("linear"),
+    z.literal("log10"),
+    z.literal("time"),
+    z.literal("ordinal"),
+  ])
+  .default("ordinal");
 
-export const axisArea = z.object({
-  x: z.number(),
-  y: z.number(),
-  width: z.number(),
-  height: z.number(),
-});
+export const axisArea = z
+  .object({
+    x: z.number(),
+    y: z.number(),
+    width: z.number(),
+    height: z.number(),
+  })
+  .default({ x: 0, y: 0, width: 0, height: 0 });
 
 export type AxisAreaT = z.infer<typeof axisArea>;
 
 export const paramsModel = z
   .object({
-    "axis-x-ticks_label_angle": z.number().min(-90).max(90).default(0),
-    "axis-y-ticks_label_angle": z.number().min(-90).max(90).default(0),
+    "axis-x-ticks_label_angle": z.number().default(0),
+    "axis-y-ticks_label_angle": z.number().default(0),
     "axis-x-title_padding": z.number().default(0),
     "axis-y-title_padding": z.number().default(0),
     "axis-x-title": z.string(),
@@ -207,7 +211,7 @@ const proxyfy = (init: object, callbackMap: Map<string, (val) => void>) => {
  *  this.xAxis = new Axis(this.root.querySelector("svg"))
  *  this.xAxis.update(xAxisParams)
  *
- * @author PENQE.Inc (Anton Zhuravlev)
+ * @author PENQE.Inc
  *
  */
 export class Axis {
@@ -505,6 +509,8 @@ export class Axis {
   }
 
   private _handleDomainUpdate(domain: d3.AxisDomain[] = this.params.domain) {
+    this._checkScaleErrors(this.params.scale, domain);
+
     this._axisScale.domain(domain);
 
     this._updateTicks();
@@ -637,7 +643,26 @@ export class Axis {
       .attr("transform", `${translate || ""} rotate(${angle})`);
   }
 
+  private _checkScaleErrors(scale: ScaleType, domain: d3.AxisDomain[]) {
+    if (scale === "log10" && domain.some((d) => d < 0)) {
+      throw new Error(
+        `Log scale can be set only for domains with positive values. Got domain [${domain.join(
+          ","
+        )}]`
+      );
+    }
+    if (scale !== "ordinal" && domain.some((d) => typeof d === "string")) {
+      throw new Error(
+        `Scales other than ordinal cannot accept domain with strings. Got scale ${scale} with domain [${domain.join(
+          ","
+        )}]`
+      );
+    }
+  }
+
   private _handleScaleUpdate(newScale: ScaleType) {
+    this._checkScaleErrors(newScale, this.params.domain);
+
     this._axisScale = getScale(newScale);
     this._axisScale.domain(this.params.domain);
 

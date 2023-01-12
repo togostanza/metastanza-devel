@@ -37,7 +37,8 @@ class TestAxis extends Stanza {
   }
 
   async render() {
-    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
+    const css = (key: string) =>
+      getComputedStyle(this.element).getPropertyValue(key);
 
     if (this.interval) {
       clearInterval(this.interval);
@@ -61,6 +62,7 @@ class TestAxis extends Stanza {
       params = paramsModel.parse(this.params);
     } catch (error) {
       console.log(error);
+      return;
     }
 
     const root = this.root.querySelector("main");
