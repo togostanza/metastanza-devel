@@ -129,10 +129,10 @@ class TreeMapStanza extends Stanza {
 
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
-    const width = parseInt(css("--togostanza-outline-width"));
-    const height = parseInt(css("--togostanza-outline-height"));
+    const width = parseInt(css("--togostanza-canvas-width"));
+    const height = parseInt(css("--togostanza-canvas-height"));
 
-    const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
+    const MARGIN = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
 
     const WIDTH = width - MARGIN.LEFT - MARGIN.RIGHT;
     const HEIGHT = height - MARGIN.TOP - MARGIN.BOTTOM;
@@ -658,28 +658,28 @@ var metadata = {
 	"stanza:menu-placement": "bottom-right",
 	"stanza:style": [
 	{
-		"stanza:key": "--togostanza-theme-background_color",
-		"stanza:type": "color",
-		"stanza:default": "#eeeeee",
-		"stanza:description": "Background color"
-	},
-	{
-		"stanza:key": "--togostanza-outline-width",
+		"stanza:key": "--togostanza-canvas-width",
 		"stanza:type": "number",
 		"stanza:default": 400,
 		"stanza:description": "Stanza width in px"
 	},
 	{
-		"stanza:key": "--togostanza-outline-height",
+		"stanza:key": "--togostanza-canvas-height",
 		"stanza:type": "number",
 		"stanza:default": 400,
 		"stanza:description": "Stanza height in px"
 	},
 	{
-		"stanza:key": "--togostanza-outline-padding",
+		"stanza:key": "--togostanza-canvas-padding",
 		"stanza:type": "text",
 		"stanza:default": "20px",
 		"stanza:description": "Stanza inner padding"
+	},
+	{
+		"stanza:key": "--togostanza-theme-background_color",
+		"stanza:type": "color",
+		"stanza:default": "#eeeeee",
+		"stanza:description": "Background color"
 	},
 	{
 		"stanza:key": "--togostanza-fonts-font_family",

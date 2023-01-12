@@ -67,11 +67,9 @@ class Sunburst extends Stanza {
     // get value of css vars
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
-    const width = parseFloat(css("--togostanza-outline-width"));
-    const height = parseFloat(css("--togostanza-outline-height"));
-    const padding = getMarginsFromCSSString(
-      css("--togostanza-outline-padding")
-    );
+    const width = parseFloat(css("--togostanza-canvas-width"));
+    const height = parseFloat(css("--togostanza-canvas-height"));
+    const padding = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
 
     const labelKey = this.params["node-label_key"];
     const valueKey = this.params["node-value_key"];
@@ -608,19 +606,19 @@ var metadata = {
 	"stanza:menu-placement": "bottom-right",
 	"stanza:style": [
 	{
-		"stanza:key": "--togostanza-outline-width",
+		"stanza:key": "--togostanza-canvas-width",
 		"stanza:type": "number",
 		"stanza:default": 400,
-		"stanza:description": "Outline width"
+		"stanza:description": "Canvas width"
 	},
 	{
-		"stanza:key": "--togostanza-outline-height",
+		"stanza:key": "--togostanza-canvas-height",
 		"stanza:type": "number",
 		"stanza:default": 400,
-		"stanza:description": "Outline height"
+		"stanza:description": "Canvas height"
 	},
 	{
-		"stanza:key": "--togostanza-outline-padding",
+		"stanza:key": "--togostanza-canvas-padding",
 		"stanza:type": "text",
 		"stanza:default": "20px",
 		"stanza:description": "Padding of a stanza. CSS padding-like text (10px 10px 10px 10px)"

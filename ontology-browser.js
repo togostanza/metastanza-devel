@@ -4763,6 +4763,12 @@ var metadata = {
 	"stanza:menu-placement": "bottom-right",
 	"stanza:style": [
 	{
+		"stanza:key": "--togostanza-canvas-height",
+		"stanza:type": "text",
+		"stanza:default": "500px",
+		"stanza:description": "Stanza height. Width is always 100%, a la div with `display: block`"
+	},
+	{
 		"stanza:key": "--togostanza-fonts-font_family",
 		"stanza:type": "text",
 		"stanza:default": "Helvetica Neue",
@@ -4785,12 +4791,6 @@ var metadata = {
 		"stanza:type": "text",
 		"stanza:default": "8px",
 		"stanza:description": "Card contents font size"
-	},
-	{
-		"stanza:key": "--togostanza-outline-height",
-		"stanza:type": "text",
-		"stanza:default": "500px",
-		"stanza:description": "Stanza height. Width is always 100%, a la div with `display: block`"
 	},
 	{
 		"stanza:key": "--togostanza-border-color",

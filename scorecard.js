@@ -29,11 +29,9 @@ class Scorecard extends Stanza {
       main
     );
 
-    const width = parseFloat(css("--togostanza-outline-width")) || 0;
-    const height = parseFloat(css("--togostanza-outline-height")) || 0;
-    const padding = getMarginsFromCSSString(
-      css("--togostanza-outline-padding")
-    );
+    const width = parseFloat(css("--togostanza-canvas-width")) || 0;
+    const height = parseFloat(css("--togostanza-canvas-height")) || 0;
+    const padding = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
     const fontSizePrimary =
       parseFloat(css("--togostanza-fonts-font_size_primary")) || 0;
     const fontSizeSecondary =
@@ -165,19 +163,19 @@ var metadata = {
 	"stanza:menu-placement": "bottom-right",
 	"stanza:style": [
 	{
-		"stanza:key": "--togostanza-outline-width",
+		"stanza:key": "--togostanza-canvas-width",
 		"stanza:type": "number",
 		"stanza:default": 320,
 		"stanza:description": "Metastanza width in px"
 	},
 	{
-		"stanza:key": "--togostanza-outline-height",
+		"stanza:key": "--togostanza-canvas-height",
 		"stanza:type": "number",
 		"stanza:default": 110,
 		"stanza:description": "Metastanza height in px"
 	},
 	{
-		"stanza:key": "--togostanza-outline-padding",
+		"stanza:key": "--togostanza-canvas-padding",
 		"stanza:type": "text",
 		"stanza:default": "50px",
 		"stanza:description": "Padding of a stanza. CSS padding-like text (10px 10px 10px 10px)"

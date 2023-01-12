@@ -4456,9 +4456,9 @@ class ForceGraph extends Stanza {
 
     //data
 
-    const width = setFallbackNumVal(css("--togostanza-outline-width"), 200);
-    const height = setFallbackNumVal(css("--togostanza-outline-height"), 200);
-    const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
+    const width = setFallbackNumVal(css("--togostanza-canvas-width"), 200);
+    const height = setFallbackNumVal(css("--togostanza-canvas-height"), 200);
+    const MARGIN = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
 
     this.renderTemplate({
       template: "stanza.html.hbs",
@@ -5262,6 +5262,24 @@ var metadata = {
 	"stanza:menu-placement": "bottom-right",
 	"stanza:style": [
 	{
+		"stanza:key": "--togostanza-canvas-width",
+		"stanza:type": "number",
+		"stanza:default": 600,
+		"stanza:description": "Width in px"
+	},
+	{
+		"stanza:key": "--togostanza-canvas-height",
+		"stanza:type": "number",
+		"stanza:default": 1000,
+		"stanza:description": "Height in px"
+	},
+	{
+		"stanza:key": "--togostanza-canvas-padding",
+		"stanza:type": "text",
+		"stanza:default": "50",
+		"stanza:description": "Inner padding in px"
+	},
+	{
 		"stanza:key": "--togostanza-theme-series_0_color",
 		"stanza:type": "color",
 		"stanza:default": "#6590e6",
@@ -5296,24 +5314,6 @@ var metadata = {
 		"stanza:type": "color",
 		"stanza:default": "#F75976",
 		"stanza:description": "Group color 5"
-	},
-	{
-		"stanza:key": "--togostanza-outline-width",
-		"stanza:type": "number",
-		"stanza:default": 600,
-		"stanza:description": "Width in px"
-	},
-	{
-		"stanza:key": "--togostanza-outline-height",
-		"stanza:type": "number",
-		"stanza:default": 1000,
-		"stanza:description": "Height in px"
-	},
-	{
-		"stanza:key": "--togostanza-outline-padding",
-		"stanza:type": "text",
-		"stanza:default": "50",
-		"stanza:description": "Inner padding in px"
 	},
 	{
 		"stanza:key": "--togostanza-border-width",

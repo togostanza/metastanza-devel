@@ -97,8 +97,8 @@ class Heatmap extends Stanza {
     const fontSize = parseFloat(
       this.css("--togostanza-fonts-font_size_primary")
     );
-    const width = parseFloat(this.css("--togostanza-outline-width"));
-    const height = parseFloat(this.css("--togostanza-outline-height"));
+    const width = parseFloat(this.css("--togostanza-canvas-width"));
+    const height = parseFloat(this.css("--togostanza-canvas-height"));
     const borderWidth = parseFloat(this.css("--togostanza-border-width") || 0);
     const tickSize = 2;
 
@@ -433,19 +433,19 @@ var metadata = {
 	"stanza:menu-placement": "bottom-right",
 	"stanza:style": [
 	{
-		"stanza:key": "--togostanza-outline-width",
+		"stanza:key": "--togostanza-canvas-width",
 		"stanza:type": "number",
 		"stanza:default": 450,
-		"stanza:description": "outline width"
+		"stanza:description": "Canvas width"
 	},
 	{
-		"stanza:key": "--togostanza-outline-height",
+		"stanza:key": "--togostanza-canvas-height",
 		"stanza:type": "number",
 		"stanza:default": 450,
-		"stanza:description": "outline height"
+		"stanza:description": "Canvas height"
 	},
 	{
-		"stanza:key": "--togostanza-outline-padding",
+		"stanza:key": "--togostanza-canvas-padding",
 		"stanza:type": "text",
 		"stanza:default": "20px",
 		"stanza:description": "Padding of a stanza. CSS padding-like text (10px 10px 10px 10px)"

@@ -26,14 +26,14 @@ svg text {
 }
 
 main {
-  padding: var(--togostanza-outline-padding);
+  padding: var(--togostanza-canvas-padding);
 }
 
 #wrapper {
   position: relative;
   overflow: auto;
-  width: calc(var(--togostanza-outline-width) * 1px);
-  height: calc(var(--togostanza-outline-height) * 1px);
+  width: calc(var(--togostanza-canvas-width) * 1px);
+  height: calc(var(--togostanza-canvas-height) * 1px);
 }
 #wrapper .value {
   flex-grow: 1;

@@ -116,10 +116,10 @@ var metadata = {
 	"stanza:menu-placement": "bottom-right",
 	"stanza:style": [
 	{
-		"stanza:key": "--togostanza-outline-padding",
+		"stanza:key": "--togostanza-canvas-padding",
 		"stanza:type": "text",
 		"stanza:default": "10px",
-		"stanza:description": "Stanza inside outline padding"
+		"stanza:description": "Stanza inside canvas padding"
 	},
 	{
 		"stanza:key": "--togostanza-border-color",
@@ -132,12 +132,6 @@ var metadata = {
 		"stanza:type": "text",
 		"stanza:default": "1px",
 		"stanza:description": "Stanza border width"
-	},
-	{
-		"stanza:key": "--togostanza-outline-padding",
-		"stanza:type": "text",
-		"stanza:default": "10px",
-		"stanza:description": "Stanza inside outline padding"
 	},
 	{
 		"stanza:key": "--togostanza-table-column_count",

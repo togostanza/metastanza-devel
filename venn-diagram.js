@@ -2025,8 +2025,8 @@ class VennStanza extends Stanza {
 
     const getPropertyValue = (key) =>
       window.getComputedStyle(this.element).getPropertyValue(key);
-    const svgWidth = getPropertyValue(`--togostanza-outline-width`);
-    const svgHeight = getPropertyValue(`--togostanza-outline-height`);
+    const svgWidth = getPropertyValue(`--togostanza-canvas-width`);
+    const svgHeight = getPropertyValue(`--togostanza-canvas-height`);
     container.style.width = svgWidth + "px";
     container.style.height = svgHeight + "px";
 
@@ -2034,7 +2034,7 @@ class VennStanza extends Stanza {
     const selectedDiagram = this.root.querySelector(
       `.venn-diagram[data-number-of-data="${this.numberOfData}"]`
     );
-    const padding = +getPropertyValue(`--togostanza-outline-padding`);
+    const padding = +getPropertyValue(`--togostanza-canvas-padding`);
     if (!selectedDiagram) {
       console.error(
         "Venn diagrams with more than six elements are not supported. Please try using Euler diagrams."
@@ -2260,6 +2260,24 @@ var metadata = {
 	"stanza:menu-placement": "bottom-right",
 	"stanza:style": [
 	{
+		"stanza:key": "--togostanza-canvas-width",
+		"stanza:type": "number",
+		"stanza:default": 800,
+		"stanza:description": "Width"
+	},
+	{
+		"stanza:key": "--togostanza-canvas-height",
+		"stanza:type": "number",
+		"stanza:default": 380,
+		"stanza:description": "Height"
+	},
+	{
+		"stanza:key": "--togostanza-canvas-padding",
+		"stanza:type": "number",
+		"stanza:default": 10,
+		"stanza:description": "Padding"
+	},
+	{
 		"stanza:key": "--togostanza-fonts-font_family",
 		"stanza:type": "text",
 		"stanza:default": "Helvetica Neue",
@@ -2282,24 +2300,6 @@ var metadata = {
 		"stanza:type": "number",
 		"stanza:default": 16,
 		"stanza:description": "Value font size"
-	},
-	{
-		"stanza:key": "--togostanza-outline-width",
-		"stanza:type": "number",
-		"stanza:default": 800,
-		"stanza:description": "Width"
-	},
-	{
-		"stanza:key": "--togostanza-outline-height",
-		"stanza:type": "number",
-		"stanza:default": 380,
-		"stanza:description": "Height"
-	},
-	{
-		"stanza:key": "--togostanza-outline-padding",
-		"stanza:type": "number",
-		"stanza:default": 10,
-		"stanza:description": "Padding"
 	},
 	{
 		"stanza:key": "--togostanza-border-color",

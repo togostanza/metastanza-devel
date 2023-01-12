@@ -31,5 +31,5 @@ svg text {
 
 main {
   background-color: var(--togostanza-theme-background_color);
-  height: var(--togostanza-outline-height);
+  height: var(--togostanza-canvas-height);
 }

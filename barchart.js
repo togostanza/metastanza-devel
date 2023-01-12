@@ -224,11 +224,11 @@ class Barchart extends Stanza {
 
     const axisYScale = this.params["axis-y-scale"] || "linear";
 
-    const width = parseInt(css("--togostanza-outline-width"));
-    const height = parseInt(css("--togostanza-outline-height"));
+    const width = parseInt(css("--togostanza-canvas-width"));
+    const height = parseInt(css("--togostanza-canvas-height"));
 
     let inputMargin = getMarginsFromCSSString(
-      css("--togostanza-outline-padding")
+      css("--togostanza-canvas-padding")
     );
 
     inputMargin = {
@@ -1101,6 +1101,24 @@ var metadata = {
 	"stanza:menu-placement": "bottom-right",
 	"stanza:style": [
 	{
+		"stanza:key": "--togostanza-canvas-width",
+		"stanza:type": "number",
+		"stanza:default": 500,
+		"stanza:description": "Metastanza width in px"
+	},
+	{
+		"stanza:key": "--togostanza-canvas-height",
+		"stanza:type": "number",
+		"stanza:default": 400,
+		"stanza:description": "Metastanza height in px"
+	},
+	{
+		"stanza:key": "--togostanza-canvas-padding",
+		"stanza:type": "text",
+		"stanza:default": "10 20 60 20",
+		"stanza:description": "Metastanza padding CSS in px."
+	},
+	{
 		"stanza:key": "--togostanza-theme-series_0_color",
 		"stanza:type": "color",
 		"stanza:default": "#6590e6",
@@ -1135,24 +1153,6 @@ var metadata = {
 		"stanza:type": "color",
 		"stanza:default": "#F75976",
 		"stanza:description": "Group color 5"
-	},
-	{
-		"stanza:key": "--togostanza-outline-width",
-		"stanza:type": "number",
-		"stanza:default": 500,
-		"stanza:description": "Metastanza width in px"
-	},
-	{
-		"stanza:key": "--togostanza-outline-height",
-		"stanza:type": "number",
-		"stanza:default": 400,
-		"stanza:description": "Metastanza height in px"
-	},
-	{
-		"stanza:key": "--togostanza-outline-padding",
-		"stanza:type": "text",
-		"stanza:default": "10 20 60 20",
-		"stanza:description": "Metastanza padding CSS in px."
 	},
 	{
 		"stanza:key": "--togostanza-fonts-font_family",

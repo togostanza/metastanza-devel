@@ -26,7 +26,7 @@ svg text {
 }
 
 svg {
-  padding: var(--togostanza-outline-padding);
+  padding: var(--togostanza-canvas-padding);
 }
 svg .link {
   fill: none;

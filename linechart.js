@@ -454,10 +454,10 @@ class Linechart extends Stanza {
       .size(() => pointsSize * pointsSize)
       .type(circle);
 
-    const width = css("--togostanza-outline-width");
-    const height = css("--togostanza-outline-height");
+    const width = css("--togostanza-canvas-width");
+    const height = css("--togostanza-canvas-height");
 
-    const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
+    const MARGIN = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
 
     const SVGMargin = {
       top: 10,
@@ -1952,6 +1952,24 @@ var metadata = {
 	"stanza:menu-placement": "bottom-right",
 	"stanza:style": [
 	{
+		"stanza:key": "--togostanza-canvas-width",
+		"stanza:type": "number",
+		"stanza:default": 600,
+		"stanza:description": "Togostanza element width"
+	},
+	{
+		"stanza:key": "--togostanza-canvas-height",
+		"stanza:type": "number",
+		"stanza:default": 400,
+		"stanza:description": "Togostanza element height"
+	},
+	{
+		"stanza:key": "--togostanza-canvas-padding",
+		"stanza:type": "text",
+		"stanza:default": "20px 20px 20px 20px",
+		"stanza:description": "Togostanza element inner padding"
+	},
+	{
 		"stanza:key": "--togostanza-theme-series_0_color",
 		"stanza:type": "color",
 		"stanza:default": "#6590e6",
@@ -2016,24 +2034,6 @@ var metadata = {
 		"stanza:type": "number",
 		"stanza:default": 9,
 		"stanza:description": "Secondary font size in px (Axes ticks values)"
-	},
-	{
-		"stanza:key": "--togostanza-outline-width",
-		"stanza:type": "number",
-		"stanza:default": 600,
-		"stanza:description": "Togostanza element width"
-	},
-	{
-		"stanza:key": "--togostanza-outline-height",
-		"stanza:type": "number",
-		"stanza:default": 400,
-		"stanza:description": "Togostanza element height"
-	},
-	{
-		"stanza:key": "--togostanza-outline-padding",
-		"stanza:type": "text",
-		"stanza:default": "20px 20px 20px 20px",
-		"stanza:description": "Togostanza element inner padding"
 	},
 	{
 		"stanza:key": "--togostanza-border-color",

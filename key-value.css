@@ -33,7 +33,7 @@ svg text {
 }
 
 main .container {
-  padding: var(--togostanza-outline-padding);
+  padding: var(--togostanza-canvas-padding);
   column-count: var(--togostanza-table-column_count);
   column-gap: 0;
   border: var(--togostanza-border-width) solid var(--togostanza-border-color);

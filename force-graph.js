@@ -329,8 +329,8 @@ class ForceGraph extends Stanza {
     const el = this.root.getElementById("force-graph");
 
     //data
-    const width = parseInt(css("--togostanza-outline-width"));
-    const height = parseInt(css("--togostanza-outline-height"));
+    const width = parseInt(css("--togostanza-canvas-width"));
+    const height = parseInt(css("--togostanza-canvas-height"));
 
     const values = await loadData(
       this.params["data-url"],
@@ -374,7 +374,7 @@ class ForceGraph extends Stanza {
 
     const highlightAdjEdges = true;
 
-    const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
+    const MARGIN = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
 
     const tooltipParams = {
       dataKey: this.params["node-tooltip-key"],
@@ -613,6 +613,24 @@ var metadata = {
 	"stanza:menu-placement": "bottom-right",
 	"stanza:style": [
 	{
+		"stanza:key": "--togostanza-canvas-width",
+		"stanza:type": "number",
+		"stanza:default": 600,
+		"stanza:description": "Metastanza width in px"
+	},
+	{
+		"stanza:key": "--togostanza-canvas-height",
+		"stanza:type": "number",
+		"stanza:default": 800,
+		"stanza:description": "Metastanza height in px"
+	},
+	{
+		"stanza:key": "--togostanza-canvas-padding",
+		"stanza:type": "text",
+		"stanza:default": "20 30",
+		"stanza:description": "Metastanza padding"
+	},
+	{
 		"stanza:key": "--togostanza-theme-series_0_color",
 		"stanza:type": "color",
 		"stanza:default": "#6590e6",
@@ -689,24 +707,6 @@ var metadata = {
 		"stanza:type": "number",
 		"stanza:default": 0,
 		"stanza:description": "Border width"
-	},
-	{
-		"stanza:key": "--togostanza-outline-width",
-		"stanza:type": "number",
-		"stanza:default": 600,
-		"stanza:description": "Metastanza width in px"
-	},
-	{
-		"stanza:key": "--togostanza-outline-height",
-		"stanza:type": "number",
-		"stanza:default": 800,
-		"stanza:description": "Metastanza height in px"
-	},
-	{
-		"stanza:key": "--togostanza-outline-padding",
-		"stanza:type": "text",
-		"stanza:default": "20 30",
-		"stanza:description": "Metastanza padding"
 	},
 	{
 		"stanza:key": "--togostanza-theme-background_color",
