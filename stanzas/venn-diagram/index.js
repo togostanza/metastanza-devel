@@ -32,13 +32,12 @@ export default class VennStanza extends Stanza {
     this.renderTemplate({ template: "stanza.html.hbs" });
 
     // append tooltip, legend
+
     const root = this.root.querySelector("main");
-    if (!this.tooltip) {
-      this.tooltip = new ToolTip();
-      root.append(this.tooltip);
-      this.legend = new Legend();
-      root.append(this.legend);
-    }
+
+    this.tooltip = new ToolTip(root);
+
+    this.legend = new Legend(root);
 
     // get data
     this.data = await this.getData();
