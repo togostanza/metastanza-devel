@@ -1,6 +1,6 @@
 import { j as commonjsGlobal, S as Stanza, b as downloadJSONMenuItem, c as downloadCSVMenuItem, e as downloadTSVMenuItem, f as appendCustomCss, g as defineStanzaElement } from './index-b37241ec.js';
-import { d as defineComponent, c as createElementBlock, F as Fragment, r as renderList, o as openBlock, n as normalizeClass, a as createBaseVNode, t as toDisplayString, b as createCommentVNode, e as createBlock, f as resolveComponent, w as withDirectives, v as vShow, g as createTextVNode, h as toRefs, i as ref, j as reactive, k as watchEffect, l as computed, m as vModelText, p as createVNode, q as createApp } from './runtime-dom.esm-bundler-daf8e087.js';
-import { l as library$1, F as FontAwesomeIcon } from './index.es-8a230f23.js';
+import { d as defineComponent, c as createElementBlock, F as Fragment, r as renderList, o as openBlock, n as normalizeClass, a as createBaseVNode, t as toDisplayString, b as createBlock, e as createCommentVNode, f as resolveComponent, w as withDirectives, v as vShow, g as toRefs, h as ref, i as reactive, j as watchEffect, k as computed, l as vModelText, m as createVNode, p as createApp } from './runtime-dom.esm-bundler-15b79ede.js';
+import { l as library$1, F as FontAwesomeIcon } from './index.es-d4ca8432.js';
 import { f as faChevronRight, a as faClipboard } from './index-461cb806.js';
 import { l as loadData } from './load-data-0ddebadb.js';
 
@@ -49,13 +49,12 @@ var metadata$1 = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "node-show_borders",
-		"stanza:type": "boolean",
-		"stanza:example": false,
-		"stanza:description": "Show border between nodes"
+		"stanza:key": "node-value_key",
+		"stanza:example": "size",
+		"stanza:description": "Key for data attribute to display as value"
 	},
 	{
-		"stanza:key": "node-content_alignment",
+		"stanza:key": "node-value_alignment",
 		"stanza:type": "single-choice",
 		"stanza:choice": [
 			"vertical",
@@ -65,31 +64,14 @@ var metadata$1 = {
 		"stanza:description": "Set alignment of node content"
 	},
 	{
-		"stanza:key": "node-value-show",
-		"stanza:type": "boolean",
-		"stanza:example": true,
-		"stanza:description": "Show value set by [node-value-key] in tree and suggestions"
-	},
-	{
-		"stanza:key": "node-value-key",
-		"stanza:example": "n",
-		"stanza:description": "Key for data attribute to display as value"
-	},
-	{
-		"stanza:key": "node-value-fallback",
+		"stanza:key": "node-value_fallback",
 		"stanza:example": "no data",
 		"stanza:description": "Message in case there is no data for data set by [node-value-key]"
 	},
 	{
 		"stanza:key": "search-key",
 		"stanza:example": "value",
-		"stanza:description": "Key for data atrribute to search with suggestions. Besides this key, one can also search by path using the id followed by a / E.G.: 1/2/3"
-	},
-	{
-		"stanza:key": "search-show_path",
-		"stanza:type": "boolean",
-		"stanza:example": false,
-		"stanza:description": "Show path in suggestions"
+		"stanza:description": "Key for data atrribute to search with suggestions."
 	},
 	{
 		"stanza:key": "togostanza-custom_css_url",
@@ -158,6 +140,12 @@ var metadata$1 = {
 		"stanza:type": "color",
 		"stanza:default": "#F8F9FA",
 		"stanza:description": "Background color for single column"
+	},
+	{
+		"stanza:key": "--togostanza-column-node_delimiter_width",
+		"stanza:type": "number",
+		"stanza:default": 0,
+		"stanza:description": "Border color between nodes"
 	},
 	{
 		"stanza:key": "--togostanza-column-border_color",
@@ -266,11 +254,7 @@ var script$2 = defineComponent({
       type: [Number, String, null],
       default: null,
     },
-    nodeShowBorders: {
-      type: Boolean,
-      default: false,
-    },
-    nodeContentAlignment: {
+    nodeValueAlignment: {
       type: String,
       default: "horizontal",
     },
@@ -303,13 +287,10 @@ var script$2 = defineComponent({
 });
 
 const _hoisted_1$2 = { class: "column" };
-const _hoisted_2$2 = ["checked", "onInput"];
-const _hoisted_3$1 = ["onClick"];
+const _hoisted_2$2 = ["onClick"];
+const _hoisted_3$1 = ["checked", "onInput"];
 const _hoisted_4$1 = { class: "title" };
-const _hoisted_5$1 = {
-  key: 0,
-  class: "value"
-};
+const _hoisted_5$1 = { class: "value" };
 
 function render$2(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_font_awesome_icon = resolveComponent("font-awesome-icon");
@@ -323,23 +304,21 @@ function render$2(_ctx, _cache, $props, $setup, $data, $options) {
           '-highlighted':
             node.id === _ctx.highlightedNode && _ctx.hasChildren(node.children),
         },
-        { '-with-border': _ctx.nodeShowBorders },
-      ]])
+        '-with-border',
+      ]]),
+        onClick: $event => (_ctx.hasChildren(node.children) ? _ctx.setParent(node.id) : null)
       }, [
         createBaseVNode("input", {
           type: "checkbox",
           checked: _ctx.checkedNodes.get(node.id),
           onInput: $event => (_ctx.setCheckedNode(node))
-        }, null, 40 /* PROPS, HYDRATE_EVENTS */, _hoisted_2$2),
+        }, null, 40 /* PROPS, HYDRATE_EVENTS */, _hoisted_3$1),
         createBaseVNode("span", {
-          class: normalizeClass(["label", `-${_ctx.nodeContentAlignment}`]),
-          onClick: $event => (_ctx.hasChildren(node.children) ? _ctx.setParent(node.id) : null)
+          class: normalizeClass(["label", `-${_ctx.nodeValueAlignment}`])
         }, [
           createBaseVNode("strong", _hoisted_4$1, toDisplayString(node[_ctx.keys.label]), 1 /* TEXT */),
-          (_ctx.valueObj.show)
-            ? (openBlock(), createElementBlock("span", _hoisted_5$1, toDisplayString(node[_ctx.keys.value] ?? _ctx.valueObj.fallback), 1 /* TEXT */))
-            : createCommentVNode("v-if", true)
-        ], 10 /* CLASS, PROPS */, _hoisted_3$1),
+          createBaseVNode("span", _hoisted_5$1, toDisplayString(node[_ctx.keys.value] ?? _ctx.valueObj.fallback), 1 /* TEXT */)
+        ], 2 /* CLASS */),
         (_ctx.hasChildren(node.children))
           ? (openBlock(), createBlock(_component_font_awesome_icon, {
               key: 0,
@@ -347,7 +326,7 @@ function render$2(_ctx, _cache, $props, $setup, $data, $options) {
               class: "icon"
             }))
           : createCommentVNode("v-if", true)
-      ], 2 /* CLASS */))
+      ], 10 /* CLASS, PROPS */, _hoisted_2$2))
     }), 128 /* KEYED_FRAGMENT */))
   ]))
 }
@@ -358,10 +337,6 @@ script$2.__file = "stanzas/column-tree/NodeColumn.vue";
 var script$1 = defineComponent({
   props: {
     showSuggestions: {
-      type: Boolean,
-      default: false,
-    },
-    searchShowPath: {
       type: Boolean,
       default: false,
     },
@@ -381,11 +356,7 @@ var script$1 = defineComponent({
       type: Object,
       required: true,
     },
-    nodeShowBorders: {
-      type: Boolean,
-      default: false,
-    },
-    nodeContentAlignment: {
+    nodeValueAlignment: {
       type: String,
       default: "horizontal",
     },
@@ -397,17 +368,8 @@ const _hoisted_1$1 = { class: "search-wrapper" };
 const _hoisted_2$1 = { class: "suggestions" };
 const _hoisted_3 = ["onClick"];
 const _hoisted_4 = { class: "title" };
-const _hoisted_5 = {
-  key: 0,
-  class: "value"
-};
+const _hoisted_5 = { class: "value" };
 const _hoisted_6 = {
-  key: 0,
-  class: "value"
-};
-const _hoisted_7 = /*#__PURE__*/createBaseVNode("rp", null, "(", -1 /* HOISTED */);
-const _hoisted_8 = /*#__PURE__*/createBaseVNode("rp", null, ")", -1 /* HOISTED */);
-const _hoisted_9 = {
   key: 0,
   class: "no-results"
 };
@@ -418,34 +380,19 @@ function render$1(_ctx, _cache, $props, $setup, $data, $options) {
       (openBlock(true), createElementBlock(Fragment, null, renderList(_ctx.data, (node, index) => {
         return (openBlock(), createElementBlock("li", {
           key: index,
-          class: normalizeClass({ '-with-border': _ctx.nodeShowBorders }),
+          class: normalizeClass('-with-border'),
           onClick: $event => (_ctx.$emit('selectNode', node))
         }, [
           createBaseVNode("span", {
-            class: normalizeClass(["label", `-${_ctx.nodeContentAlignment}`])
+            class: normalizeClass(["label", `-${_ctx.nodeValueAlignment}`])
           }, [
             createBaseVNode("strong", _hoisted_4, toDisplayString(node[_ctx.keys.label]), 1 /* TEXT */),
-            (_ctx.valueObj.show)
-              ? (openBlock(), createElementBlock("span", _hoisted_5, toDisplayString(node[_ctx.keys.value] ?? _ctx.valueObj.fallback), 1 /* TEXT */))
-              : createCommentVNode("v-if", true)
-          ], 2 /* CLASS */),
-          (_ctx.searchShowPath)
-            ? (openBlock(), createElementBlock("span", _hoisted_6, [
-                createTextVNode(" Path : "),
-                (openBlock(true), createElementBlock(Fragment, null, renderList(node.path, (item, pathIndex) => {
-                  return (openBlock(), createElementBlock("ruby", { key: pathIndex }, [
-                    createTextVNode(toDisplayString(item.label) + "/", 1 /* TEXT */),
-                    _hoisted_7,
-                    createBaseVNode("rt", null, toDisplayString(item.id), 1 /* TEXT */),
-                    _hoisted_8
-                  ]))
-                }), 128 /* KEYED_FRAGMENT */))
-              ]))
-            : createCommentVNode("v-if", true)
-        ], 10 /* CLASS, PROPS */, _hoisted_3))
+            createBaseVNode("span", _hoisted_5, toDisplayString(node[_ctx.keys.value] ?? _ctx.valueObj.fallback), 1 /* TEXT */)
+          ], 2 /* CLASS */)
+        ], 8 /* PROPS */, _hoisted_3))
       }), 128 /* KEYED_FRAGMENT */)),
       (_ctx.data.length < 1)
-        ? (openBlock(), createElementBlock("li", _hoisted_9, toDisplayString(_ctx.valueObj.fallback), 1 /* TEXT */))
+        ? (openBlock(), createElementBlock("li", _hoisted_6, toDisplayString(_ctx.valueObj.fallback), 1 /* TEXT */))
         : createCommentVNode("v-if", true)
     ])
   ], 512 /* NEED_PATCH */)), [
@@ -17701,10 +17648,7 @@ var script = defineComponent({
         value: params?.nodeValueKey?.value,
       },
       fallbackInCaseOfNoValue: params?.nodeValueFallback.value,
-      nodeValueShow: params?.nodeValueShow?.value,
-      searchShowPath: params?.searchShowPath?.value,
-      nodeShowBorders: params?.nodeShowBorders?.value,
-      nodeContentAlignment: params?.nodeContentAlignment?.value,
+      nodeValueAlignment: params?.nodeValueAlignment?.value,
       showSuggestions: false,
       responseJSON: [],
       columnData: [],
@@ -17725,6 +17669,7 @@ var script = defineComponent({
       const data = state.responseJSON || [];
       state.columnData[0] = data.filter((obj) => isRootNode(obj.parent));
     });
+
     function updateCheckedNodes(node) {
       const { id, ...obj } = node;
       state.checkedNodes.has(id)
@@ -17758,7 +17703,6 @@ var script = defineComponent({
     }
     const valueObj = computed(() => {
       return {
-        show: state.nodeValueShow,
         fallback: state.fallbackInCaseOfNoValue,
       };
     });
@@ -17778,11 +17722,14 @@ var script = defineComponent({
     }
     function getPath(node) {
       const path = [];
-      let parent = { id: node.id, label: node.label };
-      while (parent.id) {
+      let parent = { id: node.id, label: node.label, parent: node.parent };
+      path.push(parent);
+      while (parent.parent) {
+        const obj = params?.data?.value?.find((obj) => {
+          return obj.id === parent.parent;
+        });
+        parent = { id: obj?.id, label: obj?.label, parent: obj?.parent };
         path.push(parent);
-        const obj = state.responseJSON.find((obj) => obj.id === parent.id);
-        parent = { id: obj?.parent, label: obj?.label };
       }
       return path.reverse();
     }
@@ -17799,7 +17746,7 @@ var script = defineComponent({
       if (state.searchTerm.includes("/")) {
         return state.responseJSON.filter(isPathSearchHit);
       }
-      return state.responseJSON.filter(isNormalSearchHit);
+      return state.responseJSON.filter(isNormalSearchHit); // array of nodes.
     });
     return {
       isValidSearchNode,
@@ -17831,7 +17778,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       withDirectives(createBaseVNode("input", {
         "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => ((_ctx.state.searchTerm) = $event)),
         type: "text",
-        placeholder: "Search for keywords or path*",
+        placeholder: "Search for keywords",
         class: "search",
         onFocus: _cache[1] || (_cache[1] = (...args) => (_ctx.toggleSuggestionsIfValid && _ctx.toggleSuggestionsIfValid(...args))),
         onInput: _cache[2] || (_cache[2] = (...args) => (_ctx.toggleSuggestionsIfValid && _ctx.toggleSuggestionsIfValid(...args)))
@@ -17840,15 +17787,13 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       ]),
       createVNode(_component_search_suggestions, {
         "show-suggestions": _ctx.state.showSuggestions,
-        "search-show-path": _ctx.state.searchShowPath,
         "search-input": _ctx.state.searchTerm,
         data: _ctx.suggestions,
         keys: _ctx.state.keys,
         "value-obj": _ctx.valueObj,
-        "node-show-borders": _ctx.state.nodeShowBorders,
-        "node-content-alignment": _ctx.state.nodeContentAlignment,
+        "node-value-alignment": _ctx.state.nodeValueAlignment,
         onSelectNode: _ctx.selectNode
-      }, null, 8 /* PROPS */, ["show-suggestions", "search-show-path", "search-input", "data", "keys", "value-obj", "node-show-borders", "node-content-alignment", "onSelectNode"])
+      }, null, 8 /* PROPS */, ["show-suggestions", "search-input", "data", "keys", "value-obj", "node-value-alignment", "onSelectNode"])
     ], 32 /* HYDRATE_EVENTS */),
     createBaseVNode("div", _hoisted_2, [
       (openBlock(true), createElementBlock(Fragment, null, renderList(_ctx.state.columnData.filter(
@@ -17862,11 +17807,10 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
           keys: _ctx.state.keys,
           "highlighted-node": _ctx.state.highligthedNodes[index],
           "value-obj": _ctx.valueObj,
-          "node-show-borders": _ctx.state.nodeShowBorders,
-          "node-content-alignment": _ctx.state.nodeContentAlignment,
+          "node-value-alignment": _ctx.state.nodeValueAlignment,
           onSetParent: _ctx.updatePartialColumnData,
           onSetCheckedNode: _ctx.updateCheckedNodes
-        }, null, 8 /* PROPS */, ["nodes", "layer", "checked-nodes", "keys", "highlighted-node", "value-obj", "node-show-borders", "node-content-alignment", "onSetParent", "onSetCheckedNode"]))
+        }, null, 8 /* PROPS */, ["nodes", "layer", "checked-nodes", "keys", "highlighted-node", "value-obj", "node-value-alignment", "onSetParent", "onSetCheckedNode"]))
       }), 128 /* KEYED_FRAGMENT */))
     ])
   ]))
@@ -17957,13 +17901,12 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "node-show_borders",
-		"stanza:type": "boolean",
-		"stanza:example": false,
-		"stanza:description": "Show border between nodes"
+		"stanza:key": "node-value_key",
+		"stanza:example": "size",
+		"stanza:description": "Key for data attribute to display as value"
 	},
 	{
-		"stanza:key": "node-content_alignment",
+		"stanza:key": "node-value_alignment",
 		"stanza:type": "single-choice",
 		"stanza:choice": [
 			"vertical",
@@ -17973,31 +17916,14 @@ var metadata = {
 		"stanza:description": "Set alignment of node content"
 	},
 	{
-		"stanza:key": "node-value-show",
-		"stanza:type": "boolean",
-		"stanza:example": true,
-		"stanza:description": "Show value set by [node-value-key] in tree and suggestions"
-	},
-	{
-		"stanza:key": "node-value-key",
-		"stanza:example": "n",
-		"stanza:description": "Key for data attribute to display as value"
-	},
-	{
-		"stanza:key": "node-value-fallback",
+		"stanza:key": "node-value_fallback",
 		"stanza:example": "no data",
 		"stanza:description": "Message in case there is no data for data set by [node-value-key]"
 	},
 	{
 		"stanza:key": "search-key",
 		"stanza:example": "value",
-		"stanza:description": "Key for data atrribute to search with suggestions. Besides this key, one can also search by path using the id followed by a / E.G.: 1/2/3"
-	},
-	{
-		"stanza:key": "search-show_path",
-		"stanza:type": "boolean",
-		"stanza:example": false,
-		"stanza:description": "Show path in suggestions"
+		"stanza:description": "Key for data atrribute to search with suggestions."
 	},
 	{
 		"stanza:key": "togostanza-custom_css_url",
@@ -18066,6 +17992,12 @@ var metadata = {
 		"stanza:type": "color",
 		"stanza:default": "#F8F9FA",
 		"stanza:description": "Background color for single column"
+	},
+	{
+		"stanza:key": "--togostanza-column-node_delimiter_width",
+		"stanza:type": "number",
+		"stanza:default": 0,
+		"stanza:description": "Border color between nodes"
 	},
 	{
 		"stanza:key": "--togostanza-column-border_color",
