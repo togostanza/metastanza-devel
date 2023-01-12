@@ -456,11 +456,6 @@ export class Axis {
     this._width = newDrawArea.width;
     this._height = newDrawArea.height;
 
-    console.log(
-      "drawArea",
-      getTitleTranslate.call(this, this.params.placement)
-    );
-
     this._titleG.attr(
       "transform",
       getTitleTranslate.call(this, this.params.placement)
@@ -524,7 +519,6 @@ export class Axis {
       "transform",
       `translate(${this._axisMargin.LEFT}, ${this._axisMargin.TOP})`
     );
-    console.log("margins", getTitleTranslate.call(this, this.params.placement));
 
     this._titleG.attr(
       "transform",
@@ -555,11 +549,6 @@ export class Axis {
     );
 
     this._redrawAxis();
-
-    console.log(
-      "placement",
-      getTitleTranslate.call(this, this.params.placement)
-    );
 
     this._titleG.attr(
       "transform",
