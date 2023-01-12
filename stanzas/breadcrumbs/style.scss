@@ -17,7 +17,7 @@ breadcrumbs-el {
 
       .node-outline {
         stroke: var(--togostanza-border-color);
-        stroke-width: calc(var(--togostanza-border-width) * 1px);
+        stroke-width: 1px;
         fill: var(--togostanza-node-background_color);
         transition: var(--togostanza-fadeout-transition);
         transition: fill 0.1s ease-in;
@@ -80,8 +80,7 @@ breadcrumbs-el {
         position: relative;
         max-width: 15em;
         margin: 0;
-        border: calc(var(--togostanza-border-width) * 1px) solid
-          var(--togostanza-border-color);
+        border: 1px solid var(--togostanza-border-color);
         border-radius: 0.5em;
         background-color: var(--togostanza-node-background_color);
         z-index: 3;

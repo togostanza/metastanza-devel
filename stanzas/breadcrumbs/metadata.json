@@ -103,12 +103,6 @@
       "stanza:description": "Border color"
     },
     {
-      "stanza:key": "--togostanza-border-width",
-      "stanza:type": "number",
-      "stanza:default": 1,
-      "stanza:description": "Border width"
-    },
-    {
       "stanza:key": "--togostanza-node-background_color_hover",
       "stanza:type": "color",
       "stanza:default": "#16ADE3",
