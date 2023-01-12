@@ -4337,25 +4337,25 @@ const _hoisted_5 = /*#__PURE__*/createBaseVNode("nav", {
 }, [
   /*#__PURE__*/createBaseVNode("a", {
     class: "nav-link active",
-    href: "#parameters",
+    href: "#tabpane-parameters",
     "data-bs-toggle": "tab",
     role: "tab"
   }, "Parameters"),
   /*#__PURE__*/createBaseVNode("a", {
     class: "nav-link",
-    href: "#styles",
+    href: "#tabpane-styles",
     "data-bs-toggle": "tab",
     role: "tab"
   }, "Styles"),
   /*#__PURE__*/createBaseVNode("a", {
     class: "nav-link",
-    href: "#events",
+    href: "#tabpane-events",
     "data-bs-toggle": "tab",
     role: "tab"
   }, "Events"),
   /*#__PURE__*/createBaseVNode("a", {
     class: "nav-link",
-    href: "#about",
+    href: "#tabpane-about",
     "data-bs-toggle": "tab",
     role: "tab"
   }, "About")
@@ -4363,22 +4363,22 @@ const _hoisted_5 = /*#__PURE__*/createBaseVNode("nav", {
 const _hoisted_6 = { class: "tab-content mt-3" };
 const _hoisted_7 = {
   class: "tab-pane px-lg-5",
-  id: "about",
+  id: "tabpane-about",
   role: "tabpanel"
 };
 const _hoisted_8 = {
   class: "tab-pane active",
-  id: "parameters",
+  id: "tabpane-parameters",
   role: "tabpanel"
 };
 const _hoisted_9 = {
   class: "tab-pane",
-  id: "styles",
+  id: "tabpane-styles",
   role: "tabpanel"
 };
 const _hoisted_10 = {
   class: "tab-pane",
-  id: "events",
+  id: "tabpane-events",
   role: "tabpanel"
 };
 const _hoisted_11 = { class: "col-lg-6" };
