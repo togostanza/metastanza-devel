@@ -32,7 +32,7 @@ import { p as pointRadial, l as link, a as linkHorizontal, b as linkVertical, c 
 import { c as curveBasis } from './basis-0dde91c7.js';
 import { T as ToolTip } from './ToolTip-8932448c.js';
 import { S as StanzaColorGenerator } from './ColorGenerator-8b50b614.js';
-import { p as prepareGraphData, g as get3DEdges, a as getGroupPlanes } from './prepareGraphData-edbe3e03.js';
+import { p as prepareGraphData, g as get3DEdges, a as getGroupPlanes } from './prepareGraphData-0d5d72c4.js';
 import './point-7945b9d0.js';
 import './ref-3a8fb5e8.js';
 import './v4-1d7bfe79.js';

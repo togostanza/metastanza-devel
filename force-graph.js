@@ -4,7 +4,7 @@ import { T as ToolTip } from './ToolTip-8932448c.js';
 import { l as line$2 } from './line-fbadf484.js';
 import { f as forceSimulation, a as forceManyBody, b as forceCenter, c as forceLink, d as forceCollide } from './manyBody-adf18816.js';
 import { d as drag } from './drag-3fddc0d5.js';
-import { p as prepareGraphData } from './prepareGraphData-edbe3e03.js';
+import { p as prepareGraphData } from './prepareGraphData-0d5d72c4.js';
 import { o as ordinal } from './linear-13370298.js';
 import './ref-3a8fb5e8.js';
 import './array-80a7907a.js';
@@ -344,22 +344,22 @@ class ForceGraph extends Stanza {
     const edges = values.links;
 
     const nodeSizeParams = {
-      dataKey: this.params["node-size-key"] || "",
-      minSize: setFallbackVal("node-size-min", 0),
-      maxSize: this.params["node-size-max"],
-      scale: this.params["node-size-scale"] || "linear",
+      dataKey: this.params["node-size_key"] || "",
+      minSize: setFallbackVal("node-size_min", 0),
+      maxSize: this.params["node-size_max"],
+      scale: this.params["node-size_scale"] || "linear",
     };
 
     const nodeColorParams = {
-      dataKey: this.params["node-color-key"] || "",
+      dataKey: this.params["node-color_key"] || "",
     };
 
     const edgeWidthParams = {
-      dataKey: this.params["edge-width-key"] || "",
-      minWidth: setFallbackVal("edge-width-min", 1),
-      maxWidth: this.params["edge-width-max"],
-      scale: this.params["edge-width-scale"] || "linear",
-      showArrows: this.params["edge-show_arrows"],
+      dataKey: this.params["edge-width_key"] || "",
+      minWidth: setFallbackVal("edge-width_min", 1),
+      maxWidth: this.params["edge-width_max"],
+      scale: this.params["edge-width_scale"] || "linear",
+      showArrows: this.params["edge-arrows_visible"],
     };
 
     const edgeColorParams = {
@@ -369,7 +369,7 @@ class ForceGraph extends Stanza {
 
     const labelsParams = {
       margin: 3,
-      dataKey: this.params["node-label-key"],
+      dataKey: this.params["node-label_key"],
     };
 
     const highlightAdjEdges = true;
@@ -377,8 +377,8 @@ class ForceGraph extends Stanza {
     const MARGIN = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
 
     const tooltipParams = {
-      dataKey: this.params["node-tooltip-key"],
-      show: nodes.some((d) => d[this.params["node-tooltip-key"]]),
+      dataKey: this.params["node-tooltip_key"],
+      show: nodes.some((d) => d[this.params["node-tooltip_key"]]),
     };
 
     // Setting color scale
@@ -522,83 +522,83 @@ var metadata = {
 		"stanza:required": true
 	},
 	{
-		"stanza:key": "node-size-key",
+		"stanza:key": "node-size_key",
 		"stanza:type": "string",
 		"stanza:example": "",
 		"stanza:description": "Set size on the node based on data key, or fallback to value of node-size-min"
 	},
 	{
-		"stanza:key": "node-size-min",
+		"stanza:key": "node-size_min",
 		"stanza:type": "number",
 		"stanza:example": 3,
 		"stanza:description": "Minimum node radius in px (fallback to 0)"
 	},
 	{
-		"stanza:key": "node-size-max",
+		"stanza:key": "node-size_max",
 		"stanza:type": "number",
 		"stanza:example": 6,
 		"stanza:description": "Maximum node radius in px"
 	},
 	{
-		"stanza:key": "node-size-scale",
+		"stanza:key": "node-size_scale",
 		"stanza:type": "single-choice",
 		"stanza:choice": [
 			"linear",
-			"sqrt",
+			"square root",
 			"log10"
 		],
-		"stanza:example": "sqrt",
+		"stanza:example": "square root",
 		"stanza:description": "Node radius scale"
 	},
 	{
-		"stanza:key": "node-color-key",
+		"stanza:key": "node-color_key",
 		"stanza:type": "string",
 		"stanza:example": "group",
 		"stanza:description": "Set color of the node based on data key"
 	},
 	{
-		"stanza:key": "edge-width-key",
+		"stanza:key": "edge-width_key",
 		"stanza:type": "string",
 		"stanza:example": "value",
 		"stanza:description": "Set width of the edge  data key"
 	},
 	{
-		"stanza:key": "edge-width-min",
+		"stanza:key": "edge-width_min",
 		"stanza:type": "number",
 		"stanza:example": 1,
 		"stanza:description": "Minimum edge width in px"
 	},
 	{
-		"stanza:key": "edge-width-max",
+		"stanza:key": "edge-width_max",
 		"stanza:type": "number",
 		"stanza:example": 1,
 		"stanza:description": "Maximum edge width in px"
 	},
 	{
-		"stanza:key": "edge-width-scale",
+		"stanza:key": "edge-width_scale",
 		"stanza:type": "single-choice",
 		"stanza:choice": [
 			"linear",
-			"sqrt",
+			"square root",
 			"log10"
 		],
 		"stanza:example": "linear",
 		"stanza:description": "Edge width scale"
 	},
 	{
-		"stanza:key": "edge-show_arrows",
+		"stanza:key": "edge-arrows_visible",
 		"stanza:type": "boolean",
 		"stanza:example": "true",
 		"stanza:description": "Show arrows"
 	},
 	{
-		"stanza:key": "node-label-key",
+		"stanza:key": "node-label_key",
 		"stanza:type": "string",
 		"stanza:example": "id",
 		"stanza:description": "Node labels data key. If empty, no labels will be shown"
 	},
 	{
-		"stanza:key": "node-tooltip-key",
+		"stanza:key": "node-tooltip_key",
 		"stanza:type": "string",
 		"stanza:example": "id",
 		"stanza:description": "Node tooltips data key. If empty, no tooltips will be shown"

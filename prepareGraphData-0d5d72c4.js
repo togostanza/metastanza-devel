@@ -79,7 +79,6 @@ function prepareGraphData (nodesC, edgesC, params) {
 
   // Edges width
   const edgeWidthScale = getScaleFunc(edgeWidthParams.scale)
-
     .domain(extent(edgesC, (d) => d[edgeWidthParams.dataKey]))
     .range([edgeWidthParams.minWidth, edgeWidthParams.maxWidth]);
 
@@ -95,7 +94,6 @@ function prepareGraphData (nodesC, edgesC, params) {
       );
       edge[symbols.edgeWidthSym] = edgeWidthParams.minWidth;
     }
-
 
     edge[symbols.sourceNodeSym] = nodeHash[edge.source];
     edge[symbols.targetNodeSym] = nodeHash[edge.target];
@@ -293,7 +291,7 @@ const getGroupPlanes = (groupHash, planeParams, circular = false) => {
 
 function getScaleFunc(scaleStr) {
   switch (scaleStr) {
-    case "sqrt":
+    case "square root":
       return sqrt();
     case "log10":
       return log();
@@ -303,4 +301,4 @@ function getScaleFunc(scaleStr) {
 }
 
 export { getGroupPlanes as a, get3DEdges as g, prepareGraphData as p };
-//# sourceMappingURL=prepareGraphData-edbe3e03.js.map
+//# sourceMappingURL=prepareGraphData-0d5d72c4.js.map
