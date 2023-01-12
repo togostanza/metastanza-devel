@@ -31,10 +31,10 @@ export default class TreeMapStanza extends Stanza {
 
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
-    const width = parseInt(css("--togostanza-outline-width"));
-    const height = parseInt(css("--togostanza-outline-height"));
+    const width = parseInt(css("--togostanza-canvas-width"));
+    const height = parseInt(css("--togostanza-canvas-height"));
 
-    const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
+    const MARGIN = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
 
     const WIDTH = width - MARGIN.LEFT - MARGIN.RIGHT;
     const HEIGHT = height - MARGIN.TOP - MARGIN.BOTTOM;

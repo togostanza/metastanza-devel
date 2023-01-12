@@ -46,6 +46,24 @@
   "stanza:menu-placement": "bottom-right",
   "stanza:style": [
     {
+      "stanza:key": "--togostanza-canvas-width",
+      "stanza:type": "number",
+      "stanza:default": 800,
+      "stanza:description": "Width"
+    },
+    {
+      "stanza:key": "--togostanza-canvas-height",
+      "stanza:type": "number",
+      "stanza:default": 380,
+      "stanza:description": "Height"
+    },
+    {
+      "stanza:key": "--togostanza-canvas-padding",
+      "stanza:type": "number",
+      "stanza:default": 10,
+      "stanza:description": "Padding"
+    },
+    {
       "stanza:key": "--togostanza-fonts-font_family",
       "stanza:type": "text",
       "stanza:default": "Helvetica Neue",
@@ -68,24 +86,6 @@
       "stanza:type": "number",
       "stanza:default": 16,
       "stanza:description": "Value font size"
-    },
-    {
-      "stanza:key": "--togostanza-outline-width",
-      "stanza:type": "number",
-      "stanza:default": 800,
-      "stanza:description": "Width"
-    },
-    {
-      "stanza:key": "--togostanza-outline-height",
-      "stanza:type": "number",
-      "stanza:default": 380,
-      "stanza:description": "Height"
-    },
-    {
-      "stanza:key": "--togostanza-outline-padding",
-      "stanza:type": "number",
-      "stanza:default": 10,
-      "stanza:description": "Padding"
     },
     {
       "stanza:key": "--togostanza-border-color",

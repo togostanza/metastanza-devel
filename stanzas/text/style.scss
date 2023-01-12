@@ -6,13 +6,13 @@
 }
 
 main {
-  padding: var(--togostanza-outline-padding);
+  padding: var(--togostanza-canvas-padding);
 }
 .container {
   display: flex;
   flex-direction: column;
-  width: calc(var(--togostanza-outline-width) * 1px);
-  height: calc(var(--togostanza-outline-height) * 1px);
+  width: calc(var(--togostanza-canvas-width) * 1px);
+  height: calc(var(--togostanza-canvas-height) * 1px);
 
   table {
     display: block;

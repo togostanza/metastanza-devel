@@ -66,11 +66,9 @@ export default class Sunburst extends Stanza {
     // get value of css vars
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
-    const width = parseFloat(css("--togostanza-outline-width"));
-    const height = parseFloat(css("--togostanza-outline-height"));
-    const padding = getMarginsFromCSSString(
-      css("--togostanza-outline-padding")
-    );
+    const width = parseFloat(css("--togostanza-canvas-width"));
+    const height = parseFloat(css("--togostanza-canvas-height"));
+    const padding = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
 
     const labelKey = this.params["node-label_key"];
     const valueKey = this.params["node-value_key"];

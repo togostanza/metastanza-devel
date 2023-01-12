@@ -44,8 +44,8 @@ export default class ForceGraph extends Stanza {
     const el = this.root.getElementById("force-graph");
 
     //data
-    const width = parseInt(css("--togostanza-outline-width"));
-    const height = parseInt(css("--togostanza-outline-height"));
+    const width = parseInt(css("--togostanza-canvas-width"));
+    const height = parseInt(css("--togostanza-canvas-height"));
 
     const values = await loadData(
       this.params["data-url"],
@@ -89,7 +89,7 @@ export default class ForceGraph extends Stanza {
 
     const highlightAdjEdges = true;
 
-    const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
+    const MARGIN = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
 
     const tooltipParams = {
       dataKey: this.params["node-tooltip-key"],
