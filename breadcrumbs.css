@@ -33,6 +33,8 @@ breadcrumbs-el {
   row-gap: 0.3em;
   align-items: start;
   width: 100%;
+  background-color: var(--togostanza-theme-background-color);
+  line-height: 0;
 }
 breadcrumbs-el > breadcrumbs-node {
   position: relative;
@@ -43,7 +45,7 @@ breadcrumbs-el > breadcrumbs-node > svg {
 }
 breadcrumbs-el > breadcrumbs-node > svg .node-outline {
   stroke: var(--togostanza-border-color);
-  stroke-width: calc(var(--togostanza-border-width) * 1px);
+  stroke-width: 1px;
   fill: var(--togostanza-node-background_color);
   transition: var(--togostanza-fadeout-transition);
   transition: fill 0.1s ease-in;
@@ -100,7 +102,7 @@ breadcrumbs-el > breadcrumbs-node > breadcrumbs-node-menu .menu-container {
   position: relative;
   max-width: 15em;
   margin: 0;
-  border: calc(var(--togostanza-border-width) * 1px) solid var(--togostanza-border-color);
+  border: 1px solid var(--togostanza-border-color);
   border-radius: 0.5em;
   background-color: var(--togostanza-node-background_color);
   z-index: 3;

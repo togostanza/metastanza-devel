@@ -39,13 +39,15 @@ class Breadcrumbs extends s {
     applyConstructor.call(this, params);
 
     //check if nodes without parents are present
-
     if (this.data.some((d) => d[this.nodeKey])) {
       this.data.forEach((d) => {
-        this.nodesMap.set("" + d[this.nodeKey], d);
+        d.parent =
+          typeof d.parent === "undefined" ? undefined : d.parent.toString();
+        d[this.nodeKey] = d[this.nodeKey].toString();
+        this.nodesMap.set(d[this.nodeKey], d);
       });
 
-      this.currentId = "" + this.nodeInitialId;
+      this.currentId = this.nodeInitialId.toString();
     } else {
       throw new Error("Key not found");
     }
@@ -53,31 +55,26 @@ class Breadcrumbs extends s {
     const idsWithoutParent = [];
 
     this.nodesMap.forEach((d) => {
-      if (!d.parent) {
-        idsWithoutParent.push("" + d[this.nodeKey]);
+      if (typeof d.parent === "undefined") {
+        idsWithoutParent.push(d[this.nodeKey]);
       }
     });
 
     if (idsWithoutParent.length > 1) {
       this.rootNodeId = "root";
-    } else if (idsWithoutParent.length === 1) {
-      this.rootNodeId = idsWithoutParent[0];
-    } else {
+      const rootNode = {
+        [this.nodeKey]: this.rootNodeId,
+        [this.nodeLabelKey]: this.rootNodeLabelText,
+      };
+      this.nodesMap.set(this.rootNodeId, rootNode);
+      this.data.push(rootNode);
+      idsWithoutParent.forEach((id) => {
+        const itemWithoutParent = this.nodesMap.get(id);
+        itemWithoutParent.parent = this.rootNodeId;
+      });
+    } else if (idsWithoutParent.length === 0) {
       throw new Error("Root node not found");
     }
-
-    const rootNode = {
-      [this.nodeKey]: this.rootNodeId,
-      [this.nodeLabelKey]: this.rootNodeLabelText,
-    };
-
-    this.nodesMap.set(this.rootNodeId, rootNode);
-    this.data.push(rootNode);
-
-    idsWithoutParent.forEach((id) => {
-      const itemWithoutParent = this.nodesMap.get("" + id);
-      itemWithoutParent.parent = this.rootNodeId;
-    });
   }
 
   firstUpdated() {
@@ -128,7 +125,7 @@ class Breadcrumbs extends s {
       const currentNode = this.nodesMap.get(id);
       if (currentNode) {
         pathToShow.push(currentNode);
-        traverse("" + currentNode.parent);
+        traverse("" + (currentNode.parent || -1));
       }
     };
     traverse(currentId);
@@ -210,9 +207,14 @@ class Breadcrumbs extends s {
               label: node[this.nodeLabelKey],
               id: node[this.nodeKey],
             }}"
-            .menuItems=${this._getByParent(node.parent).filter(
-              (d) => d[this.nodeKey] !== node[this.nodeKey]
-            )}
+            .menuItems=${this._getByParent(node.parent)
+              .filter((d) => d[this.nodeKey] !== node[this.nodeKey])
+              .map((node) => {
+                return {
+                  label: node[this.nodeLabelKey],
+                  id: node[this.nodeKey],
+                };
+              })}
             .showDropdown=${this.nodeShowDropdown}
             .iconName=${node[this.nodeKey] === this.rootNodeId
               ? this.rootNodeLabelIcon
@@ -773,11 +775,12 @@ class BreadcrumbsLit extends Stanza {
 
 function isExamplePage() {
   const hostname = window.location.hostname;
-  const pageName = window.location.pathname.match(/([^/]+)(?=\.\w+$)/gi)[0];
+  const pageName = window.location.pathname.match(/([^/]+)(?=\.\w+$)/gi);
   const stanzaId = this.metadata["@id"];
 
   if (
-    pageName === stanzaId &&
+    pageName &&
+    pageName[0] === stanzaId &&
     (hostname.includes("metastanza") ||
       hostname.includes("localhost") ||
       hostname.includes("togostanza"))
@@ -853,13 +856,6 @@ var metadata = {
 		"stanza:required": false
 	},
 	{
-		"stanza:key": "node-show_dropdown",
-		"stanza:type": "boolean",
-		"stanza:description": "Show node dropdown (neighbour nodes)",
-		"stanza:example": true,
-		"stanza:required": false
-	},
-	{
 		"stanza:key": "root_node-label_text",
 		"stanza:type": "string",
 		"stanza:description": "Text to show on root node",
@@ -871,13 +867,6 @@ var metadata = {
 		"stanza:type": "string",
 		"stanza:description": "Icon to use on root node (Font-awesome icon names)",
 		"stanza:example": "Home",
-		"stanza:required": false
-	},
-	{
-		"stanza:key": "show_copy_button",
-		"stanza:type": "boolean",
-		"stanza:description": "Show copy path button",
-		"stanza:example": false,
 		"stanza:required": false
 	},
 	{
@@ -918,12 +907,6 @@ var metadata = {
 		"stanza:type": "color",
 		"stanza:default": "#DDDCDA",
 		"stanza:description": "Border color"
-	},
-	{
-		"stanza:key": "--togostanza-border-width",
-		"stanza:type": "number",
-		"stanza:default": 1,
-		"stanza:description": "Border width"
 	},
 	{
 		"stanza:key": "--togostanza-node-background_color_hover",
