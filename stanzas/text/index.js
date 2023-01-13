@@ -59,7 +59,7 @@ export default class Text extends Stanza {
     this._dataset = value;
 
     appendCustomCss(this, this.params["custom_css_url"]);
-    appendHighlightCss(this, this.params["highlight_css_url"]);
+    appendHighlightCss(this, this.params["data-highlight_css_url"]);
 
     const container = document.createElement("div");
     container.setAttribute("class", "container");
