@@ -2,14 +2,14 @@
 @use "@/common.scss";
 
 main {
-  padding: var(--togostanza-outline-padding);
+  padding: var(--togostanza-canvas-padding);
 }
 
 #wrapper {
   position: relative;
   overflow: auto;
-  width: calc(var(--togostanza-outline-width) * 1px);
-  height: calc(var(--togostanza-outline-height) * 1px);
+  width: calc(var(--togostanza-canvas-width) * 1px);
+  height: calc(var(--togostanza-canvas-height) * 1px);
   .value {
     flex-grow: 1;
     font-weight: normal;
@@ -58,7 +58,9 @@ main {
       width: 100%;
       top: 0;
       left: 0;
-      border-top: solid 1px var(--togostanza-column-border_color);
+      border-top: solid
+        calc(var(--togostanza-column-node_delimiter_width) * 1px)
+        var(--togostanza-column-border_color);
     }
   }
   > .search-container {

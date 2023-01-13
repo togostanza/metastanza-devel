@@ -36,44 +36,26 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "node-show_borders",
-      "stanza:type": "boolean",
-      "stanza:example": false,
-      "stanza:description": "Show border between nodes"
+      "stanza:key": "node-value_key",
+      "stanza:example": "size",
+      "stanza:description": "Key for data attribute to display as value"
     },
     {
-      "stanza:key": "node-content_alignment",
+      "stanza:key": "node-value_alignment",
       "stanza:type": "single-choice",
       "stanza:choice": ["vertical", "horizontal"],
       "stanza:example": "horizontal",
       "stanza:description": "Set alignment of node content"
     },
     {
-      "stanza:key": "node-value-show",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:description": "Show value set by [node-value-key] in tree and suggestions"
-    },
-    {
-      "stanza:key": "node-value-key",
-      "stanza:example": "n",
-      "stanza:description": "Key for data attribute to display as value"
-    },
-    {
-      "stanza:key": "node-value-fallback",
+      "stanza:key": "node-value_fallback",
       "stanza:example": "no data",
       "stanza:description": "Message in case there is no data for data set by [node-value-key]"
     },
     {
       "stanza:key": "search-key",
       "stanza:example": "value",
-      "stanza:description": "Key for data atrribute to search with suggestions. Besides this key, one can also search by path using the id followed by a / E.G.: 1/2/3"
-    },
-    {
-      "stanza:key": "search-show_path",
-      "stanza:type": "boolean",
-      "stanza:example": false,
-      "stanza:description": "Show path in suggestions"
+      "stanza:description": "Key for data atrribute to search with suggestions."
     },
     {
       "stanza:key": "togostanza-custom_css_url",
@@ -84,19 +66,19 @@
   "stanza:menu-placement": "bottom-right",
   "stanza:style": [
     {
-      "stanza:key": "--togostanza-outline-width",
+      "stanza:key": "--togostanza-canvas-width",
       "stanza:type": "number",
       "stanza:default": 600,
       "stanza:description": "Width for entire stanza"
     },
     {
-      "stanza:key": "--togostanza-outline-height",
+      "stanza:key": "--togostanza-canvas-height",
       "stanza:type": "number",
       "stanza:default": 450,
-      "stanza:description": "outline height"
+      "stanza:description": "Canvas height"
     },
     {
-      "stanza:key": "--togostanza-outline-padding",
+      "stanza:key": "--togostanza-canvas-padding",
       "stanza:type": "text",
       "stanza:default": "20px",
       "stanza:description": "Padding of a stanza. CSS padding-like text (10px 10px 10px 10px)"
@@ -142,6 +124,12 @@
       "stanza:type": "color",
       "stanza:default": "#F8F9FA",
       "stanza:description": "Background color for single column"
+    },
+    {
+      "stanza:key": "--togostanza-column-node_delimiter_width",
+      "stanza:type": "number",
+      "stanza:default": 0,
+      "stanza:description": "Border color between nodes"
     },
     {
       "stanza:key": "--togostanza-column-border_color",

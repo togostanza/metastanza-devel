@@ -41,9 +41,9 @@ export default class ForceGraph extends Stanza {
 
     //data
 
-    const width = setFallbackNumVal(css("--togostanza-outline-width"), 200);
-    const height = setFallbackNumVal(css("--togostanza-outline-height"), 200);
-    const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
+    const width = setFallbackNumVal(css("--togostanza-canvas-width"), 200);
+    const height = setFallbackNumVal(css("--togostanza-canvas-height"), 200);
+    const MARGIN = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
 
     this.renderTemplate({
       template: "stanza.html.hbs",
