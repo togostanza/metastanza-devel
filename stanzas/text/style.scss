@@ -6,9 +6,9 @@
 }
 
 .container {
-  width: calc(var(--togostanza-outline-width) * 1px);
-  height: calc(var(--togostanza-outline-height) * 1px);
-  padding: var(--togostanza-outline-padding);
+  width: calc(var(--togostanza-canvas-width) * 1px);
+  height: calc(var(--togostanza-canvas-height) * 1px);
+  padding: var(--togostanza-canvas-padding);
   word-break: break-all;
   font-weight: var(--togostanza-fonts-font_weight);
 
