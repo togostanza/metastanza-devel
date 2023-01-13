@@ -11,16 +11,6 @@
   width: calc(var(--togostanza-outline-width) * 1px);
   height: calc(var(--togostanza-outline-height) * 1px);
   padding: var(--togostanza-outline-padding);
-
-  table {
-    display: block;
-    tbody {
-      tr {
-        td {
-          word-break: break-all;
-          font-weight: var(--togostanza-fonts-font_weight);
-        }
-      }
-    }
-  }
+  word-break: break-all;
+  font-weight: var(--togostanza-fonts-font_weight);
 }
