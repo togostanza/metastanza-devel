@@ -65,17 +65,21 @@ export default class Text extends Stanza {
     container.setAttribute("class", "container");
     el.appendChild(container);
 
+    const paragraph = document.createElement("p");
+    paragraph.setAttribute("class", "paragraph");
+    container.appendChild(paragraph);
+
     if (this._isMarkdownMode()) {
       const parser = new commonmark.Parser();
       const renderer = new commonmark.HtmlRenderer();
       const html = renderer.render(parser.parse(value));
-      container.innerHTML = html;
+      paragraph.innerHTML = html;
       main.querySelectorAll("pre code").forEach((el) => {
         hljs.highlightElement(el);
       });
       renderMathInElement(main);
     } else {
-      container.textContent = this._dataset;
+      paragraph.textContent = this._dataset;
     }
   }
 }

@@ -13,4 +13,10 @@
   padding: var(--togostanza-outline-padding);
   word-break: break-all;
   font-weight: var(--togostanza-fonts-font_weight);
+
+  p.paragraph {
+    margin: 0;
+    height: 100%;
+    overflow: auto;
+  }
 }
