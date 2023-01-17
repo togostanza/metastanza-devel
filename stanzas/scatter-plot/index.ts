@@ -27,6 +27,7 @@ export default class ScatterPlot extends Stanza {
   xAxis: Axis;
   yAxis: Axis;
   legend: Legend;
+  tooltips: ToolTip;
 
   menu() {
     return [
@@ -155,6 +156,11 @@ export default class ScatterPlot extends Stanza {
       this.legend.title = legendTitle;
     }
 
+    if (!this.tooltips) {
+      this.tooltips = new ToolTip();
+      main.append(this.tooltips);
+    }
+
     const drawArea = {
       x: MARGINS.LEFT,
       y: MARGINS.TOP,
@@ -200,6 +206,8 @@ export default class ScatterPlot extends Stanza {
       datum[tooltipSym] = datum[tooltipKey];
     });
 
+    const showTooltips = data.some((d) => d[tooltipSym]);
+
     let chartContent = select(svg).select(".chart-content");
 
     if (chartContent.empty()) {
@@ -214,7 +222,7 @@ export default class ScatterPlot extends Stanza {
       .selectAll("circle")
       .data(data, (d) => d[idSym]);
 
-    circlesUpdate
+    const enteredCircles = circlesUpdate
       .enter()
       .append("circle")
       .attr("class", "chart-node")
@@ -223,6 +231,10 @@ export default class ScatterPlot extends Stanza {
       .attr("cy", (d) => d[ySym])
       .attr("r", (d) => d[sizeSym])
       .attr("fill", (d) => d[colorSym]);
+
+    if (showTooltips) {
+      this.tooltips.setup(this.root.querySelectorAll("svg [data-tooltip]"));
+    }
 
     circlesUpdate.exit().remove();
   }

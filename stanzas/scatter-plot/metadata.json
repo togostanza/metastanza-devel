@@ -244,6 +244,13 @@
       "stanza:type": "text",
       "stanza:example": "Category",
       "stanza:description": "Legend title"
+    },
+    {
+      "stanza:key": "tooltips-key",
+      "stanza:type": "text",
+      "stanza:example": "pref",
+      "stanza:description": "Tooltips data key. If the key not existing, tooltips are not showing.",
+      "stanza:required": false
     }
   ],
   "stanza:menu-placement": "bottom-right",
