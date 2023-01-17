@@ -199,6 +199,20 @@
       "stanza:required": false
     },
     {
+      "stanza:key": "node-size_min",
+      "stanza:type": "number",
+      "stanza:example": 3,
+      "stanza:default": 3,
+      "stanza:description": "Minimum node radius in px (fallback to 0)"
+    },
+    {
+      "stanza:key": "node-size_max",
+      "stanza:type": "number",
+      "stanza:example": 10,
+      "stanza:default": 10,
+      "stanza:description": "Maximum node radius in px"
+    },
+    {
       "stanza:key": "legend-visible",
       "stanza:type": "boolean",
       "stanza:example": true,

@@ -71,9 +71,11 @@ export default class ScatterPlot extends Stanza {
     const yTicksLabelsAngle = this.params["axis-y-ticks_label_angle"];
     const xTicksLabelsFormat = this.params["axis-x-ticks_labels_format"];
     const yTicksLabelsFormat = this.params["axis-y-ticks_labels_format"];
+    const xGridInterval = this.params["axis-x-gridlines_interval"];
+    const yGridInterval = this.params["axis-y-gridlines_interval"];
     const sizeKey = this.params["node-size_key"];
-    const sizeMin = this.params["node-size_min"] || 1;
-    const sizeMax = this.params["node-size_max"] || 10;
+    const sizeMin = this.params["node-size_min"] || 3;
+    const sizeMax = this.params["node-size_max"] || sizeMin;
     const showLegend = this.params["legend-visible"];
     const legendTitle = this.params["legend-title"];
     const tooltipKey = this.params["tooltips-key"];
@@ -94,7 +96,13 @@ export default class ScatterPlot extends Stanza {
       (d) => parseFloat(d[sizeKey]) || 0
     );
 
-    const sizeScale = scaleSqrt().range([sizeMin, sizeMax]).domain(nodeSizes);
+    console.log(nodeSizes);
+
+    let sizeScale = scaleSqrt().range([sizeMin, sizeMax]).domain(nodeSizes);
+
+    if (!data.every((d) => d[sizeKey])) {
+      sizeScale.range([sizeMin, sizeMin]);
+    }
 
     const xAxisDomain = extent<number, number>(data, (d) =>
       parseFloat(d[xKey])
@@ -134,16 +142,21 @@ export default class ScatterPlot extends Stanza {
       const sizeMin = sizeScale(nodeSizes[0]);
       const sizeMax = sizeScale(nodeSizes[1]);
 
-      const legendSize = [sizeMin];
+      const legendSize = [{ size: sizeMin, value: nodeSizes[0] }];
 
       const rInterval = sizeMax - sizeMin;
-      const step = rInterval / (amount - 1);
+      const vInterval = nodeSizes[1] - nodeSizes[0];
+      const rStep = rInterval / (amount - 1);
+      const vStep = vInterval / (amount - 1);
 
-      for (let i = step; i < sizeMax - step; i += step) {
-        legendSize.push(i);
+      for (let i = 1; i < amount - 1; i++) {
+        legendSize.push({
+          size: sizeMin + i * rStep,
+          value: nodeSizes[0] + i * vStep,
+        });
       }
 
-      legendSize.push(sizeMax);
+      legendSize.push({ size: sizeMax, value: nodeSizes[1] });
 
       return legendSize;
     }
@@ -154,9 +167,9 @@ export default class ScatterPlot extends Stanza {
 
       this.legend.items = getNodeSizesForLegend().map((item, i) => ({
         id: "" + i,
-        value: format(".2s")(sizeScale.invert(item)),
+        value: format(".2s")(item.value),
         color: colorGenerator.stanzaColor[0],
-        size: item * 2,
+        size: item.size * 2,
       }));
 
       this.legend.title = legendTitle;
@@ -186,7 +199,7 @@ export default class ScatterPlot extends Stanza {
       margins: axisInnerMargins,
       ticksInterval: xTicksInterval,
       tickLabelsAngle: xTicksLabelsAngle,
-      gridInterval: undefined,
+      gridInterval: xGridInterval,
       ticksLabelsFormat: xTicksLabelsFormat,
     });
 
@@ -200,7 +213,7 @@ export default class ScatterPlot extends Stanza {
       margins: axisInnerMargins,
       ticksInterval: yTicksInterval,
       tickLabelsAngle: yTicksLabelsAngle,
-      gridInterval: undefined,
+      gridInterval: yGridInterval,
       ticksLabelsFormat: yTicksLabelsFormat,
     });
 
