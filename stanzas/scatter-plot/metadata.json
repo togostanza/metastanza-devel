@@ -232,6 +232,18 @@
       "stanza:default": "count",
       "stanza:description": "Data key to use as node size",
       "stanza:required": false
+    },
+    {
+      "stanza:key": "legend-visible",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Whether to show the legend"
+    },
+    {
+      "stanza:key": "legend-title",
+      "stanza:type": "text",
+      "stanza:example": "Category",
+      "stanza:description": "Legend title"
     }
   ],
   "stanza:menu-placement": "bottom-right",

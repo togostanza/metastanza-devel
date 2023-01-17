@@ -1,5 +1,5 @@
 import Stanza from "togostanza/stanza";
-import { select, scaleOrdinal, scaleSqrt, extent } from "d3";
+import { select, scaleOrdinal, scaleSqrt, extent, format } from "d3";
 import loadData from "togostanza-utils/load-data";
 import ToolTip from "../../lib/ToolTip";
 import Legend from "../../lib/Legend2";
@@ -55,6 +55,7 @@ export default class ScatterPlot extends Stanza {
     const MARGINS: MarginsT = getMarginsFromCSSString(
       css("--togostanza-canvas-padding")
     );
+
     const xKey = this.params["axis-x-key"];
     const yKey = this.params["axis-y-key"];
     const xScale = this.params["axis-x-scale"];
@@ -66,6 +67,9 @@ export default class ScatterPlot extends Stanza {
     const colorKey = this.params["node-color_key"];
     const sizeMin = this.params["node-size_min"] || 1;
     const sizeMax = this.params["node-size_max"] || 10;
+    const showLegend = this.params["legend-visible"];
+    const legendTitle = this.params["legend-title"];
+    const tooltipKey = this.params["tooltips-key"];
 
     //const groupingKey = this.params["grouping-key"];
     const width = parseInt(css("--togostanza-canvas-width"));
@@ -76,13 +80,12 @@ export default class ScatterPlot extends Stanza {
     const idSym = Symbol("id");
     const xSym = Symbol("x");
     const ySym = Symbol("y");
+    const tooltipSym = Symbol("tooltip");
 
     const nodeSizes = extent<number, number>(
       data,
       (d) => parseFloat(d[sizeKey]) || 0
     );
-
-    console.log(nodeSizes);
 
     const sizeScale = scaleSqrt().range([sizeMin, sizeMax]).domain(nodeSizes);
 
@@ -120,7 +123,7 @@ export default class ScatterPlot extends Stanza {
       existingLegend.remove();
     }
 
-    function getNodeSizesForLegend(amount = 5) {
+    function getNodeSizesForLegend(amount = 7) {
       const sizeMin = sizeScale(nodeSizes[0]);
       const sizeMax = sizeScale(nodeSizes[1]);
 
@@ -138,15 +141,19 @@ export default class ScatterPlot extends Stanza {
       return legendSize;
     }
 
-    this.legend = new Legend();
-    root.append(this.legend);
+    if (showLegend) {
+      this.legend = new Legend();
+      root.append(this.legend);
 
-    this.legend.items = getNodeSizesForLegend().map((item, i) => ({
-      id: "" + i,
-      label: sizeScale.invert(item).toFixed(2),
-      color: colorGenerator.stanzaColor[0],
-      size: item * 2,
-    }));
+      this.legend.items = getNodeSizesForLegend().map((item, i) => ({
+        id: "" + i,
+        value: format(".2s")(sizeScale.invert(item)),
+        color: colorGenerator.stanzaColor[0],
+        size: item * 2,
+      }));
+
+      this.legend.title = legendTitle;
+    }
 
     const drawArea = {
       x: MARGINS.LEFT,
@@ -190,21 +197,20 @@ export default class ScatterPlot extends Stanza {
       datum[xSym] = this.xAxis.scale(parseFloat(datum[xKey]));
       datum[ySym] = this.yAxis.scale(parseFloat(datum[yKey]));
       datum[colorSym] = colorGenerator.stanzaColor[0];
+      datum[tooltipSym] = datum[tooltipKey];
     });
 
     let chartContent = select(svg).select(".chart-content");
 
     if (chartContent.empty()) {
-      chartContent = select(svg)
-        .append("g")
-        .attr(
-          "transform",
-          `translate(${this.xAxis.axisArea.x}, ${this.xAxis.axisArea.y})`
-        )
-        .classed("chart-content", true);
+      chartContent = select(svg).append("g").classed("chart-content", true);
     }
 
     const circlesUpdate = chartContent
+      .attr(
+        "transform",
+        `translate(${this.xAxis.axisArea.x}, ${this.xAxis.axisArea.y})`
+      )
       .selectAll("circle")
       .data(data, (d) => d[idSym]);
 
@@ -212,6 +218,7 @@ export default class ScatterPlot extends Stanza {
       .enter()
       .append("circle")
       .attr("class", "chart-node")
+      .attr("data-tooltip", (d) => d[tooltipSym])
       .attr("cx", (d) => d[xSym])
       .attr("cy", (d) => d[ySym])
       .attr("r", (d) => d[sizeSym])
