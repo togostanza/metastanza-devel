@@ -1,6 +1,16 @@
 // Load the repository-wide global style here. The actual file is located at ../common.scss for details.
 @use "@/common.scss";
 
+:host {
+  position: relative;
+}
+
+togostanza--legend2 {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
 main {
   padding: 1rem 2rem;
   > svg {
