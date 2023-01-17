@@ -18,6 +18,11 @@ main {
       cursor: pointer;
       stroke: var(--togostanza-border-color);
       stroke-width: var(--togostanza-border-width);
+      transition: var(--togostanza-fadeout-transition);
+      &.-fadeout {
+        opacity: var(--togostanza-fadeout-opacity);
+        transition: var(--togostanza-fadeout-transition);
+      }
     }
   }
 }

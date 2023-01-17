@@ -241,8 +241,17 @@ export default class ScatterPlot extends Stanza {
       .attr("fill", (d) => d[colorSym]);
 
     if (showTooltips) {
-      this.tooltips.setup(this.root.querySelectorAll("svg [data-tooltip]"));
+      this.tooltips.setup(enteredCircles.nodes());
     }
+
+    enteredCircles.on("mouseenter", function () {
+      const node = select(this);
+      enteredCircles.classed("-fadeout", true);
+      node.classed("-fadeout", false);
+    });
+    enteredCircles.on("mouseleave", function () {
+      enteredCircles.classed("-fadeout", false);
+    });
 
     circlesUpdate.exit().remove();
   }
