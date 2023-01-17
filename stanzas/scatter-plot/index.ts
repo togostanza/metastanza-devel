@@ -96,13 +96,7 @@ export default class ScatterPlot extends Stanza {
       (d) => parseFloat(d[sizeKey]) || 0
     );
 
-    console.log(nodeSizes);
-
-    let sizeScale = scaleSqrt().range([sizeMin, sizeMax]).domain(nodeSizes);
-
-    if (!data.every((d) => d[sizeKey])) {
-      sizeScale.range([sizeMin, sizeMin]);
-    }
+    const sizeScale = scaleSqrt().range([sizeMin, sizeMax]).domain(nodeSizes);
 
     const xAxisDomain = extent<number, number>(data, (d) =>
       parseFloat(d[xKey])
@@ -132,7 +126,7 @@ export default class ScatterPlot extends Stanza {
       this.yAxis = new Axis(svg);
     }
 
-    const existingLegend = this.root.querySelector("togostanza--legend");
+    const existingLegend = this.root.querySelector("togostanza--legend2");
 
     if (existingLegend) {
       existingLegend.remove();
@@ -159,20 +153,6 @@ export default class ScatterPlot extends Stanza {
       legendSize.push({ size: sizeMax, value: nodeSizes[1] });
 
       return legendSize;
-    }
-
-    if (showLegend) {
-      this.legend = new Legend();
-      root.append(this.legend);
-
-      this.legend.items = getNodeSizesForLegend().map((item, i) => ({
-        id: "" + i,
-        value: format(".2s")(item.value),
-        color: colorGenerator.stanzaColor[0],
-        size: item.size * 2,
-      }));
-
-      this.legend.title = legendTitle;
     }
 
     if (!this.tooltips) {
@@ -218,7 +198,8 @@ export default class ScatterPlot extends Stanza {
     });
 
     data.forEach((datum, i) => {
-      datum[sizeSym] = sizeScale(parseFloat(datum[sizeKey]));
+      const size = parseFloat(datum[sizeKey]);
+      datum[sizeSym] = isNaN(size) ? sizeMin : sizeScale(size);
       datum[idSym] =
         "" + i + datum[xKey] + datum[yKey] + datum[sizeKey] + xScale + yScale;
       datum[xSym] = this.xAxis.scale(parseFloat(datum[xKey]));
@@ -226,6 +207,20 @@ export default class ScatterPlot extends Stanza {
       datum[colorSym] = colorGenerator.stanzaColor[0];
       datum[tooltipSym] = datum[tooltipKey];
     });
+
+    if (showLegend) {
+      this.legend = new Legend();
+      root.append(this.legend);
+
+      this.legend.items = getNodeSizesForLegend().map((item, i) => ({
+        id: "" + i,
+        value: format(".2s")(item.value),
+        color: colorGenerator.stanzaColor[0],
+        size: item.size * 2,
+      }));
+
+      this.legend.title = legendTitle;
+    }
 
     const showTooltips = data.some((d) => d[tooltipSym]);
 
