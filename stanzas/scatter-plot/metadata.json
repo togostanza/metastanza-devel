@@ -37,7 +37,7 @@
     {
       "stanza:key": "axis-x-title",
       "stanza:type": "text",
-      "stanza:example": "Category",
+      "stanza:example": "Density",
       "stanza:computed": true,
       "stanza:description": "Axis title",
       "stanza:required": false
@@ -95,7 +95,7 @@
     {
       "stanza:key": "axis-x-ticks_labels_format",
       "stanza:type": "text",
-      "stanza:example": "",
+      "stanza:example": ",.2r",
       "stanza:description": "Axis ticks format, in d3.format or d3.timeFormat string form (time scale). In case of time scale, use d3.timeFormat format string (https://pubs.opengroup.org/onlinepubs/009695399/functions/strptime.html), fallback value for time scale is '%b %d %I %p'. Have no effect in case of ordinal scale)",
       "stanza:required": false
     },
@@ -128,7 +128,7 @@
     },
     {
       "stanza:key": "axis-y-key",
-      "stanza:type": "population",
+      "stanza:type": "text",
       "stanza:example": "area",
       "stanza:description": "Y axis data key",
       "stanza:required": true
@@ -136,7 +136,7 @@
     {
       "stanza:key": "axis-y-title",
       "stanza:type": "text",
-      "stanza:example": "Data",
+      "stanza:example": "Area",
       "stanza:computed": true,
       "stanza:description": "Axis title",
       "stanza:required": false
@@ -144,7 +144,7 @@
     {
       "stanza:key": "axis-y-title_padding",
       "stanza:type": "number",
-      "stanza:example": 20,
+      "stanza:example": 45,
       "stanza:default": 20,
       "stanza:description": "Axis title padding in px",
       "stanza:required": false
@@ -160,7 +160,7 @@
     {
       "stanza:key": "axis-y-scale",
       "stanza:type": "single-choice",
-      "stanza:choice": ["linear", "log10", "ordinal", "time"],
+      "stanza:choice": ["linear", "log10"],
       "stanza:example": "linear",
       "stanza:default": "linear",
       "stanza:description": "Axis scale",
@@ -177,7 +177,7 @@
     {
       "stanza:key": "axis-y-ticks_labels_format",
       "stanza:type": "text",
-      "stanza:example": "",
+      "stanza:example": ",.2r",
       "stanza:default": "",
       "stanza:description": "Axis ticks interval format, in d3.format string form",
       "stanza:required": false
@@ -191,45 +191,10 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "axis-y-gridlines_interval_units",
-      "stanza:type": "single-choice",
-      "stanza:choice": [
-        "none",
-        "year",
-        "month",
-        "week",
-        "day",
-        "hour",
-        "minute",
-        "second"
-      ],
-      "stanza:example": "none",
-      "stanza:default": "none",
-      "stanza:description": "Axis grid lines interval units. (Effective only for time scale)",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "node-size_key",
       "stanza:type": "text",
-      "stanza:example": "area",
+      "stanza:example": "population",
       "stanza:default": "",
-      "stanza:description": "Data key to use as node size",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "node-color_key",
-      "stanza:type": "text",
-      "stanza:example": "density",
-      "stanza:default": "",
-      "stanza:description": "Data key to use as node size",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "node-size_scale",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["linear", "square root", "log10"],
-      "stanza:example": "square root",
-      "stanza:default": "count",
       "stanza:description": "Data key to use as node size",
       "stanza:required": false
     },
@@ -242,7 +207,7 @@
     {
       "stanza:key": "legend-title",
       "stanza:type": "text",
-      "stanza:example": "Category",
+      "stanza:example": "Population",
       "stanza:description": "Legend title"
     },
     {
@@ -330,7 +295,7 @@
     {
       "stanza:key": "--togostanza-canvas-padding",
       "stanza:type": "text",
-      "stanza:default": "30px",
+      "stanza:default": "20 20 50 55",
       "stanza:description": "Togostanza element inner padding"
     },
     {

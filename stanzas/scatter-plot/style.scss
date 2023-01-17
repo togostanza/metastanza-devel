@@ -15,6 +15,7 @@ main {
   padding: 1rem 2rem;
   > svg {
     .chart-node {
+      cursor: pointer;
       stroke: var(--togostanza-border-color);
       stroke-width: var(--togostanza-border-width);
     }

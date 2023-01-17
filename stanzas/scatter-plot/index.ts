@@ -64,8 +64,14 @@ export default class ScatterPlot extends Stanza {
     const xTitle = this.params["axis-x-title"];
     const xTitlePadding = this.params["axis-x-title_padding"];
     const yTitle = this.params["axis-y-title"];
+    const yTitlePadding = this.params["axis-y-title_padding"];
+    const xTicksInterval = this.params["axis-x-ticks_interval"];
+    const yTicksInterval = this.params["axis-y-ticks_interval"];
+    const xTicksLabelsAngle = this.params["axis-x-ticks_label_angle"];
+    const yTicksLabelsAngle = this.params["axis-y-ticks_label_angle"];
+    const xTicksLabelsFormat = this.params["axis-x-ticks_labels_format"];
+    const yTicksLabelsFormat = this.params["axis-y-ticks_labels_format"];
     const sizeKey = this.params["node-size_key"];
-    const colorKey = this.params["node-color_key"];
     const sizeMin = this.params["node-size_min"] || 1;
     const sizeMax = this.params["node-size_max"] || 10;
     const showLegend = this.params["legend-visible"];
@@ -178,22 +184,24 @@ export default class ScatterPlot extends Stanza {
       drawArea,
       domain: xAxisDomain,
       margins: axisInnerMargins,
-      ticksInterval: this.params["axis-x-ticks_interval"],
-      tickLabelsAngle: this.params["axis-x-ticks_label_angle"],
+      ticksInterval: xTicksInterval,
+      tickLabelsAngle: xTicksLabelsAngle,
       gridInterval: undefined,
+      ticksLabelsFormat: xTicksLabelsFormat,
     });
 
     this.yAxis.update({
       scale: yScale,
       placement: "left",
-      title: this.params["axis-y-title"],
-      titlePadding: this.params["axis-y-title_padding"],
+      title: yTitle,
+      titlePadding: yTitlePadding,
       drawArea,
       domain: yAxisDomain,
       margins: axisInnerMargins,
-      ticksInterval: this.params["axis-y-ticks_interval"],
-      tickLabelsAngle: this.params["axis-y-ticks_label_angle"],
+      ticksInterval: yTicksInterval,
+      tickLabelsAngle: yTicksLabelsAngle,
       gridInterval: undefined,
+      ticksLabelsFormat: yTicksLabelsFormat,
     });
 
     data.forEach((datum, i) => {
