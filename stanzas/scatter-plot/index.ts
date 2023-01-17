@@ -1,18 +1,9 @@
 import Stanza from "togostanza/stanza";
-import {
-  select,
-  scaleOrdinal,
-  scaleSqrt,
-  group,
-  extent,
-  scaleLog,
-  scaleLinear,
-} from "d3";
+import { select, scaleOrdinal, scaleSqrt, extent } from "d3";
 import loadData from "togostanza-utils/load-data";
 import ToolTip from "../../lib/ToolTip";
-import Legend from "../../lib/Legend";
+import Legend from "../../lib/Legend2";
 import { StanzaColorGenerator } from "../../lib/ColorGenerator";
-import { v4 as uuidv4 } from "uuid";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -35,6 +26,7 @@ export default class ScatterPlot extends Stanza {
   _data: any[];
   xAxis: Axis;
   yAxis: Axis;
+  legend: Legend;
 
   menu() {
     return [
@@ -89,6 +81,9 @@ export default class ScatterPlot extends Stanza {
       data,
       (d) => parseFloat(d[sizeKey]) || 0
     );
+
+    console.log(nodeSizes);
+
     const sizeScale = scaleSqrt().range([sizeMin, sizeMax]).domain(nodeSizes);
 
     const xAxisDomain = extent<number, number>(data, (d) =>
@@ -97,9 +92,6 @@ export default class ScatterPlot extends Stanza {
     const yAxisDomain = extent<number, number>(data, (d) =>
       parseFloat(d[yKey])
     );
-
-    const colorKeys = [...new Set(data.map((d) => d[colorKey]))];
-    // color.domain(groupNames);
 
     const root = this.root;
 
@@ -121,6 +113,40 @@ export default class ScatterPlot extends Stanza {
     if (!this.yAxis) {
       this.yAxis = new Axis(svg);
     }
+
+    const existingLegend = this.root.querySelector("togostanza--legend");
+
+    if (existingLegend) {
+      existingLegend.remove();
+    }
+
+    function getNodeSizesForLegend(amount = 5) {
+      const sizeMin = sizeScale(nodeSizes[0]);
+      const sizeMax = sizeScale(nodeSizes[1]);
+
+      const legendSize = [sizeMin];
+
+      const rInterval = sizeMax - sizeMin;
+      const step = rInterval / (amount - 1);
+
+      for (let i = step; i < sizeMax - step; i += step) {
+        legendSize.push(i);
+      }
+
+      legendSize.push(sizeMax);
+
+      return legendSize;
+    }
+
+    this.legend = new Legend();
+    root.append(this.legend);
+
+    this.legend.items = getNodeSizesForLegend().map((item, i) => ({
+      id: "" + i,
+      label: sizeScale.invert(item).toFixed(2),
+      color: colorGenerator.stanzaColor[0],
+      size: item * 2,
+    }));
 
     const drawArea = {
       x: MARGINS.LEFT,
@@ -166,9 +192,6 @@ export default class ScatterPlot extends Stanza {
       datum[colorSym] = colorGenerator.stanzaColor[0];
     });
 
-    const logval = scaleLog().range([0, 100]).domain([1, 10000]);
-    const linval = scaleLinear().range([0, 100]).domain([1, 10000]);
-
     let chartContent = select(svg).select(".chart-content");
 
     if (chartContent.empty()) {
@@ -185,13 +208,15 @@ export default class ScatterPlot extends Stanza {
       .selectAll("circle")
       .data(data, (d) => d[idSym]);
 
-    const circlesEnter = circlesUpdate
+    circlesUpdate
       .enter()
       .append("circle")
+      .attr("class", "chart-node")
       .attr("cx", (d) => d[xSym])
       .attr("cy", (d) => d[ySym])
       .attr("r", (d) => d[sizeSym])
       .attr("fill", (d) => d[colorSym]);
+
     circlesUpdate.exit().remove();
   }
 }

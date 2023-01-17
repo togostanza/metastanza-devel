@@ -315,6 +315,18 @@
       "stanza:description": "Togostanza element inner padding"
     },
     {
+      "stanza:key": "--togostanza-border-color",
+      "stanza:type": "color",
+      "stanza:default": "#4E5059",
+      "stanza:description": "Border color"
+    },
+    {
+      "stanza:key": "--togostanza-border-width",
+      "stanza:type": "number",
+      "stanza:default": 0.5,
+      "stanza:description": "Border width"
+    },
+    {
       "stanza:key": "--togostanza-axis-zero_line_color",
       "stanza:type": "color",
       "stanza:default": "#FF0000",
