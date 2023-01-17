@@ -1,5 +1,13 @@
 import Stanza from "togostanza/stanza";
-import { select, scaleOrdinal, scaleSqrt, group, extent } from "d3";
+import {
+  select,
+  scaleOrdinal,
+  scaleSqrt,
+  group,
+  extent,
+  scaleLog,
+  scaleLinear,
+} from "d3";
 import loadData from "togostanza-utils/load-data";
 import ToolTip from "../../lib/ToolTip";
 import Legend from "../../lib/Legend";
@@ -93,22 +101,23 @@ export default class ScatterPlot extends Stanza {
     const colorKeys = [...new Set(data.map((d) => d[colorKey]))];
     // color.domain(groupNames);
 
-    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-
-    svg.setAttribute("width", width.toString());
-    svg.setAttribute("height", height.toString());
-
     const root = this.root;
 
     const main = root.querySelector("main");
 
-    if (!main.querySelector("svg")) {
+    let svg = main.querySelector("svg");
+    if (!svg) {
+      svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+
+      svg.setAttribute("width", width.toString());
+      svg.setAttribute("height", height.toString());
       main.append(svg);
     }
 
     if (!this.xAxis) {
       this.xAxis = new Axis(svg);
     }
+
     if (!this.yAxis) {
       this.yAxis = new Axis(svg);
     }
@@ -130,36 +139,47 @@ export default class ScatterPlot extends Stanza {
       drawArea,
       domain: xAxisDomain,
       margins: axisInnerMargins,
+      ticksInterval: this.params["axis-x-ticks_interval"],
       tickLabelsAngle: this.params["axis-x-ticks_label_angle"],
-      ticksInterval: undefined,
+      gridInterval: undefined,
     });
 
     this.yAxis.update({
-      scale: this.params["axis-y-scale"],
+      scale: yScale,
       placement: "left",
       title: this.params["axis-y-title"],
       titlePadding: this.params["axis-y-title_padding"],
       drawArea,
       domain: yAxisDomain,
       margins: axisInnerMargins,
-      ticksInterval: undefined,
+      ticksInterval: this.params["axis-y-ticks_interval"],
       tickLabelsAngle: this.params["axis-y-ticks_label_angle"],
+      gridInterval: undefined,
     });
 
-    for (const datum of data) {
+    data.forEach((datum, i) => {
       datum[sizeSym] = sizeScale(parseFloat(datum[sizeKey]));
-      datum[idSym] = uuidv4();
+      datum[idSym] =
+        "" + i + datum[xKey] + datum[yKey] + datum[sizeKey] + xScale + yScale;
       datum[xSym] = this.xAxis.scale(parseFloat(datum[xKey]));
       datum[ySym] = this.yAxis.scale(parseFloat(datum[yKey]));
-    }
+      datum[colorSym] = colorGenerator.stanzaColor[0];
+    });
 
-    const chartContent = select(svg)
-      .append("g")
-      .attr(
-        "transform",
-        `translate(${this.xAxis.axisArea.x}, ${this.xAxis.axisArea.y})`
-      )
-      .classed("chart-content", true);
+    const logval = scaleLog().range([0, 100]).domain([1, 10000]);
+    const linval = scaleLinear().range([0, 100]).domain([1, 10000]);
+
+    let chartContent = select(svg).select(".chart-content");
+
+    if (chartContent.empty()) {
+      chartContent = select(svg)
+        .append("g")
+        .attr(
+          "transform",
+          `translate(${this.xAxis.axisArea.x}, ${this.xAxis.axisArea.y})`
+        )
+        .classed("chart-content", true);
+    }
 
     const circlesUpdate = chartContent
       .selectAll("circle")
@@ -172,5 +192,6 @@ export default class ScatterPlot extends Stanza {
       .attr("cy", (d) => d[ySym])
       .attr("r", (d) => d[sizeSym])
       .attr("fill", (d) => d[colorSym]);
+    circlesUpdate.exit().remove();
   }
 }

@@ -35,15 +35,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "axis-x-placement",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["top", "bottom"],
-      "stanza:example": "bottom",
-      "stanza:description": "axis placement",
-      "stanza:required": true
-    },
-
-    {
       "stanza:key": "axis-x-title",
       "stanza:type": "text",
       "stanza:example": "Category",
@@ -140,14 +131,6 @@
       "stanza:type": "population",
       "stanza:example": "area",
       "stanza:description": "Y axis data key",
-      "stanza:required": true
-    },
-    {
-      "stanza:key": "axis-y-placement",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["left", "right"],
-      "stanza:example": "left",
-      "stanza:description": "Y axis placement",
       "stanza:required": true
     },
     {
