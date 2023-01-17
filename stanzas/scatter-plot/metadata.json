@@ -11,12 +11,19 @@
   "stanza:created": "2023-01-16",
   "stanza:updated": "2023-01-16",
   "stanza:parameter": [
-    { "stanza:include": "togostanza-utils/params/data-chart.json" },
     {
       "stanza:key": "data-url",
       "stanza:type": "text",
       "stanza:example": "https://sparql-support.dbcls.jp/sparqlist/api/metastanza_scatterplot.json",
       "stanza:description": "Data source URL",
+      "stanza:required": true
+    },
+    {
+      "stanza:key": "data-type",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
+      "stanza:example": "json",
+      "stanza:description": "Data type",
       "stanza:required": true
     },
     {
