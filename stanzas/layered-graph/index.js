@@ -352,10 +352,6 @@ export default class ForceGraph extends Stanza {
 
       points.sort(point3d.sort);
 
-      if (tooltipParams.show) {
-        p.attr("data-tooltip", (d) => d[tooltipParams.dataKey]);
-      }
-
       points.exit().remove();
     }
 
@@ -541,7 +537,6 @@ export default class ForceGraph extends Stanza {
 
         d3.select(this).classed("active", true).classed("fadeout", false);
 
-        console.log(points.nodes());
         // highlight nodes belonging to this group
         points.classed("fadeout", true);
         points.classed("active", false);
@@ -666,6 +661,10 @@ export default class ForceGraph extends Stanza {
     init();
 
     if (tooltipParams.show) {
+      const points = svgG.selectAll("circle.node");
+      points.attr("data-tooltip", (d) => {
+        return d[tooltipParams.dataKey];
+      });
       this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
     }
   }
