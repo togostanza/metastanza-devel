@@ -16,7 +16,7 @@ main {
     font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
   }
   .highlighted {
-    stroke: var(--togostanza-cell-border_hover_color);
+    stroke: var(--togostanza-selected-border_color);
   }
   rect {
     stroke: var(--togostanza-border-color);

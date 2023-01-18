@@ -249,7 +249,7 @@
       "stanza:description": "Border width"
     },
     {
-      "stanza:key": "--togostanza-cell-border_hover_color",
+      "stanza:key": "--togostanza-selected-border_color",
       "stanza:type": "color",
       "stanza:default": "#FFDF3D",
       "stanza:description": "Hover border color"
