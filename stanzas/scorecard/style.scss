@@ -1,6 +1,10 @@
 // Load the repository-wide global style here. The actual file is located at ../common.scss for details.
 @use "@/common.scss";
 
+.wrapper {
+  padding: var(--togostanza-canvas-padding);
+}
+
 .title-key {
   fill: var(--togostanza-fonts-font_color_secondary);
   font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);

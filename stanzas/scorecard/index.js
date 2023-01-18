@@ -54,8 +54,12 @@ export default class Scorecard extends Stanza {
       this.params["title-text"] || dataset[titleKey] || scoreKey;
 
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("width", padding.LEFT + width + padding.RIGHT);
-    svg.setAttribute("height", padding.TOP + height + padding.BOTTOM);
+    svg.setAttribute("width", width);
+    svg.setAttribute("height", height);
+    const scale = Math.min(
+      width / (width + padding.LEFT + padding.RIGHT),
+      height / (height + padding.TOP + padding.BOTTOM)
+    );
     svg.classList.add("svg");
     el.appendChild(svg);
 
@@ -90,8 +94,10 @@ export default class Scorecard extends Stanza {
 
     wrapper.setAttribute(
       "transform",
-      `translate(${padding.LEFT + width / 2},
-      ${padding.TOP + height / 2 - wrapper.getBBox().height / 2})`
+      `translate(${width / 2 + padding.LEFT},
+      ${
+        height / 2 - wrapper.getBBox().height / 2 + padding.TOP
+      }) scale(${scale})`
     );
   }
 }
