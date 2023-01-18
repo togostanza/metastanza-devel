@@ -51,8 +51,9 @@ export default class Scorecard extends Stanza {
     const titleText = dataset[titleKey];
     this._data = [{ [scoreKey]: scoreValue }];
 
-    const unit = this.params["unit-visible"];
-    const unitText = this.params["unit-text"];
+    const prefixText = this.params["data-prefix"];
+    const suffixText = this.params["data-suffix"];
+    const affixSpace = 5;
 
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("width", width);
@@ -91,43 +92,41 @@ export default class Scorecard extends Stanza {
     scoreValueText.setAttribute("text-anchor", "middle");
     scoreWrapper.append(scoreValueText);
 
-    const unitValueText = document.createElementNS(
+    const prefixValueText = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "text"
     );
-    const addUnit = () => {
-      unitValueText.classList.add("unit-value");
-      unitValueText.textContent = unitText;
-      scoreWrapper.append(unitValueText);
-    };
+    prefixValueText.classList.add("prefix-value");
+    prefixValueText.textContent = prefixText;
+    prefixValueText.setAttribute("text-anchor", "end");
+    prefixValueText.setAttribute(
+      "x",
+      -scoreValueText.getBBox().width / 2 - affixSpace
+    );
+    scoreWrapper.append(prefixValueText);
 
-    const unitSpace = 5;
-    switch (unit) {
-      case "prefix":
-        addUnit();
-        unitValueText.setAttribute("text-anchor", "end");
-        unitValueText.setAttribute(
-          "x",
-          -scoreValueText.getBBox().width / 2 - unitSpace
-        );
-        break;
-      case "suffix":
-        addUnit();
-        unitValueText.setAttribute(
-          "x",
-          scoreValueText.getBBox().width / 2 + unitSpace
-        );
-        break;
-    }
+    const suffixValueText = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "text"
+    );
+    suffixValueText.classList.add("suffix-value");
+    suffixValueText.textContent = suffixText;
+    suffixValueText.setAttribute(
+      "x",
+      scoreValueText.getBBox().width / 2 + affixSpace
+    );
+    scoreWrapper.append(suffixValueText);
 
     if (titleText) {
       titleKeyText.setAttribute("y", fontSizeSecondary);
       scoreValueText.setAttribute("y", fontSizePrimary + fontSizeSecondary);
-      unitValueText.setAttribute("y", fontSizePrimary + fontSizeSecondary);
+      prefixValueText.setAttribute("y", fontSizePrimary + fontSizeSecondary);
+      suffixValueText.setAttribute("y", fontSizePrimary + fontSizeSecondary);
     } else {
       titleKeyText.setAttribute(`style`, `display: none;`);
       scoreValueText.setAttribute("y", fontSizePrimary);
-      unitValueText.setAttribute("y", fontSizePrimary);
+      prefixValueText.setAttribute("y", fontSizePrimary);
+      suffixValueText.setAttribute("y", fontSizePrimary);
     }
 
     wrapper.setAttribute(

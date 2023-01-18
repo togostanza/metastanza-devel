@@ -40,17 +40,16 @@
       "stanza:description": "Key of the title text. If not set, fallback to score-key param value"
     },
     {
-      "stanza:key": "unit-visible",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["prefix", "suffix"],
-      "stanza:example": "suffix",
-      "stanza:description": "Show unit"
+      "stanza:key": "data-prefix",
+      "stanza:type": "text",
+      "stanza:example": "avg.",
+      "stanza:description": "Prefix text"
     },
     {
-      "stanza:key": "unit-text",
+      "stanza:key": "data-suffix",
       "stanza:type": "text",
       "stanza:example": "%",
-      "stanza:description": "Unit text"
+      "stanza:description": "Suffix text"
     },
     {
       "stanza:key": "togostanza-custom_css_url",
