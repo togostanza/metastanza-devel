@@ -36,7 +36,7 @@ export default class Heatmap extends Stanza {
       root.append(this.tooltip);
     }
 
-    const legendShow = this.params["legend-show"];
+    const legendShow = this.params["legend-visible"];
     const existingLegend = this.root.querySelector("togostanza--legend");
     if (existingLegend) {
       existingLegend.remove();

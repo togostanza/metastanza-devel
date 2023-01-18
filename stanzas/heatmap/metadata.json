@@ -30,8 +30,9 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "legend-show",
+      "stanza:key": "legend-visible",
       "stanza:type": "boolean",
+      "stanza:label": "Show legend",
       "stanza:example": true,
       "stanza:description": "Whether show the legend"
     },
