@@ -51,6 +51,9 @@ export default class Scorecard extends Stanza {
     const titleText = dataset[titleKey];
     this._data = [{ [scoreKey]: scoreValue }];
 
+    const unit = this.params["unit-visible"];
+    const unitText = this.params["unit-text"];
+
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("width", width);
     svg.setAttribute("height", height);
@@ -73,6 +76,12 @@ export default class Scorecard extends Stanza {
     titleKeyText.setAttribute("text-anchor", "middle");
     wrapper.append(titleKeyText);
 
+    const scoreWrapper = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "g"
+    );
+    wrapper.appendChild(scoreWrapper);
+
     const scoreValueText = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "text"
@@ -80,14 +89,45 @@ export default class Scorecard extends Stanza {
     scoreValueText.classList.add("score-value");
     scoreValueText.textContent = scoreValue;
     scoreValueText.setAttribute("text-anchor", "middle");
-    wrapper.append(scoreValueText);
+    scoreWrapper.append(scoreValueText);
+
+    const unitValueText = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "text"
+    );
+    const addUnit = () => {
+      unitValueText.classList.add("unit-value");
+      unitValueText.textContent = unitText;
+      scoreWrapper.append(unitValueText);
+    };
+
+    const unitSpace = 5;
+    switch (unit) {
+      case "prefix":
+        addUnit();
+        unitValueText.setAttribute("text-anchor", "end");
+        unitValueText.setAttribute(
+          "x",
+          -scoreValueText.getBBox().width / 2 - unitSpace
+        );
+        break;
+      case "suffix":
+        addUnit();
+        unitValueText.setAttribute(
+          "x",
+          scoreValueText.getBBox().width / 2 + unitSpace
+        );
+        break;
+    }
 
     if (titleText) {
       titleKeyText.setAttribute("y", fontSizeSecondary);
       scoreValueText.setAttribute("y", fontSizePrimary + fontSizeSecondary);
+      unitValueText.setAttribute("y", fontSizePrimary + fontSizeSecondary);
     } else {
       titleKeyText.setAttribute(`style`, `display: none;`);
       scoreValueText.setAttribute("y", fontSizePrimary);
+      unitValueText.setAttribute("y", fontSizePrimary);
     }
 
     wrapper.setAttribute(

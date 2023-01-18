@@ -40,6 +40,19 @@
       "stanza:description": "Key of the title text. If not set, fallback to score-key param value"
     },
     {
+      "stanza:key": "unit-visible",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["prefix", "suffix"],
+      "stanza:example": "suffix",
+      "stanza:description": "Show unit"
+    },
+    {
+      "stanza:key": "unit-text",
+      "stanza:type": "text",
+      "stanza:example": "%",
+      "stanza:description": "Unit text"
+    },
+    {
       "stanza:key": "togostanza-custom_css_url",
       "stanza:example": "",
       "stanza:description": "Stylesheet(css file) URL to override current style"
