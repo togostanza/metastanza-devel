@@ -27,29 +27,17 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "score-key",
+      "stanza:key": "data-score_key",
       "stanza:type": "text",
       "stanza:example": "value",
       "stanza:description": "Data key for score",
       "stanza:required": true
     },
     {
-      "stanza:key": "title-key",
+      "stanza:key": "data-title_key",
       "stanza:type": "text",
       "stanza:example": "key",
       "stanza:description": "Key of the title text. If not set, fallback to score-key param value"
-    },
-    {
-      "stanza:key": "title-text",
-      "stanza:type": "text",
-      "stanza:example": "seq_length",
-      "stanza:description": "Title of the score card"
-    },
-    {
-      "stanza:key": "title-show",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:description": "Show key name"
     },
     {
       "stanza:key": "togostanza-custom_css_url",

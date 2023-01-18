@@ -45,13 +45,11 @@ export default class Scorecard extends Stanza {
     const fontSizeSecondary =
       parseFloat(css("--togostanza-fonts-font_size_secondary")) || 0;
 
-    const scoreKey = this.params["score-key"];
-    const titleKey = this.params["title-key"];
+    const scoreKey = this.params["data-score_key"];
+    const titleKey = this.params["data-title_key"];
     const scoreValue = dataset[scoreKey];
+    const titleText = dataset[titleKey];
     this._data = [{ [scoreKey]: scoreValue }];
-
-    const titleText =
-      this.params["title-text"] || dataset[titleKey] || scoreKey;
 
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("width", width);
@@ -84,7 +82,7 @@ export default class Scorecard extends Stanza {
     scoreValueText.setAttribute("text-anchor", "middle");
     wrapper.append(scoreValueText);
 
-    if (this.params["title-show"]) {
+    if (titleText) {
       titleKeyText.setAttribute("y", fontSizeSecondary);
       scoreValueText.setAttribute("y", fontSizePrimary + fontSizeSecondary);
     } else {
