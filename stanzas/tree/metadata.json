@@ -42,6 +42,7 @@
     {
       "stanza:key": "graph-align_leaf_nodes",
       "stanza:type": "boolean",
+      "stanza:label": "Align leaf nodes",
       "stanza:example": false,
       "stanza:description": "Whether to align leaf nodes"
     },
