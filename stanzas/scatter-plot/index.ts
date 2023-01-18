@@ -80,7 +80,6 @@ export default class ScatterPlot extends Stanza {
     const legendTitle = this.params["legend-title"];
     const tooltipKey = this.params["tooltips-key"];
 
-    //const groupingKey = this.params["grouping-key"];
     const width = parseInt(css("--togostanza-canvas-width"));
     const height = parseInt(css("--togostanza-canvas-height"));
 
