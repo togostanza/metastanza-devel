@@ -72,12 +72,12 @@ export default class Heatmap extends Stanza {
     const tooltipHTML = (d) => d[tooltipKey];
 
     // Color scale
-    const cellColorMin = this.params["cell-color-min"];
-    const cellColorMid = this.params["cell-color-mid"];
-    const cellColorMax = this.params["cell-color-max"];
-    let cellDomainMin = parseFloat(this.params["cell-value-min"]);
-    let cellDomainMid = parseFloat(this.params["cell-value-mid"]);
-    let cellDomainMax = parseFloat(this.params["cell-value-max"]);
+    const cellColorMin = this.params["cell-color_min"];
+    const cellColorMid = this.params["cell-color_mid"];
+    const cellColorMax = this.params["cell-color_max"];
+    let cellDomainMin = parseFloat(this.params["cell-value_min"]);
+    let cellDomainMid = parseFloat(this.params["cell-value_mid"]);
+    let cellDomainMax = parseFloat(this.params["cell-value_max"]);
     const values = dataset.map((d) => parseFloat(d[cellColorKey]));
 
     if (isNaN(parseFloat(cellDomainMin))) {

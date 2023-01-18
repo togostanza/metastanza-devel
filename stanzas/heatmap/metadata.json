@@ -102,37 +102,37 @@
       "stanza:description": "Data key to color the data points. if all data keys values includes hex color, use that color, otherwise use ordinal scale from the theme colors."
     },
     {
-      "stanza:key": "cell-color-min",
+      "stanza:key": "cell-color_min",
       "stanza:type": "text",
       "stanza:example": "#6590e6",
       "stanza:description": "Cell color range min"
     },
     {
-      "stanza:key": "cell-color-mid",
+      "stanza:key": "cell-color_mid",
       "stanza:type": "text",
       "stanza:example": "#ffffff",
       "stanza:description": "Cell color range mid"
     },
     {
-      "stanza:key": "cell-color-max",
+      "stanza:key": "cell-color_max",
       "stanza:type": "text",
       "stanza:example": "#F75976",
       "stanza:description": "Cell color range max"
     },
     {
-      "stanza:key": "cell-value-min",
+      "stanza:key": "cell-value_min",
       "stanza:type": "number",
       "stanza:example": -50,
       "stanza:description": "Cell color domain min"
     },
     {
-      "stanza:key": "cell-value-mid",
+      "stanza:key": "cell-value_mid",
       "stanza:type": "number",
       "stanza:example": 0,
       "stanza:description": "Cell color domain mid"
     },
     {
-      "stanza:key": "cell-value-max",
+      "stanza:key": "cell-value_max",
       "stanza:type": "number",
       "stanza:example": 100,
       "stanza:description": "Cell color domain max"
