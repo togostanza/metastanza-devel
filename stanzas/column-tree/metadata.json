@@ -53,7 +53,7 @@
       "stanza:description": "Message in case there is no data for data set by [node-value-key]"
     },
     {
-      "stanza:key": "search-key",
+      "stanza:key": "search_key",
       "stanza:example": "value",
       "stanza:description": "Key for data atrribute to search with suggestions."
     },
