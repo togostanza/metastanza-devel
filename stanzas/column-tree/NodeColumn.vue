@@ -1,5 +1,5 @@
 <template>
-  <div class="column" :class="{ '-fixed': fixedWidthColumns }">
+  <div class="column">
     <span
       v-for="node in nodes"
       :key="node.id"
@@ -9,8 +9,9 @@
           '-highlighted':
             node.id === highlightedNode && hasChildren(node.children),
         },
-        { '-with-border': showBorderNodes },
+        '-with-border',
       ]"
+      @click="hasChildren(node.children) ? setParent(node.id) : null"
     >
       <input
         type="checkbox"
@@ -18,15 +19,11 @@
         @input="setCheckedNode(node)"
       />
 
-      <span
-        class="label"
-        :class="`-${nodeContentAlignment}`"
-        @click="hasChildren(node.children) ? setParent(node.id) : null"
-      >
+      <span class="label" :class="`-${nodeValueAlignment}`">
         <strong class="title">
           {{ node[keys.label] }}
         </strong>
-        <span v-if="valueObj.show" class="value">
+        <span class="value">
           {{ node[keys.value] ?? valueObj.fallback }}
         </span>
       </span>
@@ -78,17 +75,9 @@ export default defineComponent({
       type: [Number, String, null],
       default: null,
     },
-    showBorderNodes: {
-      type: Boolean,
-      default: false,
-    },
-    nodeContentAlignment: {
+    nodeValueAlignment: {
       type: String,
       default: "horizontal",
-    },
-    fixedWidthColumns: {
-      type: Boolean,
-      default: false,
     },
   },
   emits: ["setParent", "setCheckedNode"],

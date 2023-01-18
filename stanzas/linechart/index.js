@@ -31,7 +31,7 @@ export default class Linechart extends Stanza {
   async render() {
     this._hideError();
 
-    appendCustomCss(this, this.params["custom_css_url"]);
+    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
@@ -42,12 +42,10 @@ export default class Linechart extends Stanza {
     const yKeyName = this._validatedParams.get("axis-y-key").value;
     const xAxisTitle = this._validatedParams.get("axis-x-title").value;
     const yAxisTitle = this._validatedParams.get("axis-y-title").value || "";
-    const hideXAxis = !this._validatedParams.get("axis-x-visible").value;
-    const hideYAxis = !this._validatedParams.get("axis-y-visible").value;
     const hideXAxisTicks = this._validatedParams.get("axis-x-ticks_hide").value;
     const hideYAxisTicks = this._validatedParams.get("axis-y-ticks_hide").value;
-    const showPoints = this._validatedParams.get("points-show").value;
-    const pointsSize = this._validatedParams.get("points-size").value;
+    const pointsSize = this.params["points_size"];
+    const showPoints = pointsSize && !isNaN(parseFloat(pointsSize));
 
     const errorKeyName = this._validatedParams.get("error_bars-key").value;
 
@@ -152,12 +150,15 @@ export default class Linechart extends Stanza {
     }
 
     // Data symbols
-    const symbolGenerator = d3.symbol().size(pointsSize).type(d3.symbolCircle);
+    const symbolGenerator = d3
+      .symbol()
+      .size(() => pointsSize * pointsSize)
+      .type(d3.symbolCircle);
 
-    const width = css("--togostanza-outline-width");
-    const height = css("--togostanza-outline-height");
+    const width = css("--togostanza-canvas-width");
+    const height = css("--togostanza-canvas-height");
 
-    const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
+    const MARGIN = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
 
     const SVGMargin = {
       top: 10,
@@ -949,11 +950,11 @@ export default class Linechart extends Stanza {
               .call(updateSymbolTranslate.bind(this));
           }
 
-          if (!hideXAxis && !hideXAxisTicks) {
+          if (!hideXAxisTicks) {
             graphXAxisG.call(xAxis).call(rotateXTickLabels);
           }
 
-          if (!hideYAxis && !hideYAxisTicks) {
+          if (!hideYAxisTicks) {
             graphYAxisG.call(yAxis);
           }
         };
@@ -972,11 +973,11 @@ export default class Linechart extends Stanza {
 
           this._scaleY.domain(d3.extent(y0y1));
 
-          if (!hideXAxis && !hideXAxisTicks) {
+          if (!hideXAxisTicks) {
             graphXAxisG.call(xAxis).call(rotateXTickLabels);
           }
 
-          if (!hideYAxis && !hideYAxisTicks) {
+          if (!hideYAxisTicks) {
             graphYAxisG.call(yAxis);
           }
 
@@ -1177,24 +1178,6 @@ export default class Linechart extends Stanza {
             previewYAxisYG.call(yAxisY);
           }
 
-          if (hideXAxis) {
-            graphXAxisG.call(hideTicks);
-            graphXAxisG.call((g) => g.select(".domain").remove());
-            if (showXPreview) {
-              previewXAxisXG.call(hideTicks);
-              previewXAxisXG.call((g) => g.select(".domain").remove());
-            }
-            xAxisTitleGroup.call((g) => g.select(".text").remove());
-          }
-          if (hideYAxis) {
-            graphYAxisG.call(hideTicks);
-            graphYAxisG.call((g) => g.select(".domain").remove());
-            if (showXPreview) {
-              previewXAxisYG.call(hideTicks);
-              previewXAxisYG.call((g) => g.select(".domain").remove());
-            }
-            yAxisTitleGroup.call((g) => g.select(".text").remove());
-          }
           if (hideXAxisTicks) {
             graphXAxisG.call(hideTicks);
             if (showXPreview) {

@@ -26,7 +26,7 @@ export default class VennStanza extends Stanza {
   }
 
   async render() {
-    appendCustomCss(this, this.params["custom_css_url"]);
+    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
     this.colorSeries = this.getColorSeries();
 
     this.renderTemplate({ template: "stanza.html.hbs" });
@@ -69,8 +69,8 @@ export default class VennStanza extends Stanza {
 
     const getPropertyValue = (key) =>
       window.getComputedStyle(this.element).getPropertyValue(key);
-    const svgWidth = getPropertyValue(`--togostanza-outline-width`);
-    const svgHeight = getPropertyValue(`--togostanza-outline-height`);
+    const svgWidth = getPropertyValue(`--togostanza-canvas-width`);
+    const svgHeight = getPropertyValue(`--togostanza-canvas-height`);
     container.style.width = svgWidth + "px";
     container.style.height = svgHeight + "px";
 
@@ -78,7 +78,7 @@ export default class VennStanza extends Stanza {
     const selectedDiagram = this.root.querySelector(
       `.venn-diagram[data-number-of-data="${this.numberOfData}"]`
     );
-    const padding = +getPropertyValue(`--togostanza-outline-padding`);
+    const padding = +getPropertyValue(`--togostanza-canvas-padding`);
     if (!selectedDiagram) {
       console.error(
         "Venn diagrams with more than six elements are not supported. Please try using Euler diagrams."

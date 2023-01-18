@@ -1,34 +1,26 @@
 // Load the repository-wide global style here. The actual file is located at ../common.scss for details.
-@use '@/common.scss';
+@use "@/common.scss";
 
 * {
-  font-family: var(--togostanza-font-family);
   box-sizing: border-box;
 }
 
 main {
-  background-color: var(--togostanza-background-color);
+  padding: var(--togostanza-canvas-padding);
 }
 .container {
   display: flex;
   flex-direction: column;
-  background-color: var(--togostanza-background-color);
-  .menu {
-    display: flex;
-    padding: 5px;
-    a {
-      color: var(--togostanza-text-font-color);
-    }
-  }
+  width: calc(var(--togostanza-canvas-width) * 1px);
+  height: calc(var(--togostanza-canvas-height) * 1px);
+
   table {
     display: block;
     tbody {
       tr {
         td {
           word-break: break-all;
-          color: var(--togostanza-text-font-color);
-          font-size: var(--togostanza-text-font-size);
-          font-weight: var(--togostanza-text-font-weight);
+          font-weight: var(--togostanza-fonts-font_weight);
         }
       }
     }
