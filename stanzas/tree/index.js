@@ -175,8 +175,8 @@ export default class Tree extends Stanza {
     const svg = d3
       .select(el)
       .append("svg")
-      .attr("width", padding.LEFT + width + padding.RIGHT)
-      .attr("height", padding.TOP + height + padding.BOTTOM);
+      .attr("width", width - padding.LEFT - padding.RIGHT)
+      .attr("height", height - padding.TOP - padding.BOTTOM);
 
     //Get width of root label
     const rootGroup = svg
@@ -246,10 +246,15 @@ export default class Tree extends Stanza {
           case VERTICAL:
             return `translate(${margin.top}, ${margin.left})`;
           case RADIAL:
-            return `translate(${Math.min(width / 2, height / 2)}, ${Math.min(
-              width / 2,
-              height / 2
-            )})`;
+            return `translate(
+              ${Math.min(
+                (width - padding.LEFT) / 2,
+                (height - padding.TOP) / 2
+              )},
+              ${Math.min(
+                (width - padding.LEFT) / 2,
+                (height - padding.TOP) / 2
+              )})`;
         }
       });
 
@@ -266,19 +271,25 @@ export default class Tree extends Stanza {
       switch (layout) {
         case HORIZONTAL:
           graphType.size([
-            height - margin.top - margin.bottom,
-            width - margin.left - margin.right,
+            height - padding.TOP - padding.BOTTOM - margin.top - margin.bottom,
+            width - padding.LEFT - padding.RIGHT - margin.left - margin.right,
           ]);
           break;
         case VERTICAL:
           graphType.size([
-            width - margin.top - margin.bottom,
-            height - margin.left - margin.right,
+            width - padding.LEFT - padding.RIGHT - margin.top - margin.bottom,
+            height - padding.TOP - padding.BOTTOM - margin.left - margin.right,
           ]);
           break;
         case RADIAL:
           graphType
-            .size([2 * Math.PI, Math.min(width / 2, height / 2) - margin.right])
+            .size([
+              2 * Math.PI,
+              Math.min(
+                (width - (padding.LEFT + padding.RIGHT) / 2) / 2,
+                (height - (padding.TOP + padding.BOTTOM) / 2) / 2
+              ) - margin.right,
+            ])
             .separation(separation)(treeRoot);
           break;
       }
