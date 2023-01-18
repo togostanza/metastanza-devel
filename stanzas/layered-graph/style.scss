@@ -38,6 +38,18 @@ svg > defs > marker > path {
   }
 }
 
+.node-label {
+  &.active {
+    opacity: 1;
+  }
+  &.half-active {
+    stroke-opacity: 0.5;
+  }
+  &.fadeout {
+    opacity: 0.1;
+  }
+}
+
 .link {
   stroke-linecap: round;
   stroke-width: 1px;

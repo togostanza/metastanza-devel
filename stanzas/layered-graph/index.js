@@ -116,6 +116,11 @@ export default class ForceGraph extends Stanza {
       dataKey: this.params["node-color-key"] || "",
     };
 
+    const nodeLabelParams = {
+      margin: 3,
+      dataKey: this.params["node-label_key"],
+    };
+
     const edgeWidthParams = {
       dataKey: this.params["edge-width-key"] || "",
       minWidth: setFallbackNumVal(this.params["edge-width-min"], 1),
@@ -151,6 +156,7 @@ export default class ForceGraph extends Stanza {
       edgeWidthParams,
       edgeColorParams,
       tooltipParams,
+      nodeLabelParams,
     };
 
     const { prepNodes, prepEdges, groupHash, symbols } = prepareGraphData(
@@ -312,19 +318,39 @@ export default class ForceGraph extends Stanza {
 
       linesStrip.exit().remove();
 
-      const points = svgG.selectAll("circle").data(data[0], key);
+      const points = svgG.selectAll("g.node-g").data(data[0], key);
 
       const p = points
         .enter()
-        .append("circle")
-        .attr("class", "_3d")
-        .classed("node", true)
+        .append("g")
+        .classed("node-g", true)
+        .call(addNode)
         .merge(points)
-        .attr("cx", posPointX)
-        .attr("cy", posPointY)
-        .attr("r", (d) => d[symbols.nodeSizeSym])
-        .style("fill", (d) => d[symbols.nodeColorSym])
-        .sort(point3d.sort);
+        .classed("_3d", true)
+        .attr(
+          "transform",
+          (d) => `translate(${posPointX(d)}, ${posPointY(d)})`
+        );
+
+      function addNode(nodeGroup) {
+        nodeGroup
+          .append("circle")
+          .classed("node", true)
+          .attr("cx", 0)
+          .attr("cy", 0)
+          .attr("r", (d) => d[symbols.nodeSizeSym])
+          .style("fill", (d) => d[symbols.nodeColorSym]);
+
+        nodeGroup
+          .append("text")
+          .classed("node-label", true)
+          .text((d) => d[symbols.nodeLabelSym])
+          .attr("alignment-baseline", "hanging")
+          .attr("text-anchor", "middle")
+          .attr("y", 2);
+      }
+
+      points.sort(point3d.sort);
 
       if (tooltipParams.show) {
         p.attr("data-tooltip", (d) => d[tooltipParams.dataKey]);
@@ -515,6 +541,7 @@ export default class ForceGraph extends Stanza {
 
         d3.select(this).classed("active", true).classed("fadeout", false);
 
+        console.log(points.nodes());
         // highlight nodes belonging to this group
         points.classed("fadeout", true);
         points.classed("active", false);

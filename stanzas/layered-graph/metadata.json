@@ -40,6 +40,12 @@
       "stanza:description": "Group planes sorting order"
     },
     {
+      "stanza:key": "node-label_key",
+      "stanza:type": "string",
+      "stanza:example": "id",
+      "stanza:description": "Node labels data key. If empty, no labels will be shown"
+    },
+    {
       "stanza:key": "nodes-sort-key",
       "stanza:type": "string",
       "stanza:example": "id",
