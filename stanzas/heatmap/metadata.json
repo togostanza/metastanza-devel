@@ -48,12 +48,6 @@
       "stanza:description": "Number of gradation colors between color-min and color-max"
     },
     {
-      "stanza:key": "axis-hide",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:description": "Show axis lines and ticks"
-    },
-    {
       "stanza:key": "axis-x-key",
       "stanza:type": "text",
       "stanza:example": "group",

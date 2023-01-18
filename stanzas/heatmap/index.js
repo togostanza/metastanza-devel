@@ -66,7 +66,6 @@ export default class Heatmap extends Stanza {
     const yLabelAngle = this.params["axis-y-ticks_labels_angle"] || 0;
     const axisXTitlePadding = this.params["axis-x-title_padding"] || 0;
     const axisYTitlePadding = this.params["axis-y-title_padding"] || 0;
-    const isAxisHide = this.params["axis-hide"];
     const legendTitle = this.params["legend-title"];
     const legendGroups = this.params["legend-groups"];
     const tooltipKey = this.params["tooltips-key"];
@@ -204,14 +203,6 @@ export default class Heatmap extends Stanza {
         `translate(-${margin.left}, ${height / 2}) rotate(-90)`
       )
       .text(yTitle);
-
-    //Hide axis lines and ticks
-    if (!isAxisHide) {
-      svg.select(".x-axis path").remove();
-      svg.select(".y-axis path").remove();
-      svg.selectAll(".x-axis .tick line").remove();
-      svg.selectAll(".y-axis .tick line").remove();
-    }
 
     //Give text class to all text
     graphArea.selectAll("text").attr("class", "text");
