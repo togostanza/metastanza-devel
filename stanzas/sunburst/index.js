@@ -74,7 +74,7 @@ export default class Sunburst extends Stanza {
 
     const labelKey = this.params["node-label_key"];
     const valueKey = this.params["node-value_key"];
-    const showNumbers = this.params["node-show_values"];
+    const showNumbers = this.params["node-values_visible"];
     const borderWidth = this.params["node-levels_gap_width"] || 2;
     const nodesGapWidth = this.params["node-gap_width"] || 8;
     const cornerRadius = this.params["node-corner_radius"] || 0;

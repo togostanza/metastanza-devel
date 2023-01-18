@@ -43,8 +43,9 @@
       "stanza:description": "Data key to use as a title"
     },
     {
-      "stanza:key": "node-show_values",
+      "stanza:key": "node-values_visible",
       "stanza:type": "boolean",
+      "stanza:label": "Show values",
       "stanza:example": true,
       "stanza:description": "Show numbers under labels"
     },
