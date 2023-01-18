@@ -121,12 +121,6 @@
       "stanza:description": "Show arrows"
     },
     {
-      "stanza:key": "group_planes-constant_radius",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:description": "Constant radius for all groups"
-    },
-    {
       "stanza:key": "highlight-group_planes",
       "stanza:type": "boolean",
       "stanza:example": true,
