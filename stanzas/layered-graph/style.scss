@@ -20,33 +20,35 @@ svg > defs > marker > path {
   transition-property: opacity, stroke-width, stroke-opacity;
 }
 
-.node {
-  fill: var(--togostanza-theme-series_0_color);
-  stroke-width: calc(var(--togostanza-border-width) * 1px);
-  stroke: var(--togostanza-border-color);
-  cursor: pointer;
+g.node-g {
+  > .node {
+    fill: var(--togostanza-theme-series_0_color);
+    stroke-width: calc(var(--togostanza-border-width) * 1px);
+    stroke: var(--togostanza-border-color);
+    cursor: pointer;
+  }
   &.active {
-    opacity: 1;
-    stroke-width: calc(var(--togostanza-border-width) * 2.5px);
+    > .node-label {
+      opacity: 1;
+    }
+    > .node {
+      opacity: 1;
+      stroke-width: calc(var(--togostanza-border-width) * 2.5px);
+    }
   }
   &.half-active {
-    stroke-opacity: 0.5;
-    stroke-width: calc(var(--togostanza-border-width) * 1.5px);
+    > .node-label {
+      stroke-opacity: 0.5;
+    }
+    > .node {
+      stroke-opacity: 0.5;
+      stroke-width: calc(var(--togostanza-border-width) * 1.5px);
+    }
   }
   &.fadeout {
-    opacity: 0.1;
-  }
-}
-
-.node-label {
-  &.active {
-    opacity: 1;
-  }
-  &.half-active {
-    stroke-opacity: 0.5;
-  }
-  &.fadeout {
-    opacity: 0.1;
+    > * {
+      opacity: 0.1;
+    }
   }
 }
 

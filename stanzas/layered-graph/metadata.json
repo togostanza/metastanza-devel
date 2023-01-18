@@ -148,6 +148,24 @@
   "stanza:menu-placement": "bottom-right",
   "stanza:style": [
     {
+      "stanza:key": "--togostanza-fonts-font_family",
+      "stanza:type": "text",
+      "stanza:default": "Helvetica Neue",
+      "stanza:description": "Font family"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_color",
+      "stanza:type": "color",
+      "stanza:default": "#4E5059",
+      "stanza:description": "Label font color"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_size_primary",
+      "stanza:type": "number",
+      "stanza:default": 9,
+      "stanza:description": "Label font size"
+    },
+    {
       "stanza:key": "--togostanza-canvas-width",
       "stanza:type": "number",
       "stanza:default": 600,

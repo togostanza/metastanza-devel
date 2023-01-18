@@ -344,10 +344,10 @@ export default class ForceGraph extends Stanza {
         nodeGroup
           .append("text")
           .classed("node-label", true)
-          .text((d) => d[symbols.nodeLabelSym])
+          .text((d) => d[symbols.nodeLabelSym] || "")
           .attr("alignment-baseline", "hanging")
           .attr("text-anchor", "middle")
-          .attr("y", 2);
+          .attr("y", (d) => d[symbols.nodeSizeSym] + 2);
       }
 
       points.sort(point3d.sort);
@@ -438,7 +438,7 @@ export default class ForceGraph extends Stanza {
       processData(data);
 
       const planes = svgG.selectAll("path.group-plane");
-      const points = svgG.selectAll("circle.node");
+      const points = svgG.selectAll("g.node-g");
       const links = svgG.selectAll("path.link");
 
       if (highlightGroupPlanes) {
