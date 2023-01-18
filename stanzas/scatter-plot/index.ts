@@ -109,13 +109,14 @@ export default class ScatterPlot extends Stanza {
     const main = root.querySelector("main");
 
     let svg = main.querySelector("svg");
+
     if (!svg) {
       svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-
-      svg.setAttribute("width", width.toString());
-      svg.setAttribute("height", height.toString());
       main.append(svg);
     }
+
+    svg.setAttribute("width", width.toString());
+    svg.setAttribute("height", height.toString());
 
     if (!this.xAxis) {
       this.xAxis = new Axis(svg);
