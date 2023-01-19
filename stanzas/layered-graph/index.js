@@ -140,7 +140,7 @@ export default class ForceGraph extends Stanza {
     };
 
     const highlightAdjEdges = true;
-    const highlightGroupPlanes = this.params["highlight-group_planes"] || false;
+    const highlightGroupPlanes = true;
 
     const params = {
       MARGIN,
