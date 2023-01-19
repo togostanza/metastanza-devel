@@ -108,12 +108,6 @@
       "stanza:description": "Edge width scale"
     },
     {
-      "stanza:key": "highlight-group_planes",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:description": "Highlight group planes on mouse hover"
-    },
-    {
       "stanza:key": "tooltips-key",
       "stanza:type": "string",
       "stanza:example": "id",
