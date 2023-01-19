@@ -38,7 +38,7 @@ export default class Text extends Stanza {
   }
 
   _isMarkdownMode() {
-    return this.params["mode"] === "markdown";
+    return this.params["data-mode"] === "markdown";
   }
 
   _downloadFileName() {
@@ -50,43 +50,43 @@ export default class Text extends Stanza {
   }
 
   async render() {
+    this.renderTemplate({
+      template: "stanza.html.hbs",
+    });
     const main = this.root.querySelector("main");
-
+    const el = this.root.getElementById("text");
     const value = await loadData(this.params["data-url"], "text", main);
     this._dataset = value;
 
     appendCustomCss(this, this.params["custom_css_url"]);
-    appendHighlightCss(this, this.params["highlight-css-url"]);
+    appendHighlightCss(this, this.params["data-highlight_css_url"]);
+
+    const container = document.createElement("div");
+    container.setAttribute("class", "container");
+    el.appendChild(container);
+
+    const paragraph = document.createElement("p");
+    paragraph.setAttribute("class", "paragraph");
+    container.appendChild(paragraph);
 
     if (this._isMarkdownMode()) {
       const parser = new commonmark.Parser();
       const renderer = new commonmark.HtmlRenderer();
       const html = renderer.render(parser.parse(value));
-      this.renderTemplate({
-        template: "stanza.html.hbs",
-        parameters: {
-          html,
-        },
-      });
+      paragraph.innerHTML = html;
       main.querySelectorAll("pre code").forEach((el) => {
         hljs.highlightElement(el);
       });
       renderMathInElement(main);
     } else {
-      const text = this._dataset;
-      this.renderTemplate({
-        template: "stanza.html.hbs",
-        parameters: {
-          text,
-        },
-      });
+      paragraph.textContent = this._dataset;
     }
   }
 }
 
 export function appendHighlightCss(stanza, highlightCssUrl) {
   const links = stanza.root.querySelectorAll(
-    "link[data-togostanza-highlight-css]"
+    "link[data-togostanza-highlight_css_url]"
   );
   for (const link of links) {
     link.remove();
