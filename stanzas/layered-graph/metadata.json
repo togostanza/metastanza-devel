@@ -27,19 +27,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "group_planes-sort-key",
-      "stanza:type": "string",
-      "stanza:example": "group",
-      "stanza:description": "Sort group planes by this data key value"
-    },
-    {
-      "stanza:key": "group_planes-sort-order",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["ascending", "descending"],
-      "stanza:example": "ascending",
-      "stanza:description": "Group planes sorting order"
-    },
-    {
       "stanza:key": "node-label_key",
       "stanza:type": "string",
       "stanza:example": "id",

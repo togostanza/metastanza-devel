@@ -225,10 +225,7 @@ export default class ForceGraph extends Stanza {
         .attr("fill-opacity", 1);
     }
 
-    const maxNodesInGroup = d3.max(
-      Object.entries(groupHash),
-      (d) => d[1].length
-    );
+    const maxNodesInGroup = d3.max([...groupHash.values()], (d) => d.length);
 
     const Rmax = (0.8 * WIDTH) / 2;
 
@@ -370,24 +367,19 @@ export default class ForceGraph extends Stanza {
       // Add x,y,z of source and target nodes to 3D edges
       edgesWithCoords = get3DEdges(prepEdges);
 
-      // Laying out nodes=========
-      const DEPTH = HEIGHT;
-      const yPointScale = d3.scalePoint([-DEPTH / 2, DEPTH / 2]).domain(
-        Object.keys(groupHash).sort((a, b) => {
-          if (a > b) {
-            return groupsSortParams.sortOrder === "ascending" ? 1 : -1;
-          }
-          if (a < b) {
-            return groupsSortParams.sortOrder === "ascending" ? -1 : 1;
-          }
-          return 0;
-        })
+      const sortedGroupHash = new Map(
+        [...groupHash.entries()].sort(([a], [b]) => Number(a) - Number(b))
       );
 
-      Object.keys(groupHash).forEach((gKey) => {
-        // Laying out nodes ===
+      const sortedGroupKeys = [...sortedGroupHash.keys()];
+      // Laying out nodes=========
+      const DEPTH = HEIGHT;
+      const yPointScale = d3
+        .scalePoint([-DEPTH / 2, DEPTH / 2])
+        .domain(sortedGroupKeys);
 
-        const group = groupHash[gKey];
+      sortedGroupHash.forEach((group, gKey) => {
+        // Laying out nodes ===
 
         const angleScale = d3
           .scalePoint()
@@ -413,7 +405,7 @@ export default class ForceGraph extends Stanza {
       });
 
       groupPlanes = getGroupPlanes(
-        groupHash,
+        Object.fromEntries(sortedGroupHash.entries()),
         {
           WIDTH,
           HEIGHT,
