@@ -4,7 +4,7 @@ import { _3d } from "d3-3d";
 import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
 import { StanzaColorGenerator } from "@/lib/ColorGenerator";
-
+import { LayeredGraphDataModel } from "@/lib/GraphDataSchema";
 import { curvedLink, straightLink } from "./curvedLink";
 import prepareGraphData, {
   get3DEdges,
@@ -52,10 +52,12 @@ export default class ForceGraph extends Stanza {
 
     const cg = new StanzaColorGenerator(this);
 
-    const values = await loadData(
-      this.params["data-url"],
-      this.params["data-type"],
-      this.root.querySelector("main")
+    const values = LayeredGraphDataModel.parse(
+      await loadData(
+        this.params["data-url"],
+        this.params["data-type"],
+        this.root.querySelector("main")
+      )
     );
 
     this._data = values;
