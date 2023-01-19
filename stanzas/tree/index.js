@@ -171,12 +171,15 @@ export default class Tree extends Stanza {
       }
     };
 
+    const SVGWidth = width - padding.LEFT - padding.RIGHT;
+    const SVGHeight = height - padding.TOP - padding.BOTTOM;
+
     //Setting svg area
     const svg = d3
       .select(el)
       .append("svg")
-      .attr("width", width - padding.LEFT - padding.RIGHT)
-      .attr("height", height - padding.TOP - padding.BOTTOM);
+      .attr("width", SVGWidth)
+      .attr("height", SVGHeight);
 
     //Get width of root label
     const rootGroup = svg
@@ -198,7 +201,9 @@ export default class Tree extends Stanza {
       .enter()
       .append("text")
       .text((d) => d);
+
     const maxLabelWidth = maxLabelGroup.node().getBBox().width;
+
     maxLabelGroup.remove();
 
     //Create each group
@@ -247,14 +252,8 @@ export default class Tree extends Stanza {
             return `translate(${margin.top}, ${margin.left})`;
           case RADIAL:
             return `translate(
-              ${Math.min(
-                (width - padding.LEFT) / 2,
-                (height - padding.TOP) / 2
-              )},
-              ${Math.min(
-                (width - padding.LEFT) / 2,
-                (height - padding.TOP) / 2
-              )})`;
+              ${SVGWidth / 2},
+              ${SVGHeight / 2})`;
         }
       });
 
@@ -271,24 +270,21 @@ export default class Tree extends Stanza {
       switch (layout) {
         case HORIZONTAL:
           graphType.size([
-            height - padding.TOP - padding.BOTTOM - margin.top - margin.bottom,
-            width - padding.LEFT - padding.RIGHT - margin.left - margin.right,
+            SVGHeight - margin.top - margin.bottom,
+            SVGWidth - margin.left - margin.right,
           ]);
           break;
         case VERTICAL:
           graphType.size([
-            width - padding.LEFT - padding.RIGHT - margin.top - margin.bottom,
-            height - padding.TOP - padding.BOTTOM - margin.left - margin.right,
+            SVGWidth - margin.top - margin.bottom,
+            SVGHeight - margin.left - margin.right,
           ]);
           break;
         case RADIAL:
           graphType
             .size([
               2 * Math.PI,
-              Math.min(
-                (width - (padding.LEFT + padding.RIGHT) / 2) / 2,
-                (height - (padding.TOP + padding.BOTTOM) / 2) / 2
-              ) - margin.right,
+              Math.min(SVGWidth / 2, SVGHeight / 2) - margin.right,
             ])
             .separation(separation)(treeRoot);
           break;
