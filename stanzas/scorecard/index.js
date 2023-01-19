@@ -58,14 +58,12 @@ export default class Scorecard extends Stanza {
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("width", width);
     svg.setAttribute("height", height);
-    const scale = Math.min(
-      width / (width + padding.LEFT + padding.RIGHT),
-      height / (height + padding.TOP + padding.BOTTOM)
-    );
+
     svg.classList.add("svg");
     el.appendChild(svg);
 
     const wrapper = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    wrapper.classList.add("wrapper");
     svg.appendChild(wrapper);
 
     const titleKeyText = document.createElementNS(
@@ -79,62 +77,104 @@ export default class Scorecard extends Stanza {
 
     const scoreWrapper = document.createElementNS(
       "http://www.w3.org/2000/svg",
-      "g"
-    );
-    wrapper.appendChild(scoreWrapper);
-
-    const scoreValueText = document.createElementNS(
-      "http://www.w3.org/2000/svg",
       "text"
     );
-    scoreValueText.classList.add("score-value");
-    scoreValueText.textContent = scoreValue;
-    scoreValueText.setAttribute("text-anchor", "middle");
-    scoreWrapper.append(scoreValueText);
+    scoreWrapper.classList.add("score-wrapper");
+    wrapper.appendChild(scoreWrapper);
+    scoreWrapper.setAttribute("text-anchor", "middle");
 
     const prefixValueText = document.createElementNS(
       "http://www.w3.org/2000/svg",
-      "text"
+      "tspan"
     );
     prefixValueText.classList.add("prefix-value");
     prefixValueText.textContent = prefixText;
-    prefixValueText.setAttribute("text-anchor", "end");
-    prefixValueText.setAttribute(
-      "x",
-      -scoreValueText.getBBox().width / 2 - affixSpace
-    );
+
     scoreWrapper.append(prefixValueText);
+
+    const scoreValueText = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "tspan"
+    );
+    scoreValueText.classList.add("score-value");
+    scoreValueText.textContent = scoreValue;
+    // scoreValueText.setAttribute("text-anchor", "middle");
+    scoreWrapper.append(scoreValueText);
 
     const suffixValueText = document.createElementNS(
       "http://www.w3.org/2000/svg",
-      "text"
+      "tspan"
     );
     suffixValueText.classList.add("suffix-value");
     suffixValueText.textContent = suffixText;
-    suffixValueText.setAttribute(
-      "x",
-      scoreValueText.getBBox().width / 2 + affixSpace
-    );
+
     scoreWrapper.append(suffixValueText);
+    // suffixValueText.setAttribute(
+    //   "x",
+    //   scoreValueText.getBoundingClientRect().width / 2 + affixSpace
+    // );
 
     if (titleText) {
       titleKeyText.setAttribute("y", fontSizeSecondary);
-      scoreValueText.setAttribute("y", fontSizePrimary + fontSizeSecondary);
-      prefixValueText.setAttribute("y", fontSizePrimary + fontSizeSecondary);
-      suffixValueText.setAttribute("y", fontSizePrimary + fontSizeSecondary);
+      scoreWrapper.setAttribute("y", fontSizePrimary + fontSizeSecondary);
+      // prefixValueText.setAttribute("y", fontSizePrimary + fontSizeSecondary);
+      // suffixValueText.setAttribute("y", fontSizePrimary + fontSizeSecondary);
     } else {
       titleKeyText.setAttribute(`style`, `display: none;`);
-      scoreValueText.setAttribute("y", fontSizePrimary);
-      prefixValueText.setAttribute("y", fontSizePrimary);
-      suffixValueText.setAttribute("y", fontSizePrimary);
+      scoreWrapper.setAttribute("y", fontSizePrimary);
+      // prefixValueText.setAttribute("y", fontSizePrimary);
+      // suffixValueText.setAttribute("y", fontSizePrimary);
     }
+    console.log("before", wrapper.getBoundingClientRect().width);
+    console.log("before bbox", wrapper.getBBox().width);
+
+    const wrapperWidth = wrapper.getBoundingClientRect().width;
+    const wrapperHeight = wrapper.getBoundingClientRect().height;
+
+    const scale = () => {
+      let minScale = Math.min(
+        Math.min(
+          (width - padding.LEFT - padding.RIGHT) / wrapperWidth,
+          (height - padding.TOP - padding.BOTTOM) / wrapperHeight
+        ),
+        1
+      );
+      if (minScale < 0) return 0;
+      return minScale;
+    };
+
+    console.log(scale());
+
+    // wrapper.setAttribute("transform-origin", `center`);
+
+    // const titleTextWidth = titleKeyText.getBoundingClientRect().width;
+    // const valueTextWidth = scoreValueText.getBoundingClientRect().width;
+    // const prefixWidth = prefixValueText.getBoundingClientRect().width;
+    const scoreWrapperWidth = scoreWrapper.getBoundingClientRect().width;
+    // // const suffixWidth = suffixValueText.getBoundingClientRect().width;
+
+    // const maxWidth = Math.max(
+    //   titleTextWidth / 2,
+    //   valueTextWidth / 2 + prefixWidth + affixSpace
+    // );
 
     wrapper.setAttribute(
       "transform",
-      `translate(${width / 2 + padding.LEFT},
-      ${
-        height / 2 - wrapper.getBBox().height / 2 + padding.TOP
-      }) scale(${scale})`
+      `translate(${width / 2},${
+        height / 2 - ((fontSizePrimary + fontSizeSecondary) * scale()) / 2
+      }) scale(${scale()})`
     );
+
+    // height / 2 - wrapper.getBBox().height / 2
+    // wrapper.setAttribute("transform-origin", "center, center");
+
+    // wrapper.setAttribute(
+    //   "transform",
+    //   ` scale(${scale}) translate(${x + padding.LEFT},
+    //   ${height / 2 - wrapper.getBoundingClientRect().height / 2 + padding.TOP})`
+    // );
+    // wrapper.getBoundingClientRect().width;
+    // console.log("after", wrapper.getBoundingClientRect().width);
+    // console.log("after bbox", wrapper.getBBox().width);
   }
 }
