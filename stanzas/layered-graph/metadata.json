@@ -27,6 +27,12 @@
       "stanza:required": true
     },
     {
+      "stanza:key": "data-directed_graph",
+      "stanza:type": "boolean",
+      "stanza:example": "true",
+      "stanza:description": "Whether the graph data is directed (whether to show the arrows or not)"
+    },
+    {
       "stanza:key": "node-label_key",
       "stanza:type": "string",
       "stanza:example": "id",
@@ -100,12 +106,6 @@
       "stanza:choice": ["linear", "sqrt", "log10"],
       "stanza:example": "linear",
       "stanza:description": "Edge width scale"
-    },
-    {
-      "stanza:key": "edge-show_arrows",
-      "stanza:type": "boolean",
-      "stanza:example": "true",
-      "stanza:description": "Show arrows"
     },
     {
       "stanza:key": "highlight-group_planes",

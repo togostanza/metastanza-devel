@@ -18,6 +18,7 @@ import {
   downloadTSVMenuItem,
   appendCustomCss,
 } from "togostanza-utils";
+import { symbol } from "d3";
 
 export default class ForceGraph extends Stanza {
   menu() {
@@ -126,7 +127,7 @@ export default class ForceGraph extends Stanza {
       minWidth: setFallbackNumVal(this.params["edge-width-min"], 1),
       maxWidth: this.params["edge-width-max"],
       scale: this.params["edge-width-scale"] || "linear",
-      showArrows: this.params["edge-show_arrows"],
+      showArrows: this.params["data-directed_graph"],
     };
 
     const edgeColorParams = {
@@ -163,6 +164,9 @@ export default class ForceGraph extends Stanza {
       nodes,
       edges,
       params
+    );
+    const sortedGroupHash = new Map(
+      [...groupHash.entries()].sort(([a], [b]) => Number(a) - Number(b))
     );
 
     const targetAccessor = (d) => d.edge[symbols.targetNodeSym].projected;
@@ -366,10 +370,6 @@ export default class ForceGraph extends Stanza {
     function init() {
       // Add x,y,z of source and target nodes to 3D edges
       edgesWithCoords = get3DEdges(prepEdges);
-
-      const sortedGroupHash = new Map(
-        [...groupHash.entries()].sort(([a], [b]) => Number(a) - Number(b))
-      );
 
       const sortedGroupKeys = [...sortedGroupHash.keys()];
       // Laying out nodes=========
@@ -601,38 +601,84 @@ export default class ForceGraph extends Stanza {
           return;
         }
 
+        const group = sortedGroupHash.get("" + d.group);
+
+        const nodesIdsInGroup = group.map((node) => node.id);
+
+        const directlyConnectedNodes = d[symbols.edgeSym]
+          .map((edge) => [
+            edge[symbols.sourceNodeSym].id,
+            edge[symbols.targetNodeSym].id,
+          ])
+          .flat()
+          .filter((nodeId) => nodeId !== d.id);
+
+        const directlyConnectedNodesSameGroup = directlyConnectedNodes.filter(
+          (d) => nodesIdsInGroup.includes(d)
+        );
+
+        const connectedEdges = d[symbols.edgeSym];
+
+        const edgesToSameGroupNodes = connectedEdges.filter(
+          (edge) =>
+            directlyConnectedNodesSameGroup.includes(
+              edge[symbols.sourceNodeSym].id
+            ) ||
+            directlyConnectedNodesSameGroup.includes(
+              edge[symbols.targetNodeSym].id
+            )
+        );
+
+        const edgesToOtherGroupNodes = connectedEdges.filter((edge) => {
+          return (
+            !directlyConnectedNodesSameGroup.includes(
+              edge[symbols.sourceNodeSym].id
+            ) &&
+            !directlyConnectedNodesSameGroup.includes(
+              edge[symbols.targetNodeSym].id
+            )
+          );
+        });
+
         // fade out all other nodes, highlight a little connected ones
         points.classed("fadeout", true);
 
         points
-          .filter((p) => {
-            return (
-              p !== d &&
-              d[symbols.edgeSym].some(
-                (edge) =>
-                  edge[symbols.sourceNodeSym] === p ||
-                  edge[symbols.targetNodeSym] === p
-              )
-            );
-          })
+          .filter((p) => p !== d && directlyConnectedNodes.includes(p.id))
           .classed("half-active", true)
           .classed("fadeout", false);
 
         // highlight current node
         d3.select(this).classed("active", true).classed("fadeout", false);
-        const edgeIdsOnThisNode = d[symbols.edgeSym].map(
-          (edge) => edge[symbols.idSym]
-        );
 
         // fadeout not connected edges, highlight connected ones
+
         links
-          .classed(
-            "fadeout",
-            (p) => !edgeIdsOnThisNode.includes(p.edge[symbols.idSym])
+          .classed("fadeout", true)
+          .classed("active", false)
+          .classed("half-active", false)
+          .classed("dashed", false);
+
+        links
+          .filter(({ edge }) =>
+            edgesToOtherGroupNodes.some(
+              (e) => e[symbols.idSym] === edge[symbols.idSym]
+            )
           )
-          .classed("active", (p) =>
-            edgeIdsOnThisNode.includes(p.edge[symbols.idSym])
+          .classed("fadeout", false)
+          .classed("half-active", true)
+          .attr("stroke-dasharray", (d) =>
+            Math.max(d.edge[symbols.edgeWidthSym] * 2, 2)
           );
+
+        links
+          .filter(({ edge }) =>
+            edgesToSameGroupNodes.some(
+              (e) => e[symbols.idSym] === edge[symbols.idSym]
+            )
+          )
+          .classed("fadeout", false)
+          .classed("active", true);
       });
 
       points.on("mouseleave", function () {
