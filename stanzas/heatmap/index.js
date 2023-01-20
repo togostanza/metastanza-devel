@@ -53,7 +53,6 @@ export default class Heatmap extends Stanza {
       this.params["data-type"],
       root
     );
-
     this._data = dataset;
 
     appendCustomCss(this, this.params["custom_css_url"]);
@@ -68,7 +67,7 @@ export default class Heatmap extends Stanza {
     const axisYTitlePadding = this.params["axis-y-title_padding"] || 0;
     const legendTitle = this.params["legend-title"];
     const legendGroups = this.params["legend-groups"];
-    const tooltipKey = this.params["tooltips_key"];
+    const tooltipKey = this.params["tooltips-key"];
     const tooltipHTML = (d) => d[tooltipKey];
 
     // Color scale
@@ -149,13 +148,13 @@ export default class Heatmap extends Stanza {
 
     const graphArea = svg
       .append("g")
-      .attr("class", "graph")
+      .classed("graph", true)
       .attr("transform", `translate(${margin.left + fontSize}, 0)`);
 
     //Set for each rect
     graphArea
       .append("g")
-      .attr("class", "rect")
+      .classed("rect", true)
       .selectAll()
       .data(dataset, (d) => `${d[xKey]}:${d[yKey]}`)
       .enter()
@@ -173,11 +172,11 @@ export default class Heatmap extends Stanza {
     //Draw about the x-axis
     const xaxisArea = graphArea
       .append("g")
-      .attr("class", "x-axis")
+      .classed("x-axis", true)
       .attr("transform", `translate(0, ${height})`);
     xaxisArea
       .append("g")
-      .attr("class", "x-axis-label")
+      .classed("x-axis-label", true)
       .call(xAxisGenerator)
       .selectAll("text")
       .attr("transform", `rotate(${xLabelAngle})`);
@@ -188,10 +187,10 @@ export default class Heatmap extends Stanza {
       .text(xTitle);
 
     //Draw about the y-axis;
-    const yaxisArea = graphArea.append("g").attr("class", "y-axis");
+    const yaxisArea = graphArea.append("g").classed("y-axis", true);
     yaxisArea
       .append("g")
-      .attr("class", "y-axis-label")
+      .classed("y-axis-label", true)
       .call(yAxisGenerator)
       .selectAll("text")
       .attr("transform", `rotate(${yLabelAngle})`);
@@ -205,7 +204,7 @@ export default class Heatmap extends Stanza {
       .text(yTitle);
 
     //Give text class to all text
-    graphArea.selectAll("text").attr("class", "text");
+    graphArea.selectAll("text").classed("text", true);
 
     this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
 

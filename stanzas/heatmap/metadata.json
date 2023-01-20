@@ -139,7 +139,7 @@
       "stanza:description": "Cell color domain max"
     },
     {
-      "stanza:key": "tooltips_key",
+      "stanza:key": "tooltips-key",
       "stanza:type": "text",
       "stanza:example": "value",
       "stanza:description": "Data key to use as tooltip"
