@@ -9,7 +9,7 @@ export default function (
     height,
     MARGIN,
     symbols,
-    labelsParams,
+    nodeLabelParams,
     tooltipParams,
     highlightAdjEdges,
     edgeParams,
@@ -132,10 +132,10 @@ export default function (
     nodeCircles.attr("data-tooltip", (d) => d[tooltipParams.dataKey]);
   }
 
-  if (labelsParams.dataKey !== "" && nodes[0][labelsParams.dataKey]) {
+  if (nodeLabelParams.dataKey !== "" && nodes[0][nodeLabelParams.dataKey]) {
     nodeGroups
       .append("text")
-      .text((d) => d[labelsParams.dataKey])
+      .text((d) => d[nodeLabelParams.dataKey])
       .attr("alignment-baseline", "middle")
       .attr("text-anchor", (d) => {
         if (angleScale(d.id) > 90 && angleScale(d.id) < 270) {
@@ -145,9 +145,9 @@ export default function (
       })
       .attr("x", (d) => {
         if (angleScale(d.id) > 90 && angleScale(d.id) < 270) {
-          return -labelsParams.margin - d[symbols.nodeSizeSym];
+          return -nodeLabelParams.margin - d[symbols.nodeSizeSym];
         }
-        return labelsParams.margin + d[symbols.nodeSizeSym];
+        return nodeLabelParams.margin + d[symbols.nodeSizeSym];
       })
       .attr("transform", (d) => {
         if (angleScale(d.id) > 90 && angleScale(d.id) < 270) {
