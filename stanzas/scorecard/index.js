@@ -118,7 +118,7 @@ export default class Scorecard extends Stanza {
     const wrapperWidth = wrapper.getBoundingClientRect().width;
     const wrapperHeight = wrapper.getBoundingClientRect().height;
     const scale = () => {
-      let minScale = Math.min(
+      const minScale = Math.min(
         Math.min(
           (width - padding.LEFT - padding.RIGHT) / wrapperWidth,
           (height - padding.TOP - padding.BOTTOM) / wrapperHeight
