@@ -133,7 +133,7 @@ export default class Barchart extends Stanza {
     const el = this.root.getElementById("barchart-d3");
 
     // On change params rerender - Check if legend and svg already existing and remove them -
-    const existingLegend = this.root.querySelector("togostanza--legend");
+    const existingLegend = root.querySelector("togostanza--legend");
 
     if (existingLegend) {
       existingLegend.remove();
@@ -173,11 +173,10 @@ export default class Barchart extends Stanza {
 
     const showBarTooltips = values.some((d) => d[tooltipsKey]);
 
-    if (!this.tooltip && showBarTooltips) {
+    if (showBarTooltips) {
       this.tooltip = new ToolTip();
       root.append(this.tooltip);
     }
-
     // Check data
     let error;
     if (!values.some((val) => yKeyName in val || parseFloat(val[yKeyName]))) {
