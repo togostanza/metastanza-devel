@@ -2,7 +2,10 @@
 @use "@/common.scss";
 
 main {
-  padding: var(--togostanza-canvas-padding);
+  .svg {
+    padding: var(--togostanza-canvas-padding);
+  }
+
   .domain,
   .tick {
     color: #333;
