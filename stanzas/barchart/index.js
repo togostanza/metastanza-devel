@@ -28,7 +28,7 @@ export default class Barchart extends Stanza {
   }
 
   async render() {
-    appendCustomCss(this, this.params["custom_css_url"]);
+    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
@@ -104,11 +104,11 @@ export default class Barchart extends Stanza {
 
     const axisYScale = this.params["axis-y-scale"] || "linear";
 
-    const width = parseInt(css("--togostanza-outline-width"));
-    const height = parseInt(css("--togostanza-outline-height"));
+    const width = parseInt(css("--togostanza-canvas-width"));
+    const height = parseInt(css("--togostanza-canvas-height"));
 
     let inputMargin = getMarginsFromCSSString(
-      css("--togostanza-outline-padding")
+      css("--togostanza-canvas-padding")
     );
 
     inputMargin = {

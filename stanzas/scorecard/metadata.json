@@ -60,19 +60,19 @@
   "stanza:menu-placement": "bottom-right",
   "stanza:style": [
     {
-      "stanza:key": "--togostanza-outline-width",
+      "stanza:key": "--togostanza-canvas-width",
       "stanza:type": "number",
-      "stanza:default": 300,
+      "stanza:default": 320,
       "stanza:description": "Metastanza width in px"
     },
     {
-      "stanza:key": "--togostanza-outline-height",
+      "stanza:key": "--togostanza-canvas-height",
       "stanza:type": "number",
-      "stanza:default": 70,
+      "stanza:default": 110,
       "stanza:description": "Metastanza height in px"
     },
     {
-      "stanza:key": "--togostanza-outline-padding",
+      "stanza:key": "--togostanza-canvas-padding",
       "stanza:type": "text",
       "stanza:default": "50px",
       "stanza:description": "Padding of a stanza. CSS padding-like text (10px 10px 10px 10px)"

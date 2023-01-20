@@ -1,6 +1,8 @@
 import Stanza from "togostanza/stanza";
 import * as d3 from "d3";
 import loadData from "togostanza-utils/load-data";
+import { getMarginsFromCSSString } from "../../lib/utils";
+import { StanzaColorGenerator } from "../../lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -43,7 +45,7 @@ export default class Sunburst extends Stanza {
         if (key === "currentId") {
           updateId(getNodeById(value));
         }
-        return Reflect.set(...arguments);
+        return Reflect.set;
       },
       get: Reflect.get,
     });
@@ -64,28 +66,31 @@ export default class Sunburst extends Stanza {
     // get value of css vars
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
-    const width = this.params["width"];
-    const height = this.params["height"];
-    const colorScale = [];
+    const width = parseFloat(css("--togostanza-canvas-width"));
+    const height = parseFloat(css("--togostanza-canvas-height"));
+    const padding = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
 
-    const borderWidth = this.params["gap-width"] || 2;
-    const nodesGapWidth = this.params["nodes-gap-width"] || 8;
-    const cornerRadius = this.params["nodes-corner-radius"] || 0;
-    const showNumbers = this.params["show-numbers"];
-    let depthLim = +this.params["max-depth"] || 0;
-    const scalingMethod = this.params["scaling"];
+    const labelKey = this.params["node-label_key"];
+    const valueKey = this.params["node-value_key"];
+    const showNumbers = this.params["node-show_values"];
+    const borderWidth = this.params["node-levels_gap_width"] || 2;
+    const nodesGapWidth = this.params["node-gap_width"] || 8;
+    const cornerRadius = this.params["node-corner_radius"] || 0;
+    const scalingMethod = this.params["scaling"] || "By value";
+    let depthLim =
+      parseFloat(this.params["max_depth"]) > 0
+        ? parseFloat(this.params["max_depth"])
+        : 1;
 
     const data = await loadData(
       this.params["data-url"],
       this.params["data-type"],
       this.root.querySelector("main")
     );
-
     this._data = data;
 
-    for (let i = 0; i <= 5; i++) {
-      colorScale.push(`--togostanza-series-${i}-color`);
-    }
+    const colorScale = new StanzaColorGenerator(this).stanzaColor;
+    const color = d3.scaleOrdinal(colorScale);
 
     this.renderTemplate({
       template: "stanza.html.hbs",
@@ -123,7 +128,9 @@ export default class Sunburst extends Stanza {
 
     const dataset = data.filter(
       (item) =>
-        (item.children && !item.n) || (item.n && item.n > 0) || item.id === "-1"
+        (item.children && !item[valueKey]) ||
+        (item[valueKey] && item[valueKey] > 0) ||
+        item.id === "-1"
     );
 
     const el = this.root.querySelector("#sunburst");
@@ -139,13 +146,11 @@ export default class Sunburst extends Stanza {
 
     const formatNumber = d3.format(",d");
 
-    const color = d3.scaleOrdinal(colorScale);
-
     const partition = (data) => {
       const root = d3.hierarchy(data);
       switch (scalingMethod) {
-        case "Natural":
-          root.sum((d) => d.data.n);
+        case "By value":
+          root.sum((d) => d.data[valueKey]);
           break;
         case "Equal children":
           root.sum((d) => (d.children ? 0 : 1));
@@ -163,7 +168,7 @@ export default class Sunburst extends Stanza {
       root
         .sort((a, b) => b.value - a.value)
         // store real values for number labels in d.value2
-        .each((d) => (d.value2 = d3.sum(d, (dd) => dd.data.data.n)));
+        .each((d) => (d.value2 = d3.sum(d, (dd) => dd.data.data[valueKey])));
       return d3.partition().size([2 * Math.PI, root.height + 1])(root);
     };
 
@@ -177,7 +182,20 @@ export default class Sunburst extends Stanza {
       depthLim = maxDepth;
     }
 
-    const radius = width / ((depthLim + 1) * 2);
+    const radius =
+      Math.min(
+        width - padding.LEFT - padding.RIGHT,
+        height - padding.TOP - padding.BOTTOM
+      ) /
+      ((depthLim + 1) * 2);
+
+    if (
+      padding.LEFT + padding.RIGHT >= width ||
+      padding.TOP + padding.BOTTOM >= height
+    ) {
+      el.innerHTML = "<p>Padding is too big for given width and height!</p>";
+      throw new Error("Padding is too big for given width and height!");
+    }
 
     const arc = d3
       .arc()
@@ -238,6 +256,9 @@ export default class Sunburst extends Stanza {
     };
 
     function textFits(d, charWidth, text) {
+      if (!text || !text.length) {
+        return true;
+      }
       const deltaAngle = d.x1 - d.x0;
       const r = Math.max(0, ((d.y0 + d.y1) * radius) / 2);
       const perimeter = r * deltaAngle;
@@ -248,8 +269,8 @@ export default class Sunburst extends Stanza {
     const svg = d3
       .select(el)
       .append("svg")
-      .style("width", width)
-      .style("height", height)
+      .attr("width", width)
+      .attr("height", height)
       .attr("viewBox", `${-width / 2} ${-height / 2} ${width} ${height}`);
 
     //Get character width
@@ -276,7 +297,7 @@ export default class Sunburst extends Stanza {
           return "none";
         }
 
-        return css(color(d.data.data.label));
+        return color(d.data.data.id);
       })
       .attr("fill-opacity", (d) =>
         arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0
@@ -291,7 +312,7 @@ export default class Sunburst extends Stanza {
     path.append("title").text((d) => {
       return `${d
         .ancestors()
-        .map((d) => d.data.data.label)
+        .map((d) => d.data.data[labelKey])
         .reverse()
         .join("/")}\n${formatNumber(d.value2)}`;
     });
@@ -334,12 +355,13 @@ export default class Sunburst extends Stanza {
       .join("text")
       .attr(
         "fill-opacity",
-        (d) => +(labelVisible(d) && textFits(d, CHAR_SPACE, d.data.data.label))
+        (d) =>
+          +(labelVisible(d) && textFits(d, CHAR_SPACE, d.data.data[labelKey]))
       )
       .append("textPath")
       .attr("startOffset", "50%")
       .attr("href", (_, i) => `#hiddenLabelArc${i}`)
-      .text((d) => d.data.data.label);
+      .text((d) => d.data.data[labelKey]);
 
     //Number labels
     const numLabels = g
@@ -354,7 +376,7 @@ export default class Sunburst extends Stanza {
         (d) =>
           +(
             labelVisible(d) &&
-            textFits(d, CHAR_SPACE, d.data.data.label) &&
+            textFits(d, CHAR_SPACE, d.data.data[labelKey]) &&
             showNumbers
           )
       )
@@ -427,8 +449,8 @@ export default class Sunburst extends Stanza {
           b = b.parent;
         }
 
-        return b.data?.data?.label
-          ? css(color(b.data.data.label))
+        return b.data?.data?.[labelKey]
+          ? color(b.data.data.id)
           : "rgba(0,0,0,0)";
       });
 
@@ -442,7 +464,7 @@ export default class Sunburst extends Stanza {
           (d) =>
             +(
               labelVisible(d.target) &&
-              textFits(d.target, CHAR_SPACE, d.data.data.label)
+              textFits(d.target, CHAR_SPACE, d.data.data[labelKey])
             )
         );
 
@@ -460,7 +482,7 @@ export default class Sunburst extends Stanza {
           (d) =>
             +(
               labelVisible(d.target) &&
-              textFits(d.target, CHAR_SPACE, d.data.data.label) &&
+              textFits(d.target, CHAR_SPACE, d.data.data[labelKey]) &&
               showNumbers
             )
         );

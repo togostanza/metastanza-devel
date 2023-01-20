@@ -37,12 +37,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "custom_css_url",
-      "stanza:example": "",
-      "stanza:description": "Stylesheet(css file) URL to override current style",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "node-gap_width",
       "stanza:type": "number",
       "stanza:example": 2,
@@ -57,35 +51,41 @@
     {
       "stanza:key": "node-value_key",
       "stanza:type": "text",
-      "stanza:example": "n",
+      "stanza:example": "size",
       "stanza:description": "Node value key"
+    },
+    {
+      "stanza:key": "togostanza-custom_css_url",
+      "stanza:example": "",
+      "stanza:description": "Stylesheet(css file) URL to override current style",
+      "stanza:required": false
     }
   ],
   "stanza:menu-placement": "bottom-right",
   "stanza:style": [
     {
-      "stanza:key": "--togostanza-theme-background_color",
-      "stanza:type": "color",
-      "stanza:default": "#eeeeee",
-      "stanza:description": "Background color"
-    },
-    {
-      "stanza:key": "--togostanza-outline-width",
+      "stanza:key": "--togostanza-canvas-width",
       "stanza:type": "number",
       "stanza:default": 400,
       "stanza:description": "Stanza width in px"
     },
     {
-      "stanza:key": "--togostanza-outline-height",
+      "stanza:key": "--togostanza-canvas-height",
       "stanza:type": "number",
       "stanza:default": 400,
       "stanza:description": "Stanza height in px"
     },
     {
-      "stanza:key": "--togostanza-outline-padding",
+      "stanza:key": "--togostanza-canvas-padding",
       "stanza:type": "text",
       "stanza:default": "20px",
       "stanza:description": "Stanza inner padding"
+    },
+    {
+      "stanza:key": "--togostanza-theme-background_color",
+      "stanza:type": "color",
+      "stanza:default": "#eeeeee",
+      "stanza:description": "Background color"
     },
     {
       "stanza:key": "--togostanza-fonts-font_family",

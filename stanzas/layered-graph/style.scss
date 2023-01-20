@@ -46,9 +46,6 @@ svg > defs > marker > path {
   pointer-events: none;
   opacity: 0.8;
 
-  &.dashed {
-    stroke-dasharray: 2;
-  }
   &.active {
     opacity: 1;
   }

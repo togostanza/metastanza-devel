@@ -27,12 +27,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "custom_css_url",
-      "stanza:example": "",
-      "stanza:description": "Stylesheet(scss file) URL to override current style",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "columns",
       "stanza:example": "[{\"id\": \"title\"}, {\"id\": \"dataset_uri\", \"label\": \"Dataset ID\", \"link\": \"dataset_uri\"},{\"id\": \"description\"}, {\"id\": \"species\", \"escape\": false}, {\"id\": \"number_of_protein\", \"label\": \"#protein\"}]",
       "stanza:description": "Columns' options"
@@ -42,15 +36,21 @@
       "stanza:type": "boolean",
       "stanza:example": true,
       "stanza:description": "Capitalize the acronym and convert underscore to blank"
+    },
+    {
+      "stanza:key": "togostanza-custom_css_url",
+      "stanza:example": "",
+      "stanza:description": "Stylesheet(scss file) URL to override current style",
+      "stanza:required": false
     }
   ],
   "stanza:menu-placement": "bottom-right",
   "stanza:style": [
     {
-      "stanza:key": "--togostanza-outline-padding",
+      "stanza:key": "--togostanza-canvas-padding",
       "stanza:type": "text",
       "stanza:default": "10px",
-      "stanza:description": "Stanza inside outline padding"
+      "stanza:description": "Stanza inside canvas padding"
     },
     {
       "stanza:key": "--togostanza-border-color",
@@ -63,12 +63,6 @@
       "stanza:type": "text",
       "stanza:default": "1px",
       "stanza:description": "Stanza border width"
-    },
-    {
-      "stanza:key": "--togostanza-outline-padding",
-      "stanza:type": "text",
-      "stanza:default": "10px",
-      "stanza:description": "Stanza inside outline padding"
     },
     {
       "stanza:key": "--togostanza-table-column_count",

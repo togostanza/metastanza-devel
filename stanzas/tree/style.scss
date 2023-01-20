@@ -2,7 +2,7 @@
 @use "@/common.scss";
 
 svg {
-  padding: var(--togostanza-outline-padding);
+  padding: var(--togostanza-canvas-padding);
   .link {
     fill: none;
     stroke: var(--togostanza-border-color);

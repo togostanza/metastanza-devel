@@ -27,12 +27,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "custom_css_url",
-      "stanza:example": "",
-      "stanza:description": "Stylesheet(scss file) URL to override current style",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "group_planes-sort-key",
       "stanza:type": "string",
       "stanza:example": "group",
@@ -58,7 +52,6 @@
       "stanza:example": "ascending",
       "stanza:description": "Nodes sorting order"
     },
-
     {
       "stanza:key": "node-size-key",
       "stanza:type": "string",
@@ -96,7 +89,6 @@
       "stanza:example": "value",
       "stanza:description": "Set width of the edge  data key"
     },
-
     {
       "stanza:key": "edge-width-min",
       "stanza:type": "number",
@@ -139,10 +131,34 @@
       "stanza:type": "string",
       "stanza:example": "id",
       "stanza:description": "Node tooltips data key. If empty, no tooltips will be shown"
+    },
+    {
+      "stanza:key": "togostanza-custom_css_url",
+      "stanza:example": "",
+      "stanza:description": "Stylesheet(scss file) URL to override current style",
+      "stanza:required": false
     }
   ],
   "stanza:menu-placement": "bottom-right",
   "stanza:style": [
+    {
+      "stanza:key": "--togostanza-canvas-width",
+      "stanza:type": "number",
+      "stanza:default": 600,
+      "stanza:description": "Width in px"
+    },
+    {
+      "stanza:key": "--togostanza-canvas-height",
+      "stanza:type": "number",
+      "stanza:default": 1000,
+      "stanza:description": "Height in px"
+    },
+    {
+      "stanza:key": "--togostanza-canvas-padding",
+      "stanza:type": "text",
+      "stanza:default": "50",
+      "stanza:description": "Inner padding in px"
+    },
     {
       "stanza:key": "--togostanza-theme-series_0_color",
       "stanza:type": "color",
@@ -178,24 +194,6 @@
       "stanza:type": "color",
       "stanza:default": "#F75976",
       "stanza:description": "Group color 5"
-    },
-    {
-      "stanza:key": "--togostanza-outline-width",
-      "stanza:type": "number",
-      "stanza:default": 600,
-      "stanza:description": "Width in px"
-    },
-    {
-      "stanza:key": "--togostanza-outline-height",
-      "stanza:type": "number",
-      "stanza:default": 1000,
-      "stanza:description": "Height in px"
-    },
-    {
-      "stanza:key": "--togostanza-outline-padding",
-      "stanza:type": "text",
-      "stanza:default": "50",
-      "stanza:description": "Inner padding in px"
     },
     {
       "stanza:key": "--togostanza-border-width",

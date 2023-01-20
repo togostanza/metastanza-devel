@@ -31,7 +31,7 @@ export default class ForceGraph extends Stanza {
   }
 
   async render() {
-    appendCustomCss(this, this.params["custom_css_url"]);
+    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
@@ -41,9 +41,9 @@ export default class ForceGraph extends Stanza {
 
     //data
 
-    const width = setFallbackNumVal(css("--togostanza-outline-width"), 200);
-    const height = setFallbackNumVal(css("--togostanza-outline-height"), 200);
-    const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
+    const width = setFallbackNumVal(css("--togostanza-canvas-width"), 200);
+    const height = setFallbackNumVal(css("--togostanza-canvas-height"), 200);
+    const MARGIN = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
 
     this.renderTemplate({
       template: "stanza.html.hbs",
@@ -548,7 +548,10 @@ export default class ForceGraph extends Stanza {
           })
           .classed("fadeout", false)
           .classed("half-active", true)
-          .classed("dashed", true);
+          .classed("dashed", true)
+          .attr("stroke-dasharray", (d) =>
+            Math.max(d.edge[symbols.edgeWidthSym] * 2, 2)
+          );
 
         links
           .filter(
@@ -568,6 +571,7 @@ export default class ForceGraph extends Stanza {
         links.classed("active", false);
         links.classed("half-active", false);
         links.classed("dashed", false);
+        links.attr("stroke-dasharray", null);
         planes.classed("active", false);
         planes.classed("fadeout", false);
         planes.classed("half-active", false);
