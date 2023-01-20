@@ -115,11 +115,11 @@
       "stanza:key": "grouping-key",
       "stanza:type": "text",
       "stanza:example": "category",
-      "stanza:description": "Group bars by this key",
+      "stanza:description": "Group bars by this key. If the key is wrong/not present in data, treat the data as one group.",
       "stanza:required": false
     },
     {
-      "stanza:key": "chart-bar_arrangement",
+      "stanza:key": "grouping-arrangement",
       "stanza:type": "single-choice",
       "stanza:choice": ["stacked", "grouped"],
       "stanza:example": "grouped",
