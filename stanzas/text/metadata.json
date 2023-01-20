@@ -19,16 +19,16 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "highlight_css_url",
-      "stanza:example": "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/atom-one-light.min.css",
-      "stanza:description": "Stylesheet (css file) URL of highlight.js theme (only effective in markdown mode)"
-    },
-    {
-      "stanza:key": "mode",
+      "stanza:key": "data-mode",
       "stanza:type": "single-choice",
       "stanza:choice": ["text", "markdown"],
       "stanza:example": "text",
       "stanza:description": "Mode"
+    },
+    {
+      "stanza:key": "data-highlight_css_url",
+      "stanza:example": "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/atom-one-light.min.css",
+      "stanza:description": "Stylesheet (css file) URL of highlight.js theme (only effective in markdown mode)"
     },
     {
       "stanza:key": "togostanza-custom_css_url",
