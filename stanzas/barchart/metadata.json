@@ -143,6 +143,7 @@
     {
       "stanza:key": "legend-visible",
       "stanza:type": "boolean",
+      "stanza:label": "Toggle legend visibility",
       "stanza:example": true,
       "stanza:description": "Whether to show the legend"
     },
