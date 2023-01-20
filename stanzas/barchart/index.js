@@ -51,7 +51,7 @@ export default class Barchart extends Stanza {
     const xTicksNumber = xTicksHide ? 0 : null;
     const xTickValues = xTicksHide ? [] : null;
 
-    const showLegend = this.params["legend-show"];
+    const showLegend = this.params["legend-visible"];
     const legendTitle = this.params["legend-title"];
 
     const groupKeyName = this.params["grouping-key"];
