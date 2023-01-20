@@ -26,7 +26,7 @@ export default class Text extends Stanza {
           });
           const textUrl = URL.createObjectURL(textBlob);
           const link = document.createElement("a");
-          document.body.appendChild(link);
+          document.body.append(link);
           link.href = textUrl;
           link.download = this._downloadFileName();
           link.click();
@@ -44,9 +44,8 @@ export default class Text extends Stanza {
   _downloadFileName() {
     if (this._isMarkdownMode()) {
       return "text.md";
-    } else {
-      return "text.txt";
     }
+    return "text.txt";
   }
 
   async render() {
@@ -62,12 +61,12 @@ export default class Text extends Stanza {
     appendHighlightCss(this, this.params["data-highlight_css_url"]);
 
     const container = document.createElement("div");
-    container.setAttribute("class", "container");
-    el.appendChild(container);
+    container.classList.add("container");
+    el.append(container);
 
     const paragraph = document.createElement("p");
-    paragraph.setAttribute("class", "paragraph");
-    container.appendChild(paragraph);
+    paragraph.classList.add("paragraph");
+    container.append(paragraph);
 
     if (this._isMarkdownMode()) {
       const parser = new commonmark.Parser();
@@ -94,7 +93,7 @@ export function appendHighlightCss(stanza, highlightCssUrl) {
 
   if (highlightCssUrl) {
     const link = document.createElement("link");
-    stanza.root.appendChild(link);
+    stanza.root.append(link);
 
     link.setAttribute("rel", "stylesheet");
     link.setAttribute("href", highlightCssUrl);
