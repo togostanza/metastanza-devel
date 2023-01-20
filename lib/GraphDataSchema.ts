@@ -1,12 +1,5 @@
 import { z } from "zod";
 
-// z
-//   .object({
-//     id: z.union([z.number(), z.string()],{required_error: "key `id` is required"}),
-//     group: z.union([z.number(), z.string()], {required_error: "key `group` is required"}),
-//   })
-//   .passthrough();
-
 const NodesListModel = z
   .object({
     id: z.union([z.number(), z.string()], {
