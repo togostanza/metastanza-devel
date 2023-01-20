@@ -201,9 +201,7 @@ export default class Tree extends Stanza {
       .enter()
       .append("text")
       .text((d) => d);
-
     const maxLabelWidth = maxLabelGroup.node().getBBox().width;
-
     maxLabelGroup.remove();
 
     //Create each group
@@ -251,9 +249,7 @@ export default class Tree extends Stanza {
           case VERTICAL:
             return `translate(${margin.top}, ${margin.left})`;
           case RADIAL:
-            return `translate(
-              ${SVGWidth / 2},
-              ${SVGHeight / 2})`;
+            return `translate(${SVGWidth / 2}, ${SVGHeight / 2})`;
         }
       });
 
