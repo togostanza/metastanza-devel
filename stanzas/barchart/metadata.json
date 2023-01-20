@@ -112,7 +112,7 @@
       "stanza:description": "Y axis grid lines interval. If undefined, 5 gridlines will be drawn at `neat` y-axis values. Setting it to 0, would hide all gridlines."
     },
     {
-      "stanza:key": "group_by-key",
+      "stanza:key": "grouping-key",
       "stanza:type": "text",
       "stanza:example": "category",
       "stanza:description": "Group bars by this key",

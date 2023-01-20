@@ -54,7 +54,7 @@ export default class Barchart extends Stanza {
     const showLegend = this.params["legend-show"];
     const legendTitle = this.params["legend-title"];
 
-    const groupKeyName = this.params["group_by-key"];
+    const groupKeyName = this.params["grouping-key"];
 
     const xLabelAngle =
       parseInt(this.params["axis-x-ticks_labels_angle"]) === 0
@@ -77,7 +77,7 @@ export default class Barchart extends Stanza {
     const yGridNumber =
       yGridLinesInterval === 0 ? null : isNaN(yGridLinesInterval) ? 5 : null;
 
-    const barPlacement = this.params["chart-bar_arrangement"] || "grouped";
+    const barPlacement = this.params["grouping-arrangement"] || "grouped";
     const errorKeyName = this.params["error_bars-key"];
     const showErrorBars = errorKeyName !== "" || errorKeyName !== undefined;
 
