@@ -58,13 +58,13 @@ g.node-g {
   fill: none;
   stroke: var(--togostanza-edge-color);
   pointer-events: none;
-  opacity: 0.8;
+  opacity: 0.6;
 
   &.active {
-    opacity: 1;
+    opacity: 0.4;
   }
   &.half-active {
-    opacity: 1;
+    opacity: 0.4;
   }
   &.fadeout {
     opacity: 0.01;
