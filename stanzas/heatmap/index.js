@@ -101,24 +101,14 @@ export default class Heatmap extends Stanza {
     );
     const width = parseFloat(this.css("--togostanza-canvas-width"));
     const height = parseFloat(this.css("--togostanza-canvas-height"));
-    const borderWidth = parseFloat(this.css("--togostanza-border-width") || 0);
+    const borderWidth =
+      parseFloat(this.css("--togostanza-border-width")) > 0
+        ? parseFloat(this.css("--togostanza-border-width"))
+        : 0;
     const tickSize = 2;
 
-    // x-axis scale
     const rows = [...new Set(dataset.map((d) => d[xKey]))];
-    const x = d3.scaleBand().domain(rows).range([0, width]);
-    const xAxisGenerator = d3
-      .axisBottom(x)
-      .tickSizeInner(tickSize)
-      .tickSizeOuter(0);
-
-    // y-axis scale
     const columns = [...new Set(dataset.map((d) => d[yKey]))];
-    const y = d3.scaleBand().domain(columns).range([height, 0]);
-    const yAxisGenerator = d3
-      .axisLeft(y)
-      .tickSizeInner(tickSize)
-      .tickSizeOuter(0);
 
     d3.select(root).select("svg").remove();
     //Drawing area
@@ -137,28 +127,52 @@ export default class Heatmap extends Stanza {
 
     //Margin between graph and title
     const margin = {
-      left: axisXTitlePadding + maxColumnWidth + tickSize,
-      bottom: axisYTitlePadding + maxColumnWidth + tickSize,
+      left: axisYTitlePadding + maxColumnWidth + tickSize,
+      bottom: axisXTitlePadding + maxColumnWidth + tickSize,
     };
 
-    //Graph area including title
+    // x-axis scale
+    const x = d3
+      .scaleBand()
+      .domain(rows)
+      .range([0, width - margin.left - fontSize]);
+    const xAxisGenerator = d3
+      .axisBottom(x)
+      .tickSizeInner(tickSize)
+      .tickSizeOuter(0);
+
+    // y-axis scale
+    const y = d3
+      .scaleBand()
+      .domain(columns)
+      .range([height - margin.bottom - fontSize, 0]);
+    const yAxisGenerator = d3
+      .axisLeft(y)
+      .tickSizeInner(tickSize)
+      .tickSizeOuter(0);
+
+    //SVG area
     svg
-      .attr("width", width + margin.left + fontSize)
-      .attr("height", height + margin.bottom + fontSize);
+      .attr("width", width + borderWidth / 2)
+      .attr("height", height + borderWidth / 2);
 
     const graphArea = svg
       .append("g")
       .classed("graph", true)
-      .attr("transform", `translate(${margin.left + fontSize}, 0)`);
+      .attr(
+        "transform",
+        `translate(${margin.left + fontSize},  ${borderWidth / 2})`
+      );
 
     //Set for each rect
     graphArea
       .append("g")
-      .classed("rect", true)
+      .classed("g-rect", true)
       .selectAll()
       .data(dataset, (d) => `${d[xKey]}:${d[yKey]}`)
       .enter()
       .append("rect")
+      .classed("rect", true)
       .attr("x", (d) => x(d[xKey]))
       .attr("y", (d) => y(d[yKey]))
       .attr("data-tooltip-html", true)
@@ -173,7 +187,7 @@ export default class Heatmap extends Stanza {
     const xaxisArea = graphArea
       .append("g")
       .classed("x-axis", true)
-      .attr("transform", `translate(0, ${height})`);
+      .attr("transform", `translate(0, ${height - margin.bottom - fontSize})`);
     xaxisArea
       .append("g")
       .classed("x-axis-label", true)
@@ -183,7 +197,10 @@ export default class Heatmap extends Stanza {
     xaxisArea
       .append("text")
       .attr("text-anchor", "middle")
-      .attr("transform", `translate(${width / 2}, ${margin.bottom})`)
+      .attr(
+        "transform",
+        `translate(${(width - margin.left - fontSize) / 2}, ${margin.bottom})`
+      )
       .text(xTitle);
 
     //Draw about the y-axis;
@@ -199,7 +216,9 @@ export default class Heatmap extends Stanza {
       .attr("text-anchor", "middle")
       .attr(
         "transform",
-        `translate(-${margin.left}, ${height / 2}) rotate(-90)`
+        `translate(-${margin.left}, ${
+          (height - margin.bottom - fontSize) / 2
+        }) rotate(-90)`
       )
       .text(yTitle);
 
