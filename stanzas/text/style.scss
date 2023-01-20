@@ -5,24 +5,16 @@
   box-sizing: border-box;
 }
 
-main {
-  padding: var(--togostanza-canvas-padding);
-}
 .container {
-  display: flex;
-  flex-direction: column;
   width: calc(var(--togostanza-canvas-width) * 1px);
   height: calc(var(--togostanza-canvas-height) * 1px);
+  padding: var(--togostanza-canvas-padding);
+  word-break: break-all;
+  font-weight: var(--togostanza-fonts-font_weight);
 
-  table {
-    display: block;
-    tbody {
-      tr {
-        td {
-          word-break: break-all;
-          font-weight: var(--togostanza-fonts-font_weight);
-        }
-      }
-    }
+  p.paragraph {
+    margin: 0;
+    height: 100%;
+    overflow: auto;
   }
 }
