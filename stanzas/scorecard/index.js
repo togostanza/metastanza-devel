@@ -53,84 +53,68 @@ export default class Scorecard extends Stanza {
 
     const prefixText = this.params["data-prefix"];
     const suffixText = this.params["data-suffix"];
-    const affixSpace = 5;
 
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.classList.add("svg");
     svg.setAttribute("width", width);
     svg.setAttribute("height", height);
-
-    svg.classList.add("svg");
-    el.appendChild(svg);
+    el.append(svg);
 
     const wrapper = document.createElementNS("http://www.w3.org/2000/svg", "g");
     wrapper.classList.add("wrapper");
-    svg.appendChild(wrapper);
+    svg.append(wrapper);
 
-    const titleKeyText = document.createElementNS(
+    const titleSvg = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "text"
     );
-    titleKeyText.classList.add("title-key");
-    titleKeyText.textContent = titleText;
-    titleKeyText.setAttribute("text-anchor", "middle");
-    wrapper.append(titleKeyText);
+    titleSvg.classList.add("title");
+    titleSvg.textContent = titleText;
+    titleSvg.setAttribute("text-anchor", "middle");
+    wrapper.append(titleSvg);
 
     const scoreWrapper = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "text"
     );
     scoreWrapper.classList.add("score-wrapper");
-    wrapper.appendChild(scoreWrapper);
     scoreWrapper.setAttribute("text-anchor", "middle");
+    wrapper.append(scoreWrapper);
 
-    const prefixValueText = document.createElementNS(
+    const prefixSvg = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "tspan"
     );
-    prefixValueText.classList.add("prefix-value");
-    prefixValueText.textContent = prefixText;
+    prefixSvg.classList.add("prefix");
+    prefixSvg.textContent = prefixText;
+    scoreWrapper.append(prefixSvg);
 
-    scoreWrapper.append(prefixValueText);
-
-    const scoreValueText = document.createElementNS(
+    const scoreSvg = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "tspan"
     );
-    scoreValueText.classList.add("score-value");
-    scoreValueText.textContent = scoreValue;
-    // scoreValueText.setAttribute("text-anchor", "middle");
-    scoreWrapper.append(scoreValueText);
+    scoreSvg.classList.add("score");
+    scoreSvg.textContent = scoreValue;
+    scoreWrapper.append(scoreSvg);
 
-    const suffixValueText = document.createElementNS(
+    const suffixSvg = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "tspan"
     );
-    suffixValueText.classList.add("suffix-value");
-    suffixValueText.textContent = suffixText;
-
-    scoreWrapper.append(suffixValueText);
-    // suffixValueText.setAttribute(
-    //   "x",
-    //   scoreValueText.getBoundingClientRect().width / 2 + affixSpace
-    // );
+    suffixSvg.classList.add("suffix");
+    suffixSvg.textContent = suffixText;
+    scoreWrapper.append(suffixSvg);
 
     if (titleText) {
-      titleKeyText.setAttribute("y", fontSizeSecondary);
+      titleSvg.setAttribute("y", fontSizeSecondary);
       scoreWrapper.setAttribute("y", fontSizePrimary + fontSizeSecondary);
-      // prefixValueText.setAttribute("y", fontSizePrimary + fontSizeSecondary);
-      // suffixValueText.setAttribute("y", fontSizePrimary + fontSizeSecondary);
     } else {
-      titleKeyText.setAttribute(`style`, `display: none;`);
+      titleSvg.setAttribute(`style`, `display: none;`);
       scoreWrapper.setAttribute("y", fontSizePrimary);
-      // prefixValueText.setAttribute("y", fontSizePrimary);
-      // suffixValueText.setAttribute("y", fontSizePrimary);
     }
-    console.log("before", wrapper.getBoundingClientRect().width);
-    console.log("before bbox", wrapper.getBBox().width);
 
     const wrapperWidth = wrapper.getBoundingClientRect().width;
     const wrapperHeight = wrapper.getBoundingClientRect().height;
-
     const scale = () => {
       let minScale = Math.min(
         Math.min(
@@ -143,38 +127,11 @@ export default class Scorecard extends Stanza {
       return minScale;
     };
 
-    console.log(scale());
-
-    // wrapper.setAttribute("transform-origin", `center`);
-
-    // const titleTextWidth = titleKeyText.getBoundingClientRect().width;
-    // const valueTextWidth = scoreValueText.getBoundingClientRect().width;
-    // const prefixWidth = prefixValueText.getBoundingClientRect().width;
-    const scoreWrapperWidth = scoreWrapper.getBoundingClientRect().width;
-    // // const suffixWidth = suffixValueText.getBoundingClientRect().width;
-
-    // const maxWidth = Math.max(
-    //   titleTextWidth / 2,
-    //   valueTextWidth / 2 + prefixWidth + affixSpace
-    // );
-
     wrapper.setAttribute(
       "transform",
       `translate(${width / 2},${
         height / 2 - ((fontSizePrimary + fontSizeSecondary) * scale()) / 2
       }) scale(${scale()})`
     );
-
-    // height / 2 - wrapper.getBBox().height / 2
-    // wrapper.setAttribute("transform-origin", "center, center");
-
-    // wrapper.setAttribute(
-    //   "transform",
-    //   ` scale(${scale}) translate(${x + padding.LEFT},
-    //   ${height / 2 - wrapper.getBoundingClientRect().height / 2 + padding.TOP})`
-    // );
-    // wrapper.getBoundingClientRect().width;
-    // console.log("after", wrapper.getBoundingClientRect().width);
-    // console.log("after bbox", wrapper.getBBox().width);
   }
 }
