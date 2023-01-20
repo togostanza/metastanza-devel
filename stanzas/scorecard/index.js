@@ -125,7 +125,9 @@ export default class Scorecard extends Stanza {
         ),
         1
       );
-      if (minScale < 0) return 0;
+      if (minScale < 0) {
+        return 0;
+      }
       return minScale;
     };
 
