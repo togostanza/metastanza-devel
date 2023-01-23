@@ -171,15 +171,15 @@ export default class Tree extends Stanza {
       }
     };
 
-    const SVGWidth = width - padding.LEFT - padding.RIGHT;
-    const SVGHeight = height - padding.TOP - padding.BOTTOM;
+    const svgWidth = width - padding.LEFT - padding.RIGHT;
+    const svgHeight = height - padding.TOP - padding.BOTTOM;
 
     //Setting svg area
     const svg = d3
       .select(el)
       .append("svg")
-      .attr("width", SVGWidth)
-      .attr("height", SVGHeight);
+      .attr("width", svgWidth)
+      .attr("height", svgHeight);
 
     //Get width of root label
     const rootGroup = svg
@@ -249,7 +249,7 @@ export default class Tree extends Stanza {
           case VERTICAL:
             return `translate(${margin.top}, ${margin.left})`;
           case RADIAL:
-            return `translate(${SVGWidth / 2}, ${SVGHeight / 2})`;
+            return `translate(${svgWidth / 2}, ${svgHeight / 2})`;
         }
       });
 
@@ -266,21 +266,21 @@ export default class Tree extends Stanza {
       switch (layout) {
         case HORIZONTAL:
           graphType.size([
-            SVGHeight - margin.top - margin.bottom,
-            SVGWidth - margin.left - margin.right,
+            svgHeight - margin.top - margin.bottom,
+            svgWidth - margin.left - margin.right,
           ]);
           break;
         case VERTICAL:
           graphType.size([
-            SVGWidth - margin.top - margin.bottom,
-            SVGHeight - margin.left - margin.right,
+            svgWidth - margin.top - margin.bottom,
+            svgHeight - margin.left - margin.right,
           ]);
           break;
         case RADIAL:
           graphType
             .size([
               2 * Math.PI,
-              Math.min(SVGWidth / 2, SVGHeight / 2) - margin.right,
+              Math.min(svgWidth / 2, svgHeight / 2) - margin.right,
             ])
             .separation(separation)(treeRoot);
           break;
