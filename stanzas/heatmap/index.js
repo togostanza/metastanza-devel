@@ -143,6 +143,7 @@ export default class Heatmap extends Stanza {
       .scaleBand()
       .domain(rows)
       .range([0, svgWidth - margin.left - fontSize]);
+    x.paddingOuter(borderWidth / 2 / x.step());
     const xAxisGenerator = d3
       .axisBottom(x)
       .tickSizeInner(tickSize)
@@ -153,6 +154,7 @@ export default class Heatmap extends Stanza {
       .scaleBand()
       .domain(columns)
       .range([svgHeight - margin.bottom - fontSize, 0]);
+    y.paddingOuter(borderWidth / 2 / y.step());
     const yAxisGenerator = d3
       .axisLeft(y)
       .tickSizeInner(tickSize)

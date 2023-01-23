@@ -238,16 +238,16 @@
       "stanza:description": "Secondary (axes ticks, legend, tooltips) font size"
     },
     {
-      "stanza:key": "--togostanza-border-color",
-      "stanza:type": "color",
-      "stanza:default": "#000000",
-      "stanza:description": "Border color for everything that have a border"
-    },
-    {
       "stanza:key": "--togostanza-border-width",
       "stanza:type": "number",
       "stanza:default": 0,
       "stanza:description": "Border width"
+    },
+    {
+      "stanza:key": "--togostanza-border-color",
+      "stanza:type": "color",
+      "stanza:default": "#000000",
+      "stanza:description": "Border color for everything that have a border"
     },
     {
       "stanza:key": "--togostanza-selected-border_color",
