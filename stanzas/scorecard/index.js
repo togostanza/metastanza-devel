@@ -95,7 +95,6 @@ export default class Scorecard extends Stanza {
     );
     scoreSvg.classList.add("score");
     scoreSvg.textContent = scoreValue;
-    scoreSvg.setAttribute("dx", "5");
     scoreWrapper.append(scoreSvg);
 
     const suffixSvg = document.createElementNS(
@@ -104,7 +103,6 @@ export default class Scorecard extends Stanza {
     );
     suffixSvg.classList.add("suffix");
     suffixSvg.textContent = suffixText;
-    suffixSvg.setAttribute("dx", "5");
     scoreWrapper.append(suffixSvg);
 
     if (titleText) {
