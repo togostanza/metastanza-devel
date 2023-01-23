@@ -54,6 +54,8 @@ export default class Heatmap extends Stanza {
       root
     );
 
+    this._data = dataset;
+
     appendCustomCss(this, this.params["custom_css_url"]);
     const cellColorKey = this.params["cell-color-key"];
     const xKey = this.params["axis-x-key"];
@@ -68,16 +70,15 @@ export default class Heatmap extends Stanza {
     const legendTitle = this.params["legend-title"];
     const legendGroups = this.params["legend-groups"];
     const tooltipKey = this.params["tooltips-key"];
-    const tooltipHTML = (d) =>
-      `<span><strong>${d[xKey]},${d[yKey]}: </strong>${d[tooltipKey]}</span>`;
+    const tooltipHTML = (d) => d[tooltipKey];
 
     // Color scale
-    const cellColorMin = this.params["cell-color_min"];
-    const cellColorMid = this.params["cell-color_mid"];
-    const cellColorMax = this.params["cell-color_max"];
-    let cellDomainMin = parseFloat(this.params["cell-value_min"]);
-    let cellDomainMid = parseFloat(this.params["cell-value_mid"]);
-    let cellDomainMax = parseFloat(this.params["cell-value_max"]);
+    const cellColorMin = this.params["cell-color-min"];
+    const cellColorMid = this.params["cell-color-mid"];
+    const cellColorMax = this.params["cell-color-max"];
+    let cellDomainMin = parseFloat(this.params["cell-value-min"]);
+    let cellDomainMid = parseFloat(this.params["cell-value-mid"]);
+    let cellDomainMax = parseFloat(this.params["cell-value-max"]);
     const values = dataset.map((d) => parseFloat(d[cellColorKey]));
 
     if (isNaN(parseFloat(cellDomainMin))) {
@@ -97,11 +98,12 @@ export default class Heatmap extends Stanza {
     );
 
     //Styles
-    const fontSize = +this.css("--togostanza-fonts-font_size_primary");
-    const width = +this.css("--togostanza-outline-width");
-    const height = +this.css("--togostanza-outline-height");
-    const borderWidth = +this.css("--togostanza-border-width") || 0;
-    const borderRadius = +this.css("--togostanza-border-radius");
+    const fontSize = parseFloat(
+      this.css("--togostanza-fonts-font_size_primary")
+    );
+    const width = parseFloat(this.css("--togostanza-canvas-width"));
+    const height = parseFloat(this.css("--togostanza-canvas-height"));
+    const borderWidth = parseFloat(this.css("--togostanza-border-width") || 0);
     const tickSize = 2;
 
     // x-axis scale
@@ -165,8 +167,6 @@ export default class Heatmap extends Stanza {
       .attr("data-tooltip", (d) => tooltipHTML(d))
       .attr("width", x.bandwidth())
       .attr("height", y.bandwidth())
-      .attr("rx", borderRadius)
-      .attr("ry", borderRadius)
       .style("fill", (d) => setColor(d[cellColorKey]))
       .on("mouseover", mouseover)
       .on("mouseleave", mouseleave);
@@ -178,6 +178,7 @@ export default class Heatmap extends Stanza {
       .attr("transform", `translate(0, ${height})`);
     xaxisArea
       .append("g")
+      .attr("class", "x-axis-label")
       .call(xAxisGenerator)
       .selectAll("text")
       .attr("transform", `rotate(${xLabelAngle})`);
@@ -191,6 +192,7 @@ export default class Heatmap extends Stanza {
     const yaxisArea = graphArea.append("g").attr("class", "y-axis");
     yaxisArea
       .append("g")
+      .attr("class", "y-axis-label")
       .call(yAxisGenerator)
       .selectAll("text")
       .attr("transform", `rotate(${yLabelAngle})`);

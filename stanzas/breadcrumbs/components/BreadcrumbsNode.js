@@ -47,7 +47,23 @@ class Node extends LitElement {
     this.arrowWidth = 2;
   }
 
-  firstUpdated() {
+  willUpdate() {
+    if (!this.svg.value) {
+      this.svg.value = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "svg"
+      );
+      this.svg.value.setAttribute("width", 0);
+      this.svg.value.setAttribute("height", 0);
+      this.renderRoot.append(this.svg.value);
+    }
+
+    if (this.mode === "invisible") {
+      this.renderRoot.style = "position: absolute; visibility: hidden";
+    }
+
+    this.icon = FAIcons[`fa${this.iconName}`]?.icon;
+
     let { textWidth, textHeight } = this._getTextRect(this.node.label);
 
     if (textHeight === 0) {
@@ -84,12 +100,10 @@ class Node extends LitElement {
     this.height =
       this.textHeight + this.textMargin.top + this.textMargin.bottom;
     this.pathD = roundPathCorners(this._getPolygon(), this.emW / 2, 0);
-
-    this.requestUpdate();
   }
 
   _getPolygon() {
-    if (this.width < this.emW * 2) {
+    if (this.width < this.emW * 2 && this.mode !== "invisible") {
       throw new Error("Width must be greater than arrow length");
     }
 
@@ -127,19 +141,19 @@ class Node extends LitElement {
     if (!text) {
       return { textWidth: 0, textHeight: 0 };
     }
-    const svg = this.svg.value;
+
     const textEl = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "text"
     );
 
-    svg.append(textEl);
+    this.svg.value.append(textEl);
 
     textEl.textContent = text;
 
     const textWidth = textEl.getBBox().width;
     const textHeight = textEl.getBBox().height;
-    textEl.remove();
+    this.svg.value.removeChild(textEl);
 
     return { textWidth, textHeight };
   }
@@ -176,10 +190,6 @@ class Node extends LitElement {
   }
   _handleMenuLeave() {
     this._unhover();
-  }
-
-  willUpdate() {
-    this.icon = FAIcons[`fa${this.iconName}`]?.icon;
   }
 
   render() {

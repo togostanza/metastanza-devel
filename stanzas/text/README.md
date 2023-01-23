@@ -2,11 +2,11 @@
 
 A stanza for displaying text. It supports both plain text format and Markdown format.
 
-## About `highlight-css-url` parameter
+## About `highlight_css_url` parameter
 
-Specifies the style for syntax highlighting of code when in markdown mode. This stanza uses [highlight.js](https://highlightjs.org/) internally, so you can specify any URL as long as it is a CSS URL that conforms to its specification.
+Specifies the theme for syntax highlighting of code snippets in markdown mode. 
+This stanza uses [highlight.js](https://highlightjs.org/) internally, so you can specify any CSS URL as long as it conforms to highjight.js CSS theme format.
 
-To find a fitting theme for your project, the [highlight.js demo](https://highlightjs.org/static/demo/) is useful.
+A lot of themes are available to preview here: [highlight.js demo](https://highlightjs.org/static/demo/). 
 
-It may be easier to use the style files provided by highlight.js via CDN, see "Fetch via CDN" section on [How to use highlight.js
-](https://highlightjs.org/usage/).
+It may be easier to pick a fitting theme name, and then use the [highlight.js CDN](https://cdnjs.com/libraries/highlight.js) ( filter by Asset Type: "Styling", then copy the CSS file URL with the name of the theme you chose, and paste it into `highlight_css_url`)

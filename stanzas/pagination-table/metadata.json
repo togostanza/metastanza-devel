@@ -27,12 +27,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "custom_css_url",
-      "stanza:example": "",
-      "stanza:description": "Stylesheet(css file) URL to override current style",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "width",
       "stanza:type": "number",
       "stanza:description": "Width"
@@ -73,6 +67,12 @@
       "stanza:type": "boolean",
       "stanza:example": false,
       "stanza:description": "Show axis selector button"
+    },
+    {
+      "stanza:key": "togostanza-custom_css_url",
+      "stanza:example": "",
+      "stanza:description": "Stylesheet(css file) URL to override current style",
+      "stanza:required": false
     }
   ],
   "stanza:menu-placement": "bottom-right",

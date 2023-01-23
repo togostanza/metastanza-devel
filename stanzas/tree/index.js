@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
 import { StanzaCirculateColorGenerator } from "@/lib/ColorGenerator";
+import { getMarginsFromCSSString } from "../../lib/utils";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -50,22 +51,25 @@ export default class Tree extends Stanza {
     );
     this._data = values;
 
+    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
+
     appendCustomCss(this, this.params["custom_css_url"]);
-    const width = parseInt(this.params["width"]),
-      height = parseInt(this.params["height"]),
+    const width = parseFloat(css("--togostanza-canvas-width")),
+      height = parseFloat(css("--togostanza-canvas-height")),
+      padding = getMarginsFromCSSString(css("--togostanza-canvas-padding")),
       sortKey = this.params["sort-key"],
       sortOrder = this.params["sort-order"],
       isLeafNodesAlign = this.params["graph-align_leaf_nodes"],
-      layout = this.params["layout"],
+      layout = this.params["graph-layout"],
       nodeKey = this.params["node-label-key"],
       labelMargin = this.params["node-label-margin"],
       sizeKey = this.params["node-size-key"],
       minRadius = this.params["node-size-min"] / 2,
       maxRadius = this.params["node-size-max"] / 2,
       aveRadius = (minRadius + maxRadius) / 2,
-      colorKey = this.params["color-key"],
-      colorGroup = this.params["color-group"],
-      colorMode = this.params["color-blend"];
+      colorKey = this.params["node-color-key"],
+      colorGroup = this.params["node-color-group"],
+      colorMode = this.params["node-color-blend"];
 
     let colorModeProperty, colorModeValue;
     switch (colorMode) {
@@ -85,7 +89,7 @@ export default class Tree extends Stanza {
         break;
     }
 
-    const tooltipKey = this.params["tooltips-data_key"];
+    const tooltipKey = this.params["tooltips-key"];
     const showToolTips =
       !!tooltipKey && values.some((item) => item[tooltipKey]);
     this.tooltip = new ToolTip();
@@ -171,8 +175,8 @@ export default class Tree extends Stanza {
     const svg = d3
       .select(el)
       .append("svg")
-      .attr("width", width)
-      .attr("height", height);
+      .attr("width", padding.LEFT + width + padding.RIGHT)
+      .attr("height", padding.TOP + height + padding.BOTTOM);
 
     //Get width of root label
     const rootGroup = svg
@@ -439,6 +443,10 @@ export default class Tree extends Stanza {
           )
           .attr("fill", setColor);
 
+        if (showToolTips) {
+          this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
+        }
+
         //Drawing labels
         const nodeLabelsUpdate = gLabels
           .selectAll("g")
@@ -670,9 +678,5 @@ export default class Tree extends Stanza {
 
     //Drawing
     draw();
-
-    if (showToolTips) {
-      this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
-    }
   }
 }

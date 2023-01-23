@@ -2,27 +2,21 @@
 @use "@/common.scss";
 
 main {
-  padding: var(--togostanza-outline-padding);
-  background-color: var(--togostanza-theme-background_color);
-  .titles {
-    font-family: var(--togostanza-fonts-font_family);
-  }
+  padding: var(--togostanza-canvas-padding);
   .domain,
   .tick {
-    color: var(--togostanza-axis-color);
+    color: #333;
   }
   .text {
     font-family: var(--togostanza-fonts-font_family);
     font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
-    color: var(--togostanza-fonts-font_color);
   }
-  .x-axis {
-    font-family: var(--togostanza-fonts-font_family);
-    font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
-    color: var(--togostanza-fonts-font_color);
+  .x-axis-label .tick .text,
+  .y-axis-label .tick .text {
+    font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
   }
   .highlighted {
-    stroke: var(--togostanza-hover-border-color);
+    stroke: var(--togostanza-cell-border_hover_color);
   }
   rect {
     stroke: var(--togostanza-border-color);

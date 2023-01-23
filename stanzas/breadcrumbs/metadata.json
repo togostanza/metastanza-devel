@@ -29,12 +29,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "custom_css_url",
-      "stanza:example": "",
-      "stanza:description": "Stylesheet(css file) URL to override current style",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "node-key",
       "stanza:type": "string",
       "stanza:description": "Key of node unique id",
@@ -56,13 +50,6 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "node-show_dropdown",
-      "stanza:type": "boolean",
-      "stanza:description": "Show node dropdown (neighbour nodes)",
-      "stanza:example": true,
-      "stanza:required": false
-    },
-    {
       "stanza:key": "root_node-label_text",
       "stanza:type": "string",
       "stanza:description": "Text to show on root node",
@@ -77,10 +64,9 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "show_copy_button",
-      "stanza:type": "boolean",
-      "stanza:description": "Show copy path button",
-      "stanza:example": false,
+      "stanza:key": "togostanza-custom_css_url",
+      "stanza:example": "",
+      "stanza:description": "Stylesheet(css file) URL to override current style",
       "stanza:required": false
     }
   ],
@@ -115,12 +101,6 @@
       "stanza:type": "color",
       "stanza:default": "#DDDCDA",
       "stanza:description": "Border color"
-    },
-    {
-      "stanza:key": "--togostanza-border-width",
-      "stanza:type": "number",
-      "stanza:default": 1,
-      "stanza:description": "Border width"
     },
     {
       "stanza:key": "--togostanza-node-background_color_hover",

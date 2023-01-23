@@ -2,16 +2,14 @@
 @use "@/common.scss";
 
 main {
-  padding: 1rem 2rem;
-  font-family: var(--togostanza-font-family);
-  font-size: calc(var(--togostanza-font-size) * 1px);
-  color: var(--togostanza-font-color);
+  padding: var(--togostanza-canvas-padding);
 }
 
 #wrapper {
   position: relative;
   overflow: auto;
-  width: calc(var(--togostanza-width) * 1px);
+  width: calc(var(--togostanza-canvas-width) * 1px);
+  height: calc(var(--togostanza-canvas-height) * 1px);
   .value {
     flex-grow: 1;
     font-weight: normal;
@@ -34,7 +32,7 @@ main {
     &.-horizontal {
       width: 100%;
       line-height: 1;
-      height: calc(var(--togostanza-font-size) * 1px + 1px);
+      height: calc(var(--togostanza-fonts-font_size_primary) * 1px + 1px);
       flex-direction: row;
       gap: 1rem;
       > .value {
@@ -50,7 +48,7 @@ main {
     }
   }
   .icon {
-    width: calc(var(--togostanza-font-size) * 0.6 * 1px);
+    width: calc(var(--togostanza-fonts-font_size_primary) * 0.6 * 1px);
   }
   .-with-border {
     &:after {
@@ -60,7 +58,9 @@ main {
       width: 100%;
       top: 0;
       left: 0;
-      border-top: solid 1px var(--togostanza-column-border-color);
+      border-top: solid
+        calc(var(--togostanza-column-node_delimiter_width) * 1px)
+        var(--togostanza-column-border_color);
     }
   }
   > .search-container {
@@ -71,8 +71,8 @@ main {
       margin-right: 1rem;
       width: 190px;
       height: 20px;
-      border: solid 1px var(--togostanza-control-border-color);
-      border-radius: calc(var(--togostanza-column-border-radius) * 1px);
+      border: solid 1px var(--togostanza-column-border_color);
+      border-radius: calc(var(--togostanza-column-border_radius) * 1px);
     }
     > .search-wrapper {
       min-height: fit-content;
@@ -80,7 +80,7 @@ main {
       display: flex;
       position: absolute;
       overflow: auto;
-      border: solid 1px var(--togostanza-control-border-color);
+      border: solid 1px var(--togostanza-column-border_color);
       border-radius: 3px;
       z-index: 2;
       > .suggestions {
@@ -96,7 +96,7 @@ main {
           position: relative;
           border-bottom: var(--togostanza-column-border);
           &:hover {
-            background-color: var(--togostanza-hover-background-color);
+            background-color: var(--togostanza-node-hover_background_color);
             cursor: pointer;
           }
         }
@@ -111,12 +111,12 @@ main {
     padding: 1px;
     > .column {
       overflow: auto;
-      background-color: var(--togostanza-column-background-color);
+      background-color: var(--togostanza-column-background_color);
       padding: calc(var(--togostanza-column-padding) * 1px);
       width: max-content;
       outline: 1px solid;
-      outline-color: var(--togostanza-column-border-color);
-      border-radius: calc(var(--togostanza-column-border-radius) * 1px);
+      outline-color: var(--togostanza-column-border_color);
+      border-radius: calc(var(--togostanza-column-border_radius) * 1px);
       &.-fixed {
         width: calc(var(--togostanza-column-width) * 1px);
       }
@@ -125,11 +125,11 @@ main {
         display: grid;
         grid-template-columns: 1.5rem auto 1.5rem;
         align-items: center;
-        border-radius: calc(var(--togostanza-node-border-radius) * 1px);
-        padding-top: calc(var(--togostanza-node-padding-vertical) * 1px);
-        padding-bottom: calc(var(--togostanza-node-padding-vertical) * 1px);
-        padding-left: calc(var(--togostanza-node-padding-horizontal) * 1px);
-        padding-right: calc(var(--togostanza-node-padding-horizontal) * 1px);
+        border-radius: calc(var(--togostanza-node-border_radius) * 1px);
+        padding-top: calc(var(--togostanza-node-padding_vertical) * 1px);
+        padding-bottom: calc(var(--togostanza-node-padding_vertical) * 1px);
+        padding-left: calc(var(--togostanza-node-padding_horizontal) * 1px);
+        padding-right: calc(var(--togostanza-node-padding_horizontal) * 1px);
         > .label {
           &.-vertical {
             margin-left: 0.5rem;
@@ -145,41 +145,23 @@ main {
           }
         }
         &:first-child {
-          border-top-left-radius: max(
-            calc(var(--togostanza-column-border-radius) * 1px),
-            calc(var(--togostanza-node-border-radius) * 1px)
-          );
-          border-top-right-radius: max(
-            calc(var(--togostanza-column-border-radius) * 1px),
-            calc(var(--togostanza-node-border-radius) * 1px)
-          );
           &.-with-border:after {
             border-top: none;
           }
         }
-        &:last-child {
-          border-bottom-left-radius: max(
-            calc(var(--togostanza-column-border-radius) * 1px),
-            calc(var(--togostanza-node-border-radius) * 1px)
-          );
-          border-bottom-right-radius: max(
-            calc(var(--togostanza-column-border-radius) * 1px),
-            calc(var(--togostanza-node-border-radius) * 1px)
-          );
-        }
         &.-highlighted {
-          background-color: var(--togostanza-selected-background-color);
-          color: var(--togostanza-selected-text-color);
+          background-color: var(--togostanza-node-selected_background_color);
+          color: var(--togostanza-node-selected_text_color);
           > svg > path {
-            color: var(--togostanza-selected-text-color);
+            color: var(--togostanza-node-selected_text_color);
           }
         }
         &:hover {
-          background-color: var(--togostanza-hover-background-color);
-          color: var(--togostanza-hover-text-color);
+          background-color: var(--togostanza-node-hover_background_color);
+          color: var(--togostanza-node-hover_text_color);
           cursor: pointer;
           > svg > path {
-            color: var(--togostanza-hover-text-color);
+            color: var(--togostanza-node-hover_text_color);
           }
         }
       }
