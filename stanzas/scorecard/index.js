@@ -37,11 +37,9 @@ export default class Scorecard extends Stanza {
       main
     );
 
-    const width = parseFloat(css("--togostanza-outline-width")) || 0;
-    const height = parseFloat(css("--togostanza-outline-height")) || 0;
-    const padding = getMarginsFromCSSString(
-      css("--togostanza-outline-padding")
-    );
+    const width = parseFloat(css("--togostanza-canvas-width")) || 0;
+    const height = parseFloat(css("--togostanza-canvas-height")) || 0;
+    const padding = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
     const fontSizePrimary =
       parseFloat(css("--togostanza-fonts-font_size_primary")) || 0;
     const fontSizeSecondary =

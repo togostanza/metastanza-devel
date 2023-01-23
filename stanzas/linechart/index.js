@@ -155,10 +155,10 @@ export default class Linechart extends Stanza {
       .size(() => pointsSize * pointsSize)
       .type(d3.symbolCircle);
 
-    const width = css("--togostanza-outline-width");
-    const height = css("--togostanza-outline-height");
+    const width = css("--togostanza-canvas-width");
+    const height = css("--togostanza-canvas-height");
 
-    const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
+    const MARGIN = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
 
     const SVGMargin = {
       top: 10,

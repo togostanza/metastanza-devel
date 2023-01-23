@@ -44,8 +44,8 @@ export default class ForceGraph extends Stanza {
     const el = this.root.getElementById("force-graph");
 
     //data
-    const width = parseInt(css("--togostanza-outline-width"));
-    const height = parseInt(css("--togostanza-outline-height"));
+    const width = parseInt(css("--togostanza-canvas-width"));
+    const height = parseInt(css("--togostanza-canvas-height"));
 
     const values = await loadData(
       this.params["data-url"],
@@ -59,22 +59,22 @@ export default class ForceGraph extends Stanza {
     const edges = values.links;
 
     const nodeSizeParams = {
-      dataKey: this.params["node-size-key"] || "",
-      minSize: setFallbackVal("node-size-min", 0),
-      maxSize: this.params["node-size-max"],
-      scale: this.params["node-size-scale"] || "linear",
+      dataKey: this.params["node-size_key"] || "",
+      minSize: setFallbackVal("node-size_min", 0),
+      maxSize: this.params["node-size_max"],
+      scale: this.params["node-size_scale"] || "linear",
     };
 
     const nodeColorParams = {
-      dataKey: this.params["node-color-key"] || "",
+      dataKey: this.params["node-color_key"] || "",
     };
 
     const edgeWidthParams = {
-      dataKey: this.params["edge-width-key"] || "",
-      minWidth: setFallbackVal("edge-width-min", 1),
-      maxWidth: this.params["edge-width-max"],
-      scale: this.params["edge-width-scale"] || "linear",
-      showArrows: this.params["edge-show_arrows"],
+      dataKey: this.params["edge-width_key"] || "",
+      minWidth: setFallbackVal("edge-width_min", 1),
+      maxWidth: this.params["edge-width_max"],
+      scale: this.params["edge-width_scale"] || "linear",
+      showArrows: this.params["edge-arrows_visible"],
     };
 
     const edgeColorParams = {
@@ -84,16 +84,16 @@ export default class ForceGraph extends Stanza {
 
     const labelsParams = {
       margin: 3,
-      dataKey: this.params["node-label-key"],
+      dataKey: this.params["node-label_key"],
     };
 
     const highlightAdjEdges = true;
 
-    const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
+    const MARGIN = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
 
     const tooltipParams = {
-      dataKey: this.params["node-tooltip-key"],
-      show: nodes.some((d) => d[this.params["node-tooltip-key"]]),
+      dataKey: this.params["node-tooltip_key"],
+      show: nodes.some((d) => d[this.params["node-tooltip_key"]]),
     };
 
     // Setting color scale
