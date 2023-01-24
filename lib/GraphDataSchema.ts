@@ -40,6 +40,10 @@ export const LayeredGraphDataModel = GraphDataModel.extend({
     description: "Array of nodes with group information",
   }),
 });
+export const ChordDiagramModel = GraphDataModel.pick({
+  links: true,
+}).passthrough();
 
 export type GraphDataT = z.infer<typeof GraphDataModel>;
 export type LayeredGraphDataT = z.infer<typeof LayeredGraphDataModel>;
+export type ChordDiagramDataT = z.infer<typeof ChordDiagramModel>;
