@@ -27,19 +27,12 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "custom_css_url",
+      "stanza:key": "togostanza-custom_css_url",
       "stanza:example": "",
       "stanza:description": "Custom CSS URL"
     },
     {
-      "stanza:key": "nodes-key",
-      "stanza:type": "string",
-      "stanza:example": "nodes",
-      "stanza:description": "Where to find the nodes array",
-      "stanza:required": true
-    },
-    {
-      "stanza:key": "node-label-key",
+      "stanza:key": "node-label_key",
       "stanza:type": "string",
       "stanza:example": "id",
       "stanza:description": "Key of the node label"
@@ -95,12 +88,7 @@
       "stanza:example": "sum of edge values",
       "stanza:description": "What node size is based on"
     },
-    {
-      "stanza:key": "edges-key",
-      "stanza:type": "string",
-      "stanza:example": "links",
-      "stanza:description": "Where to find the edges array"
-    },
+
     {
       "stanza:key": "edge-width-key",
       "stanza:type": "string",

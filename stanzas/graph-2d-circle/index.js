@@ -55,8 +55,8 @@ export default class ForceGraph extends Stanza {
 
     this._data = values;
 
-    const nodes = values[this.params["nodes-key"]];
-    const edges = values[this.params["edges-key"]];
+    const nodes = values["nodes"];
+    const edges = values["links"];
 
     const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
 
@@ -119,7 +119,7 @@ export default class ForceGraph extends Stanza {
 
     const nodeLabelParams = {
       margin: this.params["labels-margin"],
-      dataKey: this.params["labels-data-key"],
+      dataKey: this.params["node-label_key"],
     };
 
     const tooltipParams = {

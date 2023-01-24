@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 
 export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
-  const names = nodes.map((node) => node[params.labelsParams.dataKey]);
+  const names = nodes.map((node) => node[params.nodeLabelParams.dataKey]);
 
   const matrix = (() => {
     const index = new Map(names.map((name, i) => [name, i]));
@@ -46,8 +46,8 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
   chords.groups.forEach((node) => {
     node.color = edgeColorScale("" + node.index);
     node.tooltip = nodes[node.index][params.tooltipParams.dataKey];
-    node.label = nodes[node.index][params.labelsParams.dataKey];
-    node.id = nodes[node.index][params.labelsParams.dataKey];
+    node.label = nodes[node.index][params.nodeLabelParams.dataKey];
+    node.id = nodes[node.index][params.nodeLabelParams.dataKey];
   });
 
   const rootGroup = svg
