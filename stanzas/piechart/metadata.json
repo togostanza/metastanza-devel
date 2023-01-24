@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "stanza": "http://togostanza.org/resource/stanza#"
+  },
+  "@id": "piechart",
+  "stanza:label": "Piechart",
+  "stanza:definition": "Piechart",
+  "stanza:license": "MIT",
+  "stanza:author": "PENQE",
+  "stanza:contributor": [],
+  "stanza:created": "2023-01-24",
+  "stanza:updated": "2023-01-24",
+  "stanza:parameter": [],
+  "stanza:menu-placement": "bottom-right",
+  "stanza:style": [],
+  "stanza:incomingEvent": [],
+  "stanza:outgoingEvent": []
+}
