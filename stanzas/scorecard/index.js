@@ -51,8 +51,8 @@ export default class Scorecard extends Stanza {
     const titleText = dataset[titleKey];
     this._data = [{ [scoreKey]: scoreValue }];
 
-    const prefixText = this.params["data-prefix"];
-    const suffixText = this.params["data-suffix"];
+    const prefixText = this.params["affix-prefix"];
+    const suffixText = this.params["affix-suffix"];
 
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.classList.add("svg");
