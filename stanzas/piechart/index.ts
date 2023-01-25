@@ -81,7 +81,10 @@ export default class Piechart extends StanzaSuperClass {
       .attr("fill", (d) => d.data[colorSym]);
 
     if (showLegend) {
-      this.legend = new Legend();
+      if (!this.legend) {
+        this.legend = new Legend();
+        this.root.append(this.legend);
+      }
 
       this.legend.items = this._data.map((item: string, index: number) => {
         return {
@@ -112,10 +115,9 @@ export default class Piechart extends StanzaSuperClass {
       };
 
       this.legend.title = legendTitle;
-
-      this.root.append(this.legend);
     } else {
       this.legend.remove();
+      this.legend = null;
     }
   }
 }
