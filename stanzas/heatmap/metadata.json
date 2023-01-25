@@ -49,7 +49,7 @@
       "stanza:description": "Number of gradation colors between color-min and color-max"
     },
     {
-      "stanza:key": "axis-x_key",
+      "stanza:key": "axis-x-key",
       "stanza:type": "text",
       "stanza:example": "group",
       "stanza:description": "What X key in data to use",
@@ -73,7 +73,7 @@
       "stanza:description": "X ticks labels angle (in degree)"
     },
     {
-      "stanza:key": "axis-y_key",
+      "stanza:key": "axis-y-key",
       "stanza:type": "text",
       "stanza:example": "variable",
       "stanza:description": "What Y key in data to use",

@@ -58,8 +58,8 @@ export default class Heatmap extends Stanza {
 
     appendCustomCss(this, this.params["custom_css_url"]);
     const cellColorKey = this.params["cell-color_key"];
-    const xKey = this.params["axis-x_key"];
-    const yKey = this.params["axis-y_key"];
+    const xKey = this.params["axis-x-key"];
+    const yKey = this.params["axis-y-key"];
     const xTitle = this.params["axis-x-title"] || xKey;
     const yTitle = this.params["axis-y-title"] || yKey;
     const xLabelAngle = this.params["axis-x-ticks_labels_angle"] || 0;
