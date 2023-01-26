@@ -1,6 +1,6 @@
 import Stanza from "togostanza/stanza";
 import * as d3 from "d3";
-import loadData from "togostanza-utils/load-data";
+import { Data } from "togostanza-utils/data";
 import ToolTip from "@/lib/ToolTip";
 import drawForceLayout from "./drawForceLayout";
 import prepareGraphData from "@/lib/prepareGraphData";
@@ -47,16 +47,17 @@ export default class ForceGraph extends Stanza {
     const width = parseInt(css("--togostanza-canvas-width"));
     const height = parseInt(css("--togostanza-canvas-height"));
 
-    const values = await loadData(
-      this.params["data-url"],
-      this.params["data-type"],
-      this.root.querySelector("main")
-    );
+    const data = await Data.load(this.params["data-url"], {
+      type: this.params["data-type"],
+      mainElement: this.root.querySelector("main"),
+    });
 
-    this._data = values;
+    this._data = data.data;
+    const graph = data.asGraph({
+      edgesKey: "links", // TODO parameterize
+    });
 
-    const nodes = values.nodes;
-    const edges = values.links;
+    const { nodes, edges } = graph;
 
     const nodeSizeParams = {
       dataKey: this.params["node-size_key"] || "",
