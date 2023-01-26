@@ -40,7 +40,7 @@ export default class TreeMapStanza extends Stanza {
     const HEIGHT = height - MARGIN.TOP - MARGIN.BOTTOM;
 
     const logScale = this.params["node-log_scale"];
-    const borderWidth = this.params["node-gap_width"];
+    const borderWidth = parseInt(css("--togostanza-node-gap_width"));
 
     const labelKey = this.params["node-label_key"];
     const valueKey = this.params["node-value_key"];
