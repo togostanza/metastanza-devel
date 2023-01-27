@@ -67,7 +67,7 @@ export default class Heatmap extends Stanza {
     const axisXTitlePadding = this.params["axis-x-title_padding"] || 0;
     const axisYTitlePadding = this.params["axis-y-title_padding"] || 0;
     const legendTitle = this.params["legend-title"];
-    const legendGroups = this.params["legend-groups"];
+    const legendGroups = this.params["legend-levels_number"];
     const tooltipKey = this.params["tooltips-key"];
     const tooltipHTML = (d) => d[tooltipKey];
 

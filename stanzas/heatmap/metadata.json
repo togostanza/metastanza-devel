@@ -43,7 +43,7 @@
       "stanza:description": "Legend title"
     },
     {
-      "stanza:key": "legend-groups",
+      "stanza:key": "legend-levels_number",
       "stanza:type": "number",
       "stanza:example": 10,
       "stanza:description": "Number of gradation colors between color-min and color-max"
@@ -250,7 +250,7 @@
       "stanza:description": "Border color for everything that have a border"
     },
     {
-      "stanza:key": "--togostanza-selected-border_color",
+      "stanza:key": "--togostanza-selected-color",
       "stanza:type": "color",
       "stanza:default": "#FFDF3D",
       "stanza:description": "Hover border color"
