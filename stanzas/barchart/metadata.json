@@ -12,7 +12,20 @@
   "stanza:created": "2021-01-18",
   "stanza:updated": "2021-02-16",
   "stanza:parameter": [
-    { "stanza:include": "togostanza-utils/params/data-chart.json" },
+    {
+      "stanza:key": "data-url",
+      "stanza:example": "https://gist.githubusercontent.com/neznayer/92e5545547d71667d6a75e20cba92236/raw/9efb923afffbdc84410eac666dde3482b8f91d56/barchart.json",
+      "stanza:description": "Data source URL",
+      "stanza:required": true
+    },
+    {
+      "stanza:key": "data-type",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
+      "stanza:example": "json",
+      "stanza:description": "Data type",
+      "stanza:required": true
+    },
     {
       "stanza:key": "axis-x-key",
       "stanza:type": "text",
@@ -118,15 +131,7 @@
       "stanza:description": "X axis ticks angle",
       "stanza:required": false
     },
-    {
-      "stanza:key": "axis-y-scale",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["linear", "log10"],
-      "stanza:example": "linear",
-      "stanza:default": "linear",
-      "stanza:description": "Axis scale",
-      "stanza:required": false
-    },
+
     {
       "stanza:key": "axis-y-ticks_interval",
       "stanza:type": "number",
