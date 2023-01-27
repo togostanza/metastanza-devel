@@ -21,37 +21,64 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "axis-x-hide",
-      "stanza:type": "boolean",
-      "stanza:example": false,
-      "stanza:description": "Hide x axis",
-      "stanza:required": false
+      "stanza:key": "axis-x-placement",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["top", "bottom"],
+      "stanza:example": "bottom",
+      "stanza:description": "axis placement",
+      "stanza:required": true
     },
     {
       "stanza:key": "axis-x-title",
       "stanza:type": "text",
-      "stanza:example": "chromosome",
-      "stanza:description": "X axis title. If set to empty string, no title will be shown. If not setting it at all, would show value of `axis-x-key`",
+      "stanza:example": "Category",
+      "stanza:computed": true,
+      "stanza:description": "Axis title",
       "stanza:required": false
-    },
-    {
-      "stanza:key": "axis-x-ticks_hide",
-      "stanza:type": "boolean",
-      "stanza:example": false,
-      "stanza:description": "Hide X ticks"
-    },
-    {
-      "stanza:key": "axis-x-ticks_labels_angle",
-      "stanza:type": "number",
-      "stanza:example": -90,
-      "stanza:description": "X label angle (in degrees) in range [-90, +90]"
     },
     {
       "stanza:key": "axis-x-title_padding",
       "stanza:type": "number",
       "stanza:example": 20,
-      "stanza:description": "Padding between X title and label"
+      "stanza:default": 20,
+      "stanza:description": "Axis title padding in px",
+      "stanza:required": false
     },
+    {
+      "stanza:key": "axis-x-ticks_label_angle",
+      "stanza:type": "number",
+      "stanza:example": 0,
+      "stanza:default": 0,
+      "stanza:description": "Tick labels angle, in degrees",
+      "stanza:required": false
+    },
+
+    {
+      "stanza:key": "axis-x-ticks_interval",
+      "stanza:type": "number",
+      "stanza:example": null,
+      "stanza:computed": true,
+      "stanza:description": "Axis ticks interval. If not set, in case of `continuous` scales, show 5 ticks at automatically chosen `neat` values, in case of `ordinal` scale, show ticks at all domain values. If set to 0, hide all ticks. In case of `ordinal` scale, setting this parameter will show only n-th ticks of the domain (i.e.: domain = ['a', 'b', 'c', 'd', 'e'], ticks_interval set to 2 will show ticks at 'a', 'c' and 'e')",
+      "stanza:required": false
+    },
+
+    {
+      "stanza:key": "axis-x-ticks_labels_format",
+      "stanza:type": "text",
+      "stanza:example": "",
+      "stanza:description": "Axis ticks format, in d3.format or d3.timeFormat string form (time scale). In case of time scale, use d3.timeFormat format string (https://pubs.opengroup.org/onlinepubs/009695399/functions/strptime.html), fallback value for time scale is '%b %d %I %p'. Have no effect in case of ordinal scale)",
+      "stanza:required": false
+    },
+
+    {
+      "stanza:key": "axis-x-gridlines_interval",
+      "stanza:type": "number",
+      "stanza:example": null,
+      "stanza:computed": true,
+      "stanza:description": "Axis gridlines interval. If not set, show 5 gridlines at `neat` values, if set to 0, not show gridlines.",
+      "stanza:required": false
+    },
+
     {
       "stanza:key": "axis-y-key",
       "stanza:type": "text",
@@ -60,63 +87,95 @@
       "stanza:required": true
     },
     {
+      "stanza:key": "axis-y-placement",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["left", "right"],
+      "stanza:example": "left",
+      "stanza:description": "Y axis placement",
+      "stanza:required": true
+    },
+    {
       "stanza:key": "axis-y-title",
       "stanza:type": "text",
-      "stanza:example": "count",
-      "stanza:description": "Y axis title. If set to empty string, no title will be shown. If not setting it at all, would show value of `axis-y-key`",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "axis-y-hide",
-      "stanza:type": "boolean",
-      "stanza:example": false,
-      "stanza:description": "Hide y axis",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "axis-y-scale",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["linear"],
-      "stanza:example": "linear",
-      "stanza:description": "Y axis scale",
+      "stanza:example": "Data",
+      "stanza:computed": true,
+      "stanza:description": "Axis title",
       "stanza:required": false
     },
     {
       "stanza:key": "axis-y-title_padding",
       "stanza:type": "number",
-      "stanza:example": 40,
-      "stanza:description": "Padding between Y title and label"
+      "stanza:example": 20,
+      "stanza:default": 20,
+      "stanza:description": "Axis title padding in px",
+      "stanza:required": false
     },
     {
-      "stanza:key": "axis-y-ticks_labels_angle",
+      "stanza:key": "axis-y-ticks_label_angle",
       "stanza:type": "number",
       "stanza:example": 0,
-      "stanza:description": "Y label angle (in degree) in range [-90, +90]"
+      "stanza:default": 0,
+      "stanza:description": "X axis ticks angle",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "axis-y-scale",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["linear", "log10"],
+      "stanza:example": "linear",
+      "stanza:default": "linear",
+      "stanza:description": "Axis scale",
+      "stanza:required": false
     },
     {
       "stanza:key": "axis-y-ticks_interval",
       "stanza:type": "number",
       "stanza:example": null,
-      "stanza:description": "Y axis ticks interval. If undefined, 5 ticks will be drawn at `neat` y-axis values. Setting it to 0, would hide all ticks."
+      "stanza:computed": true,
+      "stanza:description": "Axis ticks interval. If not set, in case of `continuous` scales, show 5 ticks at automatically chosen `neat` values, in case of `ordinal` scale, show ticks at all domain values. If set to 0, hide all ticks. In case of `ordinal` scale, setting this parameter will show only n-th ticks of the domain (i.e.: domain = ['a', 'b', 'c', 'd', 'e'], ticks_interval set to 2 will show ticks at 'a', 'c' and 'e')",
+      "stanza:required": false
     },
     {
       "stanza:key": "axis-y-ticks_labels_format",
-      "stanza:type": "string",
-      "stanza:example": ",.2r",
-      "stanza:description": "Y axis tick labels number format. See more format strings in d3.format() documentation"
+      "stanza:type": "text",
+      "stanza:example": "",
+      "stanza:default": "",
+      "stanza:description": "Axis ticks interval format, in d3.format string form",
+      "stanza:required": false
     },
     {
       "stanza:key": "axis-y-gridlines_interval",
       "stanza:type": "number",
       "stanza:example": null,
-      "stanza:description": "Y axis grid lines interval. If undefined, 5 gridlines will be drawn at `neat` y-axis values. Setting it to 0, would hide all gridlines."
+      "stanza:computed": true,
+      "stanza:description": "Axis gridlines interval. If not set, show 5 gridlines at `neat` values, if set to 0, not show gridlines.",
+      "stanza:required": false
     },
+    {
+      "stanza:key": "axis-y-gridlines_interval_units",
+      "stanza:type": "single-choice",
+      "stanza:choice": [
+        "none",
+        "year",
+        "month",
+        "week",
+        "day",
+        "hour",
+        "minute",
+        "second"
+      ],
+      "stanza:example": "none",
+      "stanza:default": "none",
+      "stanza:description": "Axis grid lines interval units. (Effective only for time scale)",
+      "stanza:required": false
+    },
+
     {
       "stanza:key": "grouping-key",
       "stanza:type": "text",
       "stanza:example": "category",
-      "stanza:description": "Group bars by this key. If the key is wrong/not present in data, treat the data as one group.",
-      "stanza:required": false
+      "stanza:description": "Bars grouping",
+      "stanza:required": true
     },
     {
       "stanza:key": "grouping-arrangement",
@@ -125,6 +184,20 @@
       "stanza:example": "grouped",
       "stanza:description": "Bars arrangement",
       "stanza:required": true
+    },
+    {
+      "stanza:key": "color_by-key",
+      "stanza:type": "text",
+      "stanza:example": "color",
+      "stanza:description": "Bars color key ()",
+      "stanza:required": true
+    },
+    {
+      "stanza:key": "color_by-key",
+      "stanza:type": "text",
+      "stanza:example": "color",
+      "stanza:description": "Use the hex color stored in this key to override bar's color. (useful for highlighting particular bars)",
+      "stanza:required": false
     },
     {
       "stanza:key": "error_bars-key",
