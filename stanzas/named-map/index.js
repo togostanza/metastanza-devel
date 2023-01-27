@@ -1,6 +1,7 @@
 import Stanza from "togostanza/stanza";
 import vegaEmbed from "vega-embed";
 import * as d3 from "d3";
+import * as topojson from "topojson";
 import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
 import Legend from "@/lib/Legend";
@@ -48,7 +49,12 @@ export default class regionGeographicMap extends Stanza {
   }
 
   async render() {
+    this.renderTemplate({
+      template: "stanza.html.hbs",
+    });
     const root = this.root.querySelector("main");
+    const el = this.root.getElementById("named-map");
+
     const values = await loadData(
       this.params["data-url"],
       this.params["data-type"],
@@ -63,12 +69,26 @@ export default class regionGeographicMap extends Stanza {
     const height = parseFloat(css("--togostanza-canvas-height"));
     const padding = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
     const value_key = this.params["data-value_key"];
-    const area = this.params["data-area"];
+    const area = this.params["data-region"];
     const showlegend = this.params["legend-visible"];
     const legendPlacement = this.params["legend-placement"];
     const legendTitle = this.params["legend-title"];
-    const legendGroups = parseFloat(this.params["legend-groups"]);
+    const legendGroups = parseFloat(this.params["legend-levels_number"]);
+    const existingLegend = this.root.querySelector("togostanza--legend");
+    if (existingLegend) {
+      existingLegend.remove();
+    }
+
+    if (showlegend === true) {
+      this.legend = new Legend();
+      root.append(this.legend);
+    }
+
     const tooltipKey = this.params["tooltips-key"];
+    const showToolTips =
+      !!tooltipKey && values.some((item) => item[tooltipKey]);
+    this.tooltip = new ToolTip();
+    root.append(this.tooltip);
 
     const valObj = {
       name: "userData",
@@ -115,7 +135,6 @@ export default class regionGeographicMap extends Stanza {
         fill: "userColor",
         orient: legendPlacement,
         title: legendTitle,
-        format: this.params["data-percentage"] ? "0.1%" : "",
       },
     ];
 
@@ -126,13 +145,11 @@ export default class regionGeographicMap extends Stanza {
         encode: {
           enter: {
             tooltip: {
-              signal: this.params["data-percentage"]
-                ? `format(datum.${value_key}, '0.1%')`
-                : `datum.${value_key}`,
+              signal: `datum.${value_key}`,
             },
           },
           hover: {
-            fill: { value: "var(--togostanza-selected-fill_color)" },
+            stroke: { value: "var(--togostanza-selected-color)" },
           },
           update: {
             fill: { scale: "userColor", field: value_key },
@@ -158,5 +175,56 @@ export default class regionGeographicMap extends Stanza {
       renderer: "svg",
     };
     await vegaEmbed(root, spec, opts);
+
+    let areaD3;
+    switch (area) {
+      case "world":
+        console.log("world");
+        areaD3 = "https://d3js.org/world-110m.v1.json";
+        break;
+
+      case "us":
+        console.log("us");
+        areaD3 = "https://d3js.org/us-10m.v2.json";
+        break;
+    }
+    console.log(areaD3);
+
+    const chartWrapper = this.root.querySelector(".chart-wrapper");
+
+    const projection = d3.geoMercator();
+
+    const svg = d3
+      .select(chartWrapper)
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("viewBox", `0 -200 ${width} ${height}`);
+    const g = svg.append("g").classed("g-path", true);
+
+    // const path = d3.geoPath().projection(projection);
+
+    const topology = await d3.json(areaD3);
+
+    let topologyProperty, path;
+    switch (area) {
+      case "world":
+        console.log("world");
+        topologyProperty = topology.objects.countries;
+        path = d3.geoPath().projection(projection);
+        break;
+
+      case "us":
+        console.log("us");
+        topologyProperty = topology.objects.counties;
+        path = d3.geoPath();
+        break;
+    }
+
+    g.selectAll("path")
+      .data(topojson.feature(topology, topologyProperty).features)
+      .enter()
+      .append("path")
+      .attr("d", path);
   }
 }

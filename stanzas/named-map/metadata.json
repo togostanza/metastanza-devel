@@ -36,19 +36,12 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "data-area",
+      "stanza:key": "data-region",
       "stanza:type": "single-choice",
       "stanza:choice": ["world", "us"],
       "stanza:example": "world",
-      "stanza:description": "Area of map",
+      "stanza:description": "Region of map",
       "stanza:required": true
-    },
-    {
-      "stanza:key": "data-percentage",
-      "stanza:type": "boolean",
-      "stanza:label": "Show percentage",
-      "stanza:example": true,
-      "stanza:description": "Format data as percentage"
     },
     {
       "stanza:key": "legend-visible",
@@ -71,11 +64,52 @@
       "stanza:description": "Legend title"
     },
     {
-      "stanza:key": "legend-groups",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["2", "3", "4", "5", "6", "7", "8"],
-      "stanza:example": "5",
-      "stanza:description": "Amount of Region groups"
+      "stanza:key": "legend-levels_number",
+      "stanza:type": "number",
+      "stanza:example": 5,
+      "stanza:description": "Number of gradation colors between color-min and color-max"
+    },
+    {
+      "stanza:key": "area-color_key",
+      "stanza:type": "text",
+      "stanza:example": "value",
+      "stanza:description": "Data key to color the data points. if all data keys values includes hex color, use that color, otherwise use ordinal scale from the theme colors."
+    },
+    {
+      "stanza:key": "area-color_min",
+      "stanza:type": "text",
+      "stanza:example": "#6590e6",
+      "stanza:description": "Area color range min"
+    },
+    {
+      "stanza:key": "area-color_mid",
+      "stanza:type": "text",
+      "stanza:example": "#ffffff",
+      "stanza:description": "Area color range mid"
+    },
+    {
+      "stanza:key": "area-color_max",
+      "stanza:type": "text",
+      "stanza:example": "#F75976",
+      "stanza:description": "Area color range max"
+    },
+    {
+      "stanza:key": "area-value_min",
+      "stanza:type": "number",
+      "stanza:example": -50,
+      "stanza:description": "Area color domain min"
+    },
+    {
+      "stanza:key": "area-value_mid",
+      "stanza:type": "number",
+      "stanza:example": 0,
+      "stanza:description": "Area color domain mid"
+    },
+    {
+      "stanza:key": "area-value_max",
+      "stanza:type": "number",
+      "stanza:example": 100,
+      "stanza:description": "Area color domain max"
     },
     {
       "stanza:key": "tooltips-key",
@@ -95,13 +129,13 @@
     {
       "stanza:key": "--togostanza-canvas-width",
       "stanza:type": "number",
-      "stanza:default": 600,
+      "stanza:default": 1000,
       "stanza:description": "Canvas width"
     },
     {
       "stanza:key": "--togostanza-canvas-height",
       "stanza:type": "number",
-      "stanza:default": 1800,
+      "stanza:default": 800,
       "stanza:description": "Canvas height"
     },
     {
@@ -147,18 +181,6 @@
       "stanza:description": "Category color 5"
     },
     {
-      "stanza:key": "--togostanza-theme-series_6_color",
-      "stanza:type": "color",
-      "stanza:default": "#8251DB",
-      "stanza:description": "Category color 6"
-    },
-    {
-      "stanza:key": "--togostanza-theme-series_7_color",
-      "stanza:type": "color",
-      "stanza:default": "#9C6363",
-      "stanza:description": "Category color 7"
-    },
-    {
       "stanza:key": "--togostanza-theme-background_color",
       "stanza:type": "color",
       "stanza:default": "rgba(255,255,255,0)",
@@ -185,7 +207,7 @@
     {
       "stanza:key": "--togostanza-border-width",
       "stanza:type": "number",
-      "stanza:default": 0.5,
+      "stanza:default": 1,
       "stanza:description": "Border width"
     },
     {
@@ -195,7 +217,7 @@
       "stanza:description": "Border color"
     },
     {
-      "stanza:key": "--togostanza-selected-fill_color",
+      "stanza:key": "--togostanza-selected-color",
       "stanza:type": "color",
       "stanza:default": "#FB0E0E",
       "stanza:description": "Hover color when hovering over region"

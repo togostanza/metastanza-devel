@@ -45,6 +45,7 @@
     "sprintf-js": "^1.1.2",
     "togostanza": "^3.0.0-beta.50",
     "togostanza-utils": "github:togostanza/togostanza-utils",
+    "topojson": "^3.0.2",
     "uuid": "^9.0.0",
     "vega": "^5.19.1",
     "vega-embed": "^6.21.0",
