@@ -14,7 +14,7 @@ import {
   downloadTSVMenuItem,
   appendCustomCss,
 } from "togostanza-utils";
-import { checkIfHexColor, getMarginsFromCSSString } from "../../lib/utils";
+import { getMarginsFromCSSString } from "../../lib/utils";
 import { string } from "zod";
 
 export default class Barchart extends Stanza {
@@ -69,6 +69,8 @@ export default class Barchart extends Stanza {
 
     const colorSym: unique symbol = Symbol("color");
     const tooltipSym = Symbol("tooltip");
+    const y1Sym = Symbol("y1");
+    const y2Sym = Symbol("y2");
 
     this._data = await loadData(
       this.params["data-url"],
@@ -77,6 +79,12 @@ export default class Barchart extends Stanza {
     );
 
     const values = this._data;
+
+    this._data.forEach((d) => {
+      d[yKeyName] = +d[yKeyName];
+      d[y1Sym] = 0;
+      d[y2Sym] = d[yKeyName];
+    });
 
     const xAxisLabels = [...new Set(values.map((d) => d[xKeyName]))];
 
@@ -179,7 +187,11 @@ export default class Barchart extends Stanza {
       `translate(${this.xAxisGen.axisArea.x},${this.xAxisGen.axisArea.y})`
     );
 
-    drawGroupedBars.apply(this, [{ yKeyName, groupKeyName, colorSym }]);
+    // drawGroupedBars.apply(this, [{ yKeyName, groupKeyName, colorSym }]);
+
+    drawStackedBars.apply(this, [
+      { xKeyName, colorSym, groupKeyName, y1Sym, y2Sym },
+    ]);
   }
 }
 
@@ -190,8 +202,11 @@ interface DrawGroupedI {
 }
 
 interface DrawStackedI extends DrawGroupedI {
-  xKeyName: string
+  xKeyName: string;
+  y1Sym: symbol;
+  y2Sym: symbol;
 }
+
 function drawGroupedBars(
   this: Barchart,
   { yKeyName, groupKeyName, colorSym }: DrawGroupedI
@@ -213,7 +228,6 @@ function drawGroupedBars(
     .append("g")
     .classed("bar-group", true)
     .attr("transform", (d) => {
-      console.log(d);
       return `translate(${this.xAxisGen.axisGen.scale()(d[0])},0)`;
     });
 
@@ -234,15 +248,40 @@ function drawGroupedBars(
 
 function drawStackedBars(
   this: Barchart,
-  { yKeyName, groupKeyName, colorSym }: DrawStackedI
+  { y1Sym, y2Sym, xKeyName, groupKeyName, colorSym }: DrawStackedI
 ) {
+  this._dataByX.forEach((val) => {
+    for (let i = 1; i <= val.length - 1; i++) {
+      val[i][y1Sym] = val[i - 1][y2Sym];
+      val[i][y2Sym] += val[i - 1][y2Sym];
+    }
+  });
 
-  const xKeys = [...this._dataByX.keys()] as string[];
+  const barGroups = this._graphArea
+    .selectAll("g.bar-group")
+    .data(this._dataByX);
 
-  const stackedData: Map<string|number, {}[]> = this._data.reduce((map:Map<string|number, {}[]>, curr)=>{
+  const barGroup = barGroups
+    .enter()
+    .append("g")
+    .classed("bar-group", true)
+    .attr("transform", (d) => {
+      return `translate(${this.xAxisGen.axisGen.scale()(d[0])},0)`;
+    });
 
-    if (map.has(curr[xKeyName]))
-  }, new Map)
+  const bw = this.xAxisGen.axisGen.scale().bandwidth();
 
-
+  barGroup
+    .selectAll("rect")
+    .data((d) => d[1])
+    .enter()
+    .append("rect")
+    .classed("stacked-bar", true)
+    .attr("x", 0)
+    .attr("y", (d) => this.yAxisGen.scale(d[y2Sym]))
+    .attr("width", bw)
+    .attr("height", (d) =>
+      Math.abs(this.yAxisGen.scale(d[y1Sym]) - this.yAxisGen.scale(d[y2Sym]))
+    )
+    .attr("fill", (d) => d[colorSym]);
 }
