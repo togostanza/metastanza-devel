@@ -30,35 +30,35 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "value-key",
+      "stanza:key": "data-value_key",
       "stanza:example": "rate",
       "stanza:description": "Value key of data",
       "stanza:required": true
     },
     {
-      "stanza:key": "area",
+      "stanza:key": "data-area",
       "stanza:type": "single-choice",
-      "stanza:choice": ["us", "world"],
+      "stanza:choice": ["world", "us"],
       "stanza:example": "world",
       "stanza:description": "Area of map",
       "stanza:required": true
     },
     {
-      "stanza:key": "border",
+      "stanza:key": "data-percentage",
       "stanza:type": "boolean",
-      "stanza:choice": ["true", "false"],
+      "stanza:label": "Show percentage",
       "stanza:example": true,
-      "stanza:description": "Show border between"
+      "stanza:description": "Format data as percentage"
     },
     {
-      "stanza:key": "legend",
+      "stanza:key": "legend-visible",
       "stanza:type": "boolean",
-      "stanza:choice": ["true", "false"],
+      "stanza:label": "Show legend",
       "stanza:example": true,
-      "stanza:description": "Show legend"
+      "stanza:description": "Whether show the legend"
     },
     {
-      "stanza:key": "legend-orient",
+      "stanza:key": "legend-placement",
       "stanza:type": "single-choice",
       "stanza:choice": ["top-left", "top-right", "bottom-left", "bottom-right"],
       "stanza:example": "top-right",
@@ -67,22 +67,21 @@
     {
       "stanza:key": "legend-title",
       "stanza:type": "text",
-      "stanza:example": "Legend Title",
-      "stanza:description": "Legend Title"
+      "stanza:example": "value",
+      "stanza:description": "Legend title"
     },
     {
-      "stanza:key": "group-amount",
+      "stanza:key": "legend-groups",
       "stanza:type": "single-choice",
       "stanza:choice": ["2", "3", "4", "5", "6", "7", "8"],
       "stanza:example": "5",
       "stanza:description": "Amount of Region groups"
     },
     {
-      "stanza:key": "percentage",
-      "stanza:type": "boolean",
-      "stanza:choice": ["true", "false"],
-      "stanza:example": "false",
-      "stanza:description": "Format data as percentage"
+      "stanza:key": "tooltips-key",
+      "stanza:type": "text",
+      "stanza:example": "value",
+      "stanza:description": "Data key to use as tooltip"
     },
     {
       "stanza:key": "togostanza-custom_css_url",
@@ -94,89 +93,112 @@
   "stanza:menu-placement": "bottom-right",
   "stanza:style": [
     {
-      "stanza:key": "--togostanza-region-border-color",
-      "stanza:type": "color",
-      "stanza:default": "black",
-      "stanza:description": "Border color"
-    },
-    {
-      "stanza:key": "--togostanza-hover-color",
-      "stanza:type": "color",
-      "stanza:default": "#FB0E0E",
-      "stanza:description": "Hover color when hovering over region"
-    },
-    {
-      "stanza:key": "--togostanza-font-family",
-      "stanza:type": "text",
-      "stanza:default": "Helvetica Neue",
-      "stanza:description": "Font family"
-    },
-    {
-      "stanza:key": "--togostanza-title-font-color",
-      "stanza:type": "color",
-      "stanza:default": "#4E5059",
-      "stanza:description": "Title font color"
-    },
-    {
-      "stanza:key": "--togostanza-title-font-weight",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["normal", "bold", "lighter"],
-      "stanza:default": "normal",
-      "stanza:description": "Title font weight"
-    },
-    {
-      "stanza:key": "--togostanza-title-font-size",
+      "stanza:key": "--togostanza-canvas-width",
       "stanza:type": "number",
-      "stanza:default": 12,
-      "stanza:description": "Title font size in pixels"
+      "stanza:default": 600,
+      "stanza:description": "Canvas width"
     },
     {
-      "stanza:key": "--togostanza-series-0-color",
+      "stanza:key": "--togostanza-canvas-height",
+      "stanza:type": "number",
+      "stanza:default": 1800,
+      "stanza:description": "Canvas height"
+    },
+    {
+      "stanza:key": "--togostanza-canvas-padding",
+      "stanza:type": "text",
+      "stanza:default": "20px",
+      "stanza:description": "Padding of a stanza. CSS padding-like text (10px 10px 10px 10px)"
+    },
+    {
+      "stanza:key": "--togostanza-theme-series_0_color",
       "stanza:type": "color",
       "stanza:default": "#6590e6",
       "stanza:description": "Category color 0"
     },
     {
-      "stanza:key": "--togostanza-series-1-color",
+      "stanza:key": "--togostanza-theme-series_1_color",
       "stanza:type": "color",
       "stanza:default": "#3ac9b6",
       "stanza:description": "Category color 1"
     },
     {
-      "stanza:key": "--togostanza-series-2-color",
+      "stanza:key": "--togostanza-theme-series_2_color",
       "stanza:type": "color",
       "stanza:default": "#9ede2f",
       "stanza:description": "Category color 2"
     },
     {
-      "stanza:key": "--togostanza-series-3-color",
+      "stanza:key": "--togostanza-theme-series_3_color",
       "stanza:type": "color",
       "stanza:default": "#F5DA64",
       "stanza:description": "Category color 3"
     },
     {
-      "stanza:key": "--togostanza-series-4-color",
+      "stanza:key": "--togostanza-theme-series_4_color",
       "stanza:type": "color",
       "stanza:default": "#F57F5B",
       "stanza:description": "Category color 4"
     },
     {
-      "stanza:key": "--togostanza-series-5-color",
+      "stanza:key": "--togostanza-theme-series_5_color",
       "stanza:type": "color",
       "stanza:default": "#F75976",
       "stanza:description": "Category color 5"
     },
     {
-      "stanza:key": "--togostanza-series-6-color",
+      "stanza:key": "--togostanza-theme-series_6_color",
       "stanza:type": "color",
       "stanza:default": "#8251DB",
       "stanza:description": "Category color 6"
     },
     {
-      "stanza:key": "--togostanza-series-7-color",
+      "stanza:key": "--togostanza-theme-series_7_color",
       "stanza:type": "color",
       "stanza:default": "#9C6363",
       "stanza:description": "Category color 7"
+    },
+    {
+      "stanza:key": "--togostanza-theme-background_color",
+      "stanza:type": "color",
+      "stanza:default": "rgba(255,255,255,0)",
+      "stanza:description": "Background color"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_family",
+      "stanza:type": "text",
+      "stanza:default": "Helvetica Neue",
+      "stanza:description": "Font family"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_color",
+      "stanza:type": "color",
+      "stanza:default": "#4E5059",
+      "stanza:description": "Font color"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_size_secondary",
+      "stanza:type": "number",
+      "stanza:default": 12,
+      "stanza:description": "Title font size in pixels"
+    },
+    {
+      "stanza:key": "--togostanza-border-width",
+      "stanza:type": "number",
+      "stanza:default": 0.5,
+      "stanza:description": "Border width"
+    },
+    {
+      "stanza:key": "--togostanza-border-color",
+      "stanza:type": "color",
+      "stanza:default": "black",
+      "stanza:description": "Border color"
+    },
+    {
+      "stanza:key": "--togostanza-selected-fill_color",
+      "stanza:type": "color",
+      "stanza:default": "#FB0E0E",
+      "stanza:description": "Hover color when hovering over region"
     }
   ],
   "stanza:incomingEvent": [],

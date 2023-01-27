@@ -1,6 +1,10 @@
 import Stanza from "togostanza/stanza";
 import vegaEmbed from "vega-embed";
+import * as d3 from "d3";
 import loadData from "togostanza-utils/load-data";
+import ToolTip from "@/lib/ToolTip";
+import Legend from "@/lib/Legend";
+import { StanzaColorGenerator } from "@/lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -9,6 +13,7 @@ import {
   downloadTSVMenuItem,
   appendCustomCss,
 } from "togostanza-utils";
+import { getMarginsFromCSSString } from "../../lib/utils";
 
 const areas = new Map([
   [
@@ -34,23 +39,36 @@ const areas = new Map([
 export default class regionGeographicMap extends Stanza {
   menu() {
     return [
-      downloadSvgMenuItem(this, "region-geographis-map"),
-      downloadPngMenuItem(this, "region-geographis-map"),
-      downloadJSONMenuItem(this, "region-geographis-map", this._data),
-      downloadCSVMenuItem(this, "region-geographis-map", this._data),
-      downloadTSVMenuItem(this, "region-geographis-map", this._data),
+      downloadSvgMenuItem(this, "named-map"),
+      downloadPngMenuItem(this, "named-map"),
+      downloadJSONMenuItem(this, "named-map", this._data),
+      downloadCSVMenuItem(this, "named-map", this._data),
+      downloadTSVMenuItem(this, "named-map", this._data),
     ];
   }
 
   async render() {
+    const root = this.root.querySelector("main");
     const values = await loadData(
       this.params["data-url"],
       this.params["data-type"],
-      this.root.querySelector("main")
+      root
     );
     this._data = values;
 
+    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
+
     appendCustomCss(this, this.params["custom_css_url"]);
+    const width = parseFloat(css("--togostanza-canvas-width"));
+    const height = parseFloat(css("--togostanza-canvas-height"));
+    const padding = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
+    const value_key = this.params["data-value_key"];
+    const area = this.params["data-area"];
+    const showlegend = this.params["legend-visible"];
+    const legendPlacement = this.params["legend-placement"];
+    const legendTitle = this.params["legend-title"];
+    const legendGroups = parseFloat(this.params["legend-groups"]);
+    const tooltipKey = this.params["tooltips-key"];
 
     const valObj = {
       name: "userData",
@@ -63,37 +81,25 @@ export default class regionGeographicMap extends Stanza {
         from: "userData",
         key: "id",
         fields: ["id"],
-        values: [this.params["value-key"]],
+        values: [value_key],
       },
     ];
 
-    const obj = areas.get(this.params["area"]);
+    const obj = areas.get(area);
     obj.transform = transform;
     const data = [valObj, obj];
 
     const projections = [
       {
         name: "projection",
-        type: this.params["area"] === "us" ? "albersUsa" : "mercator",
+        type: area === "us" ? "albersUsa" : "mercator",
       },
     ];
 
-    const colorRangeMax = [
-      "var(--togostanza-series-0-color)",
-      "var(--togostanza-series-1-color)",
-      "var(--togostanza-series-2-color)",
-      "var(--togostanza-series-3-color)",
-      "var(--togostanza-series-4-color)",
-      "var(--togostanza-series-5-color)",
-      "var(--togostanza-series-6-color)",
-      "var(--togostanza-series-7-color)",
-    ];
+    const togostanzaColors = new StanzaColorGenerator(this).stanzaColor;
+    const colorRange = togostanzaColors.slice(0, legendGroups);
 
-    const colorRange = colorRangeMax.slice(
-      0,
-      Number(this.params["group-amount"])
-    );
-    const val = values.map((val) => val[this.params["value-key"]]);
+    const val = values.map((val) => val[value_key]);
 
     const scales = [
       {
@@ -107,9 +113,9 @@ export default class regionGeographicMap extends Stanza {
     const legends = [
       {
         fill: "userColor",
-        orient: this.params["legend-orient"],
-        title: this.params["legend-title"],
-        format: this.params["percentage"] ? "0.1%" : "",
+        orient: legendPlacement,
+        title: legendTitle,
+        format: this.params["data-percentage"] ? "0.1%" : "",
       },
     ];
 
@@ -120,19 +126,17 @@ export default class regionGeographicMap extends Stanza {
         encode: {
           enter: {
             tooltip: {
-              signal: this.params["percentage"]
-                ? `format(datum.${this.params["value-key"]}, '0.1%')`
-                : `datum.${this.params["value-key"]}`,
+              signal: this.params["data-percentage"]
+                ? `format(datum.${value_key}, '0.1%')`
+                : `datum.${value_key}`,
             },
           },
           hover: {
-            fill: { value: "var(--togostanza-hover-color)" },
+            fill: { value: "var(--togostanza-selected-fill_color)" },
           },
           update: {
-            fill: { scale: "userColor", field: this.params["value-key"] },
-            stroke: this.params["border"]
-              ? { value: "var(--togostanza-region-border-color)" }
-              : "",
+            fill: { scale: "userColor", field: value_key },
+            stroke: { value: "var(--togostanza-border-color)" },
           },
         },
         transform: [{ type: "geoshape", projection: "projection" }],
@@ -146,14 +150,13 @@ export default class regionGeographicMap extends Stanza {
       data,
       projections,
       scales,
-      legends: this.params["legend"] ? legends : [],
+      legends: showlegend ? legends : [],
       marks,
     };
 
-    const el = this.root.querySelector("main");
     const opts = {
       renderer: "svg",
     };
-    await vegaEmbed(el, spec, opts);
+    await vegaEmbed(root, spec, opts);
   }
 }

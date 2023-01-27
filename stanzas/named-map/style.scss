@@ -5,8 +5,11 @@ main {
 }
 
 main .mark-text.role-legend-title * {
-  font-size: calc(var(--togostanza-title-font-size) * 1px);
-  font-family: var(--togostanza-title-font-family);
-  font-weight: var(--togostanza-title-font-weight);
-  color: var(--togostanza-title-font-color);
+  font-family: var(--togostanza-fonts-font_family);
+  font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+}
+
+path {
+  stroke-width: calc(var(--togostanza-border-width) * 1px);
+  // stroke: var(--togostanza-border-color);
 }
