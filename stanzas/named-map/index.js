@@ -56,15 +56,15 @@ export default class regionGeographicMap extends Stanza {
     const width = parseFloat(css("--togostanza-canvas-width"));
     const height = parseFloat(css("--togostanza-canvas-height"));
     const padding = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
-    const area = this.params["data-region"];
-    const showLegend = this.params["legend-visible"];
+    const region = this.params["data-region"];
+    const legendVisible = this.params["legend-visible"];
     const legendTitle = this.params["legend-title"];
-    const legendGroups = parseFloat(this.params["legend-levels_number"]);
+    const legendLevelsNumber = parseFloat(this.params["legend-levels_number"]);
     const existingLegend = this.root.querySelector("togostanza--legend");
     if (existingLegend) {
       existingLegend.remove();
     }
-    if (showLegend === true) {
+    if (legendVisible === true) {
       this.legend = new Legend();
       root.append(this.legend);
     }
@@ -100,20 +100,24 @@ export default class regionGeographicMap extends Stanza {
       [areaDomainMin, areaDomainMid, areaDomainMax]
     );
 
+    // Drawing svg
+    const svgWidth = width - padding.LEFT - padding.RIGHT;
+    const svgHeight = height - padding.TOP - padding.BOTTOM;
+
     d3.select(root).select("svg").remove();
     const svg = d3
       .select(root)
       .append("svg")
-      .attr("width", width)
-      .attr("height", height)
-      .attr("viewBox", `0 -200 ${width} ${height}`);
-    const g = svg.append("g").classed("g-path", true);
+      .attr("width", svgWidth)
+      .attr("height", svgHeight)
+      .attr("viewBox", `0 -200 1000 800`);
+    const g = svg.append("g").classed("g-path", true).attr("width", 200);
 
-    const areaUrl = REGION.get(area).url;
+    const areaUrl = REGION.get(region).url;
     const topology = await d3.json(areaUrl);
     const projection = d3.geoMercator();
     let topologyProperty, path;
-    switch (area) {
+    switch (region) {
       case "world":
         topologyProperty = topology.objects.countries;
         path = d3.geoPath().projection(projection);
@@ -125,14 +129,18 @@ export default class regionGeographicMap extends Stanza {
         break;
     }
 
-    const topoJsonData = topojson.feature(topology, topologyProperty).features;
-    const allTopoData = topoJsonData.map((topoDatum) => {
+    // Combine data
+    const topojsonData = topojson.feature(topology, topologyProperty).features;
+    const allData = topojsonData.map((topoDatum) => {
       let matchData = values.find((val) => topoDatum.id === val.id);
-      return { ...topoDatum, ...matchData };
+      return Object.assign({}, topoDatum, {
+        [areaColorKey]: matchData ? matchData[areaColorKey] : undefined,
+      });
     });
 
+    // Drawing path
     g.selectAll("path")
-      .data(allTopoData)
+      .data(allData)
       .enter()
       .append("path")
       .classed("path", true)
@@ -145,7 +153,8 @@ export default class regionGeographicMap extends Stanza {
 
     this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
 
-    if (showLegend === true) {
+    // Setting legend
+    if (legendVisible === true) {
       this.legend.setup(
         intervals(setColor),
         null,
@@ -156,8 +165,11 @@ export default class regionGeographicMap extends Stanza {
       );
     }
 
-    //create legend objects
-    function intervals(color, steps = legendGroups >= 2 ? legendGroups : 2) {
+    //Create legend objects
+    function intervals(
+      color,
+      steps = legendLevelsNumber >= 2 ? legendLevelsNumber : 2
+    ) {
       return [...Array(steps).keys()].map((i) => {
         const legendSteps =
           Math.round(
