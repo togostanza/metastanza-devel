@@ -1,0 +1,142 @@
+{
+  "@context": {
+    "stanza": "http://togostanza.org/resource/stanza#"
+  },
+  "@id": "piechart",
+  "stanza:label": "Piechart",
+  "stanza:definition": "Piechart",
+  "stanza:license": "MIT",
+  "stanza:author": "PENQE",
+  "stanza:contributor": [],
+  "stanza:created": "2023-01-24",
+  "stanza:updated": "2023-01-24",
+  "stanza:menu-placement": "bottom-right",
+  "stanza:incomingEvent": [],
+  "stanza:outgoingEvent": [],
+  "stanza:parameter": [
+    {
+      "stanza:key": "data-url",
+      "stanza:example": "https://sparql-support.dbcls.jp/sparqlist/api/metastanza_chart?chromosome=1",
+      "stanza:description": "Data source URL",
+      "stanza:required": true
+    },
+    {
+      "stanza:key": "data-type",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
+      "stanza:example": "json",
+      "stanza:description": "Data type",
+      "stanza:required": true
+    },
+    {
+      "stanza:key": "data-value_key",
+      "stanza:example": "count",
+      "stanza:description": "Data value key",
+      "stanza:required": true
+    },
+    {
+      "stanza:key": "data-category_key",
+      "stanza:example": "category",
+      "stanza:description": "Data category key",
+      "stanza:required": true
+    },
+    {
+      "stanza:key": "legend-visible",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Whether to show the legend"
+    },
+    {
+      "stanza:key": "legend-title",
+      "stanza:type": "text",
+      "stanza:example": "Population",
+      "stanza:description": "Legend title"
+    }
+  ],
+  "stanza:style": [
+    {
+      "stanza:key": "--togostanza-canvas-width",
+      "stanza:type": "number",
+      "stanza:default": 600,
+      "stanza:description": "Togostanza element width"
+    },
+    {
+      "stanza:key": "--togostanza-canvas-height",
+      "stanza:type": "number",
+      "stanza:default": 400,
+      "stanza:description": "Togostanza element height"
+    },
+    {
+      "stanza:key": "--togostanza-canvas-padding",
+      "stanza:type": "text",
+      "stanza:default": "20px 20px 20px 20px",
+      "stanza:description": "Togostanza element inner padding"
+    },
+    {
+      "stanza:key": "--togostanza-border-color",
+      "stanza:type": "color",
+      "stanza:default": "#4E5059",
+      "stanza:description": "Border color for everything that have a border"
+    },
+    {
+      "stanza:key": "--togostanza-theme-series_0_color",
+      "stanza:type": "color",
+      "stanza:default": "#6590e6",
+      "stanza:description": "Group color 0"
+    },
+    {
+      "stanza:key": "--togostanza-theme-series_1_color",
+      "stanza:type": "color",
+      "stanza:default": "#3ac9b6",
+      "stanza:description": "Group color 1"
+    },
+    {
+      "stanza:key": "--togostanza-theme-series_2_color",
+      "stanza:type": "color",
+      "stanza:default": "#9ede2f",
+      "stanza:description": "Group color 2"
+    },
+    {
+      "stanza:key": "--togostanza-theme-series_3_color",
+      "stanza:type": "color",
+      "stanza:default": "#F5DA64",
+      "stanza:description": "Group color 3"
+    },
+    {
+      "stanza:key": "--togostanza-theme-series_4_color",
+      "stanza:type": "color",
+      "stanza:default": "#F57F5B",
+      "stanza:description": "Group color 4"
+    },
+    {
+      "stanza:key": "--togostanza-theme-series_5_color",
+      "stanza:type": "color",
+      "stanza:default": "#F75976",
+      "stanza:description": "Group color 5"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_family",
+      "stanza:type": "text",
+      "stanza:default": "Helvetica Neue",
+      "stanza:description": "Font family"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_color",
+      "stanza:type": "color",
+      "stanza:default": "#4E5059",
+      "stanza:description": "Font color"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_size_primary",
+      "stanza:type": "number",
+      "stanza:default": 12,
+      "stanza:description": "Primary font size"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_size_secondary",
+      "stanza:type": "number",
+      "stanza:default": 9,
+      "stanza:description": "Secondary font size"
+    }
+  ]
+}
