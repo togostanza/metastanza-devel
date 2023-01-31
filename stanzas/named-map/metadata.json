@@ -45,13 +45,6 @@
       "stanza:description": "Whether show the legend"
     },
     {
-      "stanza:key": "legend-placement",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["top-left", "top-right", "bottom-left", "bottom-right"],
-      "stanza:example": "top-right",
-      "stanza:description": "Legend Placement"
-    },
-    {
       "stanza:key": "legend-title",
       "stanza:type": "text",
       "stanza:example": "value",
