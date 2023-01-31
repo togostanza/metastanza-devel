@@ -14,10 +14,10 @@ path {
   // stroke: var(--togostanza-border-color);
 }
 
-.g-path {
-  path {
-    stroke-width: calc(var(--togostanza-border-width) * 1px);
-    stroke: #333;
-    fill: #fff;
+.path {
+  stroke-width: calc(var(--togostanza-border-width) * 1px);
+  stroke: var(--togostanza-border-color);
+  &:hover {
+    stroke: var(--togostanza-selected-color);
   }
 }

@@ -17,7 +17,7 @@
   "stanza:parameter": [
     {
       "stanza:key": "data-url",
-      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/main/samples/tsv/named-map-data.tsv",
+      "stanza:example": "https://raw.githubusercontent.com/YukikoNoda/sampleJSON-NamedMap/main/namedmap.json",
       "stanza:description": "Data source URL",
       "stanza:required": true
     },
@@ -25,14 +25,8 @@
       "stanza:key": "data-type",
       "stanza:type": "single-choice",
       "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
-      "stanza:example": "tsv",
+      "stanza:example": "json",
       "stanza:description": "Data type",
-      "stanza:required": true
-    },
-    {
-      "stanza:key": "data-value_key",
-      "stanza:example": "rate",
-      "stanza:description": "Value key of data",
       "stanza:required": true
     },
     {
@@ -72,7 +66,7 @@
     {
       "stanza:key": "area-color_key",
       "stanza:type": "text",
-      "stanza:example": "value",
+      "stanza:example": "rate",
       "stanza:description": "Data key to color the data points. if all data keys values includes hex color, use that color, otherwise use ordinal scale from the theme colors."
     },
     {
@@ -96,25 +90,25 @@
     {
       "stanza:key": "area-value_min",
       "stanza:type": "number",
-      "stanza:example": -50,
+      "stanza:example": 0,
       "stanza:description": "Area color domain min"
     },
     {
       "stanza:key": "area-value_mid",
       "stanza:type": "number",
-      "stanza:example": 0,
+      "stanza:example": "",
       "stanza:description": "Area color domain mid"
     },
     {
       "stanza:key": "area-value_max",
       "stanza:type": "number",
-      "stanza:example": 100,
+      "stanza:example": 1,
       "stanza:description": "Area color domain max"
     },
     {
       "stanza:key": "tooltips-key",
       "stanza:type": "text",
-      "stanza:example": "value",
+      "stanza:example": "rate",
       "stanza:description": "Data key to use as tooltip"
     },
     {

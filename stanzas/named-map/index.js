@@ -1,11 +1,12 @@
 import Stanza from "togostanza/stanza";
-import vegaEmbed from "vega-embed";
+// import vegaEmbed from "vega-embed";
 import * as d3 from "d3";
 import * as topojson from "topojson";
 import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
 import Legend from "@/lib/Legend";
 import { StanzaColorGenerator } from "@/lib/ColorGenerator";
+import { getGradationColor } from "@/lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -29,7 +30,8 @@ const areas = new Map([
     "world",
     {
       name: "map",
-      url: "https://vega.github.io/vega/data/world-110m.json",
+      // url: "https://vega.github.io/vega/data/world-110m.json",
+      url: "https://d3js.org/world-110m.v1.json",
       format: {
         type: "topojson",
         feature: "countries",
@@ -37,6 +39,8 @@ const areas = new Map([
     },
   ],
 ]);
+
+//Mapでus, worldのkeyの中にObjectが入っている
 export default class regionGeographicMap extends Stanza {
   menu() {
     return [
@@ -53,6 +57,7 @@ export default class regionGeographicMap extends Stanza {
       template: "stanza.html.hbs",
     });
     const root = this.root.querySelector("main");
+
     const el = this.root.getElementById("named-map");
 
     const values = await loadData(
@@ -68,7 +73,6 @@ export default class regionGeographicMap extends Stanza {
     const width = parseFloat(css("--togostanza-canvas-width"));
     const height = parseFloat(css("--togostanza-canvas-height"));
     const padding = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
-    const value_key = this.params["data-value_key"];
     const area = this.params["data-region"];
     const showlegend = this.params["legend-visible"];
     const legendPlacement = this.params["legend-placement"];
@@ -78,153 +82,200 @@ export default class regionGeographicMap extends Stanza {
     if (existingLegend) {
       existingLegend.remove();
     }
-
     if (showlegend === true) {
       this.legend = new Legend();
       root.append(this.legend);
     }
 
+    // // data-urlにはいっている情報をarrayの中のObjectで受け取っている
+    // const valObj = {
+    //   name: "userData",
+    //   values,
+    // };
+
+    // //Objectの中にkeyを入れて定義している。arrayにしている
+    // const transform = [
+    //   {
+    //     type: "lookup",
+    //     from: "userData",
+    //     key: "id",
+    //     fields: ["id"],
+    //     values: [value_key],
+    //   },
+    // ];
+    // // console.log("transform", transform);
+
+    // //params[data-region]で受け取った値のObjectと、上記のtransformの情報をを入れてる
+    // const obj = areas.get(area);
+    // obj.transform = transform;
+    // // console.log("obj", obj);
+
+    // // 今まで書いたdataがすべて集約されている
+    // const data = [valObj, obj];
+    // // console.log("data", data);
+
+    // //projectionの設定
+    // const projections = [
+    //   {
+    //     name: "projection",
+    //     type: area === "us" ? "albersUsa" : "mercator",
+    //   },
+    // ];
+
+    // //Color Setting
+    // const togostanzaColors = new StanzaColorGenerator(this).stanzaColor;
+    // const colorRange = togostanzaColors.slice(0, legendGroups);
+
+    // //params[value_key]だけのarrayにしている。今回はrate
+    // const userDataValue = values.map((d) => parseFloat(d[value_key]));
+
+    // //ColorScale colorGeneratorで変更できそう
+    // const scales = [
+    //   {
+    //     name: "userColor",
+    //     type: "quantize",
+    //     domain: [Math.min(...userDataValue), Math.max(...userDataValue)],
+    //     range: colorRange,
+    //   },
+    // ];
+
+    // //legendについてObjectで定義している
+    // const legends = [
+    //   {
+    //     fill: "userColor",
+    //     orient: legendPlacement,
+    //     title: legendTitle,
+    //   },
+    // ];
+
+    // //描画CSS, tooltipsなどのobject
+    // const marks = [
+    //   {
+    //     type: "shape",
+    //     from: { data: "map" },
+    //     encode: {
+    //       enter: {
+    //         tooltip: {
+    //           signal: `datum.${value_key}`,
+    //         },
+    //       },
+    //       hover: {
+    //         stroke: { value: "var(--togostanza-selected-color)" },
+    //       },
+    //       update: {
+    //         fill: { scale: "userColor", field: value_key },
+    //         stroke: { value: "var(--togostanza-border-color)" },
+    //       },
+    //     },
+    //     transform: [{ type: "geoshape", projection: "projection" }],
+    //   },
+    // ];
+
+    // const spec = {
+    //   $schema: "https://vega.github.io/schema/vega/v5.json",
+    //   width: 1000,
+    //   height: 500,
+    //   data,
+    //   projections,
+    //   scales,
+    //   legends: showlegend ? legends : [],
+    //   marks,
+    // };
+
+    // const opts = {
+    //   renderer: "svg",
+    // };
+    // await vegaEmbed(root, spec, opts);
+
+    // const chartWrapper = this.root.querySelector(".chart-wrapper");
+
     const tooltipKey = this.params["tooltips-key"];
-    const showToolTips =
-      !!tooltipKey && values.some((item) => item[tooltipKey]);
     this.tooltip = new ToolTip();
     root.append(this.tooltip);
 
-    const valObj = {
-      name: "userData",
-      values,
-    };
-
-    const transform = [
-      {
-        type: "lookup",
-        from: "userData",
-        key: "id",
-        fields: ["id"],
-        values: [value_key],
-      },
-    ];
-
-    const obj = areas.get(area);
-    obj.transform = transform;
-    const data = [valObj, obj];
-
-    const projections = [
-      {
-        name: "projection",
-        type: area === "us" ? "albersUsa" : "mercator",
-      },
-    ];
-
-    const togostanzaColors = new StanzaColorGenerator(this).stanzaColor;
-    const colorRange = togostanzaColors.slice(0, legendGroups);
-
-    const val = values.map((val) => val[value_key]);
-
-    const scales = [
-      {
-        name: "userColor",
-        type: "quantize",
-        domain: [Math.min(...val), Math.max(...val)],
-        range: colorRange,
-      },
-    ];
-
-    const legends = [
-      {
-        fill: "userColor",
-        orient: legendPlacement,
-        title: legendTitle,
-      },
-    ];
-
-    const marks = [
-      {
-        type: "shape",
-        from: { data: "map" },
-        encode: {
-          enter: {
-            tooltip: {
-              signal: `datum.${value_key}`,
-            },
-          },
-          hover: {
-            stroke: { value: "var(--togostanza-selected-color)" },
-          },
-          update: {
-            fill: { scale: "userColor", field: value_key },
-            stroke: { value: "var(--togostanza-border-color)" },
-          },
+    const areasD3 = new Map([
+      [
+        "world",
+        {
+          url: "https://d3js.org/world-110m.v1.json",
         },
-        transform: [{ type: "geoshape", projection: "projection" }],
-      },
-    ];
+      ],
+      [
+        "us",
+        {
+          url: "https://d3js.org/us-10m.v2.json",
+        },
+      ],
+    ]);
 
-    const spec = {
-      $schema: "https://vega.github.io/schema/vega/v5.json",
-      width: 1000,
-      height: 500,
-      data,
-      projections,
-      scales,
-      legends: showlegend ? legends : [],
-      marks,
-    };
+    // Color scale
+    const areaColorKey = this.params["area-color_key"];
+    const areaColorMin = this.params["area-color_min"];
+    const areaColorMid = this.params["area-color_mid"];
+    const areaColorMax = this.params["area-color_max"];
+    let areaDomainMin = parseFloat(this.params["area-value_min"]);
+    let areaDomainMid = parseFloat(this.params["area-value_mid"]);
+    let areaDomainMax = parseFloat(this.params["area-value_max"]);
 
-    const opts = {
-      renderer: "svg",
-    };
-    await vegaEmbed(root, spec, opts);
-
-    let areaD3;
-    switch (area) {
-      case "world":
-        console.log("world");
-        areaD3 = "https://d3js.org/world-110m.v1.json";
-        break;
-
-      case "us":
-        console.log("us");
-        areaD3 = "https://d3js.org/us-10m.v2.json";
-        break;
+    if (isNaN(parseFloat(areaDomainMin))) {
+      areaDomainMin = Math.min(...userDataValue);
     }
-    console.log(areaD3);
+    if (isNaN(parseFloat(areaDomainMax))) {
+      areaDomainMax = Math.max(...userDataValue);
+    }
+    if (isNaN(parseFloat(areaDomainMid))) {
+      areaDomainMid = (areaDomainMax + areaDomainMin) / 2;
+    }
 
-    const chartWrapper = this.root.querySelector(".chart-wrapper");
+    const setColor = getGradationColor(
+      this,
+      [areaColorMin, areaColorMid, areaColorMax],
+      [areaDomainMin, areaDomainMid, areaDomainMax]
+    );
 
-    const projection = d3.geoMercator();
-
+    d3.select(root).select("svg").remove();
     const svg = d3
-      .select(chartWrapper)
+      .select(root)
       .append("svg")
       .attr("width", width)
       .attr("height", height)
       .attr("viewBox", `0 -200 ${width} ${height}`);
     const g = svg.append("g").classed("g-path", true);
 
-    // const path = d3.geoPath().projection(projection);
-
-    const topology = await d3.json(areaD3);
-
+    const areaUrl = areasD3.get(area).url;
+    const topology = await d3.json(areaUrl);
+    const projection = d3.geoMercator();
     let topologyProperty, path;
     switch (area) {
       case "world":
-        console.log("world");
         topologyProperty = topology.objects.countries;
         path = d3.geoPath().projection(projection);
         break;
 
       case "us":
-        console.log("us");
         topologyProperty = topology.objects.counties;
         path = d3.geoPath();
         break;
     }
 
+    const topoJsonData = topojson.feature(topology, topologyProperty).features;
+    const allTopoData = topoJsonData.map((topoDatum) => {
+      let matchData = values.find((val) => topoDatum.id === val.id);
+      return { ...topoDatum, ...matchData };
+    });
+
     g.selectAll("path")
-      .data(topojson.feature(topology, topologyProperty).features)
+      .data(allTopoData)
       .enter()
       .append("path")
-      .attr("d", path);
+      .classed("path", true)
+      .attr("d", path)
+      .attr("data-tooltip", (d) => d[tooltipKey])
+      .attr("fill", (d) => setColor(d[areaColorKey]))
+      .on("mouseenter", function () {
+        d3.select(this).raise();
+      });
+
+    this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
   }
 }
