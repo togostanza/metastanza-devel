@@ -142,12 +142,6 @@
       "stanza:type": "number",
       "stanza:default": 8,
       "stanza:description": "Number font size in px"
-    },
-    {
-      "stanza:key": "--togostanza-node-gap_width",
-      "stanza:type": "number",
-      "stanza:default": 2,
-      "stanza:description": "Gap width in px"
     }
   ],
   "stanza:incomingEvent": [],

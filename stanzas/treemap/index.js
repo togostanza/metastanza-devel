@@ -40,7 +40,7 @@ export default class TreeMapStanza extends Stanza {
     const HEIGHT = height - MARGIN.TOP - MARGIN.BOTTOM;
 
     const logScale = this.params["node-log_scale"];
-    const borderWidth = parseInt(css("--togostanza-node-gap_width"));
+    const gapWidth = 2;
 
     const labelKey = this.params["node-label_key"];
     const valueKey = this.params["node-value_key"];
@@ -92,7 +92,7 @@ export default class TreeMapStanza extends Stanza {
       HEIGHT,
       colorScale,
       logScale,
-      borderWidth,
+      gapWidth,
       labelKey,
       valueKey,
     };
@@ -113,15 +113,8 @@ function transformValue(logScale, value) {
 }
 
 function draw(el, dataset, opts) {
-  const {
-    WIDTH,
-    HEIGHT,
-    logScale,
-    colorScale,
-    borderWidth,
-    labelKey,
-    valueKey,
-  } = opts;
+  const { WIDTH, HEIGHT, logScale, colorScale, gapWidth, labelKey, valueKey } =
+    opts;
 
   const nested = d3
     .stratify()
@@ -374,8 +367,8 @@ function draw(el, dataset, opts) {
           y(d.y0) - y(d.parent.y0)
         })`;
       } else {
-        return `translate(${x(d.x0) + borderWidth},${
-          y(d.y0) + rootHeight + borderWidth
+        return `translate(${x(d.x0) + gapWidth},${
+          y(d.y0) + rootHeight + gapWidth
         })`;
       }
     });
@@ -385,30 +378,30 @@ function draw(el, dataset, opts) {
         if (d === root) {
           return WIDTH;
         } else if (x(d.x1) === WIDTH) {
-          if (x(d.x1) - x(d.x0) - 2 * borderWidth < 0) {
+          if (x(d.x1) - x(d.x0) - 2 * gapWidth < 0) {
             return 0;
           }
-          return x(d.x1) - x(d.x0) - 2 * borderWidth;
+          return x(d.x1) - x(d.x0) - 2 * gapWidth;
         } else {
-          if (x(d.x1) - x(d.x0) - borderWidth < 0) {
+          if (x(d.x1) - x(d.x0) - gapWidth < 0) {
             return 0;
           }
-          return x(d.x1) - x(d.x0) - borderWidth;
+          return x(d.x1) - x(d.x0) - gapWidth;
         }
       })
       .attr("height", (d) => {
         if (d === root) {
           return rootHeight;
         } else if (y(d.y1) === adjustedHeight) {
-          if (y(d.y1) - y(d.y0) - 2 * borderWidth < 0) {
+          if (y(d.y1) - y(d.y0) - 2 * gapWidth < 0) {
             return 0;
           }
-          return y(d.y1) - y(d.y0) - 2 * borderWidth;
+          return y(d.y1) - y(d.y0) - 2 * gapWidth;
         } else {
-          if (y(d.y1) - y(d.y0) - borderWidth < 0) {
+          if (y(d.y1) - y(d.y0) - gapWidth < 0) {
             return 0;
           }
-          return y(d.y1) - y(d.y0) - borderWidth;
+          return y(d.y1) - y(d.y0) - gapWidth;
         }
       })
       .each(wrap.bind(this, root, isFirstRender, zoomInOut));
