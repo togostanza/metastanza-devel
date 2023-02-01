@@ -1,5 +1,5 @@
 import Stanza from "togostanza/stanza";
-import * as d3 from "d3";
+import { select, json, geoMercator, geoPath } from "d3";
 import { feature } from "topojson-client";
 import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
@@ -105,9 +105,8 @@ export default class regionGeographicMap extends Stanza {
     const svgWidth = width - padding.LEFT - padding.RIGHT;
     const svgHeight = height - padding.TOP - padding.BOTTOM;
 
-    d3.select(root).select("svg").remove();
-    const svg = d3
-      .select(root)
+    select(root).select("svg").remove();
+    const svg = select(root)
       .append("svg")
       .attr("width", svgWidth)
       .attr("height", svgHeight)
@@ -115,18 +114,18 @@ export default class regionGeographicMap extends Stanza {
     const g = svg.append("g").classed("g-path", true).attr("width", 200);
 
     const areaUrl = REGION.get(region).url;
-    const topology = await d3.json(areaUrl);
-    const projection = d3.geoMercator();
+    const topology = await json(areaUrl);
+    const projection = geoMercator();
     let topologyProperty, path;
     switch (region) {
       case "world":
         topologyProperty = topology.objects.countries;
-        path = d3.geoPath().projection(projection);
+        path = geoPath().projection(projection);
         break;
 
       case "us":
         topologyProperty = topology.objects.counties;
-        path = d3.geoPath();
+        path = geoPath();
         break;
     }
 
@@ -149,7 +148,7 @@ export default class regionGeographicMap extends Stanza {
       .attr("data-tooltip", (d) => d[tooltipKey])
       .attr("fill", (d) => setColor(d[areaColorKey]))
       .on("mouseenter", function () {
-        d3.select(this).raise();
+        select(this).raise();
       });
 
     this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
