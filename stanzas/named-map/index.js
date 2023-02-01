@@ -1,6 +1,6 @@
 import Stanza from "togostanza/stanza";
 import * as d3 from "d3";
-import * as topojson from "topojson";
+import { feature } from "topojson-client";
 import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
 import Legend from "@/lib/Legend";
@@ -130,7 +130,7 @@ export default class regionGeographicMap extends Stanza {
     }
 
     // Combine data
-    const topojsonData = topojson.feature(topology, topologyProperty).features;
+    const topojsonData = feature(topology, topologyProperty).features;
     const allData = topojsonData.map((topoDatum) => {
       let matchData = values.find((val) => topoDatum.id === val.id);
       return Object.assign({}, topoDatum, {
