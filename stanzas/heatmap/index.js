@@ -184,7 +184,6 @@ export default class Heatmap extends Stanza {
       .classed("rect", true)
       .attr("x", (d) => x(d[xKey]))
       .attr("y", (d) => y(d[yKey]))
-      .attr("data-tooltip-html", true)
       .attr("data-tooltip", (d) => tooltipHTML(d))
       .attr("width", x.bandwidth())
       .attr("height", y.bandwidth())
