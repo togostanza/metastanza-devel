@@ -83,6 +83,7 @@ export default class regionGeographicMap extends Stanza {
     let areaDomainMin = parseFloat(this.params["area-value_min"]);
     let areaDomainMid = parseFloat(this.params["area-value_mid"]);
     let areaDomainMax = parseFloat(this.params["area-value_max"]);
+    const userDataValue = values.map((d) => parseFloat(d[areaColorKey]));
 
     if (isNaN(parseFloat(areaDomainMin))) {
       areaDomainMin = Math.min(...userDataValue);
@@ -132,7 +133,7 @@ export default class regionGeographicMap extends Stanza {
     // Combine data
     const topojsonData = feature(topology, topologyProperty).features;
     const allData = topojsonData.map((topoDatum) => {
-      let matchData = values.find((val) => topoDatum.id === val.id);
+      const matchData = values.find((val) => topoDatum.id === val.id);
       return Object.assign({}, topoDatum, {
         [areaColorKey]: matchData ? matchData[areaColorKey] : undefined,
       });
