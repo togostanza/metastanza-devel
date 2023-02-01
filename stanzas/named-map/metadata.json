@@ -17,7 +17,7 @@
   "stanza:parameter": [
     {
       "stanza:key": "data-url",
-      "stanza:example": "https://raw.githubusercontent.com/YukikoNoda/sampleJSON-NamedMap/main/namedmap.json",
+      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/main/samples/json/named-map-data.json",
       "stanza:description": "Data source URL",
       "stanza:required": true
     },
