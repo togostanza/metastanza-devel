@@ -18,7 +18,7 @@ export default class Barchart extends StanzaSuperClass {
   xAxisGen: Axis;
   yAxisGen: Axis;
   _graphArea: d3.Selection<SVGGElement, {}, SVGElement, any>;
-  _groupedData: Map<string | number, {}[]>;
+  _dataByGroup: Map<string | number, {}[]>;
   _dataByX: Map<string | number, {}[]>;
   legend: Legend;
   tooltips: ToolTip;
@@ -87,7 +87,7 @@ export default class Barchart extends StanzaSuperClass {
       return;
     }
 
-    this._groupedData = values.reduce((map: Map<any, {}[]>, curr) => {
+    this._dataByGroup = values.reduce((map: Map<any, {}[]>, curr) => {
       if (!map.has(curr[groupKeyName])) {
         return map.set(curr[groupKeyName], [curr]);
       }
@@ -103,7 +103,7 @@ export default class Barchart extends StanzaSuperClass {
       return map;
     }, new Map());
 
-    const groupNames = this._groupedData.keys() as Iterable<string>;
+    const groupNames = this._dataByGroup.keys() as Iterable<string>;
 
     color.domain(groupNames);
 
@@ -185,11 +185,13 @@ export default class Barchart extends StanzaSuperClass {
     let barGroup;
     switch (grouingArrangement) {
       case "stacked":
-        barGroup = drawStackedBars.apply(this, [{ colorSym, y1Sym, y2Sym }]);
+        barGroup = drawStackedBars.apply(this, [
+          { colorSym, y1Sym, y2Sym, tooltipSym },
+        ]);
         break;
       default:
         barGroup = drawGroupedBars.apply(this, [
-          { y1Sym, y2Sym, groupKeyName, colorSym },
+          { y1Sym, y2Sym, groupKeyName, colorSym, tooltipSym },
         ]);
     }
 
@@ -199,7 +201,7 @@ export default class Barchart extends StanzaSuperClass {
         this._main.append(this.legend);
       }
 
-      this.legend.items = [...this._groupedData.entries()].map(([key]) => ({
+      this.legend.items = [...this._dataByGroup.entries()].map(([key]) => ({
         id: key,
         label: key,
         color: color("" + key),
@@ -217,7 +219,7 @@ export default class Barchart extends StanzaSuperClass {
         this.tooltips = new ToolTip();
         this._main.append(this.tooltips);
       }
-      this.tooltips.setup(this);
+      this.tooltips.setup(this._main.querySelectorAll("[data-tooltip]"));
     }
   }
 }
@@ -226,6 +228,7 @@ interface DrawFnParamsI {
   y1Sym: symbol;
   y2Sym: symbol;
   colorSym: symbol;
+  tooltipSym: symbol;
 }
 
 interface DrawGroupedFnI extends DrawFnParamsI {
@@ -234,10 +237,10 @@ interface DrawGroupedFnI extends DrawFnParamsI {
 
 function drawGroupedBars(
   this: Barchart,
-  { y1Sym, y2Sym, groupKeyName, colorSym }: DrawGroupedFnI
+  { y1Sym, y2Sym, groupKeyName, colorSym, tooltipSym }: DrawGroupedFnI
 ) {
   const xKeys = [...this._dataByX.keys()] as string[];
-  const groupNames = [...this._groupedData.keys()] as string[];
+  const groupNames = [...this._dataByGroup.keys()] as string[];
   xKeys.forEach((key) => (xKeys[key] = "" + xKeys[key]));
   const bw = this.xAxisGen.axisGen.scale().bandwidth();
   const range = [0, bw];
@@ -268,14 +271,15 @@ function drawGroupedBars(
       "height",
       (d) => this.yAxisGen.scale(d[y1Sym]) - this.yAxisGen.scale(d[y2Sym])
     )
-    .attr("fill", (d) => d[colorSym]);
+    .attr("fill", (d) => d[colorSym])
+    .attr("data-tooltip", (d) => d[tooltipSym]);
 
   return barGroup;
 }
 
 function drawStackedBars(
   this: Barchart,
-  { y1Sym, y2Sym, colorSym }: DrawFnParamsI
+  { y1Sym, y2Sym, colorSym, tooltipSym }: DrawFnParamsI
 ) {
   this._dataByX.forEach((val) => {
     for (let i = 1; i <= val.length - 1; i++) {
@@ -312,7 +316,8 @@ function drawStackedBars(
     .attr("height", (d) =>
       Math.abs(this.yAxisGen.scale(d[y1Sym]) - this.yAxisGen.scale(d[y2Sym]))
     )
-    .attr("fill", (d) => d[colorSym]);
+    .attr("fill", (d) => d[colorSym])
+    .attr("data-tooltip", (d) => d[tooltipSym]);
 
   return barGroup;
 }
