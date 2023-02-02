@@ -122,14 +122,14 @@ export default class Barchart extends StanzaSuperClass {
     let y2s = [];
 
     if (grouingArrangement === "stacked") {
-      y2s = [...this._dataByX.values()].flat().map((d) => d[y2Sym]);
-
       this._dataByX.forEach((val) => {
         for (let i = 1; i <= val.length - 1; i++) {
           val[i][y1Sym] = val[i - 1][y2Sym];
           val[i][y2Sym] += val[i - 1][y2Sym];
         }
       });
+
+      y2s = [...this._dataByX.values()].flat().map((d) => d[y2Sym]);
     } else {
       if (showErrorBars) {
         y2s = [...this._dataByX.values()]
