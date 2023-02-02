@@ -10,7 +10,6 @@ import {
   downloadJSONMenuItem,
   downloadCSVMenuItem,
   downloadTSVMenuItem,
-  appendCustomCss,
 } from "togostanza-utils";
 import { scaleBand, scaleOrdinal, select } from "d3";
 
@@ -34,18 +33,13 @@ export default class Barchart extends StanzaSuperClass {
   }
 
   async renderNext() {
-    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
-
-    const css = (key: string) =>
-      getComputedStyle(this.element).getPropertyValue(key);
-
     const colorGenerator = new StanzaColorGenerator(this);
     const togostanzaColors = colorGenerator.stanzaColor;
 
     const color = scaleOrdinal().range(togostanzaColors);
 
-    const width = +css("--togostanza-canvas-width");
-    const height = +css("--togostanza-canvas-height");
+    const width = +this.css("--togostanza-canvas-width");
+    const height = +this.css("--togostanza-canvas-height");
 
     const xKeyName = this.params["axis-x-key"];
     const yKeyName = this.params["axis-y-key"];
