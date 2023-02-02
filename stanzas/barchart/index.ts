@@ -260,6 +260,9 @@ export default class Barchart extends StanzaSuperClass {
       };
 
       this.legend.setup(legendParams);
+    } else {
+      this.legend?.remove();
+      this.legend = null;
     }
 
     if (values.some((d) => d[tooltipSym])) {
