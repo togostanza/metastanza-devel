@@ -174,14 +174,7 @@
       "stanza:key": "color_by-key",
       "stanza:type": "text",
       "stanza:example": "color",
-      "stanza:description": "Bars color key ()",
-      "stanza:required": true
-    },
-    {
-      "stanza:key": "color_by-key",
-      "stanza:type": "text",
-      "stanza:example": "color",
-      "stanza:description": "Use the hex color stored in this key to override bar's color. (useful for highlighting particular bars)",
+      "stanza:description": "Use the color stored in this key to override bar's color. (useful for highlighting particular bars)",
       "stanza:required": false
     },
     {
