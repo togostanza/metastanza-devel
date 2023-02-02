@@ -91,7 +91,6 @@
       "stanza:description": "Axis gridlines interval. If not set, show 5 gridlines at `neat` values, if set to 0, not show gridlines.",
       "stanza:required": false
     },
-
     {
       "stanza:key": "axis-y-key",
       "stanza:type": "text",
@@ -137,7 +136,7 @@
       "stanza:type": "number",
       "stanza:example": null,
       "stanza:computed": true,
-      "stanza:description": "Axis ticks interval. If not set, in case of `continuous` scales, show 5 ticks at automatically chosen `neat` values, in case of `ordinal` scale, show ticks at all domain values. If set to 0, hide all ticks. In case of `ordinal` scale, setting this parameter will show only n-th ticks of the domain (i.e.: domain = ['a', 'b', 'c', 'd', 'e'], ticks_interval set to 2 will show ticks at 'a', 'c' and 'e')",
+      "stanza:description": "Axis ticks interval. If not set, show 5 ticks at automatically chosen `neat` values. If set to 0, hide all ticks.",
       "stanza:required": false
     },
     {
@@ -156,25 +155,6 @@
       "stanza:description": "Axis gridlines interval. If not set, show 5 gridlines at `neat` values, if set to 0, not show gridlines.",
       "stanza:required": false
     },
-    {
-      "stanza:key": "axis-y-gridlines_interval_units",
-      "stanza:type": "single-choice",
-      "stanza:choice": [
-        "none",
-        "year",
-        "month",
-        "week",
-        "day",
-        "hour",
-        "minute",
-        "second"
-      ],
-      "stanza:example": "none",
-      "stanza:default": "none",
-      "stanza:description": "Axis grid lines interval units. (Effective only for time scale)",
-      "stanza:required": false
-    },
-
     {
       "stanza:key": "grouping-key",
       "stanza:type": "text",
@@ -334,7 +314,7 @@
     {
       "stanza:key": "--togostanza-border-width",
       "stanza:type": "number",
-      "stanza:default": 0,
+      "stanza:default": 0.5,
       "stanza:description": "Border width"
     },
     {

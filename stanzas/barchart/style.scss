@@ -6,41 +6,28 @@
 }
 
 svg {
-  .gridlines {
-    & > .tick > line {
-      stroke: var(--togostanza-border-color);
-      opacity: 0.4;
-      stroke-width: 1px;
-    }
-    & > path.domain {
-      display: none;
-    }
+  .tick > text {
+    font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
   }
 
-  .bars rect {
+  text.title {
+    font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+  }
+
+  line.zero-line {
+    stroke-width: calc(var(--togostanza-axis-zero_line_width) * 1px);
+    stroke: var(--togostanza-axis-zero_line_color);
+  }
+
+  .bar-group > rect {
     stroke-width: 0.5px;
     stroke: var(--togostanza-border-color);
-  }
-
-  @media (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {
-    .gridlines > .tick > line {
-      stroke-width: 0.5px;
+    transition: var(--togostanza-fadeout-transition);
+    &.-highlight {
+      opacity: 1;
     }
-  }
-
-  .axis {
-    & > .tick > line {
-      stroke: var(--togostanza-border-color);
-      stroke-width: 1px;
-    }
-
-    & > .tick > text {
-      font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
-    }
-
-    & > path {
-      stroke: var(--togostanza-border-color);
-      stroke-width: 1px;
+    &.-fadeout {
+      opacity: var(--togostanza-fadeout-opacity);
     }
   }
 
@@ -52,7 +39,11 @@ svg {
 }
 
 main {
+  position: relative;
   background-color: var(--togostanza-theme-background_color);
-  border: calc(var(--togostanza-border-width) * 1px) solid
-    var(--togostanza-border-color);
+  > togostanza--legend2 {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
 }

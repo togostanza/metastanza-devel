@@ -1,9 +1,8 @@
 import Stanza from "togostanza/stanza";
-import * as d3 from "d3";
 import loadData from "togostanza-utils/load-data";
 import ToolTip from "../../lib/ToolTip";
-import Legend from "../../lib/Legend";
-import { Axis, AxisParamsI, paramsModel } from "../../lib/AxisMixin";
+import Legend from "../../lib/Legend2";
+import { Axis, type AxisParamsI, paramsModel } from "../../lib/AxisMixin";
 
 import { StanzaColorGenerator } from "../../lib/ColorGenerator";
 import {
@@ -15,8 +14,7 @@ import {
   appendCustomCss,
 } from "togostanza-utils";
 import { getMarginsFromCSSString } from "../../lib/utils";
-import { string } from "zod";
-import { select } from "d3";
+import { extent, scaleBand, scaleOrdinal, select, selectAll } from "d3";
 
 export default class Barchart extends Stanza {
   _data: any[];
@@ -25,6 +23,8 @@ export default class Barchart extends Stanza {
   _graphArea: d3.Selection<SVGGElement, {}, SVGElement, any>;
   _groupedData: Map<string | number, {}[]>;
   _dataByX: Map<string | number, {}[]>;
+  legend: Legend;
+  tooltips: ToolTip;
 
   menu() {
     return [
@@ -45,7 +45,7 @@ export default class Barchart extends Stanza {
     const colorGenerator = new StanzaColorGenerator(this);
     const togostanzaColors = colorGenerator.stanzaColor;
 
-    const color = d3.scaleOrdinal().range(togostanzaColors);
+    const color = scaleOrdinal().range(togostanzaColors);
 
     const MARGIN = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
 
@@ -69,6 +69,8 @@ export default class Barchart extends Stanza {
     const errorKeyName = this.params["error_bars-key"];
     const barColorKey = this.params["color_by-key"];
     const tooltipKey = this.params["tooltips-key"];
+    const showLegend = this.params["legend-visible"];
+    const legendTitle = this.params["legend-title"];
 
     const colorSym: unique symbol = Symbol("color");
     const tooltipSym = Symbol("tooltip");
@@ -83,15 +85,9 @@ export default class Barchart extends Stanza {
 
     const values = this._data;
 
-    this._data.forEach((d) => {
-      d[yKeyName] = +d[yKeyName];
-      d[y1Sym] = 0;
-      d[y2Sym] = d[yKeyName];
-    });
-
     const xAxisLabels = [...new Set(values.map((d) => d[xKeyName]))];
 
-    const yAxisDomain = d3.extent(values, (d) => +d[yKeyName]);
+    const yAxisDomain = extent(values, (d) => +d[yKeyName]);
 
     let params;
     try {
@@ -109,7 +105,7 @@ export default class Barchart extends Stanza {
       return map;
     }, new Map());
 
-    this._dataByX = values.reduce((map, curr) => {
+    this._dataByX = this._data.reduce((map, curr) => {
       if (!map.has(curr[xKeyName])) {
         return map.set(curr[xKeyName], [curr]);
       }
@@ -121,20 +117,28 @@ export default class Barchart extends Stanza {
 
     color.domain(groupNames);
 
-    values.forEach((d) => {
+    this._data.forEach((d) => {
       d[colorSym] = d[barColorKey] ?? color(d[groupKeyName]);
-      console.log("bar color", color(d[groupKeyName]));
       d[tooltipSym] = d[tooltipKey] || null;
+      d[yKeyName] = +d[yKeyName];
+      d[y1Sym] = 0;
+      d[y2Sym] = d[yKeyName];
     });
 
-    let svg = d3.select(root.querySelector("svg"));
+    const y2s = [...this._dataByX.values()].flat().map((d) => d[y2Sym]);
+
+    const stackedDataMax = Math.max(...y2s);
+
+    const yDomain = [0, stackedDataMax * 1.02];
+
+    let svg = select(root.querySelector("svg"));
 
     if (!svg.empty()) {
       svg.remove();
       this.xAxisGen = null;
       this.yAxisGen = null;
     }
-    svg = d3.select(root).append("svg");
+    svg = select(root).append("svg");
     svg.attr("width", width).attr("height", height);
 
     this._graphArea = svg.append("g").attr("class", "chart");
@@ -159,7 +163,7 @@ export default class Barchart extends Stanza {
 
     const yParams: AxisParamsI = {
       placement: params["axis-y-placement"],
-      domain: yAxisDomain,
+      domain: yDomain,
       drawArea: axisArea,
       margins: MARGIN,
       tickLabelsAngle: params["axis-y-ticks_label_angle"],
@@ -183,19 +187,40 @@ export default class Barchart extends Stanza {
     this.xAxisGen.update(xParams);
     this.yAxisGen.update(yParams);
 
-    //data
-
     this._graphArea.attr(
       "transform",
       `translate(${this.xAxisGen.axisArea.x},${this.xAxisGen.axisArea.y})`
     );
 
+    let barGroup;
     switch (grouingArrangement) {
       case "stacked":
-        drawStackedBars.apply(this, [{ colorSym, y1Sym, y2Sym }]);
+        barGroup = drawStackedBars.apply(this, [{ colorSym, y1Sym, y2Sym }]);
         break;
       default:
-        drawGroupedBars.apply(this, [{ y1Sym, y2Sym, groupKeyName, colorSym }]);
+        barGroup = drawGroupedBars.apply(this, [
+          { y1Sym, y2Sym, groupKeyName, colorSym },
+        ]);
+    }
+
+    if (showLegend) {
+      if (!this.legend) {
+        this.legend = new Legend();
+        root.append(this.legend);
+      }
+
+      this.legend.items = [...this._groupedData.entries()].map(([key]) => ({
+        id: key,
+        label: key,
+        color: color("" + key),
+        nodes: barGroup
+          .selectAll("rect")
+          .filter((d) => d[groupKeyName] === key)
+          .nodes(),
+        value: key,
+      }));
+
+      this.legend.title = legendTitle;
     }
   }
 }
@@ -219,7 +244,7 @@ function drawGroupedBars(
   xKeys.forEach((key) => (xKeys[key] = "" + xKeys[key]));
   const bw = this.xAxisGen.axisGen.scale().bandwidth();
   const range = [0, bw];
-  const groupScale = d3.scaleBand(range).domain(groupNames);
+  const groupScale = scaleBand(range).domain(groupNames);
 
   groupScale.paddingInner(0.1).paddingOuter(0.2);
   const barGroups = this._graphArea
@@ -244,9 +269,11 @@ function drawGroupedBars(
     .attr("width", groupScale.bandwidth())
     .attr(
       "height",
-      (d) => this.yAxisGen.scale(0) - this.yAxisGen.scale(d[y2Sym])
+      (d) => this.yAxisGen.scale(d[y1Sym]) - this.yAxisGen.scale(d[y2Sym])
     )
     .attr("fill", (d) => d[colorSym]);
+
+  return barGroup;
 }
 
 function drawStackedBars(
@@ -259,6 +286,8 @@ function drawStackedBars(
       val[i][y2Sym] += val[i - 1][y2Sym];
     }
   });
+
+  this.yAxisGen.axisGen.scale().domain();
 
   const barGroups = this._graphArea
     .selectAll("g.bar-group")
@@ -287,4 +316,6 @@ function drawStackedBars(
       Math.abs(this.yAxisGen.scale(d[y1Sym]) - this.yAxisGen.scale(d[y2Sym]))
     )
     .attr("fill", (d) => d[colorSym]);
+
+  return barGroup;
 }
