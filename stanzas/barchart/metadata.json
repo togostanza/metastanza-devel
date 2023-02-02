@@ -117,8 +117,8 @@
     {
       "stanza:key": "axis-y-title_padding",
       "stanza:type": "number",
-      "stanza:example": 20,
-      "stanza:default": 20,
+      "stanza:example": 40,
+      "stanza:default": 40,
       "stanza:description": "Axis title padding in px",
       "stanza:required": false
     },
@@ -236,7 +236,7 @@
     {
       "stanza:key": "--togostanza-canvas-padding",
       "stanza:type": "text",
-      "stanza:default": "10 20 60 20",
+      "stanza:default": "10 20 60 80",
       "stanza:description": "Metastanza padding CSS in px."
     },
     {
