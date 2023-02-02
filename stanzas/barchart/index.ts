@@ -12,7 +12,7 @@ import {
   downloadTSVMenuItem,
   appendCustomCss,
 } from "togostanza-utils";
-import { DSV, extent, scaleBand, scaleOrdinal, select } from "d3";
+import { scaleBand, scaleOrdinal, select } from "d3";
 
 type TBarGroupSelection = {
   barGroup: d3.Selection<SVGGElement, {}, any, any>;
