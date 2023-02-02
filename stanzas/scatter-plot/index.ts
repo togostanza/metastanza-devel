@@ -80,7 +80,6 @@ export default class ScatterPlot extends Stanza {
     const legendTitle = this.params["legend-title"];
     const tooltipKey = this.params["tooltips-key"];
 
-    //const groupingKey = this.params["grouping-key"];
     const width = parseInt(css("--togostanza-canvas-width"));
     const height = parseInt(css("--togostanza-canvas-height"));
 
@@ -110,13 +109,14 @@ export default class ScatterPlot extends Stanza {
     const main = root.querySelector("main");
 
     let svg = main.querySelector("svg");
+
     if (!svg) {
       svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-
-      svg.setAttribute("width", width.toString());
-      svg.setAttribute("height", height.toString());
       main.append(svg);
     }
+
+    svg.setAttribute("width", width.toString());
+    svg.setAttribute("height", height.toString());
 
     if (!this.xAxis) {
       this.xAxis = new Axis(svg);

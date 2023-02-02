@@ -54,7 +54,7 @@ export default function (
     width,
     height,
     MARGIN,
-    labelsParams,
+    nodeLabelParams,
     tooltipParams,
     highlightAdjEdges,
     edgeWidthParams,
@@ -199,15 +199,15 @@ export default function (
     nodeCircles.attr("data-tooltip", (d) => d[tooltipParams.dataKey]);
   }
 
-  if (labelsParams.dataKey !== "" && nodes[0][labelsParams.dataKey]) {
+  if (nodeLabelParams.dataKey !== "" && nodes[0][nodeLabelParams.dataKey]) {
     nodeGroups
       .append("text")
       .attr("x", 0)
-      .attr("dy", (d) => labelsParams.margin + d[symbols.nodeSizeSym])
+      .attr("dy", (d) => nodeLabelParams.margin + d[symbols.nodeSizeSym])
       .attr("class", "label")
       .attr("alignment-baseline", "hanging")
       .attr("text-anchor", "middle")
-      .text((d) => d[labelsParams.dataKey]);
+      .text((d) => d[nodeLabelParams.dataKey]);
   }
 
   let isDragging = false;
