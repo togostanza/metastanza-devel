@@ -14,7 +14,7 @@
   "stanza:parameter": [
     {
       "stanza:key": "data-url",
-      "stanza:example": "https://gist.githubusercontent.com/neznayer/92e5545547d71667d6a75e20cba92236/raw/9efb923afffbdc84410eac666dde3482b8f91d56/barchart.json",
+      "stanza:example": "https://gist.githubusercontent.com/neznayer/92e5545547d71667d6a75e20cba92236/raw/aa47156aab1924a360fe4f28d3d207b541261fb4/barchart.json",
       "stanza:description": "Data source URL",
       "stanza:required": true
     },

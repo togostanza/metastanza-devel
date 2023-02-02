@@ -23,6 +23,7 @@ svg {
     stroke-width: 0.5px;
     stroke: var(--togostanza-border-color);
     transition: var(--togostanza-fadeout-transition);
+    cursor: pointer;
     &.-highlight {
       opacity: 1;
     }
@@ -31,10 +32,18 @@ svg {
     }
   }
 
-  line.error-bar-line {
+  line.error-bar {
     stroke: var(--togostanza-border-color);
     stroke-width: 1px;
     opacity: 0.8;
+    transition: stroke-opacity 0.3s ease-out;
+
+    &.-highlight {
+      stroke-opacity: 1;
+    }
+    &.-fadeout {
+      stroke-opacity: var(--togostanza-fadeout-opacity);
+    }
   }
 }
 

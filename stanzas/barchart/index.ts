@@ -12,7 +12,12 @@ import {
   downloadTSVMenuItem,
   appendCustomCss,
 } from "togostanza-utils";
-import { extent, scaleBand, scaleOrdinal, select } from "d3";
+import { DSV, extent, scaleBand, scaleOrdinal, select } from "d3";
+
+type TBarGroupSelection = {
+  barGroup: d3.Selection<SVGGElement, {}, any, any>;
+  groupScale: d3.ScaleBand<string>;
+};
 
 export default class Barchart extends StanzaSuperClass {
   xAxisGen: Axis;
@@ -61,6 +66,7 @@ export default class Barchart extends StanzaSuperClass {
     const grouingArrangement = this.params["grouping-arrangement"];
 
     const errorKeyName = this.params["error_bars-key"];
+    const showErrorBars = this._data.some((d) => d[errorKeyName]);
     const barColorKey = this.params["color_by-key"];
     const tooltipKey = this.params["tooltips-key"];
     const showLegend = this.params["legend-visible"];
@@ -76,8 +82,6 @@ export default class Barchart extends StanzaSuperClass {
     const xAxisLabels = [
       ...new Set(values.map((d) => d[xKeyName])),
     ] as string[];
-
-    const yAxisDomain = extent(values, (d) => +d[yKeyName]);
 
     let params;
     try {
@@ -115,13 +119,30 @@ export default class Barchart extends StanzaSuperClass {
       d[y2Sym] = d[yKeyName];
     });
 
-    const y2s = [...this._dataByX.values()].flat().map((d) => d[y2Sym]);
+    let y2s = [];
 
-    const stackedDataMax = Math.max(...y2s);
+    if (grouingArrangement === "stacked") {
+      y2s = [...this._dataByX.values()].flat().map((d) => d[y2Sym]);
 
-    console.log("stackedDataMax", stackedDataMax);
+      this._dataByX.forEach((val) => {
+        for (let i = 1; i <= val.length - 1; i++) {
+          val[i][y1Sym] = val[i - 1][y2Sym];
+          val[i][y2Sym] += val[i - 1][y2Sym];
+        }
+      });
+    } else {
+      if (showErrorBars) {
+        y2s = [...this._dataByX.values()]
+          .flat()
+          .map((d) => (d[errorKeyName] ? d[errorKeyName][1] : -Infinity));
+      } else {
+        y2s = [...this._dataByX.values()].flat().map((d) => d[y2Sym]);
+      }
+    }
 
-    const yDomain = [0, stackedDataMax * 1.02];
+    const maxY = Math.max(...y2s);
+
+    const yDomain = [0, maxY * 1.02];
 
     let svg = select(this._main.querySelector("svg"));
 
@@ -184,17 +205,27 @@ export default class Barchart extends StanzaSuperClass {
       `translate(${this.xAxisGen.axisArea.x},${this.xAxisGen.axisArea.y})`
     );
 
-    let barGroup;
+    let barGroup: d3.Selection<
+      SVGGElement,
+      [string | number, {}[]],
+      SVGGElement,
+      {}
+    >;
+    let groupScale;
+
     switch (grouingArrangement) {
       case "stacked":
-        barGroup = drawStackedBars.apply(this, [
+        ({ barGroup } = drawStackedBars.apply(this, [
           { colorSym, y1Sym, y2Sym, tooltipSym },
-        ]);
+        ]));
         break;
       default:
-        barGroup = drawGroupedBars.apply(this, [
+        ({ barGroup, groupScale } = drawGroupedBars.apply(this, [
           { y1Sym, y2Sym, groupKeyName, colorSym, tooltipSym },
-        ]);
+        ]));
+        if (showErrorBars) {
+          barGroup.call(addErrorBars.bind(this), errorKeyName, groupScale);
+        }
     }
 
     if (showLegend) {
@@ -203,18 +234,27 @@ export default class Barchart extends StanzaSuperClass {
         this._main.append(this.legend);
       }
 
-      this.legend.items = [...this._dataByGroup.entries()].map(([key]) => ({
-        id: key,
-        label: key,
-        color: color("" + key),
-        nodes: barGroup
-          .selectAll("rect")
-          .filter((d) => d[groupKeyName] === key)
-          .nodes(),
-        value: key,
-      }));
+      const legendParams = {
+        title: legendTitle,
+        items: [...this._dataByGroup.entries()].map(([key]) => ({
+          id: key,
+          label: key,
+          color: color("" + key),
+          nodes: barGroup
+            .selectAll("rect")
+            .filter((d) => d[groupKeyName] === key)
+            .nodes()
+            .concat(
+              barGroup
+                .selectAll("line.error-bar")
+                .filter((d) => d[groupKeyName] === key)
+                .nodes()
+            ),
+          value: key,
+        })),
+      };
 
-      this.legend.title = legendTitle;
+      this.legend.setup(legendParams);
     }
 
     if (values.some((d) => d[tooltipSym])) {
@@ -277,25 +317,13 @@ function drawGroupedBars(
     .attr("fill", (d) => d[colorSym])
     .attr("data-tooltip", (d) => d[tooltipSym]);
 
-  return barGroup;
+  return { barGroup, groupScale };
 }
 
 function drawStackedBars(
   this: Barchart,
   { y1Sym, y2Sym, colorSym, tooltipSym }: DrawFnParamsI
 ) {
-  this._dataByX.forEach((val) => {
-    for (let i = 1; i <= val.length - 1; i++) {
-      val[i][y1Sym] = val[i - 1][y2Sym];
-      val[i][y2Sym] += val[i - 1][y2Sym];
-    }
-  });
-
-  const y2s = [...this._dataByX.values()].flat().map((d) => d[y2Sym]);
-  const maxData = Math.max(...y2s);
-
-  this.yAxisGen.update({ domain: [0, maxData * 1.02] });
-
   const barGroups = this._graphArea
     .selectAll("g.bar-group")
     .data(this._dataByX);
@@ -326,4 +354,40 @@ function drawStackedBars(
     .attr("data-tooltip", (d) => d[tooltipSym]);
 
   return barGroup;
+}
+
+function addErrorBars(
+  this: Barchart,
+  rect: d3.Selection<SVGGElement, {}, any, any>,
+  errorKeyName: string,
+  groupScale: d3.ScaleBand<string>
+) {
+  const rectEnter = rect
+    .selectAll("line")
+    .data((d) => d[1].filter((d1) => d1[errorKeyName]))
+    .enter();
+
+  rectEnter
+    .append("line")
+    .attr("class", "error-bar")
+    .attr("y1", (d) => this.yAxisGen.scale(d[errorKeyName][0]))
+    .attr("y2", (d) => this.yAxisGen.scale(d[errorKeyName][1]))
+    .attr("x1", (d) => groupScale(d["category"]) + groupScale.bandwidth() / 2)
+    .attr("x2", (d) => groupScale(d["category"]) + groupScale.bandwidth() / 2);
+
+  rectEnter
+    .append("line")
+    .attr("class", "error-bar")
+    .attr("y1", (d) => this.yAxisGen.scale(d[errorKeyName][0]))
+    .attr("y2", (d) => this.yAxisGen.scale(d[errorKeyName][0]))
+    .attr("x1", (d) => groupScale(d["category"]))
+    .attr("x2", (d) => groupScale(d["category"]) + groupScale.bandwidth());
+
+  rectEnter
+    .append("line")
+    .attr("class", "error-bar")
+    .attr("y1", (d) => this.yAxisGen.scale(d[errorKeyName][1]))
+    .attr("y2", (d) => this.yAxisGen.scale(d[errorKeyName][1]))
+    .attr("x1", (d) => groupScale(d["category"]))
+    .attr("x2", (d) => groupScale(d["category"]) + groupScale.bandwidth());
 }
