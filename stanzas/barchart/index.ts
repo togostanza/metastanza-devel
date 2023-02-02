@@ -1,8 +1,7 @@
-import Stanza from "togostanza/stanza";
-import loadData from "togostanza-utils/load-data";
 import ToolTip from "../../lib/ToolTip";
 import Legend from "../../lib/Legend2";
 import { Axis, type AxisParamsI, paramsModel } from "../../lib/AxisMixin";
+import StanzaSuperClass from "../../lib/StanzaSuperClass";
 
 import { StanzaColorGenerator } from "../../lib/ColorGenerator";
 import {
@@ -13,11 +12,9 @@ import {
   downloadTSVMenuItem,
   appendCustomCss,
 } from "togostanza-utils";
-import { getMarginsFromCSSString } from "../../lib/utils";
-import { extent, scaleBand, scaleOrdinal, select, selectAll } from "d3";
+import { extent, scaleBand, scaleOrdinal, select } from "d3";
 
-export default class Barchart extends Stanza {
-  _data: any[];
+export default class Barchart extends StanzaSuperClass {
   xAxisGen: Axis;
   yAxisGen: Axis;
   _graphArea: d3.Selection<SVGGElement, {}, SVGElement, any>;
@@ -36,7 +33,7 @@ export default class Barchart extends Stanza {
     ];
   }
 
-  async render() {
+  async renderNext() {
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     const css = (key: string) =>
@@ -47,11 +44,8 @@ export default class Barchart extends Stanza {
 
     const color = scaleOrdinal().range(togostanzaColors);
 
-    const MARGIN = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
-
     const width = +css("--togostanza-canvas-width");
     const height = +css("--togostanza-canvas-height");
-    const root = this.root.querySelector("main");
 
     const xKeyName = this.params["axis-x-key"];
     const yKeyName = this.params["axis-y-key"];
@@ -77,15 +71,11 @@ export default class Barchart extends Stanza {
     const y1Sym = Symbol("y1");
     const y2Sym = Symbol("y2");
 
-    this._data = await loadData(
-      this.params["data-url"],
-      this.params["data-type"],
-      this.root.querySelector("main")
-    );
-
     const values = this._data;
 
-    const xAxisLabels = [...new Set(values.map((d) => d[xKeyName]))];
+    const xAxisLabels = [
+      ...new Set(values.map((d) => d[xKeyName])),
+    ] as string[];
 
     const yAxisDomain = extent(values, (d) => +d[yKeyName]);
 
@@ -131,14 +121,14 @@ export default class Barchart extends Stanza {
 
     const yDomain = [0, stackedDataMax * 1.02];
 
-    let svg = select(root.querySelector("svg"));
+    let svg = select(this._main.querySelector("svg"));
 
     if (!svg.empty()) {
       svg.remove();
       this.xAxisGen = null;
       this.yAxisGen = null;
     }
-    svg = select(root).append("svg");
+    svg = select(this._main).append("svg");
     svg.attr("width", width).attr("height", height);
 
     this._graphArea = svg.append("g").attr("class", "chart");
@@ -149,7 +139,7 @@ export default class Barchart extends Stanza {
       placement: params["axis-x-placement"],
       domain: xAxisLabels,
       drawArea: axisArea,
-      margins: MARGIN,
+      margins: this.MARGIN,
       tickLabelsAngle: params["axis-x-ticks_label_angle"],
       title: xAxisTitle,
       titlePadding: params["axis-x-title_padding"],
@@ -165,7 +155,7 @@ export default class Barchart extends Stanza {
       placement: params["axis-y-placement"],
       domain: yDomain,
       drawArea: axisArea,
-      margins: MARGIN,
+      margins: this.MARGIN,
       tickLabelsAngle: params["axis-y-ticks_label_angle"],
       title: yAxisTitle,
       titlePadding: params["axis-y-title_padding"],
@@ -206,7 +196,7 @@ export default class Barchart extends Stanza {
     if (showLegend) {
       if (!this.legend) {
         this.legend = new Legend();
-        root.append(this.legend);
+        this._main.append(this.legend);
       }
 
       this.legend.items = [...this._groupedData.entries()].map(([key]) => ({
@@ -221,6 +211,13 @@ export default class Barchart extends Stanza {
       }));
 
       this.legend.title = legendTitle;
+    }
+    if (this._data.some((d) => d[tooltipSym])) {
+      if (!this.tooltips) {
+        this.tooltips = new ToolTip();
+        this._main.append(this.tooltips);
+      }
+      this.tooltips.setup(this);
     }
   }
 }
