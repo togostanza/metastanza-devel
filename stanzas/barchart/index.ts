@@ -236,7 +236,7 @@ export default class Barchart extends StanzaSuperClass {
     if (showLegend) {
       if (!this.legend) {
         this.legend = new Legend();
-        this._main.append(this.legend);
+        this.root.append(this.legend);
       }
 
       const legendParams = {
