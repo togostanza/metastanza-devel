@@ -14,11 +14,6 @@ import {
 } from "togostanza-utils";
 import { scaleBand, scaleOrdinal, select } from "d3";
 
-type TBarGroupSelection = {
-  barGroup: d3.Selection<SVGGElement, {}, any, any>;
-  groupScale: d3.ScaleBand<string>;
-};
-
 export default class Barchart extends StanzaSuperClass {
   xAxisGen: Axis;
   yAxisGen: Axis;
