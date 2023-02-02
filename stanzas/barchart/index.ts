@@ -71,7 +71,7 @@ export default class Barchart extends StanzaSuperClass {
     const y1Sym = Symbol("y1");
     const y2Sym = Symbol("y2");
 
-    const values = this._data;
+    const values = structuredClone(this._data);
 
     const xAxisLabels = [
       ...new Set(values.map((d) => d[xKeyName])),
@@ -95,7 +95,7 @@ export default class Barchart extends StanzaSuperClass {
       return map;
     }, new Map());
 
-    this._dataByX = this._data.reduce((map, curr) => {
+    this._dataByX = values.reduce((map, curr) => {
       if (!map.has(curr[xKeyName])) {
         return map.set(curr[xKeyName], [curr]);
       }
@@ -107,7 +107,7 @@ export default class Barchart extends StanzaSuperClass {
 
     color.domain(groupNames);
 
-    this._data.forEach((d) => {
+    values.forEach((d) => {
       d[colorSym] = d[barColorKey] ?? color(d[groupKeyName]);
       d[tooltipSym] = d[tooltipKey] || null;
       d[yKeyName] = +d[yKeyName];
@@ -214,7 +214,8 @@ export default class Barchart extends StanzaSuperClass {
 
       this.legend.title = legendTitle;
     }
-    if (this._data.some((d) => d[tooltipSym])) {
+
+    if (values.some((d) => d[tooltipSym])) {
       if (!this.tooltips) {
         this.tooltips = new ToolTip();
         this._main.append(this.tooltips);
