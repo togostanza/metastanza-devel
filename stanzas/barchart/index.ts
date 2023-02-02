@@ -224,7 +224,12 @@ export default class Barchart extends StanzaSuperClass {
           { y1Sym, y2Sym, groupKeyName, colorSym, tooltipSym },
         ]));
         if (showErrorBars) {
-          barGroup.call(addErrorBars.bind(this), errorKeyName, groupScale);
+          barGroup.call(
+            addErrorBars.bind(this),
+            errorKeyName,
+            groupKeyName,
+            groupScale
+          );
         }
     }
 
@@ -353,13 +358,14 @@ function drawStackedBars(
     .attr("fill", (d) => d[colorSym])
     .attr("data-tooltip", (d) => d[tooltipSym]);
 
-  return barGroup;
+  return { barGroup };
 }
 
 function addErrorBars(
   this: Barchart,
   rect: d3.Selection<SVGGElement, {}, any, any>,
   errorKeyName: string,
+  groupKeyName: string,
   groupScale: d3.ScaleBand<string>
 ) {
   const rectEnter = rect
@@ -372,22 +378,25 @@ function addErrorBars(
     .attr("class", "error-bar")
     .attr("y1", (d) => this.yAxisGen.scale(d[errorKeyName][0]))
     .attr("y2", (d) => this.yAxisGen.scale(d[errorKeyName][1]))
-    .attr("x1", (d) => groupScale(d["category"]) + groupScale.bandwidth() / 2)
-    .attr("x2", (d) => groupScale(d["category"]) + groupScale.bandwidth() / 2);
+    .attr("x1", (d) => groupScale(d[groupKeyName]) + groupScale.bandwidth() / 2)
+    .attr(
+      "x2",
+      (d) => groupScale(d[groupKeyName]) + groupScale.bandwidth() / 2
+    );
 
   rectEnter
     .append("line")
     .attr("class", "error-bar")
     .attr("y1", (d) => this.yAxisGen.scale(d[errorKeyName][0]))
     .attr("y2", (d) => this.yAxisGen.scale(d[errorKeyName][0]))
-    .attr("x1", (d) => groupScale(d["category"]))
-    .attr("x2", (d) => groupScale(d["category"]) + groupScale.bandwidth());
+    .attr("x1", (d) => groupScale(d[groupKeyName]))
+    .attr("x2", (d) => groupScale(d[groupKeyName]) + groupScale.bandwidth());
 
   rectEnter
     .append("line")
     .attr("class", "error-bar")
     .attr("y1", (d) => this.yAxisGen.scale(d[errorKeyName][1]))
     .attr("y2", (d) => this.yAxisGen.scale(d[errorKeyName][1]))
-    .attr("x1", (d) => groupScale(d["category"]))
-    .attr("x2", (d) => groupScale(d["category"]) + groupScale.bandwidth());
+    .attr("x1", (d) => groupScale(d[groupKeyName]))
+    .attr("x2", (d) => groupScale(d[groupKeyName]) + groupScale.bandwidth());
 }
