@@ -39,7 +39,7 @@
       "stanza:choice": ["top", "bottom"],
       "stanza:example": "bottom",
       "stanza:description": "axis placement",
-      "stanza:required": true
+      "stanza:required": false
     },
     {
       "stanza:key": "axis-x-title",
@@ -104,7 +104,7 @@
       "stanza:choice": ["left", "right"],
       "stanza:example": "left",
       "stanza:description": "Y axis placement",
-      "stanza:required": true
+      "stanza:required": false
     },
     {
       "stanza:key": "axis-y-title",
@@ -168,7 +168,7 @@
       "stanza:choice": ["stacked", "grouped"],
       "stanza:example": "grouped",
       "stanza:description": "Bars arrangement",
-      "stanza:required": true
+      "stanza:required": false
     },
     {
       "stanza:key": "color_by-key",
