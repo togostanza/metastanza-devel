@@ -119,6 +119,8 @@ export default class Barchart extends StanzaSuperClass {
 
     const stackedDataMax = Math.max(...y2s);
 
+    console.log("stackedDataMax", stackedDataMax);
+
     const yDomain = [0, stackedDataMax * 1.02];
 
     let svg = select(this._main.querySelector("svg"));
@@ -289,7 +291,10 @@ function drawStackedBars(
     }
   });
 
-  this.yAxisGen.axisGen.scale().domain();
+  const y2s = [...this._dataByX.values()].flat().map((d) => d[y2Sym]);
+  const maxData = Math.max(...y2s);
+
+  this.yAxisGen.update({ domain: [0, maxData * 1.02] });
 
   const barGroups = this._graphArea
     .selectAll("g.bar-group")
