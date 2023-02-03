@@ -465,7 +465,7 @@ export class Axis {
   private _handleGridIntervalUpdate() {
     this._updateGrid();
 
-    this._gridG.call(this._gridGen.bind(this));
+    this._callDrawGridlines();
 
     this._gridG.selectAll(".tick line").classed("zero-line", (d) => {
       return d === 0;
@@ -499,7 +499,11 @@ export class Axis {
   }
 
   private _callDrawGridlines() {
-    this._gridG.call(this._gridGen.bind(this));
+    this._gridG
+      .call(this._gridGen.bind(this))
+      .selectAll("g.tick")
+      .select("line")
+      .classed("grid-line", true);
   }
 
   private get HEIGHT() {
