@@ -109,12 +109,6 @@
       "stanza:description": "Rows delimiters' style"
     },
     {
-      "stanza:key": "--togostanza-table-row-padding",
-      "stanza:type": "text",
-      "stanza:default": "5px",
-      "stanza:description": "Padding of row"
-    },
-    {
       "stanza:key": "--togostanza-table-key-width_percentage",
       "stanza:type": "text",
       "stanza:default": "30%",

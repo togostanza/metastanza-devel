@@ -20,7 +20,7 @@ main {
 
     dl {
       display: flex;
-      padding: var(--togostanza-table-row-padding);
+      padding: 5px;
       break-inside: avoid-column;
       &:not(:last-child) {
         border-bottom: var(--togostanza-table-row-border_bottom);
