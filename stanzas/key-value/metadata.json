@@ -84,24 +84,29 @@
       "stanza:description": "Font family"
     },
     {
-      "stanza:key": "--togostanza-fonts-font_color",
+      "stanza:key": "--togostanza-fonts-font_color_primary",
+      "stanza:type": "color",
+      "stanza:default": "#256D80",
+      "stanza:description": "Font color of key text"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_color_secondary",
       "stanza:type": "color",
       "stanza:default": "#333333",
-      "stanza:description": "Font family"
+      "stanza:description": "Font color of description text"
     },
     {
       "stanza:key": "--togostanza-fonts-font_size_primary",
       "stanza:type": "text",
       "stanza:default": "12px",
-      "stanza:description": "Primary font size"
+      "stanza:description": "Font size of key text"
     },
     {
       "stanza:key": "--togostanza-fonts-font_size_secondary",
       "stanza:type": "text",
       "stanza:default": "9px",
-      "stanza:description": "Secondary font size"
+      "stanza:description": "Font size of description text"
     },
-
     {
       "stanza:key": "--togostanza-table-row-border_bottom",
       "stanza:type": "text",
@@ -113,30 +118,6 @@
       "stanza:type": "text",
       "stanza:default": "30%",
       "stanza:description": "Percentage of key width"
-    },
-    {
-      "stanza:key": "--togostanza-key-font-color",
-      "stanza:type": "color",
-      "stanza:default": "#256D80",
-      "stanza:description": "Font color of key"
-    },
-    {
-      "stanza:key": "--togostanza-key-font-size",
-      "stanza:type": "text",
-      "stanza:default": "12px",
-      "stanza:description": "Font size of key"
-    },
-    {
-      "stanza:key": "--togostanza-key-font-weight",
-      "stanza:type": "text",
-      "stanza:default": "400",
-      "stanza:description": "Font weight of key"
-    },
-    {
-      "stanza:key": "--togostanza-background-color",
-      "stanza:type": "color",
-      "stanza:default": "rgba(255,255,255,0)",
-      "stanza:description": "Background color"
     }
   ]
 }
