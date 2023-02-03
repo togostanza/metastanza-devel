@@ -485,6 +485,10 @@ export class Axis {
    */
   private _callDrawAxis() {
     this._axisG.call(this._axisGen.bind(this));
+    this._axisG
+      .selectAll("g.tick")
+      .select("text")
+      .classed("tick-label-text", true);
 
     this._tickTextXY = this.tickTextXY;
     this._axisG.selectAll(".tick").each(function (this: SVGElement) {
