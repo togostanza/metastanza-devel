@@ -4,6 +4,7 @@
 svg {
   .tick > text {
     font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+    font-family: var(--togostanza-fonts-font_family);
   }
 
   line.grid-line {
