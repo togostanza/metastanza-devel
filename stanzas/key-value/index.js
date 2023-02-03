@@ -1,13 +1,12 @@
-import Stanza from "togostanza/stanza";
-import loadData from "togostanza-utils/load-data";
 import {
   downloadJSONMenuItem,
   downloadCSVMenuItem,
   downloadTSVMenuItem,
-  appendCustomCss,
 } from "togostanza-utils";
 
-export default class KeyValue extends Stanza {
+import StanzaSuperClass from "../../lib/StanzaSuperClass";
+
+export default class KeyValue extends StanzaSuperClass {
   menu() {
     return [
       downloadJSONMenuItem(this, "hashtable", this._data),
@@ -16,18 +15,8 @@ export default class KeyValue extends Stanza {
     ];
   }
 
-  async render() {
-    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
-
-    const dataset = (
-      await loadData(
-        this.params["data-url"],
-        this.params["data-type"],
-        this.root.querySelector("main")
-      )
-    )[0];
-    this._data = [dataset];
-
+  async renderNext() {
+    const dataset = this._data[0];
     const columns = this.params.columns
       ? JSON.parse(this.params.columns)
       : Object.keys(dataset).map((key) => {
