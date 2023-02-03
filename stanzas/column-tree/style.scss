@@ -1,15 +1,20 @@
 // Load the repository-wide global style here. The actual file is located at ../common.scss for details.
 @use "@/common.scss";
 
-main {
-  padding: var(--togostanza-canvas-padding);
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
 }
 
 #wrapper {
   position: relative;
-  overflow: auto;
+  display: flex;
+  flex-direction: column;
   width: calc(var(--togostanza-canvas-width) * 1px);
   height: calc(var(--togostanza-canvas-height) * 1px);
+  padding: var(--togostanza-canvas-padding);
+  overflow: auto;
   .value {
     flex-grow: 1;
     font-weight: normal;
@@ -106,7 +111,7 @@ main {
   > #tree {
     display: flex;
     width: fit-content;
-    height: calc(var(--togostanza-canvas-height) * 1px - 42px);
+    height: 100%;
     gap: calc(var(--togostanza-column-gap) * 1px);
     padding: 1px;
     > .column {
