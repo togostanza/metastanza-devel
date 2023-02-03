@@ -108,12 +108,6 @@
       "stanza:description": "Font size of description text"
     },
     {
-      "stanza:key": "--togostanza-table-row-border_bottom",
-      "stanza:type": "text",
-      "stanza:default": "0.5px solid #EEEEEE",
-      "stanza:description": "Rows delimiters' style"
-    },
-    {
       "stanza:key": "--togostanza-table-key-width_percentage",
       "stanza:type": "text",
       "stanza:default": "30%",
