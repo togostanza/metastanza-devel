@@ -56,3 +56,15 @@ Evidence at protein level,0,1,0,1859,1487.2,1896.18, <other optional data>
 `axis-x-key`,`axis-y-key` are expecting String or Number
 
 `error_bars-key` is expecting array with two elements, Strings or Numbers: [minValue, maxValue]
+
+### Grouping
+
+If `grouping-key` is not present in the data, the data will be treated as one big group.
+
+#### Stacked
+
+If the data grouping key is not present, all bars with the same `axis-x-key` would owerwrite previous one, resulting in showing bars only for the last datum with given `axis-x-key`.
+
+#### Grouped
+
+If the data grouping key is not present, grouping will result in showing add data with same `axis-x-key` on top of each other, with default color.
