@@ -6,7 +6,7 @@ svg {
     font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
   }
 
-  .gridlines line {
+  line.grid-line {
     stroke: var(--togostanza-grid-color);
   }
 
