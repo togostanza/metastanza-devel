@@ -1,5 +1,6 @@
 import Stanza from "togostanza/stanza";
 import { select, json, geoMercator, geoPath } from "d3";
+import * as d3 from "d3";
 import { feature } from "topojson-client";
 import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
@@ -19,13 +20,19 @@ const REGION = new Map([
   [
     "world",
     {
-      url: "https://d3js.org/world-110m.v1.json",
+      url: "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json",
     },
   ],
   [
     "us",
     {
-      url: "https://d3js.org/us-10m.v2.json",
+      url: "https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json",
+    },
+  ],
+  [
+    "japan",
+    {
+      url: "https://raw.githubusercontent.com/YukikoNoda/sampleJSON-NamedMap/main/japan.topojson",
     },
   ],
 ]);
@@ -57,6 +64,8 @@ export default class regionGeographicMap extends Stanza {
     const height = parseFloat(css("--togostanza-canvas-height"));
     const padding = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
     const region = this.params["data-region"];
+    const objectType = this.params["data-object_type"];
+    const property = this.params["data-property"];
     const legendVisible = this.params["legend-visible"];
     const legendTitle = this.params["legend-title"];
     const legendLevelsNumber = parseFloat(this.params["legend-levels_number"]);
@@ -109,31 +118,37 @@ export default class regionGeographicMap extends Stanza {
     const svg = select(root)
       .append("svg")
       .attr("width", svgWidth)
-      .attr("height", svgHeight)
-      .attr("viewBox", `0 -200 1000 800`);
-    const g = svg.append("g").classed("g-path", true).attr("width", 200);
+      .attr("height", svgHeight);
+
+    const g = svg.append("g").classed("g-path", true);
 
     const areaUrl = REGION.get(region).url;
-    const topology = await json(areaUrl);
-    const projection = geoMercator();
-    let topologyProperty, path;
+    const topoJson = await json(areaUrl);
+
+    let projection;
     switch (region) {
       case "world":
-        topologyProperty = topology.objects.countries;
-        path = geoPath().projection(projection);
+        projection = geoMercator()
+          .scale(130)
+          .translate([width / 2 - 35, height / 2 - 15]);
         break;
 
       case "us":
-        topologyProperty = topology.objects.counties;
-        path = geoPath();
+        projection = d3.geoAlbersUsa().translate([width / 2, height / 2]);
+        break;
+
+      case "japan":
+        projection = geoMercator().scale(1640).translate([-3510, 1470]);
         break;
     }
+    const path = geoPath().projection(projection);
 
     // Combine data
-    const topojsonData = feature(topology, topologyProperty).features;
-    const allData = topojsonData.map((topoDatum) => {
-      const matchData = values.find((val) => topoDatum.id === val.id);
-      return Object.assign({}, topoDatum, {
+    const geoJson = feature(topoJson, topoJson.objects[objectType]).features;
+
+    const allData = geoJson.map((geoDatum) => {
+      const matchData = values.find((val) => geoDatum.id === val.id);
+      return Object.assign({}, geoDatum, {
         [areaColorKey]: matchData ? matchData[areaColorKey] : undefined,
       });
     });

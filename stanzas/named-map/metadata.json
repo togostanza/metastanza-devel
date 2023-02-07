@@ -32,10 +32,22 @@
     {
       "stanza:key": "data-region",
       "stanza:type": "single-choice",
-      "stanza:choice": ["world", "us"],
+      "stanza:choice": ["world", "us", "japan"],
       "stanza:example": "world",
-      "stanza:description": "Region of map",
+      "stanza:description": "Region of map"
+    },
+    {
+      "stanza:key": "data-object_type",
+      "stanza:type": "text",
+      "stanza:example": "countries",
+      "stanza:description": "Specify the property encapsulated in topojson's objects. For example, <world> in sample data is \"countries\", \"land\". For <us>, \"counties\", \"states\", \"nation\". For <japan>, \"japan\".",
       "stanza:required": true
+    },
+    {
+      "stanza:key": "data-property",
+      "stanza:type": "text",
+      "stanza:example": "id",
+      "stanza:description": "Property"
     },
     {
       "stanza:key": "legend-visible",
