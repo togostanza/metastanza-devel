@@ -54,7 +54,7 @@
       "stanza:key": "data-property",
       "stanza:type": "text",
       "stanza:example": "id",
-      "stanza:description": "Property"
+      "stanza:description": "The topojson property that you want to match against the \"data-url\" key (\"area-color_key\"). e.g.) id, properties.name. (If the hierarchy is one level deeper, separate it with \".\")"
     },
     {
       "stanza:key": "legend-visible",
@@ -78,8 +78,14 @@
     {
       "stanza:key": "area-color_key",
       "stanza:type": "text",
+      "stanza:example": "id",
+      "stanza:description": "Key to match with topojson key"
+    },
+    {
+      "stanza:key": "area-color_value",
+      "stanza:type": "text",
       "stanza:example": "rate",
-      "stanza:description": "Data key to color the data points. if all data keys values includes hex color, use that color, otherwise use ordinal scale from the theme colors."
+      "stanza:description": "Data value key."
     },
     {
       "stanza:key": "area-color_min",

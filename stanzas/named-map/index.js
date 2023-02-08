@@ -72,7 +72,9 @@ export default class regionGeographicMap extends Stanza {
       REGION.set("user", { url: userTopoJson });
     }
 
-    const property = this.params["data-property"];
+    const [property1, property2] =
+      this.params["data-property"].split(/[.,-_/。、 　]+/);
+
     const legendVisible = this.params["legend-visible"];
     const legendTitle = this.params["legend-title"];
     const legendLevelsNumber = parseFloat(this.params["legend-levels_number"]);
@@ -93,13 +95,14 @@ export default class regionGeographicMap extends Stanza {
 
     // Color scale
     const areaColorKey = this.params["area-color_key"];
+    const areaColorValue = this.params["area-color_value"];
     const areaColorMin = this.params["area-color_min"];
     const areaColorMid = this.params["area-color_mid"];
     const areaColorMax = this.params["area-color_max"];
     let areaDomainMin = parseFloat(this.params["area-value_min"]);
     let areaDomainMid = parseFloat(this.params["area-value_mid"]);
     let areaDomainMax = parseFloat(this.params["area-value_max"]);
-    const userDataValue = values.map((d) => parseFloat(d[areaColorKey]));
+    const userDataValue = values.map((d) => parseFloat(d[areaColorValue]));
 
     if (isNaN(parseFloat(areaDomainMin))) {
       areaDomainMin = Math.min(...userDataValue);
@@ -139,9 +142,15 @@ export default class regionGeographicMap extends Stanza {
       const geoJson = feature(topoJson, topoJson.objects[objectType]).features;
 
       const allData = geoJson.map((geoDatum) => {
-        const matchData = values.find((val) => geoDatum.id === val.id);
+        let geoDatumProperty = geoDatum[property1];
+        if (property2) {
+          geoDatumProperty = geoDatum[property1][property2];
+        }
+        const matchData = values.find(
+          (val) => geoDatumProperty === val[areaColorKey]
+        );
         return Object.assign({}, geoDatum, {
-          [areaColorKey]: matchData ? matchData[areaColorKey] : undefined,
+          [areaColorValue]: matchData ? matchData[areaColorValue] : undefined,
         });
       });
 
@@ -153,7 +162,9 @@ export default class regionGeographicMap extends Stanza {
         .classed("path", true)
         .attr("d", path)
         .attr("data-tooltip", (d) => d[tooltipKey])
-        .attr("fill", (d) => setColor(d[areaColorKey]))
+        .attr("fill", (d) =>
+          d[areaColorKey] ? setColor(d[areaColorValue]) : "#555"
+        )
         .on("mouseenter", function () {
           select(this).raise();
         });
