@@ -63,8 +63,20 @@ export default class regionGeographicMap extends Stanza {
     const width = parseFloat(css("--togostanza-canvas-width"));
     const height = parseFloat(css("--togostanza-canvas-height"));
     const padding = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
+    const svgWidth = width - padding.LEFT - padding.RIGHT;
+    const svgHeight = height - padding.TOP - padding.BOTTOM;
+
     const region = this.params["data-region"];
     const objectType = this.params["data-object_type"];
+    const userTopoJson = this.params["data-user_topojson"];
+    if (Boolean(userTopoJson)) {
+      REGION.set("user", { url: userTopoJson });
+    }
+    const userScale = parseFloat(this.params["data-user_scale"]) || 0;
+    const userTranslateX =
+      parseFloat(this.params["data-user_translate_x"]) || 0;
+    const userTranslateY =
+      parseFloat(this.params["data-user_translate_y"]) || 0;
     const property = this.params["data-property"];
     const legendVisible = this.params["legend-visible"];
     const legendTitle = this.params["legend-title"];
@@ -111,9 +123,6 @@ export default class regionGeographicMap extends Stanza {
     );
 
     // Drawing svg
-    const svgWidth = width - padding.LEFT - padding.RIGHT;
-    const svgHeight = height - padding.TOP - padding.BOTTOM;
-
     select(root).select("svg").remove();
     const svg = select(root)
       .append("svg")
@@ -139,6 +148,13 @@ export default class regionGeographicMap extends Stanza {
 
       case "japan":
         projection = geoMercator().scale(1640).translate([-3510, 1470]);
+        break;
+
+      case "user":
+        projection = d3
+          .geoMercator()
+          .scale(userScale)
+          .translate([userTranslateX, userTranslateY]);
         break;
     }
     const path = geoPath().projection(projection);

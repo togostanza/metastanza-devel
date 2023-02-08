@@ -32,9 +32,10 @@
     {
       "stanza:key": "data-region",
       "stanza:type": "single-choice",
-      "stanza:choice": ["world", "us", "japan"],
+      "stanza:choice": ["world", "us", "japan", "user"],
       "stanza:example": "world",
-      "stanza:description": "Region of map"
+      "stanza:description": "Region of map. If you use your own topojsondata, select \"user\" and fill in [data-user_topojson].",
+      "stanza:required": true
     },
     {
       "stanza:key": "data-object_type",
@@ -42,6 +43,30 @@
       "stanza:example": "countries",
       "stanza:description": "Specify the property encapsulated in topojson's objects. For example, <world> in sample data is \"countries\", \"land\". For <us>, \"counties\", \"states\", \"nation\". For <japan>, \"japan\".",
       "stanza:required": true
+    },
+    {
+      "stanza:key": "data-user_topojson",
+      "stanza:type": "text",
+      "stanza:example": "",
+      "stanza:description": "User topojson data"
+    },
+    {
+      "stanza:key": "data-user_scale",
+      "stanza:type": "number",
+      "stanza:example": 100,
+      "stanza:description": "Scale. 100 is standard."
+    },
+    {
+      "stanza:key": "data-user_translate_x",
+      "stanza:type": "number",
+      "stanza:example": 450,
+      "stanza:description": "Movement in x-axis direction. Width / 2 is the base. See Styles tab for details."
+    },
+    {
+      "stanza:key": "data-user_translate_y",
+      "stanza:type": "number",
+      "stanza:example": 400,
+      "stanza:description": "Movement in y-axis direction. Height / 2 is the base. See Styles tab for details."
     },
     {
       "stanza:key": "data-property",
