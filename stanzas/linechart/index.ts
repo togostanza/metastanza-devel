@@ -193,6 +193,29 @@ export default class Linechart extends StanzaSuperClass {
     const lines = drawChart(this._graphArea, this._dataByGroup, symbols);
 
     drawPoints(lines, pointSize, symbols);
+
+    if (showLegend) {
+      if (!this.legend) {
+        this.legend = new Legend();
+        this.root.append(this.legend);
+      }
+
+      const legendParams = {
+        title: legendTitle,
+        items: [...this._dataByGroup.entries()].map(([key, val]) => ({
+          id: key,
+          label: key,
+          color: val.color,
+          nodes: [lines.filter((d) => d[0] === key).node()],
+          value: key,
+        })),
+      };
+
+      this.legend.setup(legendParams);
+    } else {
+      this.legend?.remove();
+      this.legend = null;
+    }
   }
 }
 
@@ -218,10 +241,7 @@ function drawChart(
   enter
     .append("path")
     .classed("chart-line", true)
-    .attr("stroke", (d) => {
-      console.log(d[1]);
-      return d[1].color;
-    })
+    .attr("stroke", (d) => d[1].color)
     .attr("d", (d) => lineGen(d[1].values));
 
   return enter;
@@ -252,6 +272,8 @@ function drawPoints(
     .classed("symbol", true)
     .attr("d", symbolGen)
     .attr("fill", (d) => d[symbols.colorSym]);
+
+  return enterSymbols;
 }
 
 function parseType(
