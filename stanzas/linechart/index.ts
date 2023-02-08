@@ -1,13 +1,5 @@
-import Legend from "../../lib/Legend2";
-import {
-  Axis,
-  type AxisParamsI,
-  AxisScaleE,
-  paramsModel,
-} from "../../lib/AxisMixin";
+import { extent, line, scaleOrdinal, select, symbol, symbolCircle } from "d3";
 import StanzaSuperClass from "../../lib/StanzaSuperClass";
-
-import { StanzaColorGenerator } from "../../lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -15,8 +7,15 @@ import {
   downloadCSVMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
-
-import { extent, line, scaleOrdinal, select, symbol, symbolCircle } from "d3";
+import Legend from "../../lib/Legend2";
+import ToolTip from "../../lib/ToolTip";
+import {
+  Axis,
+  AxisScaleE,
+  paramsModel,
+  type AxisParamsI,
+} from "../../lib/AxisMixin";
+import { StanzaColorGenerator } from "../../lib/ColorGenerator";
 
 interface IDataByGroup {
   color: string;
@@ -31,6 +30,7 @@ export default class Linechart extends StanzaSuperClass {
   xAxisGen: Axis;
   yAxisGen: Axis;
   legend: Legend;
+  tooltips: ToolTip;
   _graphArea: TGSelection;
   _dataByGroup: TDataByGroup;
 
@@ -99,7 +99,6 @@ export default class Linechart extends StanzaSuperClass {
       return map;
     }, new Map());
 
-    console.log(this._dataByGroup);
     color.domain(this._dataByGroup.keys());
 
     this._dataByGroup.forEach((value, key) => {
@@ -109,11 +108,13 @@ export default class Linechart extends StanzaSuperClass {
     const xSym = Symbol("x");
     const ySym = Symbol("y");
     const colorSym = Symbol("color");
+    const tooltipSym = Symbol("tooltip");
 
     const symbols = {
       xSym,
       ySym,
       colorSym,
+      tooltipSym,
     };
 
     let svg = select(this._main.querySelector("svg"));
@@ -183,6 +184,7 @@ export default class Linechart extends StanzaSuperClass {
       val[xSym] = this.xAxisGen.scale(val[xKeyName]);
       val[ySym] = this.yAxisGen.scale(val[yKeyName]);
       val[colorSym] = color(val[groupKeyName]);
+      val[tooltipSym] = `${val[groupKeyName]}: ${val[tooltipKey]}`;
     });
 
     this._graphArea.attr(
@@ -216,6 +218,13 @@ export default class Linechart extends StanzaSuperClass {
       this.legend?.remove();
       this.legend = null;
     }
+    if (values.some((d) => d[tooltipSym])) {
+      if (!this.tooltips) {
+        this.tooltips = new ToolTip();
+        this._main.append(this.tooltips);
+      }
+      this.tooltips.setup(this._main.querySelectorAll("[data-tooltip]"));
+    }
   }
 }
 
@@ -223,6 +232,7 @@ interface ISymbols {
   xSym: symbol;
   ySym: symbol;
   colorSym: symbol;
+  tooltipSym: symbol;
 }
 
 function drawChart(
@@ -271,7 +281,8 @@ function drawPoints(
     .append("path")
     .classed("symbol", true)
     .attr("d", symbolGen)
-    .attr("fill", (d) => d[symbols.colorSym]);
+    .attr("fill", (d) => d[symbols.colorSym])
+    .attr("data-tooltip", (d) => d[symbols.tooltipSym]);
 
   return enterSymbols;
 }
