@@ -67,16 +67,12 @@ export default class regionGeographicMap extends Stanza {
     const svgHeight = height - padding.TOP - padding.BOTTOM;
 
     const region = this.params["data-region"];
-    const objectType = this.params["data-object_type"];
+    const objectType = this.params["data-layer"];
     const userTopoJson = this.params["data-user_topojson"];
     if (Boolean(userTopoJson)) {
       REGION.set("user", { url: userTopoJson });
     }
-    const userScale = parseFloat(this.params["data-user_scale"]) || 0;
-    const userTranslateX =
-      parseFloat(this.params["data-user_translate_x"]) || 0;
-    const userTranslateY =
-      parseFloat(this.params["data-user_translate_y"]) || 0;
+
     const property = this.params["data-property"];
     const legendVisible = this.params["legend-visible"];
     const legendTitle = this.params["legend-title"];
@@ -128,34 +124,14 @@ export default class regionGeographicMap extends Stanza {
       .append("svg")
       .attr("width", svgWidth)
       .attr("height", svgHeight);
-
     const g = svg.append("g").classed("g-path", true);
 
     const areaUrl = REGION.get(region).url;
     const topoJson = await json(areaUrl);
 
-    let projection;
-    switch (region) {
-      case "world":
-        projection = geoMercator()
-          .scale(130)
-          .translate([width / 2 - 35, height / 2 - 15]);
-        break;
-
-      case "us":
-        projection = d3.geoAlbersUsa().translate([width / 2, height / 2]);
-        break;
-
-      case "japan":
-        projection = geoMercator().scale(1640).translate([-3510, 1470]);
-        break;
-
-      case "user":
-        projection = d3
-          .geoMercator()
-          .scale(userScale)
-          .translate([userTranslateX, userTranslateY]);
-        break;
+    let projection = geoMercator();
+    if (region === "us") {
+      projection = d3.geoAlbersUsa();
     }
     const path = geoPath().projection(projection);
 
@@ -182,6 +158,37 @@ export default class regionGeographicMap extends Stanza {
         select(this).raise();
       });
 
+    // Change scale and translate of group of paths
+    const paths = root.querySelectorAll(".path");
+
+    let xmin = Infinity,
+      ymin = Infinity,
+      xmax = -Infinity,
+      ymax = -Infinity;
+
+    paths.forEach((path) => {
+      const bbox = path.getBBox();
+      xmin = Math.min(xmin, bbox.x);
+      ymin = Math.min(ymin, bbox.y);
+      xmax = Math.max(xmax, bbox.x + bbox.width);
+      ymax = Math.max(ymax, bbox.y + bbox.height);
+    });
+    const gPathBbox = {
+      x: xmin,
+      y: ymin,
+      width: xmax - xmin,
+      height: ymax - ymin,
+    };
+    const gPathScale = Math.min(
+      svgWidth / gPathBbox.width,
+      svgHeight / gPathBbox.height
+    );
+    g.attr(
+      "transform",
+      `scale(${gPathScale}) translate(${-gPathBbox.x},${-gPathBbox.y})`
+    );
+
+    // Setting tooltip
     this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
 
     // Setting legend
