@@ -1,5 +1,10 @@
 import Legend from "../../lib/Legend2";
-import { Axis, type AxisParamsI, paramsModel } from "../../lib/AxisMixin";
+import {
+  Axis,
+  type AxisParamsI,
+  AxisScaleE,
+  paramsModel,
+} from "../../lib/AxisMixin";
 import StanzaSuperClass from "../../lib/StanzaSuperClass";
 
 import { StanzaColorGenerator } from "../../lib/ColorGenerator";
@@ -47,7 +52,9 @@ export default class Linechart extends StanzaSuperClass {
     const height = +this.css("--togostanza-canvas-height");
 
     const xKeyName = this.params["axis-x-key"];
+    const xScaleType = this.params["axis-x-scale"];
     const yKeyName = this.params["axis-y-key"];
+    const yScaleType = this.params["axis-y-scale"];
     const xAxisTitle =
       typeof this.params["axis-x-title"] === "undefined"
         ? xKeyName
@@ -57,12 +64,11 @@ export default class Linechart extends StanzaSuperClass {
         ? yKeyName
         : this.params["axis-y-title"];
     const groupKeyName = this.params["grouping-key"];
-    const errorKey = this.params["error_bars-key"];
-    const showErrorBars = this._data.some((d) => d[errorKey]);
+    const pointSize = this.params["points_size"];
     const tooltipKey = this.params["tooltips-key"];
     const showLegend = this.params["legend-visible"];
     const legendTitle = this.params["legend-title"];
-    const values = structuredClone(this._data) as any[];
+    let values = structuredClone(this._data) as any[];
 
     let params;
     try {
@@ -71,6 +77,16 @@ export default class Linechart extends StanzaSuperClass {
       console.log(error);
       return;
     }
+
+    values = values.filter((value) => {
+      const parsedXVal = parseType(value[xKeyName], xScaleType);
+      const parsedYVal = parseType(value[yKeyName], yScaleType);
+      if (parsedXVal && parsedYVal) {
+        value[xKeyName] = parseType(value[xKeyName], xScaleType);
+        value[yKeyName] = parseType(value[yKeyName], yScaleType);
+      }
+      return !!parsedXVal && !!parsedYVal;
+    });
 
     this._dataByGroup = values.reduce((map: TDataByGroup, curr) => {
       if (!map.has(curr[groupKeyName])) {
@@ -83,6 +99,7 @@ export default class Linechart extends StanzaSuperClass {
       return map;
     }, new Map());
 
+    console.log(this._dataByGroup);
     color.domain(this._dataByGroup.keys());
 
     this._dataByGroup.forEach((value, key) => {
@@ -92,13 +109,11 @@ export default class Linechart extends StanzaSuperClass {
     const xSym = Symbol("x");
     const ySym = Symbol("y");
     const colorSym = Symbol("color");
-    const errorSym = Symbol("error");
 
     const symbols = {
       xSym,
       ySym,
       colorSym,
-      errorSym,
     };
 
     let svg = select(this._main.querySelector("svg"));
@@ -113,8 +128,6 @@ export default class Linechart extends StanzaSuperClass {
     this._graphArea = svg.append("g").attr("class", "chart");
     const axisArea = { x: 0, y: 0, width, height };
 
-    const xScaleType = "ordinal";
-
     let xDomain = [];
     if (xScaleType === "ordinal") {
       xDomain = values.map((d) => d[xKeyName]);
@@ -122,7 +135,7 @@ export default class Linechart extends StanzaSuperClass {
       xDomain = extent(values.map((d) => d[xKeyName]));
     }
 
-    const yDomain = extent(values.map((d) => +d[yKeyName]));
+    const yDomain = extent(values.map((d) => d[yKeyName]));
 
     const xParams: AxisParamsI = {
       placement: params["axis-x-placement"],
@@ -130,9 +143,9 @@ export default class Linechart extends StanzaSuperClass {
       drawArea: axisArea,
       margins: this.MARGIN,
       tickLabelsAngle: params["axis-x-ticks_label_angle"],
-      title: xAxisTitle,
+      title: params,
       titlePadding: params["axis-x-title_padding"],
-      scale: "ordinal",
+      scale: params["axis-x-scale"],
       gridInterval: params["axis-x-gridlines_interval"],
       gridIntervalUnits: params["axis-x-gridlines_interval_units"],
       ticksInterval: params["axis-x-ticks_interval"],
@@ -177,11 +190,9 @@ export default class Linechart extends StanzaSuperClass {
       `translate(${this.xAxisGen.axisArea.x},${this.xAxisGen.axisArea.y})`
     );
 
-    console.log(this._dataByGroup);
-
     const lines = drawChart(this._graphArea, this._dataByGroup, symbols);
 
-    lines.call(addErrorBars);
+    drawPoints(lines, pointSize, symbols);
   }
 }
 
@@ -200,8 +211,6 @@ function drawChart(
     .x((d) => d[symbols.xSym])
     .y((d) => d[symbols.ySym]);
 
-  const symbolGen = symbol().type(symbolCircle).size(20);
-
   const update = g.selectAll("g.chart-line-group").data(dataMap);
 
   const enter = update.enter().append("g").classed("chart-line-group", true);
@@ -215,7 +224,19 @@ function drawChart(
     })
     .attr("d", (d) => lineGen(d[1].values));
 
-  const updateSymbols = enter.selectAll("g.symbol-g").data((d) => d[1].values);
+  return enter;
+}
+
+function drawPoints(
+  lines: d3.Selection<SVGGElement, any, SVGElement, any>,
+  pointSize: number | undefined,
+  symbols: ISymbols
+) {
+  const symbolGen = symbol()
+    .type(symbolCircle)
+    .size(pointSize ? pointSize * pointSize : 20);
+
+  const updateSymbols = lines.selectAll("g.symbol-g").data((d) => d[1].values);
 
   const enterSymbols = updateSymbols
     .enter()
@@ -231,12 +252,31 @@ function drawChart(
     .classed("symbol", true)
     .attr("d", symbolGen)
     .attr("fill", (d) => d[symbols.colorSym]);
-
-  return enter;
 }
 
-function addErrorBars(chartGroup: TGSelection) {
-  const errorsGroup = chartGroup.append("g").classed("error-bars-group");
-
-  console.log(this);
+function parseType(
+  value: number | string | null | undefined,
+  scaleType: AxisScaleE
+) {
+  switch (true) {
+    case scaleType === AxisScaleE.linear || scaleType === AxisScaleE.log10:
+      if (typeof value !== "number") {
+        const parsedValue = parseFloat(value);
+        if (isNaN(parsedValue)) {
+          return null;
+        }
+        return parsedValue;
+      }
+      return value;
+    case scaleType === AxisScaleE.ordinal:
+      return value;
+    case scaleType === AxisScaleE.time:
+      const parsedDate = new Date(value);
+      if (Object.prototype.toString.call(parsedDate) !== "[object Date]") {
+        return null;
+      }
+      return parsedDate;
+    default:
+      return value;
+  }
 }
