@@ -197,35 +197,43 @@ export default class Linechart extends StanzaSuperClass {
     drawPoints(lines, pointSize, symbols);
 
     if (showLegend) {
-      if (!this.legend) {
-        this.legend = new Legend();
-        this.root.append(this.legend);
-      }
-
-      const legendParams = {
-        title: legendTitle,
-        items: [...this._dataByGroup.entries()].map(([key, val]) => ({
-          id: key,
-          label: key,
-          color: val.color,
-          nodes: [lines.filter((d) => d[0] === key).node()],
-          value: key,
-        })),
-      };
-
-      this.legend.setup(legendParams);
+      addLegend.call(this, legendTitle, lines);
     } else {
       this.legend?.remove();
       this.legend = null;
     }
+
     if (values.some((d) => d[tooltipSym])) {
-      if (!this.tooltips) {
-        this.tooltips = new ToolTip();
-        this._main.append(this.tooltips);
-      }
-      this.tooltips.setup(this._main.querySelectorAll("[data-tooltip]"));
+      addTooltips.call(this);
     }
   }
+}
+
+function addLegend(legendTitle: string, lines: TGSelection) {
+  if (!this.legend) {
+    this.legend = new Legend();
+    this.root.append(this.legend);
+  }
+  const legendParams = {
+    title: legendTitle,
+    items: [...this._dataByGroup.entries()].map(([key, val]) => ({
+      id: key,
+      label: key,
+      color: val.color,
+      nodes: [lines.filter((d) => d[0] === key).node()],
+      value: key,
+    })),
+  };
+
+  this.legend.setup(legendParams);
+}
+
+function addTooltips() {
+  if (!this.tooltips) {
+    this.tooltips = new ToolTip();
+    this._main.append(this.tooltips);
+  }
+  this.tooltips.setup(this._main.querySelectorAll("[data-tooltip]"));
 }
 
 interface ISymbols {
