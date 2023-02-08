@@ -159,13 +159,6 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "grouping-key",
-      "stanza:type": "text",
-      "stanza:example": "category",
-      "stanza:description": "Bars grouping",
-      "stanza:required": true
-    },
-    {
       "stanza:key": "points_size",
       "stanza:type": "number",
       "stanza:example": 5,
@@ -174,7 +167,7 @@
       "stanza:default": 5
     },
     {
-      "stanza:key": "group_by-key",
+      "stanza:key": "grouping-key",
       "stanza:type": "text",
       "stanza:example": "category",
       "stanza:default": "",

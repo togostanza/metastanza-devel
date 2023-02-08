@@ -143,7 +143,7 @@ export default class Linechart extends StanzaSuperClass {
       drawArea: axisArea,
       margins: this.MARGIN,
       tickLabelsAngle: params["axis-x-ticks_label_angle"],
-      title: params,
+      title: xAxisTitle,
       titlePadding: params["axis-x-title_padding"],
       scale: params["axis-x-scale"],
       gridInterval: params["axis-x-gridlines_interval"],
