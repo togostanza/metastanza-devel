@@ -64,7 +64,7 @@ export default class Linechart extends StanzaSuperClass {
         ? yKeyName
         : this.params["axis-y-title"];
     const groupKeyName = this.params["grouping-key"];
-    const pointSize = this.params["points_size"];
+    const pointSize = this.params["point_size"];
     const tooltipKey = this.params["tooltips-key"];
     const showLegend = this.params["legend-visible"];
     const legendTitle = this.params["legend-title"];
