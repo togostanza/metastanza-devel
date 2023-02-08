@@ -159,7 +159,7 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "points_size",
+      "stanza:key": "point_size",
       "stanza:type": "number",
       "stanza:example": 5,
       "stanza:description": "Data points size in px",
@@ -175,28 +175,11 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "color_by-key",
-      "stanza:type": "text",
-      "stanza:example": "category",
-      "stanza:default": "series",
-      "stanza:description": "Data key to map color to the data series. If includes hex color, that color will be used, if not - color from the ordinal scale from the theme colors will be used.",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "legend-visible",
       "stanza:type": "boolean",
       "stanza:example": true,
       "stanza:default": false,
       "stanza:description": "Show legend",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "legend-placement",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["left", "right", "bottom", "top"],
-      "stanza:example": "right",
-      "stanza:default": "right",
-      "stanza:description": "Legend placement",
       "stanza:required": false
     },
     {
