@@ -21,6 +21,14 @@
       "stanza:required": true
     },
     {
+      "stanza:key": "axis-x-scale",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["linear", "log10", "ordinal", "time"],
+      "stanza:example": "ordinal",
+      "stanza:description": "Axis scale",
+      "stanza:required": false
+    },
+    {
       "stanza:key": "axis-x-placement",
       "stanza:type": "single-choice",
       "stanza:choice": ["top", "bottom"],
@@ -164,14 +172,6 @@
       "stanza:description": "Data points size in px",
       "stanza:required": false,
       "stanza:default": 5
-    },
-    {
-      "stanza:key": "error_bars-key",
-      "stanza:type": "text",
-      "stanza:example": "error",
-      "stanza:default": "",
-      "stanza:description": "Data key wich includes error data. Error data is array [min, max]. If no such data key, no error bars are shown",
-      "stanza:required": false
     },
     {
       "stanza:key": "group_by-key",
