@@ -1,6 +1,5 @@
 import Stanza from "togostanza/stanza";
-import { select, json, geoMercator, geoPath } from "d3";
-import * as d3 from "d3";
+import { select, json, geoMercator, geoAlbersUsa, geoPath } from "d3";
 import { feature } from "topojson-client";
 import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
@@ -126,81 +125,115 @@ export default class regionGeographicMap extends Stanza {
       .attr("height", svgHeight);
     const g = svg.append("g").classed("g-path", true);
 
-    const areaUrl = REGION.get(region).url;
-    const topoJson = await json(areaUrl);
-
+    //Setting  projection
     let projection = geoMercator();
     if (region === "us") {
-      projection = d3.geoAlbersUsa();
+      projection = geoAlbersUsa();
     }
     const path = geoPath().projection(projection);
 
-    // Combine data
-    const geoJson = feature(topoJson, topoJson.objects[objectType]).features;
+    try {
+      // Combine data
+      const areaUrl = REGION.get(region).url;
+      const topoJson = await json(areaUrl);
+      const geoJson = feature(topoJson, topoJson.objects[objectType]).features;
 
-    const allData = geoJson.map((geoDatum) => {
-      const matchData = values.find((val) => geoDatum.id === val.id);
-      return Object.assign({}, geoDatum, {
-        [areaColorKey]: matchData ? matchData[areaColorKey] : undefined,
-      });
-    });
-
-    // Drawing path
-    g.selectAll("path")
-      .data(allData)
-      .enter()
-      .append("path")
-      .classed("path", true)
-      .attr("d", path)
-      .attr("data-tooltip", (d) => d[tooltipKey])
-      .attr("fill", (d) => setColor(d[areaColorKey]))
-      .on("mouseenter", function () {
-        select(this).raise();
+      const allData = geoJson.map((geoDatum) => {
+        const matchData = values.find((val) => geoDatum.id === val.id);
+        return Object.assign({}, geoDatum, {
+          [areaColorKey]: matchData ? matchData[areaColorKey] : undefined,
+        });
       });
 
-    // Change scale and translate of group of paths
-    const paths = root.querySelectorAll(".path");
+      // Drawing path
+      g.selectAll("path")
+        .data(allData)
+        .enter()
+        .append("path")
+        .classed("path", true)
+        .attr("d", path)
+        .attr("data-tooltip", (d) => d[tooltipKey])
+        .attr("fill", (d) => setColor(d[areaColorKey]))
+        .on("mouseenter", function () {
+          select(this).raise();
+        });
 
-    let xmin = Infinity,
-      ymin = Infinity,
-      xmax = -Infinity,
-      ymax = -Infinity;
-
-    paths.forEach((path) => {
-      const bbox = path.getBBox();
-      xmin = Math.min(xmin, bbox.x);
-      ymin = Math.min(ymin, bbox.y);
-      xmax = Math.max(xmax, bbox.x + bbox.width);
-      ymax = Math.max(ymax, bbox.y + bbox.height);
-    });
-    const gPathBbox = {
-      x: xmin,
-      y: ymin,
-      width: xmax - xmin,
-      height: ymax - ymin,
-    };
-    const gPathScale = Math.min(
-      svgWidth / gPathBbox.width,
-      svgHeight / gPathBbox.height
-    );
-    g.attr(
-      "transform",
-      `scale(${gPathScale}) translate(${-gPathBbox.x},${-gPathBbox.y})`
-    );
-
-    // Setting tooltip
-    this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
-
-    // Setting legend
-    if (legendVisible === true) {
-      this.legend.setup(
-        intervals(setColor),
-        null,
-        {
-          position: ["top", "right"],
-        },
-        legendTitle
+      // Change scale and translate of group of paths
+      const paths = root.querySelectorAll(".path");
+      let xmin = Infinity,
+        ymin = Infinity,
+        xmax = -Infinity,
+        ymax = -Infinity;
+      paths.forEach((path) => {
+        const bbox = path.getBBox();
+        xmin = Math.min(xmin, bbox.x);
+        ymin = Math.min(ymin, bbox.y);
+        xmax = Math.max(xmax, bbox.x + bbox.width);
+        ymax = Math.max(ymax, bbox.y + bbox.height);
+      });
+      const gPathBbox = {
+        x: xmin,
+        y: ymin,
+        width: xmax - xmin,
+        height: ymax - ymin,
+      };
+      const gPathScale = Math.min(
+        svgWidth / gPathBbox.width,
+        svgHeight / gPathBbox.height
       );
+      g.attr(
+        "transform",
+        `scale(${gPathScale}) translate(${-gPathBbox.x},${-gPathBbox.y})`
+      );
+
+      // Setting tooltip
+      this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
+
+      // Setting legend
+      if (legendVisible === true) {
+        this.legend.setup(
+          intervals(setColor),
+          null,
+          {
+            position: ["top", "right"],
+          },
+          legendTitle
+        );
+      }
+
+      throw new Error(
+        '" data-layer" (and "data-user_topojson") is not set correctly'
+      );
+    } catch (error) {
+      // Type error handling
+      const existErrorType = root.querySelector(".error-type");
+      if (existErrorType) {
+        root.removeChild(existErrorType);
+      }
+      if (
+        error.message === "Cannot read properties of undefined (reading 'type')"
+      ) {
+        const errorType = document.createElement("p");
+        errorType.classList.add("error-type");
+        errorType.innerHTML =
+          '<p>Set <strong>"data-layer"</strong> correctly !</p>';
+        root.prepend(errorType);
+      }
+
+      // URL error handling
+      const existErrorUrl = root.querySelector(".error-url");
+      if (existErrorUrl) {
+        root.removeChild(existErrorUrl);
+      }
+      if (
+        error.message === "Cannot read properties of undefined (reading 'url')"
+      ) {
+        const errorUrl = document.createElement("p");
+        errorUrl.classList.add("error-url");
+        errorUrl.innerHTML =
+          '<p>Set <strong>"data-user_topojson"</strong> and <strong>"data-layer"</strong> correctly !</p>';
+        root.prepend(errorUrl);
+      }
     }
 
     //Create legend objects
