@@ -66,14 +66,17 @@ export default class regionGeographicMap extends Stanza {
     const svgHeight = height - padding.TOP - padding.BOTTOM;
 
     const region = this.params["data-region"];
-    const objectType = this.params["data-layer"];
-    const userTopoJson = this.params["data-user_topojson"];
+    const objectType = this.params["data-layer"].trim();
+    const userTopoJson = this.params["data-user_topojson"].trim();
     if (Boolean(userTopoJson)) {
       REGION.set("user", { url: userTopoJson });
     }
 
-    const [property1, property2] =
-      this.params["data-property"].split(/[.,-_/。、 　]+/);
+    const [property1, property2] = this.params["data-property"]
+      .trim()
+      .split(/[.,-_/。、 　]+/);
+    const switchProperty = (datum) =>
+      property2 ? datum[property1][property2] : datum[property1];
 
     const legendVisible = this.params["legend-visible"];
     const legendTitle = this.params["legend-title"];
@@ -94,8 +97,8 @@ export default class regionGeographicMap extends Stanza {
     }
 
     // Color scale
-    const areaColorKey = this.params["area-color_key"];
-    const areaColorValue = this.params["area-color_value"];
+    const areaColorKey = this.params["area-color_key"].trim();
+    const areaColorValue = this.params["area-color_value"].trim();
     const areaColorMin = this.params["area-color_min"];
     const areaColorMid = this.params["area-color_mid"];
     const areaColorMax = this.params["area-color_max"];
@@ -128,11 +131,8 @@ export default class regionGeographicMap extends Stanza {
       .attr("height", svgHeight);
     const g = svg.append("g").classed("g-path", true);
 
-    //Setting  projection
-    let projection = geoMercator();
-    if (region === "us") {
-      projection = geoAlbersUsa();
-    }
+    // Setting  projection
+    const projection = region === "us" ? geoAlbersUsa() : geoMercator();
     const path = geoPath().projection(projection);
 
     try {
@@ -142,12 +142,8 @@ export default class regionGeographicMap extends Stanza {
       const geoJson = feature(topoJson, topoJson.objects[objectType]).features;
 
       const allData = geoJson.map((geoDatum) => {
-        let geoDatumProperty = geoDatum[property1];
-        if (property2) {
-          geoDatumProperty = geoDatum[property1][property2];
-        }
         const matchData = values.find(
-          (val) => geoDatumProperty === val[areaColorKey]
+          (val) => switchProperty(geoDatum) === val[areaColorKey]
         );
         return Object.assign({}, geoDatum, {
           [areaColorValue]: matchData ? matchData[areaColorValue] : undefined,
@@ -163,7 +159,7 @@ export default class regionGeographicMap extends Stanza {
         .attr("d", path)
         .attr("data-tooltip", (d) => d[tooltipKey])
         .attr("fill", (d) =>
-          d[areaColorKey] ? setColor(d[areaColorValue]) : "#555"
+          switchProperty(d) ? setColor(d[areaColorValue]) : "#555"
         )
         .on("mouseenter", function () {
           select(this).raise();
@@ -194,7 +190,9 @@ export default class regionGeographicMap extends Stanza {
       );
       g.attr(
         "transform",
-        `scale(${gPathScale}) translate(${-gPathBbox.x},${-gPathBbox.y})`
+        `scale(${gPathScale}) translate(${
+          -gPathBbox.x + (svgWidth / gPathScale - gPathBbox.width) / 2
+        },${-gPathBbox.y + (svgHeight / gPathScale - gPathBbox.height) / 2})`
       );
 
       // Setting tooltip
@@ -213,37 +211,37 @@ export default class regionGeographicMap extends Stanza {
       }
 
       throw new Error(
-        '" data-layer" (and "data-user_topojson") is not set correctly'
+        '"data-region" and "data-layer" (and "data-user_topojson") is not set correctly'
       );
     } catch (error) {
       // Type error handling
-      const existErrorType = root.querySelector(".error-type");
-      if (existErrorType) {
-        root.removeChild(existErrorType);
-      }
-      if (
-        error.message === "Cannot read properties of undefined (reading 'type')"
-      ) {
-        const errorType = document.createElement("p");
-        errorType.classList.add("error-type");
-        errorType.innerHTML =
-          '<p>Set <strong>"data-layer"</strong> correctly !</p>';
-        root.prepend(errorType);
-      }
+      handleError(
+        error,
+        "Cannot read properties of undefined (reading 'type')",
+        "error-types",
+        '<p>Set <strong>"data-region"</strong> and <strong>"data-layer"</strong> correctly !</p>'
+      );
 
       // URL error handling
-      const existErrorUrl = root.querySelector(".error-url");
-      if (existErrorUrl) {
-        root.removeChild(existErrorUrl);
+      handleError(
+        error,
+        "Cannot read properties of undefined (reading 'url')",
+        "error-url",
+        '<p>Set <strong>"data-user_topojson"</strong> and <strong>"data-layer"</strong> correctly !</p>'
+      );
+    }
+
+    // Error handling
+    function handleError(error, errorMessage, errorClass, message) {
+      const existError = root.querySelector(`.${errorClass}`);
+      if (existError) {
+        root.removeChild(existError);
       }
-      if (
-        error.message === "Cannot read properties of undefined (reading 'url')"
-      ) {
-        const errorUrl = document.createElement("p");
-        errorUrl.classList.add("error-url");
-        errorUrl.innerHTML =
-          '<p>Set <strong>"data-user_topojson"</strong> and <strong>"data-layer"</strong> correctly !</p>';
-        root.prepend(errorUrl);
+      if (error.message === errorMessage) {
+        const errorElement = document.createElement("p");
+        errorElement.classList.add(errorClass);
+        errorElement.innerHTML = message;
+        root.prepend(errorElement);
       }
     }
 
