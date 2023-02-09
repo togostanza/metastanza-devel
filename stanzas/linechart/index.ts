@@ -1,5 +1,5 @@
 import { extent, line, scaleOrdinal, select, symbol, symbolCircle } from "d3";
-import StanzaSuperClass from "../../lib/StanzaSuperClass";
+import MetaStanza from "../../lib/MetaStanza";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -31,7 +31,7 @@ interface TParams extends z.infer<typeof paramsModel> {
   [key: string]: number | undefined | string;
 }
 
-export default class Linechart extends StanzaSuperClass {
+export default class Linechart extends MetaStanza {
   xAxisGen: Axis;
   yAxisGen: Axis;
   legend: Legend;
