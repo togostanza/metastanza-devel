@@ -68,13 +68,13 @@ export default class regionGeographicMap extends Stanza {
     const region = this.params["data-region"];
     const objectType = this.params["data-layer"].trim();
     const userTopoJson = this.params["data-user_topojson"].trim();
-    if (Boolean(userTopoJson)) {
+    if (userTopoJson) {
       REGION.set("user", { url: userTopoJson });
     }
 
     const [property1, property2] = this.params["data-property"]
       .trim()
-      .split(".");
+      .split(/[.,-_/;。、 ]+/);
     const switchProperty = (datum) =>
       property2 ? datum[property1][property2] : datum[property1];
 
@@ -214,7 +214,6 @@ export default class regionGeographicMap extends Stanza {
         '"data-region" and "data-layer" (and "data-user_topojson") is not set correctly'
       );
     } catch (error) {
-      // Type error handling
       handleError(
         error,
         "Cannot read properties of undefined (reading 'type')",
@@ -222,7 +221,6 @@ export default class regionGeographicMap extends Stanza {
         '<p>Set <strong>"data-region"</strong> and <strong>"data-layer"</strong> correctly !</p>'
       );
 
-      // URL error handling
       handleError(
         error,
         "Cannot read properties of undefined (reading 'url')",
