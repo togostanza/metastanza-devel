@@ -74,7 +74,7 @@ export default class regionGeographicMap extends Stanza {
 
     const [property1, property2] = this.params["data-property"]
       .trim()
-      .split(/[.,-_/。、 　]+/);
+      .split(/[.,-_/。、 ]+/);
     const switchProperty = (datum) =>
       property2 ? datum[property1][property2] : datum[property1];
 
