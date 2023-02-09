@@ -31,7 +31,7 @@ const REGION = new Map([
   [
     "japan",
     {
-      url: "https://raw.githubusercontent.com/YukikoNoda/sampleJSON-NamedMap/main/japan.topojson",
+      url: "https://raw.githubusercontent.com/togostanza/togostanza-data/main/samples/json/named-map-japan.json",
     },
   ],
 ]);
