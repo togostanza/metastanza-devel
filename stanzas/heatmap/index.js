@@ -2,7 +2,7 @@ import Stanza from "togostanza/stanza";
 import * as d3 from "d3";
 import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
-import Legend from "@/lib/Legend";
+import Legend from "@/lib/Legend2";
 import { getMarginsFromCSSString } from "../../lib/utils";
 import { getGradationColor } from "@/lib/ColorGenerator";
 import {
@@ -38,7 +38,7 @@ export default class Heatmap extends Stanza {
     }
 
     const legendShow = this.params["legend-visible"];
-    const existingLegend = this.root.querySelector("togostanza--legend");
+    const existingLegend = this.root.querySelector("togostanza--legend2");
     if (existingLegend) {
       existingLegend.remove();
     }
@@ -242,14 +242,17 @@ export default class Heatmap extends Stanza {
     this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
 
     if (legendShow === true) {
-      this.legend.setup(
-        intervals(setColor),
-        null,
-        {
-          position: ["top", "right"],
+      this.legend.setup({
+        items: intervals(setColor).map((interval) => ({
+          id: interval.label,
+          color: interval.color,
+          value: interval.label,
+        })),
+        title: legendTitle,
+        options: {
+          shape: "square",
         },
-        legendTitle
-      );
+      });
     }
 
     //Function of mouseover and mouse leave
