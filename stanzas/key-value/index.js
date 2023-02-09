@@ -4,9 +4,9 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 
-import StanzaSuperClass from "../../lib/StanzaSuperClass";
+import MetaStanza from "../../lib/MetaStanza";
 
-export default class KeyValue extends StanzaSuperClass {
+export default class KeyValue extends MetaStanza {
   menu() {
     return [
       downloadJSONMenuItem(this, "hashtable", this._data),
