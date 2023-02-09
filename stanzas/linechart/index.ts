@@ -203,7 +203,7 @@ export default class Linechart extends StanzaSuperClass {
       this.legend = null;
     }
 
-    if (values.some((d) => d[tooltipSym])) {
+    if (values.some((d) => d[tooltipKey])) {
       addTooltips.call(this);
     }
   }
