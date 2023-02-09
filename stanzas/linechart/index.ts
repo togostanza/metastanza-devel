@@ -67,7 +67,10 @@ export default class Linechart extends StanzaSuperClass {
     const pointSize = this.params["point_size"];
     const tooltipKey = this.params["tooltips-key"];
     const showLegend = this.params["legend-visible"];
-    const legendTitle = this.params["legend-title"];
+    const legendTitle =
+      typeof this.params["legend-title"] === "undefined"
+        ? groupKeyName
+        : this.params["legend-title"];
     let values = structuredClone(this._data) as any[];
 
     let params;
