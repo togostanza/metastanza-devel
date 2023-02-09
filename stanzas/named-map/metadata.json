@@ -41,7 +41,7 @@
       "stanza:key": "data-layer",
       "stanza:type": "text",
       "stanza:example": "countries",
-      "stanza:description": "Specify the name of the key there desired GeometryCollection object located in topojson. For preset maps listed in param 'data-region': for the \"world\", there are two available names: \"countries\" and \"land\". For \"us\" there are three: \"counties\", \"states\" or \"nation\". For \"japan\", there is only one, named \"japan\".",
+      "stanza:description": "Specify the name of the key where desired GeometryCollection object located in topojson. For preset maps listed in param 'data-region': for the \"world\", there are two available names: \"countries\" and \"land\". For \"us\" there are three: \"counties\", \"states\" or \"nation\". For \"japan\", there is only one, named \"japan\".",
       "stanza:required": true
     },
     {
