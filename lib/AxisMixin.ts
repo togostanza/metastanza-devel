@@ -465,7 +465,7 @@ export class Axis {
   private _handleGridIntervalUpdate() {
     this._updateGrid();
 
-    this._gridG.call(this._gridGen.bind(this));
+    this._callDrawGridlines();
 
     this._gridG.selectAll(".tick line").classed("zero-line", (d) => {
       return d === 0;
@@ -485,6 +485,10 @@ export class Axis {
    */
   private _callDrawAxis() {
     this._axisG.call(this._axisGen.bind(this));
+    this._axisG
+      .selectAll("g.tick")
+      .select("text")
+      .classed("tick-label-text", true);
 
     this._tickTextXY = this.tickTextXY;
     this._axisG.selectAll(".tick").each(function (this: SVGElement) {
@@ -499,7 +503,11 @@ export class Axis {
   }
 
   private _callDrawGridlines() {
-    this._gridG.call(this._gridGen.bind(this));
+    this._gridG
+      .call(this._gridGen.bind(this))
+      .selectAll("g.tick")
+      .select("line")
+      .classed("grid-line", true);
   }
 
   private get HEIGHT() {

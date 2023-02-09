@@ -1,15 +1,20 @@
 // Load the repository-wide global style here. The actual file is located at ../common.scss for details.
 @use "@/common.scss";
 
-main {
-  padding: var(--togostanza-canvas-padding);
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
 }
 
 #wrapper {
   position: relative;
-  overflow: auto;
+  display: flex;
+  flex-direction: column;
   width: calc(var(--togostanza-canvas-width) * 1px);
   height: calc(var(--togostanza-canvas-height) * 1px);
+  padding: var(--togostanza-canvas-padding);
+  overflow: auto;
   .value {
     flex-grow: 1;
     font-weight: normal;
@@ -71,7 +76,7 @@ main {
       margin-right: 1rem;
       width: 190px;
       height: 20px;
-      border: solid 1px var(--togostanza-column-border_color);
+      border: solid 1px #d9d9d9;
       border-radius: calc(var(--togostanza-column-border_radius) * 1px);
     }
     > .search-wrapper {
@@ -80,7 +85,7 @@ main {
       display: flex;
       position: absolute;
       overflow: auto;
-      border: solid 1px var(--togostanza-column-border_color);
+      border: solid 1px #d9d9d9;
       border-radius: 3px;
       z-index: 2;
       > .suggestions {
@@ -104,9 +109,9 @@ main {
     }
   }
   > #tree {
-    height: calc(var(--togostanza-column-height) * 1px);
     display: flex;
     width: fit-content;
+    height: 100%;
     gap: calc(var(--togostanza-column-gap) * 1px);
     padding: 1px;
     > .column {
@@ -117,9 +122,6 @@ main {
       outline: 1px solid;
       outline-color: var(--togostanza-column-border_color);
       border-radius: calc(var(--togostanza-column-border_radius) * 1px);
-      &.-fixed {
-        width: calc(var(--togostanza-column-width) * 1px);
-      }
       > .node {
         position: relative;
         display: grid;
