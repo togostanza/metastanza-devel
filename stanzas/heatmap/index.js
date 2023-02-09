@@ -38,15 +38,6 @@ export default class Heatmap extends Stanza {
     }
 
     const legendShow = this.params["legend-visible"];
-    const existingLegend = this.root.querySelector("togostanza--legend2");
-    if (existingLegend) {
-      existingLegend.remove();
-    }
-
-    if (legendShow === true) {
-      this.legend = new Legend();
-      root.append(this.legend);
-    }
 
     // Parameters
     const dataset = await loadData(
@@ -241,7 +232,11 @@ export default class Heatmap extends Stanza {
 
     this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
 
-    if (legendShow === true) {
+    if (legendShow) {
+      if (!this.legend) {
+        this.legend = new Legend();
+        this.root.append(this.legend);
+      }
       this.legend.setup({
         items: intervals(setColor).map((interval) => ({
           id: interval.label,
@@ -253,6 +248,9 @@ export default class Heatmap extends Stanza {
           shape: "square",
         },
       });
+    } else {
+      this.legend?.remove();
+      this.legend = null;
     }
 
     //Function of mouseover and mouse leave
