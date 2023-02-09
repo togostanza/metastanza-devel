@@ -275,7 +275,7 @@ function drawPoints(
 ) {
   const symbolGen = symbol()
     .type(symbolCircle)
-    .size(pointSize ? pointSize * pointSize : 20);
+    .size(typeof pointSize === "undefined" ? 20 : pointSize * pointSize);
 
   const updateSymbols = lines.selectAll("g.symbol-g").data((d) => d[1].values);
 
