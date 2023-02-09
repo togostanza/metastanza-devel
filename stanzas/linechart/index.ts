@@ -16,6 +16,7 @@ import {
   type AxisParamsI,
 } from "../../lib/AxisMixin";
 import { StanzaColorGenerator } from "../../lib/ColorGenerator";
+import { z } from "zod";
 
 interface IDataByGroup {
   color: string;
@@ -26,13 +27,17 @@ type TDataByGroup = Map<string, IDataByGroup>;
 
 type TGSelection = d3.Selection<SVGGElement, {}, SVGElement, any>;
 
+interface TParams extends z.infer<typeof paramsModel> {
+  [key: string]: number | undefined | string;
+}
+
 export default class Linechart extends StanzaSuperClass {
   xAxisGen: Axis;
   yAxisGen: Axis;
   legend: Legend;
   tooltips: ToolTip;
-  _graphArea: TGSelection;
-  _dataByGroup: TDataByGroup;
+  graphArea: TGSelection;
+  dataByGroup: TDataByGroup;
 
   menu() {
     return [
@@ -73,7 +78,7 @@ export default class Linechart extends StanzaSuperClass {
         : this.params["legend-title"];
     let values = structuredClone(this._data) as any[];
 
-    let params;
+    let params: TParams;
     try {
       params = paramsModel.parse(this.params);
     } catch (error) {
@@ -91,7 +96,7 @@ export default class Linechart extends StanzaSuperClass {
       return !!parsedXVal && !!parsedYVal;
     });
 
-    this._dataByGroup = values.reduce((map: TDataByGroup, curr) => {
+    this.dataByGroup = values.reduce((map: TDataByGroup, curr) => {
       if (!map.has(curr[groupKeyName])) {
         return map.set(curr[groupKeyName], {
           color: "",
@@ -102,9 +107,9 @@ export default class Linechart extends StanzaSuperClass {
       return map;
     }, new Map());
 
-    color.domain(this._dataByGroup.keys());
+    color.domain(this.dataByGroup.keys());
 
-    this._dataByGroup.forEach((value, key) => {
+    this.dataByGroup.forEach((value, key) => {
       value.color = color(key) as string;
     });
 
@@ -129,7 +134,7 @@ export default class Linechart extends StanzaSuperClass {
     }
     svg = select(this._main).append("svg");
     svg.attr("width", width).attr("height", height);
-    this._graphArea = svg.append("g").attr("class", "chart");
+    this.graphArea = svg.append("g").attr("class", "chart");
     const axisArea = { x: 0, y: 0, width, height };
 
     let xDomain = [];
@@ -190,12 +195,12 @@ export default class Linechart extends StanzaSuperClass {
       val[tooltipSym] = `${val[groupKeyName]}: ${val[tooltipKey]}`;
     });
 
-    this._graphArea.attr(
+    this.graphArea.attr(
       "transform",
       `translate(${this.xAxisGen.axisArea.x},${this.xAxisGen.axisArea.y})`
     );
 
-    const lines = drawChart(this._graphArea, this._dataByGroup, symbols);
+    const lines = drawChart(this.graphArea, this.dataByGroup, symbols);
 
     drawPoints(lines, pointSize, symbols);
 
@@ -219,7 +224,7 @@ function addLegend(legendTitle: string, lines: TGSelection) {
   }
   const legendParams = {
     title: legendTitle,
-    items: [...this._dataByGroup.entries()].map(([key, val]) => ({
+    items: [...this.dataByGroup.entries()].map(([key, val]) => ({
       id: key,
       label: key,
       color: val.color,
