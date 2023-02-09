@@ -37,6 +37,15 @@ svg {
     }
   }
   > .axis-container {
+    > .grid-lines {
+      line {
+        stroke: var(--togostanza-grid-color);
+        &.zero-line {
+          stroke-width: calc(var(--togostanza-axis-zero_line_width) * 1px);
+          stroke: var(--togostanza-axis-zero_line_color);
+        }
+      }
+    }
     > .axis {
       > .tick {
         font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
@@ -58,15 +67,6 @@ svg {
     > .title-container {
       text.title {
         font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
-      }
-    }
-    > .grid-lines {
-      line {
-        stroke: var(--togostanza-grid-color);
-        &.zero-line {
-          stroke-width: calc(var(--togostanza-axis-zero_line_width) * 1px);
-          stroke: var(--togostanza-axis-zero_line_color);
-        }
       }
     }
   }
