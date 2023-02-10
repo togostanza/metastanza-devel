@@ -90,7 +90,7 @@ export default class regionGeographicMap extends Stanza {
       root.append(this.legend);
     }
 
-    const tooltipKey = this.params["tooltips-key"];
+    const tooltipKey = this.params["tooltips-key"].trim();
     if (!this.tooltip) {
       this.tooltip = new ToolTip();
       root.append(this.tooltip);
