@@ -17,6 +17,7 @@ import {
 } from "../../lib/AxisMixin";
 import { StanzaColorGenerator } from "../../lib/ColorGenerator";
 import { z } from "zod";
+import { MarginsI } from "../../lib/utils";
 
 type TSymbols = {
   xSym: symbol;
@@ -153,7 +154,32 @@ export default class Linechart extends MetaStanza {
     svg = select(this._main).append("svg");
     svg.attr("width", width).attr("height", height);
     this.graphArea = svg.append("g").attr("class", "chart") as TGSelection;
-    const axisArea = { x: 0, y: 0, width, height };
+
+    const axisArea = {
+      x: this.MARGIN.LEFT,
+      y: this.MARGIN.TOP,
+      width: width - this.MARGIN.LEFT - this.MARGIN.RIGHT,
+      height: height - this.MARGIN.TOP - this.MARGIN.BOTTOM,
+    };
+
+    const AxesMargins: MarginsI = {
+      LEFT:
+        params["axis-y-placement"] === "left"
+          ? params["axis-y-title_padding"] || 0
+          : 0,
+      RIGHT:
+        params["axis-y-placement"] === "right"
+          ? params["axis-y-title_padding"] || 0
+          : 0,
+      TOP:
+        params["axis-x-placement"] === "top"
+          ? params["axis-x-title_padding"] || 0
+          : 0,
+      BOTTOM:
+        params["axis-x-placement"] === "bottom"
+          ? params["axis-x-title_padding"] || 0
+          : 0,
+    };
 
     let xDomain = [];
     if (xScaleType === "ordinal") {
@@ -168,7 +194,7 @@ export default class Linechart extends MetaStanza {
       placement: params["axis-x-placement"],
       domain: xDomain,
       drawArea: axisArea,
-      margins: this.MARGIN,
+      margins: AxesMargins,
       tickLabelsAngle: params["axis-x-ticks_label_angle"],
       title: xAxisTitle,
       titlePadding: params["axis-x-title_padding"],
@@ -184,7 +210,7 @@ export default class Linechart extends MetaStanza {
       placement: params["axis-y-placement"],
       domain: yDomain,
       drawArea: axisArea,
-      margins: this.MARGIN,
+      margins: AxesMargins,
       tickLabelsAngle: params["axis-y-ticks_label_angle"],
       title: yAxisTitle,
       titlePadding: params["axis-y-title_padding"],
@@ -217,8 +243,6 @@ export default class Linechart extends MetaStanza {
       "transform",
       `translate(${this.xAxisGen.axisArea.x},${this.xAxisGen.axisArea.y})`
     );
-
-    // lines expectiong data to be converted by d3
 
     const lines = drawChart(this.graphArea, this.dataByGroup, symbols);
 
