@@ -18,18 +18,35 @@ import {
 import { StanzaColorGenerator } from "../../lib/ColorGenerator";
 import { z } from "zod";
 
+type TSymbols = {
+  xSym: symbol;
+  ySym: symbol;
+  colorSym: symbol;
+  tooltipSym: symbol;
+};
+
+type TValueWithSymbols = {
+  [key: string]: string | number | null;
+  [key: symbol]: any;
+};
+
 interface IDataByGroup {
   color: string;
-  values: any[];
+  values: TValueWithSymbols[];
 }
 
 type TDataByGroup = Map<string, IDataByGroup>;
 
-type TGSelection = d3.Selection<SVGGElement, {}, SVGElement, any>;
-
 interface TParams extends z.infer<typeof paramsModel> {
   [key: string]: number | undefined | string;
 }
+
+type TGSelection = d3.Selection<
+  SVGGElement,
+  TDataByGroup,
+  SVGElement,
+  undefined
+>;
 
 export default class Linechart extends MetaStanza {
   xAxisGen: Axis;
@@ -76,6 +93,7 @@ export default class Linechart extends MetaStanza {
       typeof this.params["legend-title"] === "undefined"
         ? groupKeyName
         : this.params["legend-title"];
+
     let values = structuredClone(this._data) as any[];
 
     let params: TParams;
@@ -118,7 +136,7 @@ export default class Linechart extends MetaStanza {
     const colorSym = Symbol("color");
     const tooltipSym = Symbol("tooltip");
 
-    const symbols = {
+    const symbols: TSymbols = {
       xSym,
       ySym,
       colorSym,
@@ -134,7 +152,7 @@ export default class Linechart extends MetaStanza {
     }
     svg = select(this._main).append("svg");
     svg.attr("width", width).attr("height", height);
-    this.graphArea = svg.append("g").attr("class", "chart");
+    this.graphArea = svg.append("g").attr("class", "chart") as TGSelection;
     const axisArea = { x: 0, y: 0, width, height };
 
     let xDomain = [];
@@ -200,6 +218,8 @@ export default class Linechart extends MetaStanza {
       `translate(${this.xAxisGen.axisArea.x},${this.xAxisGen.axisArea.y})`
     );
 
+    // lines expectiong data to be converted by d3
+
     const lines = drawChart(this.graphArea, this.dataByGroup, symbols);
 
     drawPoints(lines, pointSize, symbols);
@@ -244,23 +264,12 @@ function addTooltips() {
   this.tooltips.setup(this._main.querySelectorAll("[data-tooltip]"));
 }
 
-interface ISymbols {
-  xSym: symbol;
-  ySym: symbol;
-  colorSym: symbol;
-  tooltipSym: symbol;
-}
-
-function drawChart(
-  g: d3.Selection<SVGGElement, any, SVGElement, any>,
-  dataMap: TDataByGroup,
-  symbols: ISymbols
-) {
-  const lineGen = line()
+function drawChart(g: TGSelection, dataMap: TDataByGroup, symbols: TSymbols) {
+  const lineGen = line<TValueWithSymbols>()
     .x((d) => d[symbols.xSym])
     .y((d) => d[symbols.ySym]);
 
-  const update = g.selectAll("g.chart-line-group").data(dataMap);
+  const update = g.selectAll("g.chart-line-group").data(Array.from(dataMap)); // here d3 converts map to [key, value] array
 
   const enter = update.enter().append("g").classed("chart-line-group", true);
 
@@ -274,9 +283,14 @@ function drawChart(
 }
 
 function drawPoints(
-  lines: d3.Selection<SVGGElement, any, SVGElement, any>,
+  lines: d3.Selection<
+    SVGGElement,
+    [string, IDataByGroup],
+    SVGElement,
+    undefined
+  >,
   pointSize: number | undefined,
-  symbols: ISymbols
+  symbols: TSymbols
 ) {
   const symbolGen = symbol()
     .type(symbolCircle)
@@ -319,12 +333,13 @@ function parseType(
       return value;
     case scaleType === AxisScaleE.ordinal:
       return value;
-    case scaleType === AxisScaleE.time:
+    case scaleType === AxisScaleE.time: {
       const parsedDate = new Date(value);
       if (Object.prototype.toString.call(parsedDate) !== "[object Date]") {
         return null;
       }
       return parsedDate;
+    }
     default:
       return value;
   }
