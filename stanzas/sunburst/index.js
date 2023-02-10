@@ -62,7 +62,7 @@ export default class Sunburst extends Stanza {
 
     const dispatcher = this.element;
 
-    appendCustomCss(this, this.params["custom_css_url"]);
+    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
     // get value of css vars
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
@@ -70,8 +70,8 @@ export default class Sunburst extends Stanza {
     const height = parseFloat(css("--togostanza-canvas-height"));
     const padding = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
 
-    const labelKey = this.params["node-label_key"];
-    const valueKey = this.params["node-value_key"];
+    const valueKey = this.params["node-value_key"].trim();
+    const labelKey = this.params["node-label_key"].trim();
     const showNumbers = this.params["node-values_visible"];
     const borderWidth = this.params["node-levels_gap_width"] || 2;
     const nodesGapWidth = this.params["node-gap_width"] || 8;
