@@ -10,10 +10,10 @@ jobs:
         with:
           submodules: true
           fetch-depth: 0
-
+          
       - uses: actions/setup-node@v1
         with:
-          node-version: 14
+          node-version: 16
 
       - name: Workaround for npm v7 bug. Reconfigure git to use HTTP authentication
         run: >
