@@ -3,7 +3,7 @@ import { select, json, geoMercator, geoAlbersUsa, geoPath } from "d3";
 import { feature } from "topojson-client";
 import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
-import Legend from "@/lib/Legend";
+import Legend from "@/lib/Legend2";
 import { getGradationColor } from "@/lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
@@ -81,14 +81,6 @@ export default class regionGeographicMap extends Stanza {
     const legendVisible = this.params["legend-visible"];
     const legendTitle = this.params["legend-title"];
     const legendLevelsNumber = parseFloat(this.params["legend-levels_number"]);
-    const existingLegend = this.root.querySelector("togostanza--legend");
-    if (existingLegend) {
-      existingLegend.remove();
-    }
-    if (legendVisible === true) {
-      this.legend = new Legend();
-      root.append(this.legend);
-    }
 
     const tooltipKey = this.params["tooltips-key"].trim();
     if (!this.tooltip) {
@@ -199,15 +191,25 @@ export default class regionGeographicMap extends Stanza {
       this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
 
       // Setting legend
-      if (legendVisible === true) {
-        this.legend.setup(
-          intervals(setColor),
-          null,
-          {
-            position: ["top", "right"],
+      if (legendVisible) {
+        if (!this.legend) {
+          this.legend = new Legend();
+          this.root.append(this.legend);
+        }
+        this.legend.setup({
+          items: intervals(setColor).map((interval) => ({
+            id: interval.label,
+            color: interval.color,
+            value: interval.label,
+          })),
+          title: legendTitle,
+          options: {
+            shape: "square",
           },
-          legendTitle
-        );
+        });
+      } else {
+        this.legend?.remove();
+        this.legend = null;
       }
 
       throw new Error(

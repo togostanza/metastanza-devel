@@ -12,3 +12,12 @@ svg {
     stroke: var(--togostanza-selected-color);
   }
 }
+
+:host {
+  position: relative;
+  > togostanza--legend2 {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}
