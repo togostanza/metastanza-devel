@@ -57,9 +57,9 @@ export default class Heatmap extends Stanza {
     this._data = dataset;
 
     appendCustomCss(this, this.params["custom_css_url"]);
-    const cellColorKey = this.params["cell-color_key"];
-    const xKey = this.params["axis-x-key"];
-    const yKey = this.params["axis-y-key"];
+    const cellColorKey = this.params["cell-color_key"].trim();
+    const xKey = this.params["axis-x-key"].trim();
+    const yKey = this.params["axis-y-key"].trim();
     const xTitle = this.params["axis-x-title"] || xKey;
     const yTitle = this.params["axis-y-title"] || yKey;
     const xLabelAngle = this.params["axis-x-ticks_labels_angle"] || 0;
@@ -68,7 +68,7 @@ export default class Heatmap extends Stanza {
     const axisYTitlePadding = this.params["axis-y-title_padding"] || 0;
     const legendTitle = this.params["legend-title"];
     const legendGroups = this.params["legend-levels_number"];
-    const tooltipKey = this.params["tooltips-key"];
+    const tooltipKey = this.params["tooltips-key"].trim();
     const tooltipHTML = (d) => d[tooltipKey];
 
     // Color scale
@@ -100,8 +100,8 @@ export default class Heatmap extends Stanza {
     const fontSize = parseFloat(
       this.css("--togostanza-fonts-font_size_primary")
     );
-    const width = parseFloat(this.css("--togostanza-canvas-width"));
-    const height = parseFloat(this.css("--togostanza-canvas-height"));
+    const width = parseFloat(this.css("--togostanza-canvas-width")) || 0;
+    const height = parseFloat(this.css("--togostanza-canvas-height")) || 0;
     const padding = getMarginsFromCSSString(
       this.css("--togostanza-canvas-padding")
     );
