@@ -92,8 +92,8 @@ export default defineComponent({
     const layerRefs = ref([]);
     const state = reactive({
       keys: {
-        label: params?.nodeLabelKey?.value,
-        value: params?.nodeValueKey?.value,
+        label: params?.nodeLabelKey?.value.trim(),
+        value: params?.nodeValueKey?.value.trim(),
       },
       fallbackInCaseOfNoValue: params?.nodeValueFallback.value,
       nodeValueAlignment: params?.nodeValueAlignment?.value,
@@ -137,7 +137,7 @@ export default defineComponent({
       return children;
     }
     function isNormalSearchHit(node) {
-      return node[params?.searchKey?.value]
+      return node[params?.searchKey?.value.trim()]
         ?.toString()
         .toLowerCase()
         .includes(state.searchTerm.toLowerCase());
