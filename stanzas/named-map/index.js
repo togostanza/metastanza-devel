@@ -58,7 +58,7 @@ export default class regionGeographicMap extends Stanza {
     this._data = values;
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
-    appendCustomCss(this, this.params["custom_css_url"]);
+    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
     const width = parseFloat(css("--togostanza-canvas-width"));
     const height = parseFloat(css("--togostanza-canvas-height"));
     const padding = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
