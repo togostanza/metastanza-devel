@@ -53,7 +53,7 @@ export default class Tree extends Stanza {
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
-    appendCustomCss(this, this.params["custom_css_url"]);
+    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
     const width = parseFloat(css("--togostanza-canvas-width")) || 0,
       height = parseFloat(css("--togostanza-canvas-height")) || 0,
       padding = getMarginsFromCSSString(css("--togostanza-canvas-padding")),
