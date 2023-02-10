@@ -54,21 +54,21 @@ export default class Tree extends Stanza {
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
     appendCustomCss(this, this.params["custom_css_url"]);
-    const width = parseFloat(css("--togostanza-canvas-width")),
-      height = parseFloat(css("--togostanza-canvas-height")),
+    const width = parseFloat(css("--togostanza-canvas-width")) || 0,
+      height = parseFloat(css("--togostanza-canvas-height")) || 0,
       padding = getMarginsFromCSSString(css("--togostanza-canvas-padding")),
-      sortKey = this.params["sort-key"],
+      sortKey = this.params["sort-key"].trim(),
       sortOrder = this.params["sort-order"],
       isLeafNodesAlign = this.params["graph-align_leaf_nodes"],
       layout = this.params["graph-layout"],
-      nodeKey = this.params["node-label-key"],
+      nodeKey = this.params["node-label-key"].trim(),
       labelMargin = this.params["node-label-margin"],
-      sizeKey = this.params["node-size-key"],
+      sizeKey = this.params["node-size-key"].trim(),
       minRadius = this.params["node-size-min"] / 2,
       maxRadius = this.params["node-size-max"] / 2,
       aveRadius = (minRadius + maxRadius) / 2,
-      colorKey = this.params["node-color-key"],
-      colorGroup = this.params["node-color-group"],
+      colorKey = this.params["node-color-key"].trim(),
+      colorGroup = this.params["node-color-group"].trim(),
       colorMode = this.params["node-color-blend"];
 
     let colorModeProperty, colorModeValue;
@@ -89,7 +89,7 @@ export default class Tree extends Stanza {
         break;
     }
 
-    const tooltipKey = this.params["tooltips-key"];
+    const tooltipKey = this.params["tooltips-key"].trim();
     const showToolTips =
       !!tooltipKey && values.some((item) => item[tooltipKey]);
     this.tooltip = new ToolTip();
