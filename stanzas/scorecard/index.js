@@ -22,7 +22,7 @@ export default class Scorecard extends Stanza {
   }
 
   async render() {
-    appendCustomCss(this, this.params["custom_css_url"]);
+    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
     this.renderTemplate({
