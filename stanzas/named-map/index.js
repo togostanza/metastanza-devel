@@ -190,28 +190,6 @@ export default class regionGeographicMap extends Stanza {
       // Setting tooltip
       this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
 
-      // Setting legend
-      if (legendVisible) {
-        if (!this.legend) {
-          this.legend = new Legend();
-          this.root.append(this.legend);
-        }
-        this.legend.setup({
-          items: intervals(setColor).map((interval) => ({
-            id: interval.label,
-            color: interval.color,
-            value: interval.label,
-          })),
-          title: legendTitle,
-          options: {
-            shape: "square",
-          },
-        });
-      } else {
-        this.legend?.remove();
-        this.legend = null;
-      }
-
       throw new Error(
         '"data-region" and "data-layer" (and "data-user_topojson") is not set correctly'
       );
@@ -243,6 +221,28 @@ export default class regionGeographicMap extends Stanza {
         errorElement.innerHTML = message;
         root.prepend(errorElement);
       }
+    }
+
+    // Setting legend
+    if (legendVisible) {
+      if (!this.legend) {
+        this.legend = new Legend();
+        this.root.append(this.legend);
+      }
+      this.legend.setup({
+        items: intervals(setColor).map((interval) => ({
+          id: interval.label,
+          color: interval.color,
+          value: interval.label,
+        })),
+        title: legendTitle,
+        options: {
+          shape: "square",
+        },
+      });
+    } else {
+      this.legend?.remove();
+      this.legend = null;
     }
 
     //Create legend objects
