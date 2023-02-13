@@ -15,7 +15,7 @@
     "lint:editorconfig": "editorconfig-checker"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^6.2.0",
+    "@fortawesome/fontawesome-free": "^6.3.0",
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
     "@fortawesome/vue-fontawesome": "^3.0.0-1",
@@ -47,14 +47,12 @@
     "togostanza-utils": "github:togostanza/togostanza-utils",
     "topojson-client": "^3.1.0",
     "uuid": "^9.0.0",
-    "vega": "^5.19.1",
-    "vega-embed": "^6.21.0",
-    "vega-lite": "^5.6.0",
     "vue": "^3.2.11",
     "zod": "^3.19.1"
   },
   "devDependencies": {
-    "editorconfig-checker": "^4.0.2",
+    "@typescript-eslint/eslint-plugin": "^5.51.0",
+    "editorconfig-checker": "4.0.0",
     "eslint": "^8.26.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-vue": "^9.7.0",
