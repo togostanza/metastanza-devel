@@ -183,7 +183,7 @@ export default class Linechart extends MetaStanza {
 
     let xDomain = [];
     if (xScaleType === "ordinal") {
-      xDomain = values.map((d) => d[xKeyName]);
+      xDomain = [...new Set(values.map((d) => d[xKeyName]))];
     } else {
       xDomain = extent(values.map((d) => d[xKeyName]));
     }
