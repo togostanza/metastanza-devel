@@ -1,6 +1,10 @@
 import Stanza from "togostanza/stanza";
-import vegaEmbed from "vega-embed";
+import { select, json, geoMercator, geoPath } from "d3";
+import { feature } from "topojson-client";
 import loadData from "togostanza-utils/load-data";
+import ToolTip from "@/lib/ToolTip";
+import Legend from "@/lib/Legend";
+import { getGradationColor } from "@/lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -9,151 +13,175 @@ import {
   downloadTSVMenuItem,
   appendCustomCss,
 } from "togostanza-utils";
+import { getMarginsFromCSSString } from "../../lib/utils";
 
-const areas = new Map([
-  [
-    "us",
-    {
-      name: "map",
-      url: "https://vega.github.io/vega/data/us-10m.json",
-      format: { type: "topojson", feature: "counties" },
-    },
-  ],
+const REGION = new Map([
   [
     "world",
     {
-      name: "map",
-      url: "https://vega.github.io/vega/data/world-110m.json",
-      format: {
-        type: "topojson",
-        feature: "countries",
-      },
+      url: "https://d3js.org/world-110m.v1.json",
+    },
+  ],
+  [
+    "us",
+    {
+      url: "https://d3js.org/us-10m.v2.json",
     },
   ],
 ]);
+
 export default class regionGeographicMap extends Stanza {
   menu() {
     return [
-      downloadSvgMenuItem(this, "region-geographis-map"),
-      downloadPngMenuItem(this, "region-geographis-map"),
-      downloadJSONMenuItem(this, "region-geographis-map", this._data),
-      downloadCSVMenuItem(this, "region-geographis-map", this._data),
-      downloadTSVMenuItem(this, "region-geographis-map", this._data),
+      downloadSvgMenuItem(this, "named-map"),
+      downloadPngMenuItem(this, "named-map"),
+      downloadJSONMenuItem(this, "named-map", this._data),
+      downloadCSVMenuItem(this, "named-map", this._data),
+      downloadTSVMenuItem(this, "named-map", this._data),
     ];
   }
 
   async render() {
+    const root = this.root.querySelector("main");
+
     const values = await loadData(
       this.params["data-url"],
       this.params["data-type"],
-      this.root.querySelector("main")
+      root
     );
     this._data = values;
 
+    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
     appendCustomCss(this, this.params["custom_css_url"]);
+    const width = parseFloat(css("--togostanza-canvas-width"));
+    const height = parseFloat(css("--togostanza-canvas-height"));
+    const padding = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
+    const region = this.params["data-region"];
+    const legendVisible = this.params["legend-visible"];
+    const legendTitle = this.params["legend-title"];
+    const legendLevelsNumber = parseFloat(this.params["legend-levels_number"]);
+    const existingLegend = this.root.querySelector("togostanza--legend");
+    if (existingLegend) {
+      existingLegend.remove();
+    }
+    if (legendVisible === true) {
+      this.legend = new Legend();
+      root.append(this.legend);
+    }
 
-    const valObj = {
-      name: "userData",
-      values,
-    };
+    const tooltipKey = this.params["tooltips-key"];
+    if (!this.tooltip) {
+      this.tooltip = new ToolTip();
+      root.append(this.tooltip);
+    }
 
-    const transform = [
-      {
-        type: "lookup",
-        from: "userData",
-        key: "id",
-        fields: ["id"],
-        values: [this.params["value-key"]],
-      },
-    ];
+    // Color scale
+    const areaColorKey = this.params["area-color_key"];
+    const areaColorMin = this.params["area-color_min"];
+    const areaColorMid = this.params["area-color_mid"];
+    const areaColorMax = this.params["area-color_max"];
+    let areaDomainMin = parseFloat(this.params["area-value_min"]);
+    let areaDomainMid = parseFloat(this.params["area-value_mid"]);
+    let areaDomainMax = parseFloat(this.params["area-value_max"]);
+    const userDataValue = values.map((d) => parseFloat(d[areaColorKey]));
 
-    const obj = areas.get(this.params["area"]);
-    obj.transform = transform;
-    const data = [valObj, obj];
+    if (isNaN(parseFloat(areaDomainMin))) {
+      areaDomainMin = Math.min(...userDataValue);
+    }
+    if (isNaN(parseFloat(areaDomainMax))) {
+      areaDomainMax = Math.max(...userDataValue);
+    }
+    if (isNaN(parseFloat(areaDomainMid))) {
+      areaDomainMid = (areaDomainMax + areaDomainMin) / 2;
+    }
 
-    const projections = [
-      {
-        name: "projection",
-        type: this.params["area"] === "us" ? "albersUsa" : "mercator",
-      },
-    ];
-
-    const colorRangeMax = [
-      "var(--togostanza-series-0-color)",
-      "var(--togostanza-series-1-color)",
-      "var(--togostanza-series-2-color)",
-      "var(--togostanza-series-3-color)",
-      "var(--togostanza-series-4-color)",
-      "var(--togostanza-series-5-color)",
-      "var(--togostanza-series-6-color)",
-      "var(--togostanza-series-7-color)",
-    ];
-
-    const colorRange = colorRangeMax.slice(
-      0,
-      Number(this.params["group-amount"])
+    const setColor = getGradationColor(
+      this,
+      [areaColorMin, areaColorMid, areaColorMax],
+      [areaDomainMin, areaDomainMid, areaDomainMax]
     );
-    const val = values.map((val) => val[this.params["value-key"]]);
 
-    const scales = [
-      {
-        name: "userColor",
-        type: "quantize",
-        domain: [Math.min(...val), Math.max(...val)],
-        range: colorRange,
-      },
-    ];
+    // Drawing svg
+    const svgWidth = width - padding.LEFT - padding.RIGHT;
+    const svgHeight = height - padding.TOP - padding.BOTTOM;
 
-    const legends = [
-      {
-        fill: "userColor",
-        orient: this.params["legend-orient"],
-        title: this.params["legend-title"],
-        format: this.params["percentage"] ? "0.1%" : "",
-      },
-    ];
+    select(root).select("svg").remove();
+    const svg = select(root)
+      .append("svg")
+      .attr("width", svgWidth)
+      .attr("height", svgHeight)
+      .attr("viewBox", `0 -200 1000 800`);
+    const g = svg.append("g").classed("g-path", true).attr("width", 200);
 
-    const marks = [
-      {
-        type: "shape",
-        from: { data: "map" },
-        encode: {
-          enter: {
-            tooltip: {
-              signal: this.params["percentage"]
-                ? `format(datum.${this.params["value-key"]}, '0.1%')`
-                : `datum.${this.params["value-key"]}`,
-            },
-          },
-          hover: {
-            fill: { value: "var(--togostanza-hover-color)" },
-          },
-          update: {
-            fill: { scale: "userColor", field: this.params["value-key"] },
-            stroke: this.params["border"]
-              ? { value: "var(--togostanza-region-border-color)" }
-              : "",
-          },
+    const areaUrl = REGION.get(region).url;
+    const topology = await json(areaUrl);
+    const projection = geoMercator();
+    let topologyProperty, path;
+    switch (region) {
+      case "world":
+        topologyProperty = topology.objects.countries;
+        path = geoPath().projection(projection);
+        break;
+
+      case "us":
+        topologyProperty = topology.objects.counties;
+        path = geoPath();
+        break;
+    }
+
+    // Combine data
+    const topojsonData = feature(topology, topologyProperty).features;
+    const allData = topojsonData.map((topoDatum) => {
+      const matchData = values.find((val) => topoDatum.id === val.id);
+      return Object.assign({}, topoDatum, {
+        [areaColorKey]: matchData ? matchData[areaColorKey] : undefined,
+      });
+    });
+
+    // Drawing path
+    g.selectAll("path")
+      .data(allData)
+      .enter()
+      .append("path")
+      .classed("path", true)
+      .attr("d", path)
+      .attr("data-tooltip", (d) => d[tooltipKey])
+      .attr("fill", (d) => setColor(d[areaColorKey]))
+      .on("mouseenter", function () {
+        select(this).raise();
+      });
+
+    this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
+
+    // Setting legend
+    if (legendVisible === true) {
+      this.legend.setup(
+        intervals(setColor),
+        null,
+        {
+          position: ["top", "right"],
         },
-        transform: [{ type: "geoshape", projection: "projection" }],
-      },
-    ];
+        legendTitle
+      );
+    }
 
-    const spec = {
-      $schema: "https://vega.github.io/schema/vega/v5.json",
-      width: 1000,
-      height: 500,
-      data,
-      projections,
-      scales,
-      legends: this.params["legend"] ? legends : [],
-      marks,
-    };
-
-    const el = this.root.querySelector("main");
-    const opts = {
-      renderer: "svg",
-    };
-    await vegaEmbed(el, spec, opts);
+    //Create legend objects
+    function intervals(
+      color,
+      steps = legendLevelsNumber >= 2 ? legendLevelsNumber : 2
+    ) {
+      return [...Array(steps).keys()].map((i) => {
+        const legendSteps =
+          Math.round(
+            (areaDomainMax -
+              i * (Math.abs(areaDomainMax - areaDomainMin) / (steps - 1))) *
+              100
+          ) / 100;
+        return {
+          label: legendSteps,
+          color: color(legendSteps),
+        };
+      });
+    }
   }
 }

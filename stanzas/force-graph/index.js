@@ -82,7 +82,7 @@ export default class ForceGraph extends Stanza {
       dataKey: Symbol(),
     };
 
-    const labelsParams = {
+    const nodeLabelParams = {
       margin: 3,
       dataKey: this.params["node-label_key"],
     };
@@ -141,7 +141,7 @@ export default class ForceGraph extends Stanza {
       nodeColorParams,
       edgeWidthParams,
       edgeColorParams,
-      labelsParams,
+      nodeLabelParams,
       tooltipParams,
     };
 

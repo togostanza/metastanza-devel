@@ -27,17 +27,16 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "group_planes-sort-key",
-      "stanza:type": "string",
-      "stanza:example": "group",
-      "stanza:description": "Sort group planes by this data key value"
+      "stanza:key": "data-directed_graph",
+      "stanza:type": "boolean",
+      "stanza:example": "true",
+      "stanza:description": "Whether the graph data is directed (whether to show the arrows or not)"
     },
     {
-      "stanza:key": "group_planes-sort-order",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["ascending", "descending"],
-      "stanza:example": "ascending",
-      "stanza:description": "Group planes sorting order"
+      "stanza:key": "node-label_key",
+      "stanza:type": "string",
+      "stanza:example": "id",
+      "stanza:description": "Node labels data key. If empty, no labels will be shown"
     },
     {
       "stanza:key": "nodes-sort-key",
@@ -109,24 +108,6 @@
       "stanza:description": "Edge width scale"
     },
     {
-      "stanza:key": "edge-show_arrows",
-      "stanza:type": "boolean",
-      "stanza:example": "true",
-      "stanza:description": "Show arrows"
-    },
-    {
-      "stanza:key": "group_planes-constant_radius",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:description": "Constant radius for all groups"
-    },
-    {
-      "stanza:key": "highlight-group_planes",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:description": "Highlight group planes on mouse hover"
-    },
-    {
       "stanza:key": "tooltips-key",
       "stanza:type": "string",
       "stanza:example": "id",
@@ -141,6 +122,24 @@
   ],
   "stanza:menu-placement": "bottom-right",
   "stanza:style": [
+    {
+      "stanza:key": "--togostanza-fonts-font_family",
+      "stanza:type": "text",
+      "stanza:default": "Helvetica Neue",
+      "stanza:description": "Font family"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_color",
+      "stanza:type": "color",
+      "stanza:default": "#4E5059",
+      "stanza:description": "Label font color"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_size_primary",
+      "stanza:type": "number",
+      "stanza:default": 9,
+      "stanza:description": "Label font size"
+    },
     {
       "stanza:key": "--togostanza-canvas-width",
       "stanza:type": "number",
@@ -210,7 +209,7 @@
     {
       "stanza:key": "--togostanza-edge-color",
       "stanza:type": "color",
-      "stanza:default": "#bdbdbd",
+      "stanza:default": "#999999",
       "stanza:description": "Egdes default color"
     },
     {
