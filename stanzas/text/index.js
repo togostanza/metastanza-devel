@@ -49,20 +49,21 @@ export default class Text extends Stanza {
   }
 
   async render() {
-    this.renderTemplate({
-      template: "stanza.html.hbs",
-    });
     const main = this.root.querySelector("main");
-    const el = this.root.getElementById("text");
     const value = await loadData(this.params["data-url"], "text", main);
     this._dataset = value;
 
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
     appendHighlightCss(this, this.params["data-highlight_css_url"]);
 
+    const existEl = this.root.querySelectorAll(".container");
+    if (existEl.length > 0) {
+      existEl.forEach((el) => el.parentNode.removeChild(el));
+    }
+
     const container = document.createElement("div");
     container.classList.add("container");
-    el.append(container);
+    main.append(container);
 
     const paragraph = document.createElement("p");
     paragraph.classList.add("paragraph");
@@ -83,7 +84,7 @@ export default class Text extends Stanza {
   }
 }
 
-export function appendHighlightCss(stanza, highlightCssUrl) {
+function appendHighlightCss(stanza, highlightCssUrl) {
   const links = stanza.root.querySelectorAll(
     "link[data-togostanza-highlight_css_url]"
   );
