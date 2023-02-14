@@ -54,8 +54,6 @@ export default class TreeMapStanza extends Stanza {
     );
     this._data = data;
 
-    this.renderTemplate({ template: "stanza.html.hbs" });
-
     // filter out all elements with n=0
     const filteredData = data.filter(
       (item) =>
