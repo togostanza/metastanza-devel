@@ -25,16 +25,11 @@ export default class Scorecard extends Stanza {
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
 
-    this.renderTemplate({
-      template: "stanza.html.hbs",
-    });
-    const main = this.root.querySelector("main");
-    const el = this.root.getElementById("scorecard");
-
+    const root = this.root.querySelector("main");
     const dataset = await loadData(
       this.params["data-url"],
       this.params["data-type"],
-      main
+      root
     );
 
     const width = parseFloat(css("--togostanza-canvas-width")) || 0;
@@ -54,11 +49,16 @@ export default class Scorecard extends Stanza {
 
     this._data = [{ [titleText]: scoreValue }];
 
+    const existSvg = this.root.querySelectorAll(".svg");
+    if (existSvg.length > 0) {
+      existSvg.forEach((svg) => svg.parentNode.removeChild(svg));
+    }
+
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.classList.add("svg");
     svg.setAttribute("width", width);
     svg.setAttribute("height", height);
-    el.append(svg);
+    root.append(svg);
 
     const wrapper = document.createElementNS("http://www.w3.org/2000/svg", "g");
     wrapper.classList.add("wrapper");
