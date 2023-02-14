@@ -82,19 +82,16 @@ export default class Sunburst extends Stanza {
         ? parseFloat(this.params["max_depth"])
         : 1;
 
+    const main = this.root.querySelector("main");
     const data = await loadData(
       this.params["data-url"],
       this.params["data-type"],
-      this.root.querySelector("main")
+      main
     );
     this._data = data;
 
     const colorScale = new StanzaColorGenerator(this).stanzaColor;
     const color = d3.scaleOrdinal(colorScale);
-
-    this.renderTemplate({
-      template: "stanza.html.hbs",
-    });
 
     data.forEach((node) => {
       node.id = "" + node.id;
@@ -132,8 +129,6 @@ export default class Sunburst extends Stanza {
         (item[valueKey] && item[valueKey] > 0) ||
         item.id === "-1"
     );
-
-    const el = this.root.querySelector("#sunburst");
 
     const stratifiedData = d3
       .stratify()
@@ -193,7 +188,7 @@ export default class Sunburst extends Stanza {
       padding.LEFT + padding.RIGHT >= width ||
       padding.TOP + padding.BOTTOM >= height
     ) {
-      el.innerHTML = "<p>Padding is too big for given width and height!</p>";
+      main.innerHTML = "<p>Padding is too big for given width and height!</p>";
       throw new Error("Padding is too big for given width and height!");
     }
 
@@ -266,8 +261,9 @@ export default class Sunburst extends Stanza {
       return text.length * charWidth < perimeter;
     }
 
+    d3.select(main).select("svg").remove();
     const svg = d3
-      .select(el)
+      .select(main)
       .append("svg")
       .attr("width", width)
       .attr("height", height)
