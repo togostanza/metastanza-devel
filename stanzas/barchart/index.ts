@@ -1,7 +1,7 @@
 import ToolTip from "../../lib/ToolTip";
 import Legend from "../../lib/Legend2";
 import { Axis, type AxisParamsI, paramsModel } from "../../lib/AxisMixin";
-import StanzaSuperClass from "../../lib/StanzaSuperClass";
+import MetaStanza from "../../lib/MetaStanza";
 
 import { StanzaColorGenerator } from "../../lib/ColorGenerator";
 import {
@@ -13,7 +13,7 @@ import {
 } from "togostanza-utils";
 import { scaleBand, scaleOrdinal, select } from "d3";
 
-export default class Barchart extends StanzaSuperClass {
+export default class Barchart extends MetaStanza {
   xAxisGen: Axis;
   yAxisGen: Axis;
   _graphArea: d3.Selection<SVGGElement, {}, SVGElement, any>;

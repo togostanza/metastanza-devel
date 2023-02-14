@@ -9,9 +9,9 @@ import {
 } from "togostanza-utils";
 import ToolTip from "../../lib/ToolTip";
 import Legend from "../../lib/Legend2";
-import StanzaSuperClass from "../../lib/StanzaSuperClass";
+import MetaStanza from "../../lib/MetaStanza";
 
-export default class Piechart extends StanzaSuperClass {
+export default class Piechart extends MetaStanza {
   legend: Legend;
 
   menu() {
@@ -101,7 +101,7 @@ export default class Piechart extends StanzaSuperClass {
           node: chartG
             .selectAll(".pie-slice")
             .filter(
-              (d: typeof dataReady[number]) =>
+              (d: (typeof dataReady)[number]) =>
                 d.data[categoryKey] === item[categoryKey]
             )
             .nodes(),
