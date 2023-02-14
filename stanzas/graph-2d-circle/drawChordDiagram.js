@@ -81,10 +81,6 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
     .attr("d", arc)
     .attr("fill", (d) => d.color);
 
-  if (params.tooltipParams.show) {
-    arcs.attr("data-tooltip", (d) => d.tooltip);
-  }
-
   arcsG.call((g) =>
     g
       .append("g")
@@ -119,6 +115,14 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
         return "end";
       })
   );
+
+  if (params.tooltipParams.show) {
+    arcs.attr("data-tooltip", (d) => d.tooltip);
+    arcsG
+      .select("g")
+      .select("text.label")
+      .attr("data-tooltip", (d) => d.tooltip);
+  }
 
   if (params.highlightAdjEdges) {
     arcsG.on("mouseenter", onHighlight);

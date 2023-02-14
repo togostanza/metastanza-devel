@@ -122,14 +122,18 @@ export default function (
         } 0)`
     );
 
-  const nodeCircles = nodeGroups
+  nodeGroups
     .append("circle")
     .attr("class", "node")
     .style("fill", (d) => d[symbols.nodeColorSym])
-    .attr("r", (d) => d[symbols.nodeSizeSym]);
+    .attr("r", (d) => {
+      return d[symbols.nodeSizeSym]; //OK
+    });
 
   if (tooltipParams.show) {
-    nodeCircles.attr("data-tooltip", (d) => d[tooltipParams.dataKey]);
+    nodeGroups
+      .selectAll()
+      .attr("data-tooltip", (d) => d[tooltipParams.dataKey]);
   }
 
   if (nodeLabelParams.dataKey !== "" && nodes[0][nodeLabelParams.dataKey]) {
@@ -147,6 +151,7 @@ export default function (
         if (angleScale(d.id) > 90 && angleScale(d.id) < 270) {
           return -nodeLabelParams.margin - d[symbols.nodeSizeSym];
         }
+
         return nodeLabelParams.margin + d[symbols.nodeSizeSym];
       })
       .attr("transform", (d) => {
