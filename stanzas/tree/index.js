@@ -36,14 +36,8 @@ export default class Tree extends Stanza {
   }
 
   async render() {
-    this.renderTemplate({
-      template: "stanza.html.hbs",
-    });
-
-    const root = this.root.querySelector("main");
-    const el = this.root.getElementById("tree-d3");
-
     //Define from params
+    const root = this.root.querySelector("main");
     const values = await loadData(
       this.params["data-url"],
       this.params["data-type"],
@@ -51,9 +45,9 @@ export default class Tree extends Stanza {
     );
     this._data = values;
 
-    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
-
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
+
+    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
     const width = parseFloat(css("--togostanza-canvas-width")) || 0,
       height = parseFloat(css("--togostanza-canvas-height")) || 0,
       padding = getMarginsFromCSSString(css("--togostanza-canvas-padding")),
@@ -175,8 +169,9 @@ export default class Tree extends Stanza {
     const svgHeight = height - padding.TOP - padding.BOTTOM;
 
     //Setting svg area
+    d3.select(root).select("svg").remove();
     const svg = d3
-      .select(el)
+      .select(root)
       .append("svg")
       .attr("width", svgWidth)
       .attr("height", svgHeight);
@@ -222,13 +217,13 @@ export default class Tree extends Stanza {
       switch (layout) {
         case HORIZONTAL:
           if (width - margin.right - margin.left < 0) {
-            el.innerHTML = "<p>width is too small!</p>";
+            root.innerHTML = "<p>width is too small!</p>";
             throw new Error("width is too small!");
           }
           break;
         case VERTICAL:
           if (height - margin.left - margin.right < 0) {
-            el.innerHTML = "<p>height is too small!</p>";
+            root.innerHTML = "<p>height is too small!</p>";
             throw new Error("height is too small!");
           }
           break;
@@ -237,7 +232,7 @@ export default class Tree extends Stanza {
         Math.max(maxRadius, minRadius) * 2 >= width ||
         Math.max(maxRadius, minRadius) * 2 >= height
       ) {
-        el.innerHTML = "<p>node size is too big for width and height!</p>";
+        root.innerHTML = "<p>node size is too big for width and height!</p>";
         throw new Error("node size is too big for width and height!");
       }
 
@@ -447,7 +442,7 @@ export default class Tree extends Stanza {
           .attr("fill", setColor);
 
         if (showToolTips) {
-          this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
+          this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
         }
 
         //Drawing labels
