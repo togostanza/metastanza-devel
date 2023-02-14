@@ -1,4 +1,17 @@
-import * as d3 from "d3";
+import { select } from "d3-selection";
+import { timeFormat } from "d3-time-format";
+import { format } from "d3-format";
+import {
+  utcDay,
+  utcHour,
+  utcMinute,
+  utcSecond,
+  utcWeek,
+  utcMonth,
+  utcYear,
+} from "d3-time";
+import { axisBottom, axisLeft, axisRight, axisTop } from "d3-axis";
+import { scaleLinear, scaleLog, scaleBand, scaleTime } from "d3-scale";
 import { z } from "zod";
 
 export const timeIntervalUnitsSchema = z
@@ -330,7 +343,7 @@ export class Axis {
   }
 
   private _init() {
-    const svg = d3.select(this._svg);
+    const svg = select(this._svg);
     this._g = svg.append("g").classed("axis-container", true);
 
     this._axisG = this._g.append("g").classed("axis", true);
@@ -427,14 +440,14 @@ export class Axis {
   private get ticksLabelsFormatter() {
     if (this.params.scale === "time") {
       try {
-        return d3.timeFormat(this.params.ticksLabelsFormat || "%b %d %I %p");
+        return timeFormat(this.params.ticksLabelsFormat || "%b %d %I %p");
       } catch (error) {
-        return d3.timeFormat("%b %d %I %p");
+        return timeFormat("%b %d %I %p");
       }
     }
     if (this.params.scale !== "ordinal") {
       try {
-        return d3.format(this.params.ticksLabelsFormat);
+        return format(this.params.ticksLabelsFormat);
       } catch (error) {
         return (val: string | number | Date | { toString(): string }) =>
           val.toString();
@@ -614,7 +627,9 @@ export class Axis {
   ) {
     let translate = "";
 
-    if (this.params.ticksInterval === 0) return;
+    if (this.params.ticksInterval === 0) {
+      return;
+    }
 
     if (!this._axisG.select(".tick").select("text").empty()) {
       const { x, y } = this._tickTextXY;
@@ -839,45 +854,45 @@ export class Axis {
 function getScale(scale: ScaleType) {
   switch (scale) {
     case AxisScaleE.linear:
-      return d3.scaleLinear();
+      return scaleLinear();
     case AxisScaleE.log10:
-      return d3.scaleLog();
+      return scaleLog();
     case AxisScaleE.ordinal:
-      return d3.scaleBand();
+      return scaleBand();
     case AxisScaleE.time:
-      return d3.scaleTime();
+      return scaleTime();
     default:
-      return d3.scaleLinear();
+      return scaleLinear();
   }
 }
 
 function getAxisGen(type: AxisPlacementT) {
   switch (type) {
     case AxisPlacementE.left:
-      return d3.axisLeft;
+      return axisLeft;
     case AxisPlacementE.right:
-      return d3.axisRight;
+      return axisRight;
     case AxisPlacementE.bottom:
-      return d3.axisBottom;
+      return axisBottom;
     case AxisPlacementE.top:
-      return d3.axisTop;
+      return axisTop;
     default:
-      return d3.axisBottom;
+      return axisBottom;
   }
 }
 
 function getTitleBaseline(placement: AxisParamsI["placement"]): string {
   switch (placement) {
     case "top":
-      return "baseline";
+      return "hanging";
     case "bottom":
-      return "hanging";
-    case "left":
       return "baseline";
+    case "left":
+      return "hanging";
     case "right":
-      return "hanging";
+      return "baseline";
     default:
-      return "hanging";
+      return "baseline";
   }
 }
 
@@ -905,16 +920,18 @@ function getTitleTranslate(placement: AxisParamsI["placement"]): string {
  */
 export function formatPower(x: number) {
   const e = Math.log10(x);
-  if (e !== Math.floor(e)) return; // Ignore non-exact power of ten.
+  if (e !== Math.floor(e)) {
+    return;
+  } // Ignore non-exact power of ten.
   return `10${(e + "").replace(/./g, (c) => "⁰¹²³⁴⁵⁶⁷⁸⁹"[c] || "⁻")}`;
 }
 
 export const intervalMap = {
-  second: () => d3.utcSecond,
-  minute: () => d3.utcMinute,
-  hour: () => d3.utcHour,
-  day: () => d3.utcDay,
-  week: () => d3.utcWeek,
-  month: () => d3.utcMonth,
-  year: () => d3.utcYear,
+  second: () => utcSecond,
+  minute: () => utcMinute,
+  hour: () => utcHour,
+  day: () => utcDay,
+  week: () => utcWeek,
+  month: () => utcMonth,
+  year: () => utcYear,
 };
