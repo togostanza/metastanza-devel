@@ -127,10 +127,12 @@ export default class regionGeographicMap extends Stanza {
     const projection = region === "us" ? geoAlbersUsa() : geoMercator();
     const path = geoPath().projection(projection);
 
+    let topoJsonType;
     try {
       // Combine data
       const areaUrl = REGION.get(region).url;
       const topoJson = await json(areaUrl);
+      topoJsonType = Object.keys(topoJson.objects);
       const geoJson = feature(topoJson, topoJson.objects[objectType]).features;
 
       const allData = geoJson.map((geoDatum) => {
@@ -198,14 +200,20 @@ export default class regionGeographicMap extends Stanza {
         error,
         "Cannot read properties of undefined (reading 'type')",
         "error-types",
-        '<p>Set <strong>"data-region"</strong> and <strong>"data-layer"</strong> correctly !</p>'
+        `<p>Set <strong>"data-region"</strong> and <strong>"data-layer"</strong>
+        ( <strong>${topoJsonType.join(
+          "</strong>, <strong>"
+        )}</strong> ) correctly !</p>`
       );
 
       handleError(
         error,
         "Cannot read properties of undefined (reading 'url')",
         "error-url",
-        '<p>Set <strong>"data-user_topojson"</strong> and <strong>"data-layer"</strong> correctly !</p>'
+        `<p>Set <strong>"data-user_topojson"</strong> and <strong>"data-layer"</strong>
+        ( <strong>${topoJsonType.join(
+          "</strong>, <strong>"
+        )}</strong> ) correctly !</p>`
       );
     }
 
