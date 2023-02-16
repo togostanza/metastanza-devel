@@ -123,13 +123,13 @@ export default class Tree extends Stanza {
     const nodeSizeMin = d3.min(data, (d) => d.data[sizeKey]);
     const nodeSizeMax = d3.max(data, (d) => d.data[sizeKey]);
 
-    const d3RadiusScale = d3
+    const radiusScale = d3
       .scaleSqrt()
       .domain([nodeSizeMin, nodeSizeMax])
       .range([minRadius, maxRadius]);
 
     const nodeRadius = (size) => {
-      return size ? d3RadiusScale(size) : d3RadiusScale(nodeSizeMin);
+      return size ? radiusScale(size) : radiusScale(nodeSizeMin);
     };
 
     //Toggle display/hide of children
