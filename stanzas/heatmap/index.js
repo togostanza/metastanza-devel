@@ -13,8 +13,10 @@ import {
   downloadTSVMenuItem,
   appendCustomCss,
 } from "togostanza-utils";
+import { Axis, AxisScaleE, paramsModel } from "../../lib/AxisMixin";
+import MetaStanza from "../../lib/MetaStanza";
 
-export default class Heatmap extends Stanza {
+export default class Heatmap extends MetaStanza {
   menu() {
     return [
       downloadSvgMenuItem(this, "heatmap"),
@@ -29,7 +31,7 @@ export default class Heatmap extends Stanza {
     return getComputedStyle(this.element).getPropertyValue(key);
   }
 
-  async render() {
+  async renderNext() {
     const root = this.root.querySelector("main");
 
     if (!this.tooltip) {
@@ -96,6 +98,8 @@ export default class Heatmap extends Stanza {
     const padding = getMarginsFromCSSString(
       this.css("--togostanza-canvas-padding")
     );
+    // const svgWidth = width - padding.LEFT - padding.RIGHT;
+    // const svgHeight = height - padding.TOP - padding.BOTTOM;
     const svgWidth = width - padding.LEFT - padding.RIGHT;
     const svgHeight = height - padding.TOP - padding.BOTTOM;
 
@@ -108,9 +112,78 @@ export default class Heatmap extends Stanza {
     const rows = [...new Set(dataset.map((d) => d[xKey]))];
     const columns = [...new Set(dataset.map((d) => d[yKey]))];
 
-    d3.select(root).select("svg").remove();
+    let params;
+    try {
+      params = paramsModel.parse(this.params);
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+    console.log(this.MARGIN);
+
+    const axisArea = { x: 0, y: 0, width, height };
+    const xParams = {
+      placement: params["axis-x-placement"],
+      // domain: xDomain,
+      domain: rows,
+      drawArea: axisArea,
+      margins: this.MARGIN,
+      tickLabelsAngle: params["axis-x-ticks_label_angle"],
+      title: xTitle,
+      titlePadding: params["axis-x-title_padding"],
+      scale: "ordinal",
+      gridInterval: params["axis-x-gridlines_interval"],
+      gridIntervalUnits: params["axis-x-gridlines_interval_units"],
+      ticksInterval: params["axis-x-ticks_interval"],
+      ticksIntervalUnits: params["axis-x-ticks_interval_units"],
+      ticksLabelsFormat: params["axis-x-ticks_labels_format"],
+    };
+
+    const yParams = {
+      placement: params["axis-y-placement"],
+      // domain: yDomain,
+      domain: columns,
+      drawArea: axisArea,
+      margins: this.MARGIN,
+      tickLabelsAngle: params["axis-y-ticks_label_angle"],
+      title: yTitle,
+      titlePadding: params["axis-y-title_padding"],
+      scale: "ordinal",
+      gridInterval: params["axis-y-gridlines_interval"],
+      gridIntervalUnits: params["axis-x-gridlines_interval_units"],
+      ticksInterval: params["axis-y-ticks_interval"],
+      ticksIntervalUnits: params["axis-y-ticks_interval_units"],
+      ticksLabelsFormat: params["axis-y-ticks_labels_format"],
+    };
+
+    // d3.select(root).select("svg").remove();
+    let svg = d3.select(this._main.querySelector("svg"));
+    if (!svg.empty()) {
+      svg.remove();
+      this.xAxisGen = null;
+      this.yAxisGen = null;
+    }
     //Drawing area
-    const svg = d3.select(root).append("svg").classed("svg", true);
+    svg = d3
+      .select(root)
+      .append("svg")
+      .classed("svg", true)
+      // .attr("width", svgWidth + borderWidth / 2)
+      // .attr("height", svgHeight + borderWidth / 2);
+      .attr("width", width)
+      .attr("height", height);
+
+    if (!this.xAxisGen) {
+      this.xAxisGen = new Axis(svg.node());
+    }
+    if (!this.yAxisGen) {
+      this.yAxisGen = new Axis(svg.node());
+    }
+    this.xAxisGen.update(xParams);
+    this.yAxisGen.update(yParams);
+
+    this.xAxisGen.axisGen.tickSizeOuter(0);
+    this.yAxisGen.axisGen.tickSizeOuter(0);
 
     //Get width of the largest column label
     const maxColumnGroup = svg.append("g");
@@ -151,11 +224,6 @@ export default class Heatmap extends Stanza {
       .tickSizeInner(tickSize)
       .tickSizeOuter(0);
 
-    //SVG area
-    svg
-      .attr("width", svgWidth + borderWidth / 2)
-      .attr("height", svgHeight + borderWidth / 2);
-
     const graphArea = svg
       .append("g")
       .classed("graph", true)
@@ -173,11 +241,15 @@ export default class Heatmap extends Stanza {
       .enter()
       .append("rect")
       .classed("rect", true)
-      .attr("x", (d) => x(d[xKey]))
-      .attr("y", (d) => y(d[yKey]))
+      // .attr("x", (d) => x(d[xKey]))
+      .attr("x", (d) => this.xAxisGen.scale(d[xKey]))
+      // .attr("y", (d) => y(d[yKey]))
+      .attr("y", (d) => this.yAxisGen.scale(d[yKey]))
       .attr("data-tooltip", (d) => tooltipHTML(d))
-      .attr("width", x.bandwidth())
-      .attr("height", y.bandwidth())
+      // .attr("width", x.bandwidth())
+      .attr("width", this.xAxisGen.scale.bandwidth())
+      // .attr("height", y.bandwidth())
+      .attr("height", this.yAxisGen.scale.bandwidth())
       .style("fill", (d) => setColor(d[cellColorKey]))
       .on("mouseover", mouseover)
       .on("mouseleave", mouseleave);
