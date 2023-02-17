@@ -1,9 +1,9 @@
-import Stanza from "togostanza/stanza";
+// import Stanza from "togostanza/stanza";
 import * as d3 from "d3";
-import loadData from "togostanza-utils/load-data";
+// import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
 import { StanzaCirculateColorGenerator } from "@/lib/ColorGenerator";
-import { getMarginsFromCSSString } from "../../lib/utils";
+// import { getMarginsFromCSSString } from "../../lib/utils";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -12,6 +12,7 @@ import {
   downloadTSVMenuItem,
   appendCustomCss,
 } from "togostanza-utils";
+import MetaStanza from "../../lib/MetaStanza";
 
 //Declaring constants
 const ASCENDING = "ascending",
@@ -23,7 +24,7 @@ const ASCENDING = "ascending",
   MULTIPLY = "multiply",
   SCREEN = "screen";
 
-export default class Tree extends Stanza {
+export default class Tree extends MetaStanza {
   //Stanza download menu contents
   menu() {
     return [
@@ -35,22 +36,26 @@ export default class Tree extends Stanza {
     ];
   }
 
-  async render() {
+  async renderNext() {
     //Define from params
-    const root = this.root.querySelector("main");
-    const values = await loadData(
-      this.params["data-url"],
-      this.params["data-type"],
-      root
-    );
-    this._data = values;
+    const root = this._main;
+    // const root = this.root.querySelector("main");
 
-    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
+    const values = this._data;
+    // const values = await loadData(
+    //   this.params["data-url"],
+    //   this.params["data-type"],
+    //   root
+    // );
+    // this._data = values;
 
-    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
-    const width = parseFloat(css("--togostanza-canvas-width")) || 0,
-      height = parseFloat(css("--togostanza-canvas-height")) || 0,
-      padding = getMarginsFromCSSString(css("--togostanza-canvas-padding")),
+    // appendCustomCss(this, this.params["togostanza-custom_css_url"]);
+    // console.log(this.element);
+    // const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
+    // const css = this.css;
+    const width = parseFloat(this.css("--togostanza-canvas-width")) || 0,
+      height = parseFloat(this.css("--togostanza-canvas-height")) || 0,
+      padding = this.MARGIN,
       sortKey = this.params["sort-key"].trim(),
       sortOrder = this.params["sort-order"],
       isLeafNodesAlign = this.params["graph-align_leaf_nodes"],
