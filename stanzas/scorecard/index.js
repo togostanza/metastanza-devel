@@ -45,53 +45,95 @@ export default class Scorecard extends Stanza {
     const fontSizeSecondary =
       parseFloat(css("--togostanza-fonts-font_size_secondary")) || 0;
 
-    const scoreKey = this.params["score-key"];
-    const titleKey = this.params["title-key"];
+    const scoreKey = this.params["data-score_key"];
+    const titleKey = this.params["data-title_key"];
     const scoreValue = dataset[scoreKey];
+    const titleText = dataset[titleKey];
     this._data = [{ [scoreKey]: scoreValue }];
 
-    const titleText =
-      this.params["title-text"] || dataset[titleKey] || scoreKey;
+    const prefixText = this.params["data-prefix"];
+    const suffixText = this.params["data-suffix"];
 
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("width", padding.LEFT + width + padding.RIGHT);
-    svg.setAttribute("height", padding.TOP + height + padding.BOTTOM);
     svg.classList.add("svg");
-    el.appendChild(svg);
+    svg.setAttribute("width", width);
+    svg.setAttribute("height", height);
+    el.append(svg);
 
     const wrapper = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    svg.appendChild(wrapper);
+    wrapper.classList.add("wrapper");
+    svg.append(wrapper);
 
-    const titleKeyText = document.createElementNS(
+    const titleSvg = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "text"
     );
-    titleKeyText.classList.add("title-key");
-    titleKeyText.textContent = titleText;
-    titleKeyText.setAttribute("text-anchor", "middle");
-    wrapper.append(titleKeyText);
+    titleSvg.classList.add("title");
+    titleSvg.textContent = titleText;
+    titleSvg.setAttribute("text-anchor", "middle");
+    wrapper.append(titleSvg);
 
-    const scoreValueText = document.createElementNS(
+    const scoreWrapper = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "text"
     );
-    scoreValueText.classList.add("score-value");
-    scoreValueText.textContent = scoreValue;
-    scoreValueText.setAttribute("text-anchor", "middle");
-    wrapper.append(scoreValueText);
+    scoreWrapper.classList.add("score-wrapper");
+    scoreWrapper.setAttribute("text-anchor", "middle");
+    wrapper.append(scoreWrapper);
 
-    if (this.params["title-show"]) {
-      titleKeyText.setAttribute("y", fontSizeSecondary);
-      scoreValueText.setAttribute("y", fontSizePrimary + fontSizeSecondary);
+    const prefixSvg = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "tspan"
+    );
+    prefixSvg.classList.add("prefix");
+    prefixSvg.textContent = prefixText;
+    scoreWrapper.append(prefixSvg);
+
+    const scoreSvg = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "tspan"
+    );
+    scoreSvg.classList.add("score");
+    scoreSvg.textContent = scoreValue;
+    scoreWrapper.append(scoreSvg);
+
+    const suffixSvg = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "tspan"
+    );
+    suffixSvg.classList.add("suffix");
+    suffixSvg.textContent = suffixText;
+    scoreWrapper.append(suffixSvg);
+
+    if (titleText) {
+      titleSvg.setAttribute("y", fontSizeSecondary);
+      scoreWrapper.setAttribute("y", fontSizePrimary + fontSizeSecondary);
     } else {
-      titleKeyText.setAttribute(`style`, `display: none;`);
-      scoreValueText.setAttribute("y", fontSizePrimary);
+      titleSvg.setAttribute(`style`, `display: none;`);
+      scoreWrapper.setAttribute("y", fontSizePrimary);
     }
+
+    const wrapperWidth = wrapper.getBoundingClientRect().width;
+    const wrapperHeight = wrapper.getBoundingClientRect().height;
+    const scale = () => {
+      const minScale = Math.min(
+        Math.min(
+          (width - padding.LEFT - padding.RIGHT) / wrapperWidth,
+          (height - padding.TOP - padding.BOTTOM) / wrapperHeight
+        ),
+        1
+      );
+      if (minScale < 0) {
+        return 0;
+      }
+      return minScale;
+    };
 
     wrapper.setAttribute(
       "transform",
-      `translate(${padding.LEFT + width / 2},
-      ${padding.TOP + height / 2 - wrapper.getBBox().height / 2})`
+      `translate(${width / 2},${
+        height / 2 - ((fontSizePrimary + fontSizeSecondary) * scale()) / 2
+      }) scale(${scale()})`
     );
   }
 }

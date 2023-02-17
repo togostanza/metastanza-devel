@@ -30,8 +30,9 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "legend-show",
+      "stanza:key": "legend-visible",
       "stanza:type": "boolean",
+      "stanza:label": "Show legend",
       "stanza:example": true,
       "stanza:description": "Whether show the legend"
     },
@@ -48,13 +49,7 @@
       "stanza:description": "Number of gradation colors between color-min and color-max"
     },
     {
-      "stanza:key": "axis-hide",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:description": "Show axis lines and ticks"
-    },
-    {
-      "stanza:key": "axis-x-key",
+      "stanza:key": "axis-x_key",
       "stanza:type": "text",
       "stanza:example": "group",
       "stanza:description": "What X key in data to use",
@@ -78,7 +73,7 @@
       "stanza:description": "X ticks labels angle (in degree)"
     },
     {
-      "stanza:key": "axis-y-key",
+      "stanza:key": "axis-y_key",
       "stanza:type": "text",
       "stanza:example": "variable",
       "stanza:description": "What Y key in data to use",
@@ -102,43 +97,43 @@
       "stanza:description": "Y ticks labels angle (in degree)"
     },
     {
-      "stanza:key": "cell-color-key",
+      "stanza:key": "cell-color_key",
       "stanza:type": "text",
       "stanza:example": "value",
       "stanza:description": "Data key to color the data points. if all data keys values includes hex color, use that color, otherwise use ordinal scale from the theme colors."
     },
     {
-      "stanza:key": "cell-color-min",
+      "stanza:key": "cell-color_min",
       "stanza:type": "text",
       "stanza:example": "#6590e6",
       "stanza:description": "Cell color range min"
     },
     {
-      "stanza:key": "cell-color-mid",
+      "stanza:key": "cell-color_mid",
       "stanza:type": "text",
       "stanza:example": "#ffffff",
       "stanza:description": "Cell color range mid"
     },
     {
-      "stanza:key": "cell-color-max",
+      "stanza:key": "cell-color_max",
       "stanza:type": "text",
       "stanza:example": "#F75976",
       "stanza:description": "Cell color range max"
     },
     {
-      "stanza:key": "cell-value-min",
+      "stanza:key": "cell-value_min",
       "stanza:type": "number",
       "stanza:example": -50,
       "stanza:description": "Cell color domain min"
     },
     {
-      "stanza:key": "cell-value-mid",
+      "stanza:key": "cell-value_mid",
       "stanza:type": "number",
       "stanza:example": 0,
       "stanza:description": "Cell color domain mid"
     },
     {
-      "stanza:key": "cell-value-max",
+      "stanza:key": "cell-value_max",
       "stanza:type": "number",
       "stanza:example": 100,
       "stanza:description": "Cell color domain max"
@@ -243,19 +238,19 @@
       "stanza:description": "Secondary (axes ticks, legend, tooltips) font size"
     },
     {
-      "stanza:key": "--togostanza-border-color",
-      "stanza:type": "color",
-      "stanza:default": "#000000",
-      "stanza:description": "Border color for everything that have a border"
-    },
-    {
       "stanza:key": "--togostanza-border-width",
       "stanza:type": "number",
       "stanza:default": 0,
       "stanza:description": "Border width"
     },
     {
-      "stanza:key": "--togostanza-cell-border_hover_color",
+      "stanza:key": "--togostanza-border-color",
+      "stanza:type": "color",
+      "stanza:default": "#000000",
+      "stanza:description": "Border color for everything that have a border"
+    },
+    {
+      "stanza:key": "--togostanza-selected-border_color",
       "stanza:type": "color",
       "stanza:default": "#FFDF3D",
       "stanza:description": "Hover border color"
