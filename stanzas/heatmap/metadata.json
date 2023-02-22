@@ -227,7 +227,7 @@
     {
       "stanza:key": "--togostanza-theme-background_color",
       "stanza:type": "color",
-      "stanza:default": "#F8F9FA",
+      "stanza:default": "rgba(255,255,255,0)",
       "stanza:description": "Background color"
     },
     {
