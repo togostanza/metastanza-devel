@@ -1,18 +1,14 @@
-// import Stanza from "togostanza/stanza";
+import MetaStanza from "../../lib/MetaStanza";
 import * as d3 from "d3";
-// import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
 import { StanzaCirculateColorGenerator } from "@/lib/ColorGenerator";
-// import { getMarginsFromCSSString } from "../../lib/utils";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
   downloadJSONMenuItem,
   downloadCSVMenuItem,
   downloadTSVMenuItem,
-  appendCustomCss,
 } from "togostanza-utils";
-import MetaStanza from "../../lib/MetaStanza";
 
 //Declaring constants
 const ASCENDING = "ascending",
@@ -38,22 +34,9 @@ export default class Tree extends MetaStanza {
 
   async renderNext() {
     //Define from params
-    const root = this._main;
-    // const root = this.root.querySelector("main");
-
-    const values = this._data;
-    // const values = await loadData(
-    //   this.params["data-url"],
-    //   this.params["data-type"],
-    //   root
-    // );
-    // this._data = values;
-
-    // appendCustomCss(this, this.params["togostanza-custom_css_url"]);
-    // console.log(this.element);
-    // const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
-    // const css = this.css;
-    const width = parseFloat(this.css("--togostanza-canvas-width")) || 0,
+    const root = this._main,
+      dataset = this._data,
+      width = parseFloat(this.css("--togostanza-canvas-width")) || 0,
       height = parseFloat(this.css("--togostanza-canvas-height")) || 0,
       padding = this.MARGIN,
       sortKey = this.params["sort-key"].trim(),
@@ -90,14 +73,14 @@ export default class Tree extends MetaStanza {
 
     const tooltipKey = this.params["tooltips-key"].trim();
     const showToolTips =
-      !!tooltipKey && values.some((item) => item[tooltipKey]);
+      !!tooltipKey && dataset.some((item) => item[tooltipKey]);
     this.tooltip = new ToolTip();
     root.append(this.tooltip);
 
     //Sorting by user keywords
     const orderSym = Symbol("order");
-    values.forEach((value, index) => {
-      value[orderSym] = index;
+    dataset.forEach((datum, index) => {
+      datum[orderSym] = index;
     });
 
     const reorder = (a, b) => {
@@ -118,7 +101,7 @@ export default class Tree extends MetaStanza {
     //Hierarchize data
     const treeRoot = d3
       .stratify()
-      .parentId((d) => d.parent)(values)
+      .parentId((d) => d.parent)(dataset)
       .sort(reorder);
 
     const treeDescendants = treeRoot.descendants();
