@@ -55,20 +55,21 @@ export default class Heatmap extends MetaStanza {
     // Styles
     const width = parseFloat(this.css("--togostanza-canvas-width")) || 0;
     const height = parseFloat(this.css("--togostanza-canvas-height")) || 0;
-    const borderWidth =
-      parseFloat(this.css("--togostanza-border-width")) > 0
-        ? parseFloat(this.css("--togostanza-border-width"))
-        : 0;
+    const borderWidth = parseFloat(this.css("--togostanza-border-width")) || 0;
 
     // Axis
+    const axisArea = {
+      x: this.MARGIN.LEFT,
+      y: this.MARGIN.TOP,
+      width: width - this.MARGIN.LEFT - this.MARGIN.RIGHT,
+      height: height - this.MARGIN.TOP - this.MARGIN.BOTTOM,
+    };
+
     const xKey = this.params["axis-x-key"].trim();
-    const yKey = this.params["axis-y-key"].trim();
-    const axisArea = { x: 0, y: 0, width, height };
     const xParams = {
       placement: this.params["axis-x-placement"],
       domain: [...new Set(dataset.map((d) => d[xKey]))],
       drawArea: axisArea,
-      margins: this.MARGIN,
       tickLabelsAngle: this.params["axis-x-ticks_labels_angle"] || 0,
       title: this.params["axis-x-title"] || xKey,
       titlePadding: this.params["axis-x-title_padding"] || 0,
@@ -80,11 +81,11 @@ export default class Heatmap extends MetaStanza {
       ticksLabelsFormat: undefined,
     };
 
+    const yKey = this.params["axis-y-key"].trim();
     const yParams = {
       placement: this.params["axis-y-placement"],
       domain: [...new Set(dataset.map((d) => d[yKey]))],
       drawArea: axisArea,
-      margins: this.MARGIN,
       tickLabelsAngle: this.params["axis-y-ticks_labels_angle"] || 0,
       title: this.params["axis-y-title"] || yKey,
       titlePadding: this.params["axis-y-title_padding"] || 0,
@@ -95,6 +96,15 @@ export default class Heatmap extends MetaStanza {
       ticksIntervalUnits: undefined,
       ticksLabelsFormat: undefined,
     };
+
+    const AxesMargins = {
+      LEFT: yParams.placement === "left" ? yParams.titlePadding || 0 : 0,
+      RIGHT: yParams.placement === "right" ? yParams.titlePadding || 0 : 0,
+      TOP: xParams.placement === "top" ? xParams.titlePadding || 0 : 0,
+      BOTTOM: xParams.placement === "bottom" ? xParams.titlePadding || 0 : 0,
+    };
+    xParams.margins = AxesMargins;
+    yParams.margins = AxesMargins;
 
     // Color scale
     const cellColorKey = this.params["cell-color_key"].trim();
@@ -137,11 +147,6 @@ export default class Heatmap extends MetaStanza {
       .attr("width", width)
       .attr("height", height);
 
-    const graphArea = svg
-      .append("g")
-      .classed("graph", true)
-      .attr("transform", `translate(${22},  ${19})`);
-
     //Drawing axis
     if (!this.xAxisGen) {
       this.xAxisGen = new Axis(svg.node());
@@ -153,6 +158,14 @@ export default class Heatmap extends MetaStanza {
     this.yAxisGen.update(yParams);
     this.xAxisGen.axisGen.tickSizeOuter(0);
     this.yAxisGen.axisGen.tickSizeOuter(0);
+
+    const graphArea = svg
+      .append("g")
+      .classed("graph", true)
+      .attr(
+        "transform",
+        `translate(${this.xAxisGen.axisArea.x},${this.xAxisGen.axisArea.y})`
+      );
 
     //Set for each rect
     graphArea
@@ -171,6 +184,9 @@ export default class Heatmap extends MetaStanza {
       .style("fill", (d) => setColor(d[cellColorKey]))
       .on("mouseover", mouseover)
       .on("mouseleave", mouseleave);
+
+    this.xAxisGen._g.raise();
+    this.yAxisGen._g.raise();
 
     this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
 

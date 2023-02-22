@@ -64,7 +64,7 @@
     {
       "stanza:key": "axis-x-title_padding",
       "stanza:type": "number",
-      "stanza:example": 10,
+      "stanza:example": 40,
       "stanza:description": "Title and X axis gap in px"
     },
     {
@@ -96,7 +96,7 @@
     {
       "stanza:key": "axis-y-title_padding",
       "stanza:type": "number",
-      "stanza:example": 10,
+      "stanza:example": 40,
       "stanza:description": "Title and Y axis gap in px"
     },
     {
@@ -116,7 +116,8 @@
       "stanza:key": "cell-color_key",
       "stanza:type": "text",
       "stanza:example": "value",
-      "stanza:description": "Data key to color the data points. if all data keys values includes hex color, use that color, otherwise use ordinal scale from the theme colors."
+      "stanza:description": "Data key to color the data points. if all data keys values includes hex color, use that color, otherwise use ordinal scale from the theme colors.",
+      "stanza:required": true
     },
     {
       "stanza:key": "cell-color_min",
