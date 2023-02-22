@@ -1,7 +1,6 @@
-import Stanza from "togostanza/stanza";
+import MetaStanza from "../../lib/MetaStanza";
 import { select, json, geoMercator, geoAlbersUsa, geoPath } from "d3";
 import { feature } from "topojson-client";
-import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
 import Legend from "@/lib/Legend2";
 import { getGradationColor } from "@/lib/ColorGenerator";
@@ -11,9 +10,7 @@ import {
   downloadJSONMenuItem,
   downloadCSVMenuItem,
   downloadTSVMenuItem,
-  appendCustomCss,
 } from "togostanza-utils";
-import { getMarginsFromCSSString } from "../../lib/utils";
 
 const REGION = new Map([
   [
@@ -36,7 +33,7 @@ const REGION = new Map([
   ],
 ]);
 
-export default class regionGeographicMap extends Stanza {
+export default class regionGeographicMap extends MetaStanza {
   menu() {
     return [
       downloadSvgMenuItem(this, "named-map"),
@@ -47,24 +44,11 @@ export default class regionGeographicMap extends Stanza {
     ];
   }
 
-  async render() {
-    const root = this.root.querySelector("main");
+  async renderNext() {
+    const root = this._main;
+    const dataset = this._data;
 
-    const values = await loadData(
-      this.params["data-url"],
-      this.params["data-type"],
-      root
-    );
-    this._data = values;
-
-    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
-    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
-    const width = parseFloat(css("--togostanza-canvas-width"));
-    const height = parseFloat(css("--togostanza-canvas-height"));
-    const padding = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
-    const svgWidth = width - padding.LEFT - padding.RIGHT;
-    const svgHeight = height - padding.TOP - padding.BOTTOM;
-
+    // Parameters
     const region = this.params["data-region"];
     const objectType = this.params["data-layer"].trim();
     const userTopoJson = this.params["data-user_topojson"].trim();
@@ -97,7 +81,7 @@ export default class regionGeographicMap extends Stanza {
     let areaDomainMin = parseFloat(this.params["area-value_min"]);
     let areaDomainMid = parseFloat(this.params["area-value_mid"]);
     let areaDomainMax = parseFloat(this.params["area-value_max"]);
-    const userDataValue = values.map((d) => parseFloat(d[areaColorValue]));
+    const userDataValue = dataset.map((d) => parseFloat(d[areaColorValue]));
 
     if (isNaN(parseFloat(areaDomainMin))) {
       areaDomainMin = Math.min(...userDataValue);
@@ -114,6 +98,13 @@ export default class regionGeographicMap extends Stanza {
       [areaColorMin, areaColorMid, areaColorMax],
       [areaDomainMin, areaDomainMid, areaDomainMax]
     );
+
+    //Styles
+    const width = parseFloat(this.css("--togostanza-canvas-width"));
+    const height = parseFloat(this.css("--togostanza-canvas-height"));
+    const padding = this.MARGIN;
+    const svgWidth = width - padding.LEFT - padding.RIGHT;
+    const svgHeight = height - padding.TOP - padding.BOTTOM;
 
     // Drawing svg
     select(root).select("svg").remove();
@@ -136,7 +127,7 @@ export default class regionGeographicMap extends Stanza {
       const geoJson = feature(topoJson, topoJson.objects[objectType]).features;
 
       const allData = geoJson.map((geoDatum) => {
-        const matchData = values.find(
+        const matchData = dataset.find(
           (val) => switchProperty(geoDatum) === val[areaColorKey]
         );
         return Object.assign({}, geoDatum, {
