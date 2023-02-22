@@ -1,7 +1,19 @@
 import MetaStanza from "../../lib/MetaStanza";
-import * as d3 from "d3";
+import {
+  select,
+  min,
+  max,
+  scaleSqrt,
+  stratify,
+  tree,
+  cluster,
+  linkHorizontal,
+  linkVertical,
+  linkRadial,
+} from "d3";
 import ToolTip from "@/lib/ToolTip";
 import { StanzaCirculateColorGenerator } from "@/lib/ColorGenerator";
+import { getMarginsFromCSSString } from "../../lib/utils";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -38,7 +50,9 @@ export default class Tree extends MetaStanza {
       dataset = this._data,
       width = parseFloat(this.css("--togostanza-canvas-width")) || 0,
       height = parseFloat(this.css("--togostanza-canvas-height")) || 0,
-      padding = this.MARGIN,
+      padding = getMarginsFromCSSString(
+        this.css("--togostanza-canvas-padding")
+      ),
       sortKey = this.params["sort-key"].trim(),
       sortOrder = this.params["sort-order"],
       isLeafNodesAlign = this.params["graph-align_leaf_nodes"],
@@ -99,8 +113,7 @@ export default class Tree extends MetaStanza {
     };
 
     //Hierarchize data
-    const treeRoot = d3
-      .stratify()
+    const treeRoot = stratify()
       .parentId((d) => d.parent)(dataset)
       .sort(reorder);
 
@@ -108,11 +121,10 @@ export default class Tree extends MetaStanza {
     const data = treeDescendants.slice(1);
 
     //Setting node size
-    const nodeSizeMin = d3.min(data, (d) => d.data[sizeKey]);
-    const nodeSizeMax = d3.max(data, (d) => d.data[sizeKey]);
+    const nodeSizeMin = min(data, (d) => d.data[sizeKey]);
+    const nodeSizeMax = max(data, (d) => d.data[sizeKey]);
 
-    const radiusScale = d3
-      .scaleSqrt()
+    const radiusScale = scaleSqrt()
       .domain([nodeSizeMin, nodeSizeMax])
       .range([minRadius, maxRadius]);
 
@@ -157,9 +169,8 @@ export default class Tree extends MetaStanza {
     const svgHeight = height - padding.TOP - padding.BOTTOM;
 
     //Setting svg area
-    d3.select(root).select("svg").remove();
-    const svg = d3
-      .select(root)
+    select(root).select("svg").remove();
+    const svg = select(root)
       .append("svg")
       .attr("width", svgWidth)
       .attr("height", svgHeight);
@@ -172,7 +183,7 @@ export default class Tree extends MetaStanza {
     rootGroup.remove();
 
     //Get width of the largest label at the lowest level
-    const maxDepth = d3.max(data, (d) => d.depth);
+    const maxDepth = max(data, (d) => d.depth);
     const labels = [];
     for (const n of data) {
       n.depth === maxDepth ? labels.push(n.data[nodeKey] || "") : "";
@@ -237,8 +248,8 @@ export default class Tree extends MetaStanza {
       });
 
       //Align leaves or not
-      let graphType = d3.tree();
-      isLeafNodesAlign ? (graphType = d3.cluster()) : (graphType = d3.tree());
+      let graphType = tree();
+      isLeafNodesAlign ? (graphType = cluster()) : (graphType = tree());
 
       //Gap between node
       const separation = (a, b) => {
@@ -605,9 +616,9 @@ export default class Tree extends MetaStanza {
         const getLinkFn = () => {
           switch (layout) {
             case HORIZONTAL:
-              return d3.linkHorizontal();
+              return linkHorizontal();
             case VERTICAL:
-              return d3.linkVertical();
+              return linkVertical();
           }
         };
 
@@ -619,7 +630,7 @@ export default class Tree extends MetaStanza {
           .attr(
             "d",
             layout === RADIAL
-              ? d3.linkRadial().angle(source.x).radius(source.y)
+              ? linkRadial().angle(source.x).radius(source.y)
               : getLinkFn().x(source.y0).y(source.x0)
           );
 
@@ -631,8 +642,7 @@ export default class Tree extends MetaStanza {
           .attr(
             "d",
             layout === RADIAL
-              ? d3
-                  .linkRadial()
+              ? linkRadial()
                   .angle((d) => d.x)
                   .radius((d) => d.y)
               : getLinkFn()
@@ -648,7 +658,7 @@ export default class Tree extends MetaStanza {
           .attr(
             "d",
             layout === RADIAL
-              ? d3.linkRadial().angle(source.x).radius(source.y)
+              ? linkRadial().angle(source.x).radius(source.y)
               : getLinkFn().x(source.y).y(source.x)
           )
           .remove();
