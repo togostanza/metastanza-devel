@@ -58,6 +58,7 @@
     {
       "stanza:key": "axis-x-title",
       "stanza:type": "text",
+      "stanza:example": "",
       "stanza:description": "X axis title"
     },
     {
@@ -73,6 +74,13 @@
       "stanza:description": "X ticks labels angle (in degree)"
     },
     {
+      "stanza:key": "axis-x-placement",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["bottom", "top"],
+      "stanza:example": "bottom",
+      "stanza:description": "axis placement"
+    },
+    {
       "stanza:key": "axis-y-key",
       "stanza:type": "text",
       "stanza:example": "variable",
@@ -82,6 +90,7 @@
     {
       "stanza:key": "axis-y-title",
       "stanza:type": "text",
+      "stanza:example": "",
       "stanza:description": "Y axis title"
     },
     {
@@ -96,175 +105,13 @@
       "stanza:example": 0,
       "stanza:description": "Y ticks labels angle (in degree)"
     },
-
-    {
-      "stanza:key": "axis-x-placement",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["top", "bottom"],
-      "stanza:example": "bottom",
-      "stanza:description": "axis placement",
-      "stanza:required": true
-    },
-
-    {
-      "stanza:key": "axis-x-title",
-      "stanza:type": "text",
-      "stanza:example": "Category",
-      "stanza:computed": true,
-      "stanza:description": "Axis title",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "axis-x-title_padding",
-      "stanza:type": "number",
-      "stanza:example": 20,
-      "stanza:default": 20,
-      "stanza:description": "Axis title padding in px",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "axis-x-ticks_label_angle",
-      "stanza:type": "number",
-      "stanza:example": 0,
-      "stanza:default": 0,
-      "stanza:description": "Tick labels angle, in degrees",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "axis-x-ticks_interval",
-      "stanza:type": "number",
-      "stanza:example": null,
-      "stanza:computed": true,
-      "stanza:description": "Axis ticks interval. If not set, in case of `continuous` scales, show 5 ticks at automatically chosen `neat` values, in case of `ordinal` scale, show ticks at all domain values. If set to 0, hide all ticks. In case of `ordinal` scale, setting this parameter will show only n-th ticks of the domain (i.e.: domain = ['a', 'b', 'c', 'd', 'e'], ticks_interval set to 2 will show ticks at 'a', 'c' and 'e')",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "axis-x-ticks_interval_units",
-      "stanza:type": "single-choice",
-      "stanza:choice": [
-        "none",
-        "year",
-        "month",
-        "week",
-        "day",
-        "hour",
-        "minute",
-        "second"
-      ],
-      "stanza:example": "none",
-      "stanza:default": "none",
-      "stanza:description": "Axis ticks interval units. (Effective only for time scale)",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "axis-x-ticks_labels_format",
-      "stanza:type": "text",
-      "stanza:example": "",
-      "stanza:description": "Axis ticks format, in d3.format or d3.timeFormat string form (time scale). In case of time scale, use d3.timeFormat format string (https://pubs.opengroup.org/onlinepubs/009695399/functions/strptime.html), fallback value for time scale is '%b %d %I %p'. Have no effect in case of ordinal scale)",
-      "stanza:required": false
-    },
-
-    {
-      "stanza:key": "axis-x-gridlines_interval",
-      "stanza:type": "number",
-      "stanza:example": null,
-      "stanza:computed": true,
-      "stanza:description": "Axis gridlines interval. If not set, show 5 gridlines at `neat` values, if set to 0, not show gridlines.",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "axis-x-gridlines_interval_units",
-      "stanza:type": "single-choice",
-      "stanza:choice": [
-        "none",
-        "year",
-        "month",
-        "week",
-        "day",
-        "hour",
-        "minute",
-        "second"
-      ],
-      "stanza:example": "none",
-      "stanza:default": "none",
-      "stanza:description": "Axis grid lines interval units. (Effective only for time scale)",
-      "stanza:required": false
-    },
     {
       "stanza:key": "axis-y-placement",
       "stanza:type": "single-choice",
       "stanza:choice": ["left", "right"],
       "stanza:example": "left",
-      "stanza:description": "Y axis placement",
-      "stanza:required": true
+      "stanza:description": "Y axis placement"
     },
-    {
-      "stanza:key": "axis-y-title",
-      "stanza:type": "text",
-      "stanza:example": "Data",
-      "stanza:computed": true,
-      "stanza:description": "Axis title",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "axis-y-title_padding",
-      "stanza:type": "number",
-      "stanza:example": 20,
-      "stanza:default": 20,
-      "stanza:description": "Axis title padding in px",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "axis-y-ticks_label_angle",
-      "stanza:type": "number",
-      "stanza:example": 0,
-      "stanza:default": 0,
-      "stanza:description": "X axis ticks angle",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "axis-y-ticks_interval",
-      "stanza:type": "number",
-      "stanza:example": null,
-      "stanza:computed": true,
-      "stanza:description": "Axis ticks interval. If not set, in case of `continuous` scales, show 5 ticks at automatically chosen `neat` values, in case of `ordinal` scale, show ticks at all domain values. If set to 0, hide all ticks. In case of `ordinal` scale, setting this parameter will show only n-th ticks of the domain (i.e.: domain = ['a', 'b', 'c', 'd', 'e'], ticks_interval set to 2 will show ticks at 'a', 'c' and 'e')",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "axis-y-ticks_labels_format",
-      "stanza:type": "text",
-      "stanza:example": "",
-      "stanza:default": "",
-      "stanza:description": "Axis ticks interval format, in d3.format string form",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "axis-y-gridlines_interval",
-      "stanza:type": "number",
-      "stanza:example": null,
-      "stanza:computed": true,
-      "stanza:description": "Axis gridlines interval. If not set, show 5 gridlines at `neat` values, if set to 0, not show gridlines.",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "axis-y-gridlines_interval_units",
-      "stanza:type": "single-choice",
-      "stanza:choice": [
-        "none",
-        "year",
-        "month",
-        "week",
-        "day",
-        "hour",
-        "minute",
-        "second"
-      ],
-      "stanza:example": "none",
-      "stanza:default": "none",
-      "stanza:description": "Axis grid lines interval units. (Effective only for time scale)",
-      "stanza:required": false
-    },
-
     {
       "stanza:key": "cell-color_key",
       "stanza:type": "text",
