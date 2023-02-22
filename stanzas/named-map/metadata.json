@@ -32,10 +32,29 @@
     {
       "stanza:key": "data-region",
       "stanza:type": "single-choice",
-      "stanza:choice": ["world", "us"],
+      "stanza:choice": ["world", "us", "japan", "user"],
       "stanza:example": "world",
-      "stanza:description": "Region of map",
+      "stanza:description": "Region of map. If you use your own topojsondata, select \"user\" and fill in \"data-user_topojson\".",
       "stanza:required": true
+    },
+    {
+      "stanza:key": "data-layer",
+      "stanza:type": "text",
+      "stanza:example": "countries",
+      "stanza:description": "Specify the name of the key where desired GeometryCollection object located in topojson. For preset maps listed in param 'data-region': for the \"world\", there are two available names: \"countries\" and \"land\". For \"us\" there are three: \"counties\", \"states\" or \"nation\". For \"japan\", there is only one, named \"japan\".",
+      "stanza:required": true
+    },
+    {
+      "stanza:key": "data-user_topojson",
+      "stanza:type": "text",
+      "stanza:example": "",
+      "stanza:description": "User topojson data"
+    },
+    {
+      "stanza:key": "data-property",
+      "stanza:type": "text",
+      "stanza:example": "id",
+      "stanza:description": "The topojson property that you want to match against the \"data-url\" key (\"area-color_key\"). e.g.) id, properties.name. (If the hierarchy is one level deeper, separate it with \".\")"
     },
     {
       "stanza:key": "legend-visible",
@@ -59,8 +78,14 @@
     {
       "stanza:key": "area-color_key",
       "stanza:type": "text",
+      "stanza:example": "id",
+      "stanza:description": "Key to match with topojson key"
+    },
+    {
+      "stanza:key": "area-color_value",
+      "stanza:type": "text",
       "stanza:example": "rate",
-      "stanza:description": "Data key to color the data points. if all data keys values includes hex color, use that color, otherwise use ordinal scale from the theme colors."
+      "stanza:description": "Data value key."
     },
     {
       "stanza:key": "area-color_min",
