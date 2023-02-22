@@ -1,18 +1,16 @@
-import * as d3 from "d3";
-import loadData from "togostanza-utils/load-data";
+import MetaStanza from "../../lib/MetaStanza";
+import { select } from "d3";
 import ToolTip from "@/lib/ToolTip";
 import Legend from "@/lib/Legend2";
 import { getGradationColor } from "@/lib/ColorGenerator";
+import { Axis } from "../../lib/AxisMixin";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
   downloadJSONMenuItem,
   downloadCSVMenuItem,
   downloadTSVMenuItem,
-  appendCustomCss,
 } from "togostanza-utils";
-import { Axis } from "../../lib/AxisMixin";
-import MetaStanza from "../../lib/MetaStanza";
 
 export default class Heatmap extends MetaStanza {
   menu() {
@@ -25,23 +23,10 @@ export default class Heatmap extends MetaStanza {
     ];
   }
 
-  css(key) {
-    return getComputedStyle(this.element).getPropertyValue(key);
-  }
-
   async renderNext() {
-    const root = this.root.querySelector("main");
-
     // Parameters
-    const dataset = await loadData(
-      this.params["data-url"],
-      this.params["data-type"],
-      root
-    );
-    this._data = dataset;
-
-    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
-
+    const root = this._main;
+    const dataset = this._data;
     const legendTitle = this.params["legend-title"];
     const legendShow = this.params["legend-visible"];
     const legendGroups = this.params["legend-levels_number"];
@@ -56,6 +41,32 @@ export default class Heatmap extends MetaStanza {
     const width = parseFloat(this.css("--togostanza-canvas-width")) || 0;
     const height = parseFloat(this.css("--togostanza-canvas-height")) || 0;
     const borderWidth = parseFloat(this.css("--togostanza-border-width")) || 0;
+
+    // Color scale
+    const cellColorKey = this.params["cell-color_key"].trim();
+    const cellColorMin = this.params["cell-color_min"];
+    const cellColorMid = this.params["cell-color_mid"];
+    const cellColorMax = this.params["cell-color_max"];
+    let cellDomainMin = parseFloat(this.params["cell-value_min"]);
+    let cellDomainMid = parseFloat(this.params["cell-value_mid"]);
+    let cellDomainMax = parseFloat(this.params["cell-value_max"]);
+    const values = dataset.map((d) => parseFloat(d[cellColorKey]));
+
+    if (isNaN(parseFloat(cellDomainMin))) {
+      cellDomainMin = Math.min(...values);
+    }
+    if (isNaN(parseFloat(cellDomainMax))) {
+      cellDomainMax = Math.max(...values);
+    }
+    if (isNaN(parseFloat(cellDomainMid))) {
+      cellDomainMid = (cellDomainMax + cellDomainMin) / 2;
+    }
+
+    const setColor = getGradationColor(
+      this,
+      [cellColorMin, cellColorMid, cellColorMax],
+      [cellDomainMin, cellDomainMid, cellDomainMax]
+    );
 
     // Axis
     const axisArea = {
@@ -106,42 +117,15 @@ export default class Heatmap extends MetaStanza {
     xParams.margins = AxesMargins;
     yParams.margins = AxesMargins;
 
-    // Color scale
-    const cellColorKey = this.params["cell-color_key"].trim();
-    const cellColorMin = this.params["cell-color_min"];
-    const cellColorMid = this.params["cell-color_mid"];
-    const cellColorMax = this.params["cell-color_max"];
-    let cellDomainMin = parseFloat(this.params["cell-value_min"]);
-    let cellDomainMid = parseFloat(this.params["cell-value_mid"]);
-    let cellDomainMax = parseFloat(this.params["cell-value_max"]);
-    const values = dataset.map((d) => parseFloat(d[cellColorKey]));
-
-    if (isNaN(parseFloat(cellDomainMin))) {
-      cellDomainMin = Math.min(...values);
-    }
-    if (isNaN(parseFloat(cellDomainMax))) {
-      cellDomainMax = Math.max(...values);
-    }
-    if (isNaN(parseFloat(cellDomainMid))) {
-      cellDomainMid = (cellDomainMax + cellDomainMin) / 2;
-    }
-
-    const setColor = getGradationColor(
-      this,
-      [cellColorMin, cellColorMid, cellColorMax],
-      [cellDomainMin, cellDomainMid, cellDomainMax]
-    );
-
     //Drawing area
-    let svg = d3.select(this._main.querySelector("svg"));
+    let svg = select(root.querySelector("svg"));
     if (!svg.empty()) {
       svg.remove();
       this.xAxisGen = null;
       this.yAxisGen = null;
     }
 
-    svg = d3
-      .select(root)
+    svg = select(root)
       .append("svg")
       .classed("svg", true)
       .attr("width", width)
@@ -213,20 +197,18 @@ export default class Heatmap extends MetaStanza {
 
     //Function of mouseover and mouse leave
     function mouseover() {
-      d3.select(this).classed("highlighted", true).raise();
+      select(this).classed("highlighted", true).raise();
       if (!borderWidth) {
-        d3.select(this)
+        select(this)
           .classed("highlighted", true)
           .style("stroke-width", "1px")
           .raise();
       }
     }
     function mouseleave() {
-      d3.select(this).classed("highlighted", false);
+      select(this).classed("highlighted", false);
       if (!borderWidth) {
-        d3.select(this)
-          .classed("highlighted", false)
-          .style("stroke-width", "0px");
+        select(this).classed("highlighted", false).style("stroke-width", "0px");
         graphArea.selectAll(".x-axis").raise();
         graphArea.selectAll(".y-axis").raise();
       }
