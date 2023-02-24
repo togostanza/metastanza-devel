@@ -13,7 +13,6 @@ import {
 } from "d3";
 import ToolTip from "@/lib/ToolTip";
 import { StanzaCirculateColorGenerator } from "@/lib/ColorGenerator";
-import { getMarginsFromCSSString } from "../../lib/utils";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -50,9 +49,7 @@ export default class Tree extends MetaStanza {
       dataset = this._data,
       width = parseFloat(this.css("--togostanza-canvas-width")) || 0,
       height = parseFloat(this.css("--togostanza-canvas-height")) || 0,
-      padding = getMarginsFromCSSString(
-        this.css("--togostanza-canvas-padding")
-      ),
+      padding = this.MARGIN,
       sortKey = this.params["sort-key"].trim(),
       sortOrder = this.params["sort-order"],
       isLeafNodesAlign = this.params["graph-align_leaf_nodes"],
@@ -213,17 +210,19 @@ export default class Tree extends MetaStanza {
       }
     ) => {
       //Error handling
+      const errorMessage = root.querySelector(`.error-message`);
+      if (errorMessage) {
+        root.removeChild(errorMessage);
+      }
       switch (layout) {
         case HORIZONTAL:
           if (width - margin.right - margin.left < 0) {
-            root.innerHTML = "<p>width is too small!</p>";
-            throw new Error("width is too small!");
+            handleError("width-error", "width is too small!");
           }
           break;
         case VERTICAL:
           if (height - margin.left - margin.right < 0) {
-            root.innerHTML = "<p>height is too small!</p>";
-            throw new Error("height is too small!");
+            handleError("heigth-error", "height is too small!");
           }
           break;
       }
@@ -231,8 +230,7 @@ export default class Tree extends MetaStanza {
         Math.max(maxRadius, minRadius) * 2 >= width ||
         Math.max(maxRadius, minRadius) * 2 >= height
       ) {
-        root.innerHTML = "<p>node size is too big for width and height!</p>";
-        throw new Error("node size is too big for width and height!");
+        handleError("node-error", "node size is too big for width and height!");
       }
 
       //Movement of drawing position
@@ -672,7 +670,21 @@ export default class Tree extends MetaStanza {
       update(treeRoot);
     };
 
-    //Drawing
+    // Drawing
     draw();
+
+    // Error handling function
+    function handleError(errorClass, message) {
+      const existError = root.querySelector(`.${errorClass}`);
+      if (existError) {
+        root.removeChild(existError);
+      }
+      const errorElement = document.createElement("p");
+      errorElement.classList.add(`${errorClass}`, "error-message");
+      errorElement.innerHTML = `<p>${message}</p>`;
+      root.prepend(errorElement);
+
+      throw new Error(`${message}`);
+    }
   }
 }
