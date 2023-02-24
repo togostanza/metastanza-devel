@@ -1,7 +1,5 @@
-import Stanza from "togostanza/stanza";
+import MetaStanza from "../../lib/MetaStanza";
 import * as d3 from "d3";
-import loadData from "togostanza-utils/load-data";
-import { getMarginsFromCSSString } from "../../lib/utils";
 import { StanzaColorGenerator } from "../../lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
@@ -9,12 +7,11 @@ import {
   downloadJSONMenuItem,
   downloadCSVMenuItem,
   downloadTSVMenuItem,
-  appendCustomCss,
 } from "togostanza-utils";
 
 let path;
 
-export default class Sunburst extends Stanza {
+export default class Sunburst extends MetaStanza {
   constructor(...args) {
     super(...args);
     this.state = {
@@ -39,7 +36,7 @@ export default class Sunburst extends Stanza {
     }
   }
 
-  async render() {
+  async renderNext() {
     this.state = new Proxy(this.state, {
       set(target, key, value) {
         if (key === "currentId") {
@@ -59,16 +56,14 @@ export default class Sunburst extends Stanza {
     };
 
     const state = this.state;
-
     const dispatcher = this.element;
+    const main = this._main;
+    const data = this._data;
 
-    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
     // get value of css vars
-    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
-
-    const width = parseFloat(css("--togostanza-canvas-width"));
-    const height = parseFloat(css("--togostanza-canvas-height"));
-    const padding = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
+    const width = parseFloat(this.css("--togostanza-canvas-width"));
+    const height = parseFloat(this.css("--togostanza-canvas-height"));
+    const padding = this.MARGIN;
 
     const valueKey = this.params["node-value_key"].trim();
     const labelKey = this.params["node-label_key"].trim();
@@ -81,14 +76,6 @@ export default class Sunburst extends Stanza {
       parseFloat(this.params["max_depth"]) > 0
         ? parseFloat(this.params["max_depth"])
         : 1;
-
-    const main = this.root.querySelector("main");
-    const data = await loadData(
-      this.params["data-url"],
-      this.params["data-type"],
-      main
-    );
-    this._data = data;
 
     const colorScale = new StanzaColorGenerator(this).stanzaColor;
     const color = d3.scaleOrdinal(colorScale);
