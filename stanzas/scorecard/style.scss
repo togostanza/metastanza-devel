@@ -1,14 +1,20 @@
 // Load the repository-wide global style here. The actual file is located at ../common.scss for details.
 @use "@/common.scss";
 
-.title-key {
+.title {
   fill: var(--togostanza-fonts-font_color_secondary);
   font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
   font-weight: var(--togostanza-fonts-font_weight_secondary);
 }
 
-.score-value {
+.score {
   fill: var(--togostanza-fonts-font_color_primary);
-  font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
   font-weight: var(--togostanza-fonts-font_weight_primary);
+}
+
+.prefix,
+.suffix {
+  fill: var(--togostanza-fonts-font_color_primary);
+  font-size: calc((var(--togostanza-fonts-font_size_primary) * 0.5) * 1px);
+  font-weight: var(--togostanza-fonts-font_weight_secondary);
 }

@@ -27,7 +27,7 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "misc-custom_css_url",
+      "stanza:key": "togostanza-custom_css_url",
       "stanza:type": "text",
       "stanza:example": "",
       "stanza:default": "",

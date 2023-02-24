@@ -23,6 +23,7 @@ svg > defs > marker > path {
   fill: var(--togostanza-theme-series_0_color);
   stroke: var(--togostanza-border-color);
   stroke-width: var(--togostanza-border-width);
+  cursor: pointer;
 }
 
 .link {
