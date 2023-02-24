@@ -1,5 +1,17 @@
 import MetaStanza from "../../lib/MetaStanza";
-import * as d3 from "d3";
+import {
+  select,
+  scaleOrdinal,
+  stratify,
+  format,
+  hierarchy,
+  sum,
+  max,
+  interpolate,
+  partition as d3partition,
+  arc as d3arc,
+  path as d3path,
+} from "d3";
 import { StanzaColorGenerator } from "../../lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
@@ -78,7 +90,7 @@ export default class Sunburst extends MetaStanza {
         : 1;
 
     const colorScale = new StanzaColorGenerator(this).stanzaColor;
-    const color = d3.scaleOrdinal(colorScale);
+    const color = scaleOrdinal(colorScale);
 
     data.forEach((node) => {
       node.id = "" + node.id;
@@ -117,8 +129,7 @@ export default class Sunburst extends MetaStanza {
         item.id === "-1"
     );
 
-    const stratifiedData = d3
-      .stratify()
+    const stratifiedData = stratify()
       .id(function (d) {
         return d.id;
       })
@@ -126,10 +137,10 @@ export default class Sunburst extends MetaStanza {
         return d.parent;
       })(dataset);
 
-    const formatNumber = d3.format(",d");
+    const formatNumber = format(",d");
 
     const partition = (data) => {
-      const root = d3.hierarchy(data);
+      const root = hierarchy(data);
       switch (scalingMethod) {
         case "By value":
           root.sum((d) => d.data[valueKey]);
@@ -150,8 +161,8 @@ export default class Sunburst extends MetaStanza {
       root
         .sort((a, b) => b.value - a.value)
         // store real values for number labels in d.value2
-        .each((d) => (d.value2 = d3.sum(d, (dd) => dd.data.data[valueKey])));
-      return d3.partition().size([2 * Math.PI, root.height + 1])(root);
+        .each((d) => (d.value2 = sum(d, (dd) => dd.data.data[valueKey])));
+      return d3partition().size([2 * Math.PI, root.height + 1])(root);
     };
 
     const root = partition(stratifiedData);
@@ -159,7 +170,7 @@ export default class Sunburst extends MetaStanza {
     root.each((d) => (d.current = d));
 
     // if depthLim 0 of negative, show all levels
-    const maxDepth = d3.max(root, (d) => d.depth);
+    const maxDepth = max(root, (d) => d.depth);
     if (depthLim <= 0 || depthLim > maxDepth) {
       depthLim = maxDepth;
     }
@@ -179,8 +190,7 @@ export default class Sunburst extends MetaStanza {
       throw new Error("Padding is too big for given width and height!");
     }
 
-    const arc = d3
-      .arc()
+    const arc = d3arc()
       .startAngle((d) => d.x0)
       .endAngle((d) => d.x1)
       .padAngle((d) => Math.min((d.x1 - d.x0) / 2, nodesGapWidth / 500))
@@ -210,7 +220,7 @@ export default class Sunburst extends MetaStanza {
         r = Math.max(0, (d.y1 - (d.y1 - d.y0) / 5) * radius);
       }
 
-      const path = d3.path();
+      const path = d3path();
       path.arc(0, 0, r, angles[0], angles[1], invertDirection);
       return path.toString();
     };
@@ -232,7 +242,7 @@ export default class Sunburst extends MetaStanza {
         r = Math.max(0, (d.y1 - (d.y1 - d.y0) / 2.5) * radius);
       }
 
-      const path = d3.path();
+      const path = d3path();
       path.arc(0, 0, r, angles[0], angles[1], invertDirection);
       return path.toString();
     };
@@ -248,9 +258,8 @@ export default class Sunburst extends MetaStanza {
       return text.length * charWidth < perimeter;
     }
 
-    d3.select(main).select("svg").remove();
-    const svg = d3
-      .select(main)
+    select(main).select("svg").remove();
+    const svg = select(main)
       .append("svg")
       .attr("width", width)
       .attr("height", height)
@@ -411,7 +420,7 @@ export default class Sunburst extends MetaStanza {
       path
         .transition(t)
         .tween("data", (d) => {
-          const i = d3.interpolate(d.current, d.target);
+          const i = interpolate(d.current, d.target);
           return (t) => (d.current = i(t));
         })
         .filter(function (d) {
