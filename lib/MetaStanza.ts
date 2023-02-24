@@ -6,8 +6,11 @@ import { getMarginsFromCSSString, MarginsI } from "./utils";
 export default abstract class extends Stanza {
   _data: any;
   _main: HTMLElement;
-  MARGIN: MarginsI;
   abstract renderNext(): Promise<void>;
+
+  get MARGIN(): MarginsI {
+    return getMarginsFromCSSString(this.css("--togostanza-canvas-padding"));
+  }
 
   css(key: string) {
     return getComputedStyle(this.element).getPropertyValue(key);
@@ -17,10 +20,6 @@ export default abstract class extends Stanza {
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     this._main = this.root.querySelector("main");
-
-    this.MARGIN = getMarginsFromCSSString(
-      this.css("--togostanza-canvas-padding")
-    );
 
     this._data = await loadData(
       this.params["data-url"],
