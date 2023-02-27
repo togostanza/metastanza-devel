@@ -1,4 +1,4 @@
-import Stanza from "togostanza/stanza";
+import MetaStanza from "../../lib/MetaStanza";
 import {
   select,
   scaleOrdinal,
@@ -11,7 +11,6 @@ import {
   interpolate,
 } from "d3";
 import uid from "./uid";
-import loadData from "togostanza-utils/load-data"; //"@/lib/load-data";
 import { StanzaColorGenerator } from "@/lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
@@ -19,13 +18,11 @@ import {
   downloadJSONMenuItem,
   downloadCSVMenuItem,
   downloadTSVMenuItem,
-  appendCustomCss,
 } from "togostanza-utils"; // from "@/lib/metastanza_utils.js"; //
 import shadeColor from "./shadeColor";
 import treemapBinaryLog from "./treemapBinaryLog";
-import { getMarginsFromCSSString } from "../../lib/utils";
 
-export default class TreeMapStanza extends Stanza {
+export default class TreeMapStanza extends MetaStanza {
   menu() {
     return [
       downloadSvgMenuItem(this, "treemap"),
@@ -36,15 +33,10 @@ export default class TreeMapStanza extends Stanza {
     ];
   }
 
-  async render() {
-    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
-
-    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
-
-    const width = parseInt(css("--togostanza-canvas-width"));
-    const height = parseInt(css("--togostanza-canvas-height"));
-
-    const MARGIN = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
+  async renderNext() {
+    const width = parseInt(this.css("--togostanza-canvas-width"));
+    const height = parseInt(this.css("--togostanza-canvas-height"));
+    const MARGIN = this.MARGIN;
 
     const WIDTH = width - MARGIN.LEFT - MARGIN.RIGHT;
     const HEIGHT = height - MARGIN.TOP - MARGIN.BOTTOM;
@@ -57,12 +49,7 @@ export default class TreeMapStanza extends Stanza {
 
     const togostanzaColors = new StanzaColorGenerator(this).stanzaColor;
 
-    const data = await loadData(
-      this.params["data-url"],
-      this.params["data-type"],
-      this.root.querySelector("main")
-    );
-    this._data = data;
+    const data = this._data;
 
     // filter out all elements with n=0
     const filteredData = data.filter(
@@ -92,7 +79,7 @@ export default class TreeMapStanza extends Stanza {
       filteredData.push({ id: -1, value: "", label: "" });
     }
 
-    const treeMapElement = this.root.querySelector("main");
+    const treeMapElement = this._main;
     const colorScale = scaleOrdinal(togostanzaColors);
 
     const opts = {
