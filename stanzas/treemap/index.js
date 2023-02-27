@@ -1,5 +1,15 @@
 import Stanza from "togostanza/stanza";
-import * as d3 from "d3";
+import {
+  select,
+  scaleOrdinal,
+  scaleLinear,
+  stratify,
+  format as d3format,
+  treemap as d3treemap,
+  hierarchy,
+  sum,
+  interpolate,
+} from "d3";
 import uid from "./uid";
 import loadData from "togostanza-utils/load-data"; //"@/lib/load-data";
 import { StanzaColorGenerator } from "@/lib/ColorGenerator";
@@ -83,7 +93,7 @@ export default class TreeMapStanza extends Stanza {
     }
 
     const treeMapElement = this.root.querySelector("main");
-    const colorScale = d3.scaleOrdinal(togostanzaColors);
+    const colorScale = scaleOrdinal(togostanzaColors);
 
     const opts = {
       WIDTH,
@@ -114,8 +124,7 @@ function draw(el, dataset, opts) {
   const { WIDTH, HEIGHT, logScale, colorScale, gapWidth, labelKey, valueKey } =
     opts;
 
-  const nested = d3
-    .stratify()
+  const nested = stratify()
     .id(function (d) {
       return d.id;
     })
@@ -133,8 +142,8 @@ function draw(el, dataset, opts) {
     adjustedHeight = 10;
   }
 
-  const x = d3.scaleLinear().rangeRound([0, WIDTH]);
-  const y = d3.scaleLinear().rangeRound([0, adjustedHeight]);
+  const x = scaleLinear().rangeRound([0, WIDTH]);
+  const y = scaleLinear().rangeRound([0, adjustedHeight]);
 
   // make path-like string for node
   const name = (d) => {
@@ -150,7 +159,7 @@ function draw(el, dataset, opts) {
       .join("/");
   };
 
-  const format = d3.format(",d");
+  const format = d3format(",d");
 
   //move and scale children nodes to fit into parent nodes
   function tile(node, x0, y0, x1, y1) {
@@ -164,9 +173,8 @@ function draw(el, dataset, opts) {
   }
 
   const treemap = (data) =>
-    d3.treemap().tile(tile)(
-      d3
-        .hierarchy(data)
+    d3treemap().tile(tile)(
+      hierarchy(data)
         .sum((d) => d.data[valueKey])
         .sort((a, b) => b.value - a.value)
         .each((d) => {
@@ -174,8 +182,7 @@ function draw(el, dataset, opts) {
         })
     );
 
-  const svg = d3
-    .select(el)
+  const svg = select(el)
     .append("svg")
     .attr("width", WIDTH)
     .attr("height", HEIGHT)
@@ -211,7 +218,7 @@ function draw(el, dataset, opts) {
           ? ""
           : `${name(d)}\n${
               d?.children
-                ? format(d3.sum(d, (d) => d?.data?.data[valueKey] || 0))
+                ? format(sum(d, (d) => d?.data?.data[valueKey] || 0))
                 : d.data.data[valueKey]
             }`
       );
@@ -284,7 +291,7 @@ function draw(el, dataset, opts) {
       let lineSeparator;
 
       //nodes[i] is rect
-      const text = d3.select(nodes[i].parentNode).select("text");
+      const text = select(nodes[i].parentNode).select("text");
 
       if (text.empty()) {
         return;
@@ -351,7 +358,7 @@ function draw(el, dataset, opts) {
         .attr("class", "number-label")
         .attr("dy", "1.6em")
         .attr("x", "1.6em")
-        .text((d) => format(d3.sum(d, (d) => d?.data?.data[valueKey] || 0)));
+        .text((d) => format(sum(d, (d) => d?.data?.data[valueKey] || 0)));
     }
   }
 
@@ -425,7 +432,7 @@ function draw(el, dataset, opts) {
       .call((t) =>
         group1
           .transition(t)
-          .attrTween("opacity", () => d3.interpolate(0, 1))
+          .attrTween("opacity", () => interpolate(0, 1))
           .call(position, d, false)
       );
   }
@@ -447,7 +454,7 @@ function draw(el, dataset, opts) {
         group0
           .transition(t)
           .remove()
-          .attrTween("opacity", () => d3.interpolate(1, 0))
+          .attrTween("opacity", () => interpolate(1, 0))
           .call(position, d, false)
       )
       .call((t) => group1.transition(t).call(position, d.parent, false));
