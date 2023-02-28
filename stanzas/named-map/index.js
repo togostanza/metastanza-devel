@@ -54,6 +54,8 @@ export default class regionGeographicMap extends MetaStanza {
     const userTopoJson = this.params["data-user_topojson"].trim();
     if (userTopoJson) {
       REGION.set("user", { url: userTopoJson });
+    } else {
+      REGION.delete("user");
     }
 
     const [property1, property2] = this.params["data-property"]
@@ -113,6 +115,11 @@ export default class regionGeographicMap extends MetaStanza {
       .attr("width", svgWidth)
       .attr("height", svgHeight);
     const g = svg.append("g").classed("g-path", true);
+
+    const existError = root.querySelector(".error");
+    if (existError) {
+      root.removeChild(existError);
+    }
 
     // Setting  projection
     const projection = region === "us" ? geoAlbersUsa() : geoMercator();
@@ -179,48 +186,30 @@ export default class regionGeographicMap extends MetaStanza {
           -gPathBbox.x + (svgWidth / gPathScale - gPathBbox.width) / 2
         },${-gPathBbox.y + (svgHeight / gPathScale - gPathBbox.height) / 2})`
       );
-
-      // Setting tooltip
-      this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
-
-      throw new Error(
-        '"data-region" and "data-layer" (and "data-user_topojson") is not set correctly'
-      );
     } catch (error) {
-      handleError(
-        error,
-        "Cannot read properties of undefined (reading 'type')",
-        "error-types",
-        `<p>Set <strong>"data-region"</strong> and <strong>"data-layer"</strong>
+      const errorElement = document.createElement("p");
+      errorElement.classList.add("error");
+
+      const topoJsonTypeEl = () =>
+        topoJsonType === undefined
+          ? ""
+          : `( <strong>${topoJsonType.join("</strong>, <strong>")}</strong> )`;
+
+      if (region === "user") {
+        errorElement.innerHTML = `<p>Set <strong>"data-user_topojson"</strong> and <strong>"data-layer"</strong>
+          ${topoJsonTypeEl()} correctly !</p>`;
+      } else {
+        errorElement.innerHTML = `<p>Set <strong>"data-region"</strong> and <strong>"data-layer"</strong>
         ( <strong>${topoJsonType.join(
           "</strong>, <strong>"
-        )}</strong> ) correctly !</p>`
-      );
+        )}</strong> ) correctly !</p>`;
+      }
 
-      handleError(
-        error,
-        "Cannot read properties of undefined (reading 'url')",
-        "error-url",
-        `<p>Set <strong>"data-user_topojson"</strong> and <strong>"data-layer"</strong>
-        ( <strong>${topoJsonType.join(
-          "</strong>, <strong>"
-        )}</strong> ) correctly !</p>`
-      );
+      root.prepend(errorElement);
     }
 
-    // Error handling
-    function handleError(error, errorMessage, errorClass, message) {
-      const existError = root.querySelector(`.${errorClass}`);
-      if (existError) {
-        root.removeChild(existError);
-      }
-      if (error.message === errorMessage) {
-        const errorElement = document.createElement("p");
-        errorElement.classList.add(errorClass);
-        errorElement.innerHTML = message;
-        root.prepend(errorElement);
-      }
-    }
+    // Setting tooltip
+    this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
 
     // Setting legend
     if (legendVisible) {
