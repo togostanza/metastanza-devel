@@ -19,6 +19,14 @@
       "stanza:required": true
     },
     {
+      "stanza:key": "data-type",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["text"],
+      "stanza:example": "text",
+      "stanza:description": "Data type",
+      "stanza:required": true
+    },
+    {
       "stanza:key": "data-mode",
       "stanza:type": "single-choice",
       "stanza:choice": ["text", "markdown"],

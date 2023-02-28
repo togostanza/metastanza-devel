@@ -1,12 +1,10 @@
-import Stanza from "togostanza/stanza";
-import loadData from "togostanza-utils/load-data";
-import * as commonmark from "commonmark";
+import MetaStanza from "../../lib/MetaStanza";
+import { Parser, HtmlRenderer } from "commonmark";
 import hljs from "highlight.js";
 import "katex/dist/katex.mjs";
 import renderMathInElement from "katex/dist/contrib/auto-render.mjs";
-import { appendCustomCss } from "togostanza-utils";
 
-export default class Text extends Stanza {
+export default class Text extends MetaStanza {
   constructor() {
     super(...arguments);
 
@@ -21,7 +19,7 @@ export default class Text extends Stanza {
         type: "item",
         label: "Download Text",
         handler: () => {
-          const textBlob = new Blob([this._dataset], {
+          const textBlob = new Blob([this._data], {
             type: "text/plain",
           });
           const textUrl = URL.createObjectURL(textBlob);
@@ -48,12 +46,9 @@ export default class Text extends Stanza {
     return "text.txt";
   }
 
-  async render() {
-    const main = this.root.querySelector("main");
-    const value = await loadData(this.params["data-url"], "text", main);
-    this._dataset = value;
-
-    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
+  async renderNext() {
+    const root = this._main;
+    const data = this._data;
     appendHighlightCss(this, this.params["data-highlight_css_url"]);
 
     const existEl = this.root.querySelectorAll(".container");
@@ -63,23 +58,23 @@ export default class Text extends Stanza {
 
     const container = document.createElement("div");
     container.classList.add("container");
-    main.append(container);
+    root.append(container);
 
     const paragraph = document.createElement("p");
     paragraph.classList.add("paragraph");
     container.append(paragraph);
 
     if (this._isMarkdownMode()) {
-      const parser = new commonmark.Parser();
-      const renderer = new commonmark.HtmlRenderer();
-      const html = renderer.render(parser.parse(value));
+      const parser = new Parser();
+      const renderer = new HtmlRenderer();
+      const html = renderer.render(parser.parse(data));
       paragraph.innerHTML = html;
-      main.querySelectorAll("pre code").forEach((el) => {
+      root.querySelectorAll("pre code").forEach((el) => {
         hljs.highlightElement(el);
       });
-      renderMathInElement(main);
+      renderMathInElement(root);
     } else {
-      paragraph.textContent = this._dataset;
+      paragraph.textContent = data;
     }
   }
 }
