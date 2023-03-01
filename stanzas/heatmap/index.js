@@ -1,20 +1,18 @@
-import Stanza from "togostanza/stanza";
-import * as d3 from "d3";
-import loadData from "togostanza-utils/load-data";
+import MetaStanza from "../../lib/MetaStanza";
+import { select } from "d3";
 import ToolTip from "@/lib/ToolTip";
 import Legend from "@/lib/Legend2";
-import { getMarginsFromCSSString } from "../../lib/utils";
 import { getGradationColor } from "@/lib/ColorGenerator";
+import { Axis } from "../../lib/AxisMixin";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
   downloadJSONMenuItem,
   downloadCSVMenuItem,
   downloadTSVMenuItem,
-  appendCustomCss,
 } from "togostanza-utils";
 
-export default class Heatmap extends Stanza {
+export default class Heatmap extends MetaStanza {
   menu() {
     return [
       downloadSvgMenuItem(this, "heatmap"),
@@ -25,44 +23,27 @@ export default class Heatmap extends Stanza {
     ];
   }
 
-  css(key) {
-    return getComputedStyle(this.element).getPropertyValue(key);
-  }
-
-  async render() {
-    const root = this.root.querySelector("main");
-
+  async renderNext() {
+    // Parameters
+    const root = this._main;
+    const dataset = this._data;
+    const legendTitle = this.params["legend-title"];
+    const legendShow = this.params["legend-visible"];
+    const legendGroups = this.params["legend-levels_number"];
+    const tooltipKey = this.params["tooltips-key"].trim();
+    const tooltipHTML = (d) => d[tooltipKey];
     if (!this.tooltip) {
       this.tooltip = new ToolTip();
       root.append(this.tooltip);
     }
 
-    const legendShow = this.params["legend-visible"];
-
-    // Parameters
-    const dataset = await loadData(
-      this.params["data-url"],
-      this.params["data-type"],
-      root
-    );
-    this._data = dataset;
-
-    appendCustomCss(this, this.params["custom_css_url"]);
-    const cellColorKey = this.params["cell-color_key"];
-    const xKey = this.params["axis-x_key"];
-    const yKey = this.params["axis-y_key"];
-    const xTitle = this.params["axis-x-title"] || xKey;
-    const yTitle = this.params["axis-y-title"] || yKey;
-    const xLabelAngle = this.params["axis-x-ticks_labels_angle"] || 0;
-    const yLabelAngle = this.params["axis-y-ticks_labels_angle"] || 0;
-    const axisXTitlePadding = this.params["axis-x-title_padding"] || 0;
-    const axisYTitlePadding = this.params["axis-y-title_padding"] || 0;
-    const legendTitle = this.params["legend-title"];
-    const legendGroups = this.params["legend-groups"];
-    const tooltipKey = this.params["tooltips-key"];
-    const tooltipHTML = (d) => d[tooltipKey];
+    // Styles
+    const width = parseFloat(this.css("--togostanza-canvas-width")) || 0;
+    const height = parseFloat(this.css("--togostanza-canvas-height")) || 0;
+    const borderWidth = parseFloat(this.css("--togostanza-border-width")) || 0;
 
     // Color scale
+    const cellColorKey = this.params["cell-color_key"].trim();
     const cellColorMin = this.params["cell-color_min"];
     const cellColorMid = this.params["cell-color_mid"];
     const cellColorMax = this.params["cell-color_max"];
@@ -87,81 +68,87 @@ export default class Heatmap extends Stanza {
       [cellDomainMin, cellDomainMid, cellDomainMax]
     );
 
-    //Styles
-    const fontSize = parseFloat(
-      this.css("--togostanza-fonts-font_size_primary")
-    );
-    const width = parseFloat(this.css("--togostanza-canvas-width"));
-    const height = parseFloat(this.css("--togostanza-canvas-height"));
-    const padding = getMarginsFromCSSString(
-      this.css("--togostanza-canvas-padding")
-    );
-    const svgWidth = width - padding.LEFT - padding.RIGHT;
-    const svgHeight = height - padding.TOP - padding.BOTTOM;
-
-    const borderWidth =
-      parseFloat(this.css("--togostanza-border-width")) > 0
-        ? parseFloat(this.css("--togostanza-border-width"))
-        : 0;
-    const tickSize = 2;
-
-    const rows = [...new Set(dataset.map((d) => d[xKey]))];
-    const columns = [...new Set(dataset.map((d) => d[yKey]))];
-
-    d3.select(root).select("svg").remove();
-    //Drawing area
-    const svg = d3.select(root).append("svg").classed("svg", true);
-
-    //Get width of the largest column label
-    const maxColumnGroup = svg.append("g");
-    maxColumnGroup
-      .selectAll("text")
-      .data(columns)
-      .enter()
-      .append("text")
-      .text((d) => d);
-    const maxColumnWidth = maxColumnGroup.node().getBBox().width;
-    maxColumnGroup.remove();
-
-    //Margin between graph and title
-    const margin = {
-      left: axisYTitlePadding + maxColumnWidth + tickSize,
-      bottom: axisXTitlePadding + maxColumnWidth + tickSize,
+    // Axis
+    const axisArea = {
+      x: this.MARGIN.LEFT,
+      y: this.MARGIN.TOP,
+      width: width - this.MARGIN.LEFT - this.MARGIN.RIGHT,
+      height: height - this.MARGIN.TOP - this.MARGIN.BOTTOM,
     };
 
-    // x-axis scale
-    const x = d3
-      .scaleBand()
-      .domain(rows)
-      .range([0, svgWidth - margin.left - fontSize]);
-    x.paddingOuter(borderWidth / 2 / x.step());
-    const xAxisGenerator = d3
-      .axisBottom(x)
-      .tickSizeInner(tickSize)
-      .tickSizeOuter(0);
+    const xKey = this.params["axis-x-key"].trim();
+    const xParams = {
+      placement: this.params["axis-x-placement"],
+      domain: [...new Set(dataset.map((d) => d[xKey]))],
+      drawArea: axisArea,
+      tickLabelsAngle: this.params["axis-x-ticks_labels_angle"] || 0,
+      title: this.params["axis-x-title"] || xKey,
+      titlePadding: this.params["axis-x-title_padding"] || 0,
+      scale: "ordinal",
+      gridInterval: 0,
+      gridIntervalUnits: undefined,
+      ticksInterval: undefined,
+      ticksIntervalUnits: undefined,
+      ticksLabelsFormat: undefined,
+    };
 
-    // y-axis scale
-    const y = d3
-      .scaleBand()
-      .domain(columns)
-      .range([svgHeight - margin.bottom - fontSize, 0]);
-    y.paddingOuter(borderWidth / 2 / y.step());
-    const yAxisGenerator = d3
-      .axisLeft(y)
-      .tickSizeInner(tickSize)
-      .tickSizeOuter(0);
+    const yKey = this.params["axis-y-key"].trim();
+    const yParams = {
+      placement: this.params["axis-y-placement"],
+      domain: [...new Set(dataset.map((d) => d[yKey]))],
+      drawArea: axisArea,
+      tickLabelsAngle: this.params["axis-y-ticks_labels_angle"] || 0,
+      title: this.params["axis-y-title"] || yKey,
+      titlePadding: this.params["axis-y-title_padding"] || 0,
+      scale: "ordinal",
+      gridInterval: 0,
+      gridIntervalUnits: undefined,
+      ticksInterval: undefined,
+      ticksIntervalUnits: undefined,
+      ticksLabelsFormat: undefined,
+    };
 
-    //SVG area
-    svg
-      .attr("width", svgWidth + borderWidth / 2)
-      .attr("height", svgHeight + borderWidth / 2);
+    const AxesMargins = {
+      LEFT: yParams.placement === "left" ? yParams.titlePadding || 0 : 0,
+      RIGHT: yParams.placement === "right" ? yParams.titlePadding || 0 : 0,
+      TOP: xParams.placement === "top" ? xParams.titlePadding || 0 : 0,
+      BOTTOM: xParams.placement === "bottom" ? xParams.titlePadding || 0 : 0,
+    };
+    xParams.margins = AxesMargins;
+    yParams.margins = AxesMargins;
+
+    //Drawing area
+    let svg = select(root.querySelector("svg"));
+    if (!svg.empty()) {
+      svg.remove();
+      this.xAxisGen = null;
+      this.yAxisGen = null;
+    }
+
+    svg = select(root)
+      .append("svg")
+      .classed("svg", true)
+      .attr("width", width)
+      .attr("height", height);
+
+    //Drawing axis
+    if (!this.xAxisGen) {
+      this.xAxisGen = new Axis(svg.node());
+    }
+    if (!this.yAxisGen) {
+      this.yAxisGen = new Axis(svg.node());
+    }
+    this.xAxisGen.update(xParams);
+    this.yAxisGen.update(yParams);
+    this.xAxisGen.axisGen.tickSizeOuter(0);
+    this.yAxisGen.axisGen.tickSizeOuter(0);
 
     const graphArea = svg
       .append("g")
       .classed("graph", true)
       .attr(
         "transform",
-        `translate(${margin.left + fontSize},  ${borderWidth / 2})`
+        `translate(${this.xAxisGen.axisArea.x},${this.xAxisGen.axisArea.y})`
       );
 
     //Set for each rect
@@ -173,62 +160,17 @@ export default class Heatmap extends Stanza {
       .enter()
       .append("rect")
       .classed("rect", true)
-      .attr("x", (d) => x(d[xKey]))
-      .attr("y", (d) => y(d[yKey]))
-      .attr("data-tooltip-html", true)
+      .attr("x", (d) => this.xAxisGen.scale(d[xKey]))
+      .attr("y", (d) => this.yAxisGen.scale(d[yKey]))
       .attr("data-tooltip", (d) => tooltipHTML(d))
-      .attr("width", x.bandwidth())
-      .attr("height", y.bandwidth())
+      .attr("width", this.xAxisGen.scale.bandwidth())
+      .attr("height", this.yAxisGen.scale.bandwidth())
       .style("fill", (d) => setColor(d[cellColorKey]))
       .on("mouseover", mouseover)
       .on("mouseleave", mouseleave);
 
-    //Draw about the x-axis
-    const xaxisArea = graphArea
-      .append("g")
-      .classed("x-axis", true)
-      .attr(
-        "transform",
-        `translate(0, ${svgHeight - margin.bottom - fontSize})`
-      );
-    xaxisArea
-      .append("g")
-      .classed("x-axis-label", true)
-      .call(xAxisGenerator)
-      .selectAll("text")
-      .attr("transform", `rotate(${xLabelAngle})`);
-    xaxisArea
-      .append("text")
-      .attr("text-anchor", "middle")
-      .attr(
-        "transform",
-        `translate(${(svgWidth - margin.left - fontSize) / 2}, ${
-          margin.bottom
-        })`
-      )
-      .text(xTitle);
-
-    //Draw about the y-axis;
-    const yaxisArea = graphArea.append("g").classed("y-axis", true);
-    yaxisArea
-      .append("g")
-      .classed("y-axis-label", true)
-      .call(yAxisGenerator)
-      .selectAll("text")
-      .attr("transform", `rotate(${yLabelAngle})`);
-    yaxisArea
-      .append("text")
-      .attr("text-anchor", "middle")
-      .attr(
-        "transform",
-        `translate(-${margin.left}, ${
-          (svgHeight - margin.bottom - fontSize) / 2
-        }) rotate(-90)`
-      )
-      .text(yTitle);
-
-    //Give text class to all text
-    graphArea.selectAll("text").classed("text", true);
+    this.xAxisGen._g.raise();
+    this.yAxisGen._g.raise();
 
     this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
 
@@ -255,20 +197,18 @@ export default class Heatmap extends Stanza {
 
     //Function of mouseover and mouse leave
     function mouseover() {
-      d3.select(this).classed("highlighted", true).raise();
+      select(this).classed("highlighted", true).raise();
       if (!borderWidth) {
-        d3.select(this)
+        select(this)
           .classed("highlighted", true)
           .style("stroke-width", "1px")
           .raise();
       }
     }
     function mouseleave() {
-      d3.select(this).classed("highlighted", false);
+      select(this).classed("highlighted", false);
       if (!borderWidth) {
-        d3.select(this)
-          .classed("highlighted", false)
-          .style("stroke-width", "0px");
+        select(this).classed("highlighted", false).style("stroke-width", "0px");
         graphArea.selectAll(".x-axis").raise();
         graphArea.selectAll(".y-axis").raise();
       }

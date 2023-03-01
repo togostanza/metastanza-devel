@@ -43,13 +43,13 @@
       "stanza:description": "Legend title"
     },
     {
-      "stanza:key": "legend-groups",
+      "stanza:key": "legend-levels_number",
       "stanza:type": "number",
       "stanza:example": 10,
       "stanza:description": "Number of gradation colors between color-min and color-max"
     },
     {
-      "stanza:key": "axis-x_key",
+      "stanza:key": "axis-x-key",
       "stanza:type": "text",
       "stanza:example": "group",
       "stanza:description": "What X key in data to use",
@@ -58,12 +58,13 @@
     {
       "stanza:key": "axis-x-title",
       "stanza:type": "text",
+      "stanza:example": "",
       "stanza:description": "X axis title"
     },
     {
       "stanza:key": "axis-x-title_padding",
       "stanza:type": "number",
-      "stanza:example": 10,
+      "stanza:example": 40,
       "stanza:description": "Title and X axis gap in px"
     },
     {
@@ -73,7 +74,14 @@
       "stanza:description": "X ticks labels angle (in degree)"
     },
     {
-      "stanza:key": "axis-y_key",
+      "stanza:key": "axis-x-placement",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["bottom", "top"],
+      "stanza:example": "bottom",
+      "stanza:description": "axis placement"
+    },
+    {
+      "stanza:key": "axis-y-key",
       "stanza:type": "text",
       "stanza:example": "variable",
       "stanza:description": "What Y key in data to use",
@@ -82,12 +90,13 @@
     {
       "stanza:key": "axis-y-title",
       "stanza:type": "text",
+      "stanza:example": "",
       "stanza:description": "Y axis title"
     },
     {
       "stanza:key": "axis-y-title_padding",
       "stanza:type": "number",
-      "stanza:example": 10,
+      "stanza:example": 40,
       "stanza:description": "Title and Y axis gap in px"
     },
     {
@@ -97,10 +106,18 @@
       "stanza:description": "Y ticks labels angle (in degree)"
     },
     {
+      "stanza:key": "axis-y-placement",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["left", "right"],
+      "stanza:example": "left",
+      "stanza:description": "Y axis placement"
+    },
+    {
       "stanza:key": "cell-color_key",
       "stanza:type": "text",
       "stanza:example": "value",
-      "stanza:description": "Data key to color the data points. if all data keys values includes hex color, use that color, otherwise use ordinal scale from the theme colors."
+      "stanza:description": "Data key to color the data points. if all data keys values includes hex color, use that color, otherwise use ordinal scale from the theme colors.",
+      "stanza:required": true
     },
     {
       "stanza:key": "cell-color_min",
@@ -210,7 +227,7 @@
     {
       "stanza:key": "--togostanza-theme-background_color",
       "stanza:type": "color",
-      "stanza:default": "#F8F9FA",
+      "stanza:default": "rgba(255,255,255,0)",
       "stanza:description": "Background color"
     },
     {
@@ -250,7 +267,7 @@
       "stanza:description": "Border color for everything that have a border"
     },
     {
-      "stanza:key": "--togostanza-selected-border_color",
+      "stanza:key": "--togostanza-selected-color",
       "stanza:type": "color",
       "stanza:default": "#FFDF3D",
       "stanza:description": "Hover border color"
