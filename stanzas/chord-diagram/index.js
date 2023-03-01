@@ -3,7 +3,7 @@ import * as d3 from "d3";
 import { appendCustomCss } from "togostanza-utils";
 import loadData from "togostanza-utils/load-data";
 
-import { getStanzaInterpolateColor } from "@/lib/ColorGenerator";
+import { getInterpolateColor } from "@/lib/ColorGenerator";
 
 export default class ChordDiagram extends Stanza {
   async render() {
@@ -44,7 +44,7 @@ export default class ChordDiagram extends Stanza {
       return matrix;
     })();
 
-    const setColor = getStanzaInterpolateColor(this, names.length);
+    const setColor = getInterpolateColor(this, names.length);
 
     //Create arrow ribbon generator with radius and padding angle
     const ribbon = d3

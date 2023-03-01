@@ -2,7 +2,7 @@ import Stanza from "togostanza/stanza";
 import * as d3 from "d3";
 import uid from "./uid";
 import loadData from "togostanza-utils/load-data"; //"@/lib/load-data";
-import { StanzaColorGenerator } from "@/lib/ColorGenerator";
+import getStanzaColors from "@/lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -45,8 +45,6 @@ export default class TreeMapStanza extends Stanza {
     const labelKey = this.params["node-label_key"];
     const valueKey = this.params["node-value_key"];
 
-    const togostanzaColors = new StanzaColorGenerator(this).stanzaColor;
-
     const data = await loadData(
       this.params["data-url"],
       this.params["data-type"],
@@ -85,7 +83,7 @@ export default class TreeMapStanza extends Stanza {
     }
 
     const treeMapElement = this.root.querySelector("main");
-    const colorScale = d3.scaleOrdinal(togostanzaColors);
+    const colorScale = d3.scaleOrdinal(getStanzaColors(this));
 
     const opts = {
       WIDTH,

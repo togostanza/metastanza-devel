@@ -2,7 +2,7 @@ import Stanza from "togostanza/stanza";
 import * as d3 from "d3";
 import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
-import { StanzaCirculateColorGenerator } from "@/lib/ColorGenerator";
+import { getCirculateColor } from "@/lib/ColorGenerator";
 import { getMarginsFromCSSString } from "../../lib/utils";
 import {
   downloadSvgMenuItem,
@@ -155,19 +155,15 @@ export default class Tree extends Stanza {
       colorDatas.push(d.data);
     });
 
-    const colorGenerator = new StanzaCirculateColorGenerator(
-      this,
-      colorDatas,
-      colorGroup
-    );
+    const getColor = getCirculateColor(this, colorDatas, colorGroup);
 
     const setColor = (d) => {
       if (d.data[colorKey]) {
         return d.data[colorKey];
       } else {
         return d.data[colorGroup]
-          ? colorGenerator.getColor(d.data[colorGroup])
-          : colorGenerator.defaultColor;
+          ? getColor.groupColor(d.data[colorGroup])
+          : getColor.stanzaColors[0];
       }
     };
 

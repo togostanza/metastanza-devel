@@ -2,7 +2,7 @@ import Stanza from "togostanza/stanza";
 import * as d3 from "d3";
 import loadData from "togostanza-utils/load-data";
 import { getMarginsFromCSSString } from "../../lib/utils";
-import { StanzaColorGenerator } from "../../lib/ColorGenerator";
+import getStanzaColors from "../../lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -89,8 +89,7 @@ export default class Sunburst extends Stanza {
     );
     this._data = data;
 
-    const colorScale = new StanzaColorGenerator(this).stanzaColor;
-    const color = d3.scaleOrdinal(colorScale);
+    const color = d3.scaleOrdinal(getStanzaColors(this));
 
     this.renderTemplate({
       template: "stanza.html.hbs",

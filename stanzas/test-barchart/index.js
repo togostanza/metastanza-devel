@@ -4,7 +4,7 @@ import loadData from "togostanza-utils/load-data";
 import { Axis, paramsModel } from "../../lib/AxisMixin";
 
 import { getMarginsFromCSSString } from "../../lib/utils";
-import { StanzaColorGenerator } from "@/lib/ColorGenerator";
+import getStanzaColors from "@/lib/ColorGenerator";
 
 import {
   downloadCSVMenuItem,
@@ -32,8 +32,6 @@ class TestBarchart extends Stanza {
 
   async render() {
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
-
-    const colorGenerator = new StanzaColorGenerator(this);
 
     if (this.interval) {
       clearInterval(this.interval);
@@ -65,8 +63,6 @@ class TestBarchart extends Stanza {
     );
 
     const values = this._data;
-
-    const togostanzaColors = colorGenerator.stanzaColor;
 
     let params;
     try {
@@ -104,7 +100,7 @@ class TestBarchart extends Stanza {
     const color = d3
       .scaleOrdinal()
       .domain(gSubKeyNames)
-      .range(togostanzaColors);
+      .range(getStanzaColors(this));
 
     const stack = d3.stack().keys(gSubKeyNames);
     const dataset = [];

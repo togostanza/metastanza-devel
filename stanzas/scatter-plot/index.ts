@@ -3,7 +3,7 @@ import { select, scaleOrdinal, scaleSqrt, extent, format } from "d3";
 import loadData from "togostanza-utils/load-data";
 import ToolTip from "../../lib/ToolTip";
 import Legend from "../../lib/Legend2";
-import { StanzaColorGenerator } from "../../lib/ColorGenerator";
+import getStanzaColors from "../../lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -42,8 +42,8 @@ export default class ScatterPlot extends Stanza {
   async render() {
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
-    const colorGenerator = new StanzaColorGenerator(this);
-    const color = scaleOrdinal().range(colorGenerator.stanzaColor as string[]);
+    const stanzaColors = getStanzaColors(this);
+    const color = scaleOrdinal().range(stanzaColors as string[]);
 
     this._data = await loadData(
       this.params["data-url"],
@@ -204,7 +204,7 @@ export default class ScatterPlot extends Stanza {
         "" + i + datum[xKey] + datum[yKey] + datum[sizeKey] + xScale + yScale;
       datum[xSym] = this.xAxis.scale(parseFloat(datum[xKey]));
       datum[ySym] = this.yAxis.scale(parseFloat(datum[yKey]));
-      datum[colorSym] = colorGenerator.stanzaColor[0];
+      datum[colorSym] = stanzaColors[0];
       datum[tooltipSym] = datum[tooltipKey];
     });
 
@@ -215,7 +215,7 @@ export default class ScatterPlot extends Stanza {
       this.legend.items = getNodeSizesForLegend().map((item, i) => ({
         id: "" + i,
         value: format(".2s")(item.value),
-        color: colorGenerator.stanzaColor[0],
+        color: stanzaColors[0],
         size: item.size * 2,
       }));
 
