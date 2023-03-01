@@ -1,7 +1,17 @@
-import Stanza from "togostanza/stanza";
-import * as d3 from "d3";
-import loadData from "togostanza-utils/load-data";
-import { getMarginsFromCSSString } from "../../lib/utils";
+import MetaStanza from "../../lib/MetaStanza";
+import {
+  select,
+  scaleOrdinal,
+  stratify,
+  format,
+  hierarchy,
+  sum,
+  max,
+  interpolate,
+  partition as d3partition,
+  arc as d3arc,
+  path as d3path,
+} from "d3";
 import getStanzaColors from "../../lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
@@ -9,12 +19,11 @@ import {
   downloadJSONMenuItem,
   downloadCSVMenuItem,
   downloadTSVMenuItem,
-  appendCustomCss,
 } from "togostanza-utils";
 
 let path;
 
-export default class Sunburst extends Stanza {
+export default class Sunburst extends MetaStanza {
   constructor(...args) {
     super(...args);
     this.state = {
@@ -39,7 +48,7 @@ export default class Sunburst extends Stanza {
     }
   }
 
-  async render() {
+  async renderNext() {
     this.state = new Proxy(this.state, {
       set(target, key, value) {
         if (key === "currentId") {
@@ -59,20 +68,18 @@ export default class Sunburst extends Stanza {
     };
 
     const state = this.state;
-
     const dispatcher = this.element;
+    const main = this._main;
+    const data = this._data;
 
-    appendCustomCss(this, this.params["custom_css_url"]);
     // get value of css vars
-    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
+    const width = parseFloat(this.css("--togostanza-canvas-width"));
+    const height = parseFloat(this.css("--togostanza-canvas-height"));
+    const padding = this.MARGIN;
 
-    const width = parseFloat(css("--togostanza-canvas-width"));
-    const height = parseFloat(css("--togostanza-canvas-height"));
-    const padding = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
-
-    const labelKey = this.params["node-label_key"];
-    const valueKey = this.params["node-value_key"];
-    const showNumbers = this.params["node-show_values"];
+    const valueKey = this.params["node-value_key"].trim();
+    const labelKey = this.params["node-label_key"].trim();
+    const showNumbers = this.params["node-values_visible"];
     const borderWidth = this.params["node-levels_gap_width"] || 2;
     const nodesGapWidth = this.params["node-gap_width"] || 8;
     const cornerRadius = this.params["node-corner_radius"] || 0;
@@ -82,18 +89,7 @@ export default class Sunburst extends Stanza {
         ? parseFloat(this.params["max_depth"])
         : 1;
 
-    const data = await loadData(
-      this.params["data-url"],
-      this.params["data-type"],
-      this.root.querySelector("main")
-    );
-    this._data = data;
-
-    const color = d3.scaleOrdinal(getStanzaColors(this));
-
-    this.renderTemplate({
-      template: "stanza.html.hbs",
-    });
+    const color = scaleOrdinal(getStanzaColors(this));
 
     data.forEach((node) => {
       node.id = "" + node.id;
@@ -132,10 +128,7 @@ export default class Sunburst extends Stanza {
         item.id === "-1"
     );
 
-    const el = this.root.querySelector("#sunburst");
-
-    const stratifiedData = d3
-      .stratify()
+    const stratifiedData = stratify()
       .id(function (d) {
         return d.id;
       })
@@ -143,10 +136,10 @@ export default class Sunburst extends Stanza {
         return d.parent;
       })(dataset);
 
-    const formatNumber = d3.format(",d");
+    const formatNumber = format(",d");
 
     const partition = (data) => {
-      const root = d3.hierarchy(data);
+      const root = hierarchy(data);
       switch (scalingMethod) {
         case "By value":
           root.sum((d) => d.data[valueKey]);
@@ -167,8 +160,8 @@ export default class Sunburst extends Stanza {
       root
         .sort((a, b) => b.value - a.value)
         // store real values for number labels in d.value2
-        .each((d) => (d.value2 = d3.sum(d, (dd) => dd.data.data[valueKey])));
-      return d3.partition().size([2 * Math.PI, root.height + 1])(root);
+        .each((d) => (d.value2 = sum(d, (dd) => dd.data.data[valueKey])));
+      return d3partition().size([2 * Math.PI, root.height + 1])(root);
     };
 
     const root = partition(stratifiedData);
@@ -176,7 +169,7 @@ export default class Sunburst extends Stanza {
     root.each((d) => (d.current = d));
 
     // if depthLim 0 of negative, show all levels
-    const maxDepth = d3.max(root, (d) => d.depth);
+    const maxDepth = max(root, (d) => d.depth);
     if (depthLim <= 0 || depthLim > maxDepth) {
       depthLim = maxDepth;
     }
@@ -192,12 +185,11 @@ export default class Sunburst extends Stanza {
       padding.LEFT + padding.RIGHT >= width ||
       padding.TOP + padding.BOTTOM >= height
     ) {
-      el.innerHTML = "<p>Padding is too big for given width and height!</p>";
+      main.innerHTML = "<p>Padding is too big for given width and height!</p>";
       throw new Error("Padding is too big for given width and height!");
     }
 
-    const arc = d3
-      .arc()
+    const arc = d3arc()
       .startAngle((d) => d.x0)
       .endAngle((d) => d.x1)
       .padAngle((d) => Math.min((d.x1 - d.x0) / 2, nodesGapWidth / 500))
@@ -227,7 +219,7 @@ export default class Sunburst extends Stanza {
         r = Math.max(0, (d.y1 - (d.y1 - d.y0) / 5) * radius);
       }
 
-      const path = d3.path();
+      const path = d3path();
       path.arc(0, 0, r, angles[0], angles[1], invertDirection);
       return path.toString();
     };
@@ -249,7 +241,7 @@ export default class Sunburst extends Stanza {
         r = Math.max(0, (d.y1 - (d.y1 - d.y0) / 2.5) * radius);
       }
 
-      const path = d3.path();
+      const path = d3path();
       path.arc(0, 0, r, angles[0], angles[1], invertDirection);
       return path.toString();
     };
@@ -265,8 +257,8 @@ export default class Sunburst extends Stanza {
       return text.length * charWidth < perimeter;
     }
 
-    const svg = d3
-      .select(el)
+    select(main).select("svg").remove();
+    const svg = select(main)
       .append("svg")
       .attr("width", width)
       .attr("height", height)
@@ -427,7 +419,7 @@ export default class Sunburst extends Stanza {
       path
         .transition(t)
         .tween("data", (d) => {
-          const i = d3.interpolate(d.current, d.target);
+          const i = interpolate(d.current, d.target);
           return (t) => (d.current = i(t));
         })
         .filter(function (d) {

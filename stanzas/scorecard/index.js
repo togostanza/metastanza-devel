@@ -1,16 +1,13 @@
-import Stanza from "togostanza/stanza";
-import loadData from "togostanza-utils/load-data";
-import { getMarginsFromCSSString } from "../../lib/utils";
+import MetaStanza from "../../lib/MetaStanza";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
   downloadJSONMenuItem,
   downloadCSVMenuItem,
   downloadTSVMenuItem,
-  appendCustomCss,
 } from "togostanza-utils";
 
-export default class Scorecard extends Stanza {
+export default class Scorecard extends MetaStanza {
   menu() {
     return [
       downloadSvgMenuItem(this, "scorecard"),
@@ -21,44 +18,36 @@ export default class Scorecard extends Stanza {
     ];
   }
 
-  async render() {
-    appendCustomCss(this, this.params["custom_css_url"]);
-    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
-
-    this.renderTemplate({
-      template: "stanza.html.hbs",
-    });
-    const main = this.root.querySelector("main");
-    const el = this.root.getElementById("scorecard");
-
-    const dataset = await loadData(
-      this.params["data-url"],
-      this.params["data-type"],
-      main
-    );
-
-    const width = parseFloat(css("--togostanza-canvas-width")) || 0;
-    const height = parseFloat(css("--togostanza-canvas-height")) || 0;
-    const padding = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
-    const fontSizePrimary =
-      parseFloat(css("--togostanza-fonts-font_size_primary")) || 0;
-    const fontSizeSecondary =
-      parseFloat(css("--togostanza-fonts-font_size_secondary")) || 0;
-
-    const scoreKey = this.params["data-score_key"];
-    const titleKey = this.params["data-title_key"];
+  async renderNext() {
+    const root = this._main;
+    const dataset = this._data;
+    // Parameters
+    const scoreKey = this.params["data-score_key"].trim();
+    const titleKey = this.params["data-title_key"].trim();
     const scoreValue = dataset[scoreKey];
     const titleText = dataset[titleKey];
-    this._data = [{ [scoreKey]: scoreValue }];
+    const prefixText = this.params["affix-prefix"];
+    const suffixText = this.params["affix-suffix"];
+    this._data = [{ [titleText]: scoreValue }];
+    // Styles
+    const width = parseFloat(this.css("--togostanza-canvas-width")) || 0;
+    const height = parseFloat(this.css("--togostanza-canvas-height")) || 0;
+    const padding = this.MARGIN;
+    const fontSizePrimary =
+      parseFloat(this.css("--togostanza-fonts-font_size_primary")) || 0;
+    const fontSizeSecondary =
+      parseFloat(this.css("--togostanza-fonts-font_size_secondary")) || 0;
 
-    const prefixText = this.params["data-prefix"];
-    const suffixText = this.params["data-suffix"];
-
+    //Drawing svg
+    const existSvg = this.root.querySelectorAll(".svg");
+    if (existSvg.length > 0) {
+      existSvg.forEach((svg) => svg.parentNode.removeChild(svg));
+    }
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.classList.add("svg");
     svg.setAttribute("width", width);
     svg.setAttribute("height", height);
-    el.append(svg);
+    root.append(svg);
 
     const wrapper = document.createElementNS("http://www.w3.org/2000/svg", "g");
     wrapper.classList.add("wrapper");
