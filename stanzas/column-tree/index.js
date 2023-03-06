@@ -1,16 +1,14 @@
-import Stanza from "togostanza/stanza";
+import MetaStanza from "../../lib/MetaStanza";
 import { createApp } from "vue";
 import App from "./app.vue";
 import {
   downloadJSONMenuItem,
   downloadCSVMenuItem,
   downloadTSVMenuItem,
-  appendCustomCss,
 } from "togostanza-utils";
 import { camelCase } from "lodash";
-import loadData from "togostanza-utils/load-data";
 
-export default class ColumnTree extends Stanza {
+export default class ColumnTree extends MetaStanza {
   menu() {
     return [
       downloadJSONMenuItem(this, "column-tree", this._data),
@@ -19,25 +17,16 @@ export default class ColumnTree extends Stanza {
     ];
   }
 
-  async render() {
-    appendCustomCss(this, this.params["custom_css_url"]);
-
-    const main = this.root.querySelector("main");
-
+  async renderNext() {
+    const root = this._main;
     const camelCaseParams = {};
     Object.entries(this.params).forEach(([key, value]) => {
       camelCaseParams[camelCase(key)] = value;
     });
-
-    this._data = await loadData(
-      camelCaseParams.dataUrl,
-      camelCaseParams.dataType,
-      main
-    );
     camelCaseParams.data = this._data;
 
     this._app?.unmount();
-    this._app = createApp(App, { ...camelCaseParams, main });
-    this._app.mount(main);
+    this._app = createApp(App, { ...camelCaseParams, root });
+    this._app.mount(root);
   }
 }
