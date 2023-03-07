@@ -11,7 +11,7 @@ import {
   interpolate,
 } from "d3";
 import uid from "./uid";
-import { StanzaColorGenerator } from "@/lib/ColorGenerator";
+import getStanzaColors from "@/lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -47,8 +47,6 @@ export default class TreeMapStanza extends MetaStanza {
     const labelKey = this.params["node-label_key"];
     const valueKey = this.params["node-value_key"];
 
-    const togostanzaColors = new StanzaColorGenerator(this).stanzaColor;
-
     const data = this._data;
 
     // filter out all elements with n=0
@@ -78,9 +76,8 @@ export default class TreeMapStanza extends MetaStanza {
     if (!filteredData.find((d) => d.id === -1)) {
       filteredData.push({ id: -1, value: "", label: "" });
     }
-
     const treeMapElement = this._main;
-    const colorScale = scaleOrdinal(togostanzaColors);
+    const colorScale = scaleOrdinal(getStanzaColors(this));
 
     const opts = {
       WIDTH,

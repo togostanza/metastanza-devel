@@ -3,7 +3,7 @@ import * as d3 from "d3";
 import { _3d } from "d3-3d";
 import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
-import { StanzaColorGenerator } from "@/lib/ColorGenerator";
+import getStanzaColors from "@/lib/ColorGenerator";
 import { LayeredGraphDataModel } from "@/lib/GraphDataSchema";
 import { curvedLink, straightLink } from "./curvedLink";
 import prepareGraphData, {
@@ -50,8 +50,6 @@ export default class ForceGraph extends Stanza {
       template: "stanza.html.hbs",
     });
 
-    const cg = new StanzaColorGenerator(this);
-
     const values = LayeredGraphDataModel.parse(
       await loadData(
         this.params["data-url"],
@@ -69,7 +67,7 @@ export default class ForceGraph extends Stanza {
     const WIDTH = width - MARGIN.LEFT - MARGIN.RIGHT;
 
     // Setting color scale
-    const togostanzaColors = cg.stanzaColor;
+    const togostanzaColors = getStanzaColors(this);
 
     const color = function (type = "scaleOrdinal") {
       return d3[type]().range(togostanzaColors);

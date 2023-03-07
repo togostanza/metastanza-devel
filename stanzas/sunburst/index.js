@@ -12,7 +12,7 @@ import {
   arc as d3arc,
   path as d3path,
 } from "d3";
-import { StanzaColorGenerator } from "../../lib/ColorGenerator";
+import getStanzaColors from "../../lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -89,8 +89,7 @@ export default class Sunburst extends MetaStanza {
         ? parseFloat(this.params["max_depth"])
         : 1;
 
-    const colorScale = new StanzaColorGenerator(this).stanzaColor;
-    const color = scaleOrdinal(colorScale);
+    const color = scaleOrdinal(getStanzaColors(this));
 
     data.forEach((node) => {
       node.id = "" + node.id;
