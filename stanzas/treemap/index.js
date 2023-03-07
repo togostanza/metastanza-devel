@@ -132,7 +132,7 @@ function draw(el, dataset, opts) {
   // make path-like string for node
   const name = (d) => {
     if (d.data.data.id === -1) {
-      return "/";
+      return "> ";
     }
     return d
       .ancestors()
@@ -140,7 +140,7 @@ function draw(el, dataset, opts) {
       .map((d) => {
         return d.data.data[labelKey];
       })
-      .join("/");
+      .join(" > ");
   };
 
   const format = d3format(",d");
@@ -166,6 +166,7 @@ function draw(el, dataset, opts) {
         })
     );
 
+  select(el).select("svg").remove();
   const svg = select(el)
     .append("svg")
     .attr("width", WIDTH)
