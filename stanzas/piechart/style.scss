@@ -3,16 +3,15 @@
 
 // The following is just an example. Feel free to modify it.
 // --greeting-color and --greeting-align are style variables, which are defined in metadata.json.
-main {
-  > svg {
-    path.pie-slice {
-      stroke: var(--togostanza-border-color);
-      stroke-width: 0.5px;
 
-      &.-fadeout {
-        opacity: var(--togostanza-fadeout-opacity);
-        transition: var(--togostanza-fadeout-transition);
-      }
+svg {
+  path.pie-slice {
+    stroke: var(--togostanza-border-color);
+    stroke-width: 0.5px;
+
+    &.-fadeout {
+      opacity: var(--togostanza-fadeout-opacity);
+      transition: var(--togostanza-fadeout-transition);
     }
   }
 }

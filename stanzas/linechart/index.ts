@@ -15,7 +15,7 @@ import {
   paramsModel,
   type AxisParamsI,
 } from "../../lib/AxisMixin";
-import { StanzaColorGenerator } from "../../lib/ColorGenerator";
+import getStanzaColors from "../../lib/ColorGenerator";
 import { z } from "zod";
 import { MarginsI } from "../../lib/utils";
 
@@ -68,9 +68,7 @@ export default class Linechart extends MetaStanza {
   }
 
   async renderNext() {
-    const colorGenerator = new StanzaColorGenerator(this);
-    const togostanzaColors = colorGenerator.stanzaColor;
-    const color = scaleOrdinal().range(togostanzaColors);
+    const color = scaleOrdinal().range(getStanzaColors(this));
     const width = +this.css("--togostanza-canvas-width");
     const height = +this.css("--togostanza-canvas-height");
 

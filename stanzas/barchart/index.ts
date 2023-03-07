@@ -3,7 +3,7 @@ import Legend from "../../lib/Legend2";
 import { Axis, type AxisParamsI, paramsModel } from "../../lib/AxisMixin";
 import MetaStanza from "../../lib/MetaStanza";
 
-import { StanzaColorGenerator } from "../../lib/ColorGenerator";
+import getStanzaColors from "../../lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -33,10 +33,7 @@ export default class Barchart extends MetaStanza {
   }
 
   async renderNext() {
-    const colorGenerator = new StanzaColorGenerator(this);
-    const togostanzaColors = colorGenerator.stanzaColor;
-
-    const color = scaleOrdinal().range(togostanzaColors);
+    const color = scaleOrdinal().range(getStanzaColors(this));
 
     const width = +this.css("--togostanza-canvas-width");
     const height = +this.css("--togostanza-canvas-height");

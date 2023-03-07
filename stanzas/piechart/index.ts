@@ -1,5 +1,5 @@
 import { select, pie, arc, scaleOrdinal, DefaultArcObject } from "d3";
-import { StanzaColorGenerator } from "../../lib/ColorGenerator";
+import getStanzaColors from "../../lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -33,12 +33,11 @@ export default class Piechart extends MetaStanza {
     const showLegend = this.params["legend-visible"];
     const legendTitle = this.params["legend-title"];
 
-    const cg = new StanzaColorGenerator(this);
     const categoryList = [
       ...new Set(this._data.map((d) => d[categoryKey])),
     ] as string[];
 
-    const color = scaleOrdinal(cg.stanzaColor).domain(categoryList);
+    const color = scaleOrdinal(getStanzaColors(this)).domain(categoryList);
 
     const colorSym = Symbol("color");
     this._data.forEach((d: string | number) => {

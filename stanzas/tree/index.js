@@ -12,7 +12,8 @@ import {
   linkRadial,
 } from "d3";
 import ToolTip from "@/lib/ToolTip";
-import { StanzaCirculateColorGenerator } from "@/lib/ColorGenerator";
+import { getCirculateColor } from "@/lib/ColorGenerator";
+
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -146,19 +147,15 @@ export default class Tree extends MetaStanza {
       colorDatas.push(d.data);
     });
 
-    const colorGenerator = new StanzaCirculateColorGenerator(
-      this,
-      colorDatas,
-      colorGroup
-    );
+    const getColor = getCirculateColor(this, colorDatas, colorGroup);
 
     const setColor = (d) => {
       if (d.data[colorKey]) {
         return d.data[colorKey];
       } else {
         return d.data[colorGroup]
-          ? colorGenerator.getColor(d.data[colorGroup])
-          : colorGenerator.defaultColor;
+          ? getColor.groupColor(d.data[colorGroup])
+          : getColor.stanzaColors[0];
       }
     };
 
