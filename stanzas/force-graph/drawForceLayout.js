@@ -3,7 +3,7 @@ import * as d3 from "d3";
 function straightLink(d) {
   const start = { x: d.source.x, y: d.source.y };
   const end = { x: d.target.x, y: d.target.y };
-  return `M ${start.x} ${start.y}, L ${end.x} ${end.y}`;
+  return `M ${start.x} ${start.y} L ${end.x} ${end.y}`;
 }
 
 function rotatePoint(pivot, point, angle) {
@@ -43,7 +43,7 @@ function curvedLink(d, curveDir) {
   rotatePoint(start, p1, theta);
 
   return `M ${start.x} ${start.y}
-            S ${p1.x} ${p1.y}, ${end.x} ${end.y}`;
+            S ${p1.x} ${p1.y} ${end.x} ${end.y}`;
 }
 
 export default function (
