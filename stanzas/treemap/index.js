@@ -1,7 +1,16 @@
-import Stanza from "togostanza/stanza";
-import * as d3 from "d3";
+import MetaStanza from "../../lib/MetaStanza";
+import {
+  select,
+  scaleOrdinal,
+  scaleLinear,
+  stratify,
+  format as d3format,
+  treemap as d3treemap,
+  hierarchy,
+  sum,
+  interpolate,
+} from "d3";
 import uid from "./uid";
-import loadData from "togostanza-utils/load-data"; //"@/lib/load-data";
 import getStanzaColors from "@/lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
@@ -9,13 +18,11 @@ import {
   downloadJSONMenuItem,
   downloadCSVMenuItem,
   downloadTSVMenuItem,
-  appendCustomCss,
 } from "togostanza-utils"; // from "@/lib/metastanza_utils.js"; //
 import shadeColor from "./shadeColor";
 import treemapBinaryLog from "./treemapBinaryLog";
-import { getMarginsFromCSSString } from "../../lib/utils";
 
-export default class TreeMapStanza extends Stanza {
+export default class TreeMapStanza extends MetaStanza {
   menu() {
     return [
       downloadSvgMenuItem(this, "treemap"),
@@ -26,33 +33,21 @@ export default class TreeMapStanza extends Stanza {
     ];
   }
 
-  async render() {
-    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
-
-    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
-
-    const width = parseInt(css("--togostanza-canvas-width"));
-    const height = parseInt(css("--togostanza-canvas-height"));
-
-    const MARGIN = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
+  async renderNext() {
+    const width = parseInt(this.css("--togostanza-canvas-width"));
+    const height = parseInt(this.css("--togostanza-canvas-height"));
+    const MARGIN = this.MARGIN;
 
     const WIDTH = width - MARGIN.LEFT - MARGIN.RIGHT;
     const HEIGHT = height - MARGIN.TOP - MARGIN.BOTTOM;
 
     const logScale = this.params["node-log_scale"];
-    const borderWidth = this.params["node-gap_width"];
+    const gapWidth = 2;
 
     const labelKey = this.params["node-label_key"];
     const valueKey = this.params["node-value_key"];
 
-    const data = await loadData(
-      this.params["data-url"],
-      this.params["data-type"],
-      this.root.querySelector("main")
-    );
-    this._data = data;
-
-    this.renderTemplate({ template: "stanza.html.hbs" });
+    const data = this._data;
 
     // filter out all elements with n=0
     const filteredData = data.filter(
@@ -81,16 +76,15 @@ export default class TreeMapStanza extends Stanza {
     if (!filteredData.find((d) => d.id === -1)) {
       filteredData.push({ id: -1, value: "", label: "" });
     }
-
-    const treeMapElement = this.root.querySelector("main");
-    const colorScale = d3.scaleOrdinal(getStanzaColors(this));
+    const treeMapElement = this._main;
+    const colorScale = scaleOrdinal(getStanzaColors(this));
 
     const opts = {
       WIDTH,
       HEIGHT,
       colorScale,
       logScale,
-      borderWidth,
+      gapWidth,
       labelKey,
       valueKey,
     };
@@ -111,18 +105,10 @@ function transformValue(logScale, value) {
 }
 
 function draw(el, dataset, opts) {
-  const {
-    WIDTH,
-    HEIGHT,
-    logScale,
-    colorScale,
-    borderWidth,
-    labelKey,
-    valueKey,
-  } = opts;
+  const { WIDTH, HEIGHT, logScale, colorScale, gapWidth, labelKey, valueKey } =
+    opts;
 
-  const nested = d3
-    .stratify()
+  const nested = stratify()
     .id(function (d) {
       return d.id;
     })
@@ -140,8 +126,8 @@ function draw(el, dataset, opts) {
     adjustedHeight = 10;
   }
 
-  const x = d3.scaleLinear().rangeRound([0, WIDTH]);
-  const y = d3.scaleLinear().rangeRound([0, adjustedHeight]);
+  const x = scaleLinear().rangeRound([0, WIDTH]);
+  const y = scaleLinear().rangeRound([0, adjustedHeight]);
 
   // make path-like string for node
   const name = (d) => {
@@ -157,7 +143,7 @@ function draw(el, dataset, opts) {
       .join("/");
   };
 
-  const format = d3.format(",d");
+  const format = d3format(",d");
 
   //move and scale children nodes to fit into parent nodes
   function tile(node, x0, y0, x1, y1) {
@@ -171,9 +157,8 @@ function draw(el, dataset, opts) {
   }
 
   const treemap = (data) =>
-    d3.treemap().tile(tile)(
-      d3
-        .hierarchy(data)
+    d3treemap().tile(tile)(
+      hierarchy(data)
         .sum((d) => d.data[valueKey])
         .sort((a, b) => b.value - a.value)
         .each((d) => {
@@ -181,8 +166,7 @@ function draw(el, dataset, opts) {
         })
     );
 
-  const svg = d3
-    .select(el)
+  const svg = select(el)
     .append("svg")
     .attr("width", WIDTH)
     .attr("height", HEIGHT)
@@ -218,7 +202,7 @@ function draw(el, dataset, opts) {
           ? ""
           : `${name(d)}\n${
               d?.children
-                ? format(d3.sum(d, (d) => d?.data?.data[valueKey] || 0))
+                ? format(sum(d, (d) => d?.data?.data[valueKey] || 0))
                 : d.data.data[valueKey]
             }`
       );
@@ -291,7 +275,7 @@ function draw(el, dataset, opts) {
       let lineSeparator;
 
       //nodes[i] is rect
-      const text = d3.select(nodes[i].parentNode).select("text");
+      const text = select(nodes[i].parentNode).select("text");
 
       if (text.empty()) {
         return;
@@ -358,7 +342,7 @@ function draw(el, dataset, opts) {
         .attr("class", "number-label")
         .attr("dy", "1.6em")
         .attr("x", "1.6em")
-        .text((d) => format(d3.sum(d, (d) => d?.data?.data[valueKey] || 0)));
+        .text((d) => format(sum(d, (d) => d?.data?.data[valueKey] || 0)));
     }
   }
 
@@ -372,8 +356,8 @@ function draw(el, dataset, opts) {
           y(d.y0) - y(d.parent.y0)
         })`;
       } else {
-        return `translate(${x(d.x0) + borderWidth},${
-          y(d.y0) + rootHeight + borderWidth
+        return `translate(${x(d.x0) + gapWidth},${
+          y(d.y0) + rootHeight + gapWidth
         })`;
       }
     });
@@ -383,30 +367,30 @@ function draw(el, dataset, opts) {
         if (d === root) {
           return WIDTH;
         } else if (x(d.x1) === WIDTH) {
-          if (x(d.x1) - x(d.x0) - 2 * borderWidth < 0) {
+          if (x(d.x1) - x(d.x0) - 2 * gapWidth < 0) {
             return 0;
           }
-          return x(d.x1) - x(d.x0) - 2 * borderWidth;
+          return x(d.x1) - x(d.x0) - 2 * gapWidth;
         } else {
-          if (x(d.x1) - x(d.x0) - borderWidth < 0) {
+          if (x(d.x1) - x(d.x0) - gapWidth < 0) {
             return 0;
           }
-          return x(d.x1) - x(d.x0) - borderWidth;
+          return x(d.x1) - x(d.x0) - gapWidth;
         }
       })
       .attr("height", (d) => {
         if (d === root) {
           return rootHeight;
         } else if (y(d.y1) === adjustedHeight) {
-          if (y(d.y1) - y(d.y0) - 2 * borderWidth < 0) {
+          if (y(d.y1) - y(d.y0) - 2 * gapWidth < 0) {
             return 0;
           }
-          return y(d.y1) - y(d.y0) - 2 * borderWidth;
+          return y(d.y1) - y(d.y0) - 2 * gapWidth;
         } else {
-          if (y(d.y1) - y(d.y0) - borderWidth < 0) {
+          if (y(d.y1) - y(d.y0) - gapWidth < 0) {
             return 0;
           }
-          return y(d.y1) - y(d.y0) - borderWidth;
+          return y(d.y1) - y(d.y0) - gapWidth;
         }
       })
       .each(wrap.bind(this, root, isFirstRender, zoomInOut));
@@ -432,7 +416,7 @@ function draw(el, dataset, opts) {
       .call((t) =>
         group1
           .transition(t)
-          .attrTween("opacity", () => d3.interpolate(0, 1))
+          .attrTween("opacity", () => interpolate(0, 1))
           .call(position, d, false)
       );
   }
@@ -454,7 +438,7 @@ function draw(el, dataset, opts) {
         group0
           .transition(t)
           .remove()
-          .attrTween("opacity", () => d3.interpolate(1, 0))
+          .attrTween("opacity", () => interpolate(1, 0))
           .call(position, d, false)
       )
       .call((t) => group1.transition(t).call(position, d.parent, false));
