@@ -1,16 +1,25 @@
-import Stanza from "togostanza/stanza";
-import * as d3 from "d3";
-import loadData from "togostanza-utils/load-data";
+import MetaStanza from "../../lib/MetaStanza";
+import {
+  select,
+  min,
+  max,
+  scaleSqrt,
+  stratify,
+  tree,
+  cluster,
+  linkHorizontal,
+  linkVertical,
+  linkRadial,
+} from "d3";
 import ToolTip from "@/lib/ToolTip";
 import { getCirculateColor } from "@/lib/ColorGenerator";
-import { getMarginsFromCSSString } from "../../lib/utils";
+
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
   downloadJSONMenuItem,
   downloadCSVMenuItem,
   downloadTSVMenuItem,
-  appendCustomCss,
 } from "togostanza-utils";
 
 //Declaring constants
@@ -23,7 +32,7 @@ const ASCENDING = "ascending",
   MULTIPLY = "multiply",
   SCREEN = "screen";
 
-export default class Tree extends Stanza {
+export default class Tree extends MetaStanza {
   //Stanza download menu contents
   menu() {
     return [
@@ -35,40 +44,25 @@ export default class Tree extends Stanza {
     ];
   }
 
-  async render() {
-    this.renderTemplate({
-      template: "stanza.html.hbs",
-    });
-
-    const root = this.root.querySelector("main");
-    const el = this.root.getElementById("tree-d3");
-
+  async renderNext() {
     //Define from params
-    const values = await loadData(
-      this.params["data-url"],
-      this.params["data-type"],
-      root
-    );
-    this._data = values;
-
-    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
-
-    appendCustomCss(this, this.params["custom_css_url"]);
-    const width = parseFloat(css("--togostanza-canvas-width")),
-      height = parseFloat(css("--togostanza-canvas-height")),
-      padding = getMarginsFromCSSString(css("--togostanza-canvas-padding")),
-      sortKey = this.params["sort-key"],
+    const root = this._main,
+      dataset = this._data,
+      width = parseFloat(this.css("--togostanza-canvas-width")) || 0,
+      height = parseFloat(this.css("--togostanza-canvas-height")) || 0,
+      padding = this.MARGIN,
+      sortKey = this.params["sort-key"].trim(),
       sortOrder = this.params["sort-order"],
       isLeafNodesAlign = this.params["graph-align_leaf_nodes"],
       layout = this.params["graph-layout"],
-      nodeKey = this.params["node-label-key"],
+      nodeKey = this.params["node-label-key"].trim(),
       labelMargin = this.params["node-label-margin"],
-      sizeKey = this.params["node-size-key"],
+      sizeKey = this.params["node-size-key"].trim(),
       minRadius = this.params["node-size-min"] / 2,
       maxRadius = this.params["node-size-max"] / 2,
       aveRadius = (minRadius + maxRadius) / 2,
-      colorKey = this.params["node-color-key"],
-      colorGroup = this.params["node-color-group"],
+      colorKey = this.params["node-color-key"].trim(),
+      colorGroup = this.params["node-color-group"].trim(),
       colorMode = this.params["node-color-blend"];
 
     let colorModeProperty, colorModeValue;
@@ -89,16 +83,16 @@ export default class Tree extends Stanza {
         break;
     }
 
-    const tooltipKey = this.params["tooltips-key"];
+    const tooltipKey = this.params["tooltips-key"].trim();
     const showToolTips =
-      !!tooltipKey && values.some((item) => item[tooltipKey]);
+      !!tooltipKey && dataset.some((item) => item[tooltipKey]);
     this.tooltip = new ToolTip();
     root.append(this.tooltip);
 
     //Sorting by user keywords
     const orderSym = Symbol("order");
-    values.forEach((value, index) => {
-      value[orderSym] = index;
+    dataset.forEach((datum, index) => {
+      datum[orderSym] = index;
     });
 
     const reorder = (a, b) => {
@@ -117,25 +111,23 @@ export default class Tree extends Stanza {
     };
 
     //Hierarchize data
-    const treeRoot = d3
-      .stratify()
-      .parentId((d) => d.parent)(values)
+    const treeRoot = stratify()
+      .parentId((d) => d.parent)(dataset)
       .sort(reorder);
 
     const treeDescendants = treeRoot.descendants();
     const data = treeDescendants.slice(1);
 
     //Setting node size
-    const nodeSizeMin = d3.min(data, (d) => d.data[sizeKey]);
-    const nodeSizeMax = d3.max(data, (d) => d.data[sizeKey]);
+    const nodeSizeMin = min(data, (d) => d.data[sizeKey]);
+    const nodeSizeMax = max(data, (d) => d.data[sizeKey]);
 
-    const d3RadiusScale = d3
-      .scaleSqrt()
+    const radiusScale = scaleSqrt()
       .domain([nodeSizeMin, nodeSizeMax])
       .range([minRadius, maxRadius]);
 
     const nodeRadius = (size) => {
-      return size ? d3RadiusScale(size) : d3RadiusScale(nodeSizeMin);
+      return size ? radiusScale(size) : radiusScale(nodeSizeMin);
     };
 
     //Toggle display/hide of children
@@ -171,8 +163,8 @@ export default class Tree extends Stanza {
     const svgHeight = height - padding.TOP - padding.BOTTOM;
 
     //Setting svg area
-    const svg = d3
-      .select(el)
+    select(root).select("svg").remove();
+    const svg = select(root)
       .append("svg")
       .attr("width", svgWidth)
       .attr("height", svgHeight);
@@ -185,7 +177,7 @@ export default class Tree extends Stanza {
     rootGroup.remove();
 
     //Get width of the largest label at the lowest level
-    const maxDepth = d3.max(data, (d) => d.depth);
+    const maxDepth = max(data, (d) => d.depth);
     const labels = [];
     for (const n of data) {
       n.depth === maxDepth ? labels.push(n.data[nodeKey] || "") : "";
@@ -215,17 +207,19 @@ export default class Tree extends Stanza {
       }
     ) => {
       //Error handling
+      const errorMessage = root.querySelector(`.error-message`);
+      if (errorMessage) {
+        root.removeChild(errorMessage);
+      }
       switch (layout) {
         case HORIZONTAL:
           if (width - margin.right - margin.left < 0) {
-            el.innerHTML = "<p>width is too small!</p>";
-            throw new Error("width is too small!");
+            handleError("width-error", "width is too small!");
           }
           break;
         case VERTICAL:
           if (height - margin.left - margin.right < 0) {
-            el.innerHTML = "<p>height is too small!</p>";
-            throw new Error("height is too small!");
+            handleError("heigth-error", "height is too small!");
           }
           break;
       }
@@ -233,8 +227,7 @@ export default class Tree extends Stanza {
         Math.max(maxRadius, minRadius) * 2 >= width ||
         Math.max(maxRadius, minRadius) * 2 >= height
       ) {
-        el.innerHTML = "<p>node size is too big for width and height!</p>";
-        throw new Error("node size is too big for width and height!");
+        handleError("node-error", "node size is too big for width and height!");
       }
 
       //Movement of drawing position
@@ -250,8 +243,8 @@ export default class Tree extends Stanza {
       });
 
       //Align leaves or not
-      let graphType = d3.tree();
-      isLeafNodesAlign ? (graphType = d3.cluster()) : (graphType = d3.tree());
+      let graphType = tree();
+      isLeafNodesAlign ? (graphType = cluster()) : (graphType = tree());
 
       //Gap between node
       const separation = (a, b) => {
@@ -443,7 +436,7 @@ export default class Tree extends Stanza {
           .attr("fill", setColor);
 
         if (showToolTips) {
-          this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
+          this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
         }
 
         //Drawing labels
@@ -618,9 +611,9 @@ export default class Tree extends Stanza {
         const getLinkFn = () => {
           switch (layout) {
             case HORIZONTAL:
-              return d3.linkHorizontal();
+              return linkHorizontal();
             case VERTICAL:
-              return d3.linkVertical();
+              return linkVertical();
           }
         };
 
@@ -632,7 +625,7 @@ export default class Tree extends Stanza {
           .attr(
             "d",
             layout === RADIAL
-              ? d3.linkRadial().angle(source.x).radius(source.y)
+              ? linkRadial().angle(source.x).radius(source.y)
               : getLinkFn().x(source.y0).y(source.x0)
           );
 
@@ -644,8 +637,7 @@ export default class Tree extends Stanza {
           .attr(
             "d",
             layout === RADIAL
-              ? d3
-                  .linkRadial()
+              ? linkRadial()
                   .angle((d) => d.x)
                   .radius((d) => d.y)
               : getLinkFn()
@@ -661,7 +653,7 @@ export default class Tree extends Stanza {
           .attr(
             "d",
             layout === RADIAL
-              ? d3.linkRadial().angle(source.x).radius(source.y)
+              ? linkRadial().angle(source.x).radius(source.y)
               : getLinkFn().x(source.y).y(source.x)
           )
           .remove();
@@ -675,7 +667,21 @@ export default class Tree extends Stanza {
       update(treeRoot);
     };
 
-    //Drawing
+    // Drawing
     draw();
+
+    // Error handling function
+    function handleError(errorClass, message) {
+      const existError = root.querySelector(`.${errorClass}`);
+      if (existError) {
+        root.removeChild(existError);
+      }
+      const errorElement = document.createElement("p");
+      errorElement.classList.add(`${errorClass}`, "error-message");
+      errorElement.innerHTML = `<p>${message}</p>`;
+      root.prepend(errorElement);
+
+      throw new Error(`${message}`);
+    }
   }
 }

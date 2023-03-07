@@ -38,10 +38,6 @@ interface IDataByGroup {
 
 type TDataByGroup = Map<string, IDataByGroup>;
 
-interface TParams extends z.infer<typeof paramsModel> {
-  [key: string]: number | undefined | string;
-}
-
 type TGSelection = d3.Selection<
   SVGGElement,
   TDataByGroup,
@@ -95,7 +91,7 @@ export default class Linechart extends MetaStanza {
 
     let values = structuredClone(this._data) as any[];
 
-    let params: TParams;
+    let params: z.infer<typeof paramsModel>;
     try {
       params = paramsModel.parse(this.params);
     } catch (error) {
