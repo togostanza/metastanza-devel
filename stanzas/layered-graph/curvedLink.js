@@ -1,7 +1,7 @@
 export function straightLink(d, targetAccessor, sourceAccessor) {
   const start = { x: sourceAccessor(d).x, y: sourceAccessor(d).y };
   const end = { x: targetAccessor(d).x, y: targetAccessor(d).y };
-  return `M ${start.x} ${start.y}, L ${end.x} ${end.y}`;
+  return `M ${start.x} ${start.y} L ${end.x} ${end.y}`;
 }
 
 function rotatePoint(pivot, point, angle) {
@@ -41,5 +41,5 @@ export function curvedLink(d, curveDir, targetAccessor, sourceAccessor) {
   rotatePoint(start, p1, theta);
 
   return `M ${start.x} ${start.y}
-              S ${p1.x} ${p1.y}, ${end.x} ${end.y}`;
+              S ${p1.x} ${p1.y} ${end.x} ${end.y}`;
 }
