@@ -11,26 +11,23 @@ togostanza--legend2 {
   right: 0;
 }
 
-main {
-  padding: 1rem 2rem;
-  > svg {
-    text.title {
-      font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
-    }
-    .tick > text {
-      font-family: var(--togostanza-fonts-font_family);
-      font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
-    }
+svg {
+  text.title {
+    font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+  }
+  .tick > text {
+    font-family: var(--togostanza-fonts-font_family);
+    font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+  }
 
-    .chart-node {
-      cursor: pointer;
-      stroke: var(--togostanza-border-color);
-      stroke-width: var(--togostanza-border-width);
+  .chart-node {
+    cursor: pointer;
+    stroke: var(--togostanza-border-color);
+    stroke-width: var(--togostanza-border-width);
+    transition: var(--togostanza-fadeout-transition);
+    &.-fadeout {
+      opacity: var(--togostanza-fadeout-opacity);
       transition: var(--togostanza-fadeout-transition);
-      &.-fadeout {
-        opacity: var(--togostanza-fadeout-opacity);
-        transition: var(--togostanza-fadeout-transition);
-      }
     }
   }
 }
