@@ -197,12 +197,12 @@ export default class regionGeographicMap extends MetaStanza {
 
       if (region === "user") {
         errorElement.innerHTML = `<p>Set <strong>"data-user_topojson"</strong> and <strong>"data-layer"</strong>
-          ${topoJsonTypeEl()} correctly !</p>`;
+          ${topoJsonTypeEl()} correctly!</p>`;
       } else {
-        errorElement.innerHTML = `<p>Set <strong>"data-region"</strong> and <strong>"data-layer"</strong>
-        ( <strong>${topoJsonType.join(
+        errorElement.innerHTML = `<p>Set <strong>"data-layer"</strong>
+        (<strong>${topoJsonType.join(
           "</strong>, <strong>"
-        )}</strong> ) correctly !</p>`;
+        )}</strong>) correctly!</p>`;
       }
 
       root.prepend(errorElement);
