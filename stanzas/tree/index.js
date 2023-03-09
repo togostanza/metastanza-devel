@@ -55,6 +55,7 @@ export default class Tree extends MetaStanza {
         nodeGroupKey,
         nodeOrderKey: this.params["sort-key"].trim(),
         nodeValueKey: this.params["node-size-key"].trim(),
+        nodeDescriptionKey: this.params["tooltips-key"].trim(),
       }).data,
       width = parseFloat(this.css("--togostanza-canvas-width")) || 0,
       height = parseFloat(this.css("--togostanza-canvas-height")) || 0,
@@ -87,9 +88,7 @@ export default class Tree extends MetaStanza {
         break;
     }
 
-    const tooltipKey = this.params["tooltips-key"].trim();
-    const showToolTips =
-      !!tooltipKey && dataset.some((item) => item[tooltipKey]);
+    const showToolTips = dataset.some((item) => item.description);
     this.tooltip = new ToolTip();
     root.append(this.tooltip);
 
@@ -428,7 +427,7 @@ export default class Tree extends MetaStanza {
         //Decorate circle
         nodeCirclesEnter
           .append("circle")
-          .attr("data-tooltip", (d) => d.data[tooltipKey])
+          .attr("data-tooltip", (d) => d.data.description)
           .attr("stroke", setColor)
           .style(colorModeProperty, colorModeValue)
           .classed("with-children", (d) => d.children)
