@@ -53,11 +53,11 @@ export default class Tree extends MetaStanza {
         nodeLabelKey: this.params["node-label-key"].trim(),
         nodeColorKey: this.params["node-color-key"].trim(),
         nodeGroupKey,
+        nodeOrderKey: this.params["sort-key"].trim(),
       }).data,
       width = parseFloat(this.css("--togostanza-canvas-width")) || 0,
       height = parseFloat(this.css("--togostanza-canvas-height")) || 0,
       padding = this.MARGIN,
-      sortKey = this.params["sort-key"].trim(),
       sortOrder = this.params["sort-order"],
       isLeafNodesAlign = this.params["graph-align_leaf_nodes"],
       layout = this.params["graph-layout"],
@@ -100,12 +100,12 @@ export default class Tree extends MetaStanza {
     });
 
     const reorder = (a, b) => {
-      if (a.data[sortKey] && b.data[sortKey]) {
+      if (a.data.order && b.data.order) {
         switch (sortOrder) {
           case ASCENDING:
-            return a.data[sortKey] > b.data[sortKey] ? 1 : -1;
+            return a.data.order > b.data.order ? 1 : -1;
           case DESCENDING:
-            return a.data[sortKey] > b.data[sortKey] ? -1 : 1;
+            return a.data.order > b.data.order ? -1 : 1;
         }
       } else {
         if (sortOrder === DESCENDING) {
