@@ -22,6 +22,8 @@ export default abstract class extends Stanza {
 
     this._main = this.root.querySelector("main");
 
+    // To maintain compatibility, we assign values to __data,
+    // but in the future we would like to make _data the return value of Data.load itself.
     this.__data = await Data.load(this.params["data-url"], {
       type: this.params["data-type"],
       mainElement: this._main,
