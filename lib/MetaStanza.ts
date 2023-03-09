@@ -1,10 +1,11 @@
 import Stanza from "togostanza/stanza";
-import loadData from "togostanza-utils/load-data";
 import { appendCustomCss } from "togostanza-utils";
 import { getMarginsFromCSSString, MarginsI } from "./utils";
+import { Data } from "togostanza-utils/data";
 
 export default abstract class extends Stanza {
   _data: any;
+  __data: Data;
   _main: HTMLElement;
   abstract renderNext(): Promise<void>;
 
@@ -21,11 +22,14 @@ export default abstract class extends Stanza {
 
     this._main = this.root.querySelector("main");
 
-    this._data = await loadData(
-      this.params["data-url"],
-      this.params["data-type"],
-      this.root.querySelector("main")
-    );
+    // To maintain compatibility, we assign values to __data,
+    // but in the future we would like to make _data the return value of Data.load itself.
+    this.__data = await Data.load(this.params["data-url"], {
+      type: this.params["data-type"],
+      mainElement: this._main,
+    });
+
+    this._data = this.__data.data;
 
     await this.renderNext();
   }

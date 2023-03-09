@@ -46,23 +46,28 @@ export default class Tree extends MetaStanza {
 
   async renderNext() {
     //Define from params
+    const nodeGroupKey = this.params["node-color-group"].trim();
+
     const root = this._main,
-      dataset = this._data,
+      dataset = this.__data.asTree({
+        nodeLabelKey: this.params["node-label-key"].trim(),
+        nodeColorKey: this.params["node-color-key"].trim(),
+        nodeGroupKey,
+        nodeOrderKey: this.params["sort-key"].trim(),
+        nodeValueKey: this.params["node-size-key"].trim(),
+        nodeDescriptionKey: this.params["tooltips-key"].trim(),
+      }).data,
       width = parseFloat(this.css("--togostanza-canvas-width")) || 0,
       height = parseFloat(this.css("--togostanza-canvas-height")) || 0,
       padding = this.MARGIN,
-      sortKey = this.params["sort-key"].trim(),
       sortOrder = this.params["sort-order"],
       isLeafNodesAlign = this.params["graph-align_leaf_nodes"],
       layout = this.params["graph-layout"],
-      nodeKey = this.params["node-label-key"].trim(),
       labelMargin = this.params["node-label-margin"],
-      sizeKey = this.params["node-size-key"].trim(),
       minRadius = this.params["node-size-min"] / 2,
       maxRadius = this.params["node-size-max"] / 2,
       aveRadius = (minRadius + maxRadius) / 2,
-      colorKey = this.params["node-color-key"].trim(),
-      colorGroup = this.params["node-color-group"].trim(),
+      colorGroup = nodeGroupKey, // NOTE Actually, this variable is not needed (because asTree does the property name conversion), but since we cannot remove this variable without changing the getCirculateColor interface, we have left it in.
       colorMode = this.params["node-color-blend"];
 
     let colorModeProperty, colorModeValue;
@@ -83,9 +88,7 @@ export default class Tree extends MetaStanza {
         break;
     }
 
-    const tooltipKey = this.params["tooltips-key"].trim();
-    const showToolTips =
-      !!tooltipKey && dataset.some((item) => item[tooltipKey]);
+    const showToolTips = dataset.some((item) => item.description);
     this.tooltip = new ToolTip();
     root.append(this.tooltip);
 
@@ -96,12 +99,12 @@ export default class Tree extends MetaStanza {
     });
 
     const reorder = (a, b) => {
-      if (a.data[sortKey] && b.data[sortKey]) {
+      if (a.data.order && b.data.order) {
         switch (sortOrder) {
           case ASCENDING:
-            return a.data[sortKey] > b.data[sortKey] ? 1 : -1;
+            return a.data.order > b.data.order ? 1 : -1;
           case DESCENDING:
-            return a.data[sortKey] > b.data[sortKey] ? -1 : 1;
+            return a.data.order > b.data.order ? -1 : 1;
         }
       } else {
         if (sortOrder === DESCENDING) {
@@ -119,8 +122,8 @@ export default class Tree extends MetaStanza {
     const data = treeDescendants.slice(1);
 
     //Setting node size
-    const nodeSizeMin = min(data, (d) => d.data[sizeKey]);
-    const nodeSizeMax = max(data, (d) => d.data[sizeKey]);
+    const nodeSizeMin = min(data, (d) => d.data.value);
+    const nodeSizeMax = max(data, (d) => d.data.value);
 
     const radiusScale = scaleSqrt()
       .domain([nodeSizeMin, nodeSizeMax])
@@ -150,11 +153,11 @@ export default class Tree extends MetaStanza {
     const getColor = getCirculateColor(this, colorDatas, colorGroup);
 
     const setColor = (d) => {
-      if (d.data[colorKey]) {
-        return d.data[colorKey];
+      if (d.data.color) {
+        return d.data.color;
       } else {
-        return d.data[colorGroup]
-          ? getColor.groupColor(d.data[colorGroup])
+        return d.data.group
+          ? getColor.groupColor(d.data.group)
           : getColor.stanzaColors[0];
       }
     };
@@ -172,7 +175,7 @@ export default class Tree extends MetaStanza {
     //Get width of root label
     const rootGroup = svg
       .append("text")
-      .text(treeDescendants[0].data[nodeKey] || "");
+      .text(treeDescendants[0].data.label || "");
     const rootLabelWidth = rootGroup.node().getBBox().width;
     rootGroup.remove();
 
@@ -180,7 +183,7 @@ export default class Tree extends MetaStanza {
     const maxDepth = max(data, (d) => d.depth);
     const labels = [];
     for (const n of data) {
-      n.depth === maxDepth ? labels.push(n.data[nodeKey] || "") : "";
+      n.depth === maxDepth ? labels.push(n.data.label || "") : "";
     }
     const maxLabelGroup = svg.append("g");
     maxLabelGroup
@@ -303,7 +306,7 @@ export default class Tree extends MetaStanza {
         aligns = [],
         depths = [];
       treeDescendants.forEach((d) => {
-        circleRadius.push(nodeRadius(d.data[sizeKey]) || aveRadius);
+        circleRadius.push(nodeRadius(d.data.value) || aveRadius);
 
         const mapper = {
           horizontal: {
@@ -424,13 +427,13 @@ export default class Tree extends MetaStanza {
         //Decorate circle
         nodeCirclesEnter
           .append("circle")
-          .attr("data-tooltip", (d) => d.data[tooltipKey])
+          .attr("data-tooltip", (d) => d.data.description)
           .attr("stroke", setColor)
           .style(colorModeProperty, colorModeValue)
           .classed("with-children", (d) => d.children)
           .attr("r", (d) =>
-            data.some((d) => d.data[sizeKey])
-              ? nodeRadius(d.data[sizeKey])
+            data.some((d) => d.data.value)
+              ? nodeRadius(d.data.value)
               : parseFloat(aveRadius)
           )
           .attr("fill", setColor);
@@ -496,7 +499,7 @@ export default class Tree extends MetaStanza {
                 return d.x < Math.PI === !d.children ? "start" : "end";
             }
           })
-          .text((d) => d.data[nodeKey] || "");
+          .text((d) => d.data.label || "");
 
         const duration = 500;
 
