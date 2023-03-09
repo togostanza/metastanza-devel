@@ -46,10 +46,13 @@ export default class Tree extends MetaStanza {
 
   async renderNext() {
     //Define from params
+    const nodeGroupKey = this.params["node-color-group"].trim();
+
     const root = this._main,
       dataset = this.__data.asTree({
         nodeLabelKey: this.params["node-label-key"].trim(),
         nodeColorKey: this.params["node-color-key"].trim(),
+        nodeGroupKey,
       }).data,
       width = parseFloat(this.css("--togostanza-canvas-width")) || 0,
       height = parseFloat(this.css("--togostanza-canvas-height")) || 0,
@@ -63,7 +66,7 @@ export default class Tree extends MetaStanza {
       minRadius = this.params["node-size-min"] / 2,
       maxRadius = this.params["node-size-max"] / 2,
       aveRadius = (minRadius + maxRadius) / 2,
-      colorGroup = this.params["node-color-group"].trim(),
+      colorGroup = nodeGroupKey, // NOTE Actually, this variable is not needed (because asTree does the property name conversion), but since we cannot remove this variable without changing the getCirculateColor interface, we have left it in.
       colorMode = this.params["node-color-blend"];
 
     let colorModeProperty, colorModeValue;
@@ -154,8 +157,8 @@ export default class Tree extends MetaStanza {
       if (d.data.color) {
         return d.data.color;
       } else {
-        return d.data[colorGroup]
-          ? getColor.groupColor(d.data[colorGroup])
+        return d.data.group
+          ? getColor.groupColor(d.data.group)
           : getColor.stanzaColors[0];
       }
     };
