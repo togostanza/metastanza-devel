@@ -54,6 +54,7 @@ export default class Tree extends MetaStanza {
         nodeColorKey: this.params["node-color-key"].trim(),
         nodeGroupKey,
         nodeOrderKey: this.params["sort-key"].trim(),
+        nodeValueKey: this.params["node-size-key"].trim(),
       }).data,
       width = parseFloat(this.css("--togostanza-canvas-width")) || 0,
       height = parseFloat(this.css("--togostanza-canvas-height")) || 0,
@@ -62,7 +63,6 @@ export default class Tree extends MetaStanza {
       isLeafNodesAlign = this.params["graph-align_leaf_nodes"],
       layout = this.params["graph-layout"],
       labelMargin = this.params["node-label-margin"],
-      sizeKey = this.params["node-size-key"].trim(),
       minRadius = this.params["node-size-min"] / 2,
       maxRadius = this.params["node-size-max"] / 2,
       aveRadius = (minRadius + maxRadius) / 2,
@@ -123,8 +123,8 @@ export default class Tree extends MetaStanza {
     const data = treeDescendants.slice(1);
 
     //Setting node size
-    const nodeSizeMin = min(data, (d) => d.data[sizeKey]);
-    const nodeSizeMax = max(data, (d) => d.data[sizeKey]);
+    const nodeSizeMin = min(data, (d) => d.data.value);
+    const nodeSizeMax = max(data, (d) => d.data.value);
 
     const radiusScale = scaleSqrt()
       .domain([nodeSizeMin, nodeSizeMax])
@@ -307,7 +307,7 @@ export default class Tree extends MetaStanza {
         aligns = [],
         depths = [];
       treeDescendants.forEach((d) => {
-        circleRadius.push(nodeRadius(d.data[sizeKey]) || aveRadius);
+        circleRadius.push(nodeRadius(d.data.value) || aveRadius);
 
         const mapper = {
           horizontal: {
@@ -433,8 +433,8 @@ export default class Tree extends MetaStanza {
           .style(colorModeProperty, colorModeValue)
           .classed("with-children", (d) => d.children)
           .attr("r", (d) =>
-            data.some((d) => d.data[sizeKey])
-              ? nodeRadius(d.data[sizeKey])
+            data.some((d) => d.data.value)
+              ? nodeRadius(d.data.value)
               : parseFloat(aveRadius)
           )
           .attr("fill", setColor);
