@@ -47,7 +47,9 @@ export default class Tree extends MetaStanza {
   async renderNext() {
     //Define from params
     const root = this._main,
-      dataset = this._data,
+      dataset = this.__data.asTree({
+        nodeLabelKey: this.params["node-label-key"].trim(),
+      }).data,
       width = parseFloat(this.css("--togostanza-canvas-width")) || 0,
       height = parseFloat(this.css("--togostanza-canvas-height")) || 0,
       padding = this.MARGIN,
@@ -55,7 +57,6 @@ export default class Tree extends MetaStanza {
       sortOrder = this.params["sort-order"],
       isLeafNodesAlign = this.params["graph-align_leaf_nodes"],
       layout = this.params["graph-layout"],
-      nodeKey = this.params["node-label-key"].trim(),
       labelMargin = this.params["node-label-margin"],
       sizeKey = this.params["node-size-key"].trim(),
       minRadius = this.params["node-size-min"] / 2,
@@ -172,7 +173,7 @@ export default class Tree extends MetaStanza {
     //Get width of root label
     const rootGroup = svg
       .append("text")
-      .text(treeDescendants[0].data[nodeKey] || "");
+      .text(treeDescendants[0].data.label || "");
     const rootLabelWidth = rootGroup.node().getBBox().width;
     rootGroup.remove();
 
@@ -180,7 +181,7 @@ export default class Tree extends MetaStanza {
     const maxDepth = max(data, (d) => d.depth);
     const labels = [];
     for (const n of data) {
-      n.depth === maxDepth ? labels.push(n.data[nodeKey] || "") : "";
+      n.depth === maxDepth ? labels.push(n.data.label || "") : "";
     }
     const maxLabelGroup = svg.append("g");
     maxLabelGroup
@@ -496,7 +497,7 @@ export default class Tree extends MetaStanza {
                 return d.x < Math.PI === !d.children ? "start" : "end";
             }
           })
-          .text((d) => d.data[nodeKey] || "");
+          .text((d) => d.data.label || "");
 
         const duration = 500;
 
