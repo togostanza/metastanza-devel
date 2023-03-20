@@ -4,7 +4,7 @@ import loadData from "togostanza-utils/load-data";
 import ToolTip from "@/lib/ToolTip";
 import prepareGraphData from "@/lib/prepareGraphData";
 import drawCircleLayout from "./drawCircleLayout";
-import { StanzaColorGenerator } from "@/lib/ColorGenerator";
+import getStanzaColors from "@/lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -60,7 +60,7 @@ export default class ForceGraph extends Stanza {
 
     const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
 
-    const togostanzaColors = new StanzaColorGenerator(this).stanzaColor;
+    const togostanzaColors = new getStanzaColors(this);
 
     const color = function () {
       return d3.scaleOrdinal().range(togostanzaColors);
