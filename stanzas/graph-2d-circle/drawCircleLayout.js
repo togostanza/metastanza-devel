@@ -122,7 +122,7 @@ export default function (
         } 0)`
     );
 
-  nodeGroups
+  const nodeCircles = nodeGroups
     .append("circle")
     .attr("class", "node")
     .style("fill", (d) => d[symbols.nodeColorSym])
@@ -130,14 +130,8 @@ export default function (
       return d[symbols.nodeSizeSym]; //OK
     });
 
-  if (tooltipParams.show) {
-    nodeGroups
-      .selectAll()
-      .attr("data-tooltip", (d) => d[tooltipParams.dataKey]);
-  }
-
   if (nodeLabelParams.dataKey !== "" && nodes[0][nodeLabelParams.dataKey]) {
-    nodeGroups
+    const nodeLabels = nodeGroups
       .append("text")
       .text((d) => d[nodeLabelParams.dataKey])
       .attr("alignment-baseline", "middle")
@@ -161,6 +155,14 @@ export default function (
         return null;
       })
       .attr("class", "label");
+
+    if (tooltipParams.show) {
+      nodeLabels.attr("data-tooltip", (d) => d[tooltipParams.dataKey]);
+    }
+  }
+
+  if (tooltipParams.show) {
+    nodeCircles.attr("data-tooltip", (d) => d[tooltipParams.dataKey]);
   }
 
   if (highlightAdjEdges) {

@@ -37,38 +37,7 @@
       "stanza:example": "id",
       "stanza:description": "Key of the node label"
     },
-    {
-      "stanza:key": "node-size-based_on",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["data key", "sum of edge values"],
-      "stanza:example": "sum of edge values",
-      "stanza:description": "What node size is based on"
-    },
-    {
-      "stanza:key": "node-size-key",
-      "stanza:type": "text",
-      "stanza:example": "group",
-      "stanza:description": "Node size key. Valid only if `node-size-based_on` is set to `data key`"
-    },
-    {
-      "stanza:key": "node-size-min",
-      "stanza:type": "number",
-      "stanza:example": 3,
-      "stanza:description": "Minimum node radius in px"
-    },
-    {
-      "stanza:key": "node-size-max",
-      "stanza:type": "number",
-      "stanza:example": 6,
-      "stanza:description": "Maximum node radius in px"
-    },
-    {
-      "stanza:key": "node-size-scale",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["sqrt", "linear", "log10"],
-      "stanza:example": "sqrt",
-      "stanza:description": "Scaling function of node size"
-    },
+
     {
       "stanza:key": "node-color-key",
       "stanza:type": "text",
@@ -82,11 +51,11 @@
       "stanza:description": "Key of the node label"
     },
     {
-      "stanza:key": "node-size-based_on",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["data key", "sum of edge values"],
-      "stanza:example": "sum of edge values",
-      "stanza:description": "What node size is based on"
+      "stanza:key": "node-size-fixed",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:label": "Toggle",
+      "stanza:description": "Whether to render a chord diagram or circle layout graph"
     },
 
     {
@@ -107,12 +76,6 @@
       "stanza:example": 3,
       "stanza:description": "Maximum edge width in px"
     },
-    {
-      "stanza:key": "edge-curvature",
-      "stanza:type": "number",
-      "stanza:example": 25,
-      "stanza:description": "Set edge curve strength, in % of Radius"
-    },
 
     {
       "stanza:key": "tooltips-key",
@@ -120,12 +83,6 @@
       "stanza:default": "id",
       "stanza:example": "id",
       "stanza:description": "Node tooltips data key. If empty, no tooltips will be shown"
-    },
-    {
-      "stanza:key": "togostanza-custom_css_url",
-      "stanza:example": "",
-      "stanza:description": "Stylesheet(scss file) URL to override current style",
-      "stanza:required": false
     }
   ],
   "stanza:menu-placement": "bottom-right",
@@ -181,7 +138,7 @@
     {
       "stanza:key": "--togostanza-border-width",
       "stanza:type": "number",
-      "stanza:default": 1,
+      "stanza:default": 0,
       "stanza:description": "Border width in px"
     },
 
@@ -266,18 +223,7 @@
       "stanza:default": 7,
       "stanza:description": "Label font size"
     },
-    {
-      "stanza:key": "--togostanza-border-color",
-      "stanza:type": "color",
-      "stanza:default": "#4E5059",
-      "stanza:description": "Border color"
-    },
-    {
-      "stanza:key": "--togostanza-border-width",
-      "stanza:type": "number",
-      "stanza:default": 0,
-      "stanza:description": "Border width"
-    },
+
     {
       "stanza:key": "--togostanza-background-color",
       "stanza:type": "color",

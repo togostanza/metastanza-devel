@@ -87,17 +87,12 @@ export default class ForceGraph extends Stanza {
       sortOrder: this.params["nodes-sort-order"] || "ascending",
     };
 
-    const NODE_SIZE_BASED_ON = {
-      dataKey: "data key",
-      sumEdges: "sum of edge values",
-    };
-
     const nodeSizeParams = {
-      basedOn: this.params["node-size-based_on"] || null,
-      dataKey: this.params["node-size-key"] || "",
-      minSize: setFallbackVal("node-size-min", 0),
-      maxSize: this.params["node-size-max"],
-      scale: this.params["node-size-scale"] || "linear",
+      isChord: !this.params["node-size-fixed"],
+      dataKey: "",
+      minSize: 3,
+      maxSize: 3,
+      scale: "linear",
     };
 
     const nodeColorParams = {
@@ -129,7 +124,7 @@ export default class ForceGraph extends Stanza {
 
     const edgeParams = {
       type: "curve",
-      curveStrength: this.params["edge-curvature"] || 0,
+      curveStrength: 25,
     };
 
     const highlightAdjEdges = true;
@@ -170,7 +165,7 @@ export default class ForceGraph extends Stanza {
       params
     );
 
-    if (nodeSizeParams.basedOn === NODE_SIZE_BASED_ON.sumEdges) {
+    if (nodeSizeParams.isChord) {
       drawChordDiagram(svg, prepNodes, prepEdges, { ...params, symbols });
     } else {
       drawCircleLayout(svg, prepNodes, prepEdges, { ...params, symbols });
