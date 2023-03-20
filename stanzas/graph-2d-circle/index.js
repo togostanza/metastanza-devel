@@ -40,8 +40,8 @@ export default class ForceGraph extends Stanza {
 
     //data
 
-    const width = parseInt(css("--togostanza-outline-width"));
-    const height = parseInt(css("--togostanza-outline-height"));
+    const width = parseInt(css("--togostanza-canvas-width"));
+    const height = parseInt(css("--togostanza-canvas-height"));
 
     this.renderTemplate({
       template: "stanza.html.hbs",
@@ -58,7 +58,7 @@ export default class ForceGraph extends Stanza {
     const nodes = values["nodes"];
     const edges = values["links"];
 
-    const MARGIN = getMarginsFromCSSString(css("--togostanza-outline-padding"));
+    const MARGIN = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
 
     const togostanzaColors = new getStanzaColors(this);
 

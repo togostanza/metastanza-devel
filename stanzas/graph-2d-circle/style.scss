@@ -16,15 +16,17 @@ svg {
 }
 
 .label {
-  font-size: calc(var(--togostanza-label-font-size) * 1px);
-  font-family: var(--togostanza-font-family);
-  fill: var(--togostanza-label-font-color);
+  font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+  font-family: var(--togostanza-fonts-font_family);
+  fill: var(--togostanza-fonts-font_color);
+  cursor: pointer;
 }
 
 .node {
   fill: var(--togostanza-default-node-color);
   stroke: var(--togostanza-border-color);
   stroke-width: var(--togostanza-border-width);
+  cursor: pointer;
 }
 
 .link {
