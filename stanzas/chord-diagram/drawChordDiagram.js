@@ -8,7 +8,7 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
     const matrix = Array.from(index, () => new Array(names.length).fill(0));
     for (const edge of edges) {
       matrix[index.get(edge.source)][index.get(edge.target)] +=
-        edge[symbols.edgeWidthSym];
+        edge[params.edgeWidthParams.dataKey];
     }
     return matrix;
   })();
