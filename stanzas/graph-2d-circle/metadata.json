@@ -2,15 +2,15 @@
   "@context": {
     "stanza": "http://togostanza.org/resource/stanza#"
   },
-  "@id": "graph-2d-circle",
-  "stanza:label": "Graph 2D circle layout",
-  "stanza:definition": "Graph 2D Circle Layout MetaStanza",
+  "@id": "chord-diagram",
+  "stanza:label": "Chord diagram",
+  "stanza:definition": "Chord diagram / circle layout graph",
   "stanza:license": "MIT",
   "stanza:author": "DBCLS",
   "stanza:address": "https://github.com/togostanza/metastanza",
   "stanza:contributor": ["PENQE", "Einishi Tech"],
   "stanza:created": "2022-03-29",
-  "stanza:updated": "2022-03-29",
+  "stanza:updated": "2023-03-22",
   "stanza:parameter": [
     {
       "stanza:key": "data-url",
@@ -37,15 +37,14 @@
       "stanza:example": "id",
       "stanza:description": "Key of the node label"
     },
-
     {
-      "stanza:key": "node-color-key",
+      "stanza:key": "node-color_key",
       "stanza:type": "text",
       "stanza:example": "group",
       "stanza:description": "Node's color key"
     },
     {
-      "stanza:key": "nodes-sort-key",
+      "stanza:key": "nodes-sort_key",
       "stanza:type": "string",
       "stanza:example": "group",
       "stanza:description": "Sort by value of this key"
