@@ -1,10 +1,10 @@
 import Stanza from "togostanza/stanza";
 import * as d3 from "d3";
 import loadData from "togostanza-utils/load-data";
-import ToolTip from "@/lib/ToolTip";
-import prepareGraphData from "@/lib/prepareGraphData";
+import ToolTip from "../../lib/ToolTip";
+import prepareGraphData from "../../lib/prepareGraphData";
 import drawCircleLayout from "./drawCircleLayout";
-import getStanzaColors from "@/lib/ColorGenerator";
+import getStanzaColors from "../../lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -13,10 +13,13 @@ import {
   downloadTSVMenuItem,
   appendCustomCss,
 } from "togostanza-utils";
-import { getMarginsFromCSSString } from "../../lib/utils";
+import { getMarginsFromCSSString, MarginsI } from "../../lib/utils";
 import { drawChordDiagram } from "./drawChordDiagram";
 
-export default class ForceGraph extends Stanza {
+export default class ChordDiagram extends Stanza {
+  _data: object;
+  tooltip: ToolTip;
+
   menu() {
     return [
       downloadSvgMenuItem(this, "graph-2d-force"),
@@ -43,10 +46,6 @@ export default class ForceGraph extends Stanza {
     const width = parseInt(css("--togostanza-canvas-width"));
     const height = parseInt(css("--togostanza-canvas-height"));
 
-    this.renderTemplate({
-      template: "stanza.html.hbs",
-    });
-
     const values = await loadData(
       this.params["data-url"],
       this.params["data-type"],
@@ -58,8 +57,6 @@ export default class ForceGraph extends Stanza {
     const nodes = values["nodes"];
     const edges = values["links"];
 
-    const MARGIN = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
-
     const togostanzaColors = new getStanzaColors(this);
 
     const color = function () {
@@ -67,14 +64,13 @@ export default class ForceGraph extends Stanza {
     };
 
     const root = this.root.querySelector("main");
-    const el = this.root.getElementById("graph-2d-circle");
 
     const existingSvg = root.getElementsByTagName("svg")[0];
     if (existingSvg) {
       existingSvg.remove();
     }
     const svg = d3
-      .select(el)
+      .select(root)
       .append("svg")
       .attr("width", width)
       .attr("height", height);
@@ -129,6 +125,22 @@ export default class ForceGraph extends Stanza {
 
     const highlightAdjEdges = true;
 
+    const CSSMargins = getMarginsFromCSSString(
+      css("--togostanza-canvas-padding")
+    );
+
+    const longestLabelWidth = getLongestLabelWidth(
+      svg,
+      nodes.map((d) => d[nodeLabelParams.dataKey])
+    );
+
+    const MARGIN: MarginsI = {
+      LEFT: CSSMargins.LEFT + longestLabelWidth + nodeLabelParams.margin,
+      RIGHT: CSSMargins.RIGHT + longestLabelWidth + nodeLabelParams.margin,
+      TOP: CSSMargins.TOP + longestLabelWidth + nodeLabelParams.margin,
+      BOTTOM: CSSMargins.BOTTOM + longestLabelWidth + nodeLabelParams.margin,
+    };
+
     const params = {
       MARGIN,
       width,
@@ -171,6 +183,24 @@ export default class ForceGraph extends Stanza {
       drawCircleLayout(svg, prepNodes, prepEdges, { ...params, symbols });
     }
 
-    this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
+    this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
   }
+}
+
+function getLongestLabelWidth(
+  svg: d3.Selection<SVGElement, unknown, null, undefined>,
+  labelsArray: string[]
+) {
+  const labelsG = svg.append("g");
+
+  labelsG
+    .selectAll("text")
+    .data(labelsArray)
+    .join("text")
+    .text((d) => d)
+    .classed("label", true);
+  const width = labelsG.node().getBBox().width;
+
+  labelsG.remove();
+  return width;
 }

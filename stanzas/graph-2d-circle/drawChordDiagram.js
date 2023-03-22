@@ -16,7 +16,7 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
   const WIDTH = params.width - params.MARGIN.LEFT - params.MARGIN.RIGHT;
   const HEIGHT = params.height - params.MARGIN.TOP - params.MARGIN.BOTTOM;
 
-  const innerRadius = Math.min(WIDTH, HEIGHT) * 0.5 - 20;
+  const innerRadius = Math.min(WIDTH, HEIGHT) * 0.5;
   const outerRadius = innerRadius + 6;
 
   // get Letter height
