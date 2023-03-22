@@ -108,6 +108,12 @@
       "stanza:description": "Stanza height. Width is always 100%, a la div with `display: block`"
     },
     {
+      "stanza:key": "--togostanza-canvas-padding",
+      "stanza:type": "text",
+      "stanza:default": "10px",
+      "stanza:description": "Stanza padding CSS string"
+    },
+    {
       "stanza:key": "--togostanza-fonts-font_family",
       "stanza:type": "text",
       "stanza:default": "Helvetica Neue",
