@@ -92,13 +92,6 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "show_history",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:description": "Whether to show history of navigation",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "togostanza-custom_css_url",
       "type": "string",
       "stanza:example": "",

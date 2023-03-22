@@ -17,7 +17,7 @@ class OntologyPath extends LitElement {
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
-        heigth: var(--history-height);
+        height: var(--history-height);
       }
 
       .path-header {
