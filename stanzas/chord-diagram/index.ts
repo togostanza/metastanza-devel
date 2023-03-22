@@ -57,8 +57,9 @@ export default class ChordDiagram extends Stanza {
     const nodes = values["nodes"];
     const edges = values["links"];
 
-    const togostanzaColors = new getStanzaColors(this);
+    const togostanzaColors = getStanzaColors(this);
 
+    console.log("togostanzaColors", togostanzaColors);
     const color = function () {
       return d3.scaleOrdinal().range(togostanzaColors);
     };
@@ -79,8 +80,8 @@ export default class ChordDiagram extends Stanza {
     root.append(this.tooltip);
 
     const nodesSortParams = {
-      sortBy: this.params["nodes-sort-key"],
-      sortOrder: this.params["nodes-sort-order"] || "ascending",
+      sortBy: this.params["nodes-sort_key"],
+      sortOrder: "ascending",
     };
 
     const nodeSizeParams = {
@@ -92,7 +93,7 @@ export default class ChordDiagram extends Stanza {
     };
 
     const nodeColorParams = {
-      dataKey: this.params["node-color-key"] || "",
+      dataKey: this.params["node-color_key"] || "",
     };
 
     const edgeWidthParams = {
