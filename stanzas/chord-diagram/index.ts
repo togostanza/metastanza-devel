@@ -59,7 +59,6 @@ export default class ChordDiagram extends Stanza {
 
     const togostanzaColors = getStanzaColors(this);
 
-    console.log("togostanzaColors", togostanzaColors);
     const color = function () {
       return d3.scaleOrdinal().range(togostanzaColors);
     };
