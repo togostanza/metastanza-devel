@@ -117,9 +117,9 @@ export default function (
     .attr(
       "transform",
       (d) =>
-        `translate(${WIDTH / 2 + R},${HEIGHT / 2}) rotate(${angleScale(d.id)} ${
-          -WIDTH / 2
-        } 0)`
+        `translate(${WIDTH / 2},${HEIGHT / 2})  rotate(${angleScale(
+          d.id
+        )}) translate(${R},  0)`
     );
 
   const nodeCircles = nodeGroups

@@ -23,7 +23,6 @@ svg {
 }
 
 .node {
-  fill: var(--togostanza-default-node-color);
   stroke: var(--togostanza-border-color);
   stroke-width: var(--togostanza-border-width);
   cursor: pointer;
@@ -33,7 +32,7 @@ svg {
   stroke-opacity: var(--togostanza-edge-opacity);
   stroke-linecap: round;
   fill: none;
-  stroke: var(--togostanza-edge-default_color);
+  stroke: var(--togostanza-edge-color);
   &.chord {
     stroke: none;
   }

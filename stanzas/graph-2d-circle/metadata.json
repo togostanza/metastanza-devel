@@ -137,7 +137,7 @@
     },
 
     {
-      "stanza:key": "--togostanza-edge-default_color",
+      "stanza:key": "--togostanza-edge-color",
       "stanza:type": "color",
       "stanza:default": "#6590e6",
       "stanza:description": "Egdes default color"
@@ -191,33 +191,6 @@
       "stanza:default": "rgba(255,255,255,0)",
       "stanza:description": "Nodes default color"
     },
-
-    {
-      "stanza:key": "--togostanza-default-node-color",
-      "stanza:type": "color",
-      "stanza:default": "rgba(255,255,255,0)",
-      "stanza:description": "Nodes default color"
-    },
-
-    {
-      "stanza:key": "--togostanza-font-family",
-      "stanza:type": "text",
-      "stanza:default": "Helvetica Neue",
-      "stanza:description": "Font family"
-    },
-    {
-      "stanza:key": "--togostanza-label-font-color",
-      "stanza:type": "color",
-      "stanza:default": "#4E5059",
-      "stanza:description": "Label font color"
-    },
-    {
-      "stanza:key": "--togostanza-label-font-size",
-      "stanza:type": "number",
-      "stanza:default": 7,
-      "stanza:description": "Label font size"
-    },
-
     {
       "stanza:key": "--togostanza-background-color",
       "stanza:type": "color",

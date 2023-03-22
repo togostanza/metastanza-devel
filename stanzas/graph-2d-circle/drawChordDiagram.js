@@ -23,7 +23,7 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
 
   const arcsGap = 7;
   const edgeOffset = 5;
-  const labelOffset = 5;
+  const labelOffset = params.nodeLabelParams.margin;
   const labelRadius = outerRadius + labelOffset;
 
   const ribbon = d3
