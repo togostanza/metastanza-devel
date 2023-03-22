@@ -47,8 +47,8 @@
     {
       "stanza:key": "nodes-sort-key",
       "stanza:type": "string",
-      "stanza:example": "id",
-      "stanza:description": "Key of the node label"
+      "stanza:example": "group",
+      "stanza:description": "Sort by value of this key"
     },
     {
       "stanza:key": "node-size-fixed",

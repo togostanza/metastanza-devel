@@ -11,7 +11,7 @@ svg {
 .active,
 .fadeout,
 .half-active {
-  transition: all 0.1s ease-in-out;
+  transition: var(--togostanza-fadeout-transition);
   transition-property: opacity, stroke-width, stroke-opacity;
 }
 
@@ -52,9 +52,9 @@ svg {
 }
 
 .fadeout {
-  opacity: 0.05;
+  opacity: var(--togostanza-fadeout-opacity);
   & > .link {
-    stroke-opacity: 0.05;
+    stroke-opacity: var(--togostanza-fadeout-opacity);
   }
 }
 
@@ -66,7 +66,7 @@ svg {
   }
 
   & > .label {
-    opacity: 0.6;
+    opacity: 0.8;
   }
 }
 
