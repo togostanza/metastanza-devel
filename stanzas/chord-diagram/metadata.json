@@ -44,10 +44,17 @@
       "stanza:description": "Node's color key"
     },
     {
-      "stanza:key": "nodes-sort_key",
+      "stanza:key": "nodes-sort-key",
       "stanza:type": "string",
       "stanza:example": "group",
       "stanza:description": "Sort by value of this key"
+    },
+    {
+      "stanza:key": "nodes-sort-order",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["descending", "ascending"],
+      "stanza:example": "ascending",
+      "stanza:description": "Sort order"
     },
     {
       "stanza:key": "node-size-fixed",
@@ -56,7 +63,6 @@
       "stanza:label": "Toggle",
       "stanza:description": "Whether to render a chord diagram or circle layout graph"
     },
-
     {
       "stanza:key": "edge-width-key",
       "stanza:type": "string",

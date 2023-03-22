@@ -79,8 +79,8 @@ export default class ChordDiagram extends Stanza {
     root.append(this.tooltip);
 
     const nodesSortParams = {
-      sortBy: this.params["nodes-sort_key"],
-      sortOrder: "ascending",
+      sortBy: this.params["nodes-sort-key"],
+      sortOrder: this.params["nodes-sort-order"] || "ascending",
     };
 
     const nodeSizeParams = {
@@ -95,6 +95,11 @@ export default class ChordDiagram extends Stanza {
       dataKey: this.params["node-color_key"] || "",
     };
 
+    const nodeLabelParams = {
+      margin: 3,
+      dataKey: this.params["node-label_key"],
+    };
+
     const edgeWidthParams = {
       dataKey: this.params["edge-width-key"] || "",
       minWidth: setFallbackVal("edge-width-min", 1),
@@ -106,11 +111,6 @@ export default class ChordDiagram extends Stanza {
     const edgeColorParams = {
       basedOn: "data key",
       dataKey: Symbol(),
-    };
-
-    const nodeLabelParams = {
-      margin: 3,
-      dataKey: this.params["node-label_key"],
     };
 
     const tooltipParams = {
