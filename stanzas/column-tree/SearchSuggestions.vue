@@ -9,7 +9,7 @@
       >
         <span class="label" :class="`-${nodeValueAlignment}`">
           <strong class="title">{{ node[keys.label] }}</strong>
-          <span class="value" :class="{fallback: !node[keys.value]}">
+          <span class="value" :class="{fallback: node[keys.value] !== undefined}">
             {{ node[keys.value]?.toLocaleString() ?? valueObj.fallback }}
           </span>
         </span>
