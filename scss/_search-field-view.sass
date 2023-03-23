@@ -1,7 +1,29 @@
 .search-field-view
+  position: relative
   > input
     &[type="search"], &[type="text"]
       border: solid 1px #999
-      padding: .5em 2em .5em 1em
+      margin-left: -2px
+      padding: .3em 1em .3em 2.1em
       line-height: 1
-      border-radius: 2em
+      border-radius: 1.6em
+      &::placeholder
+        color: #CCC
+  &::before, &::after
+    content: ""
+    display: block
+    position: absolute
+    z-index: 1
+  &::before
+    width: .8em
+    height: .8em
+    top: .4em
+    left: .7em
+    border-radius: 100%
+    border: solid 1px #999
+  &::after
+    height: .5em
+    top: 1em
+    left: 1.5em
+    rotate: -45deg
+    border-left: solid 1px #999
