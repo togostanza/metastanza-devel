@@ -64,7 +64,7 @@ class OntologyPath extends LitElement {
         display: block;
         width: 5px;
         height: 5px;
-        border: 1px solid var(--togostanza-border-color);
+        border: 1px solid var(--togostanza-node-border_color);
         position: absolute;
         border-radius: 50%;
         bottom: 0;
@@ -75,7 +75,7 @@ class OntologyPath extends LitElement {
         display: block;
         width: 2.35em;
         height: 1px;
-        border-bottom: 1px solid var(--togostanza-border-color);
+        border-bottom: 1px solid var(--togostanza-node-border_color);
         transform: rotate(200deg);
         transform-origin: left bottom;
         box-sizing: border-box;

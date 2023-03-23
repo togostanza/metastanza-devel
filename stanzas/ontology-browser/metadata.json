@@ -138,13 +138,13 @@
       "stanza:description": "Card contents font size"
     },
     {
-      "stanza:key": "--togostanza-border-color",
+      "stanza:key": "--togostanza-node-border_color",
       "stanza:type": "color",
       "stanza:default": "#999999",
       "stanza:description": "Border color"
     },
     {
-      "stanza:key": "--togostanza-border-color_selected",
+      "stanza:key": "--togostanza-node-selected_border_color",
       "stanza:type": "color",
       "stanza:default": "#666666",
       "stanza:description": "Selected border color"
@@ -166,6 +166,12 @@
       "stanza:type": "color",
       "stanza:default": "#C7EEFF",
       "stanza:description": "Hover node background color"
+    },
+    {
+      "stanza:key": "--togostanza-edge-border_color",
+      "stanza:type": "color",
+      "stanza:default": "#999999",
+      "stanza:description": "Border color"
     },
     {
       "stanza:key": "--togostanza-theme-background_color",
