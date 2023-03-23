@@ -23,8 +23,11 @@
   .value {
     flex-grow: 1;
     font-weight: normal;
-    font-style: italic;
-    opacity: 0.8;
+    opacity: .8;
+    &.fallback {
+      opacity: .5;
+      font-style: italic;
+    }
   }
   .label {
     display: flex;
