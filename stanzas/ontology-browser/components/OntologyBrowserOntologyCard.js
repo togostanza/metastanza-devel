@@ -9,7 +9,7 @@ export class OntologyCard extends LitElement {
       position: relative;
       --default-bg-color: white;
       font-family: var(--togostanza-fonts-font_family);
-      font-size: var(--togostanza-fonts-font_size_primary);
+      font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
       color: var(--togostanza-fonts-font_color);
     }
 
@@ -246,7 +246,7 @@ export class OntologyCard extends LitElement {
     h3 {
       display: inline;
       margin: 0;
-      font-size: var(--togostanza-fonts-font_size_primary);
+      font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
     }
 
     .card-container {
@@ -285,7 +285,7 @@ export class OntologyCard extends LitElement {
       width: 100%
       max-width: 10rem;
       table-layout: fixed;
-      font-size: var(--togostanza-fonts-font_size_secondary)
+      font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px)
     }
 
     table td.key {
