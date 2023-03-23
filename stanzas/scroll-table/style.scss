@@ -51,10 +51,10 @@ main {
           font-weight: var(--togostanza-thead-font-weight);
           background-color: var(--togostanza-thead-background-color);
           position: sticky;
+          top: 0;
           &.fixed {
             position: sticky;
             z-index: 20;
-            top: 0;
           }
           &:before {
             border-bottom: var(--togostanza-table-border);
