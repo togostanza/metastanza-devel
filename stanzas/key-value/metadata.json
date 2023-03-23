@@ -55,7 +55,7 @@
     {
       "stanza:key": "--togostanza-border-color",
       "stanza:type": "color",
-      "stanza:default": "#EEEEEE",
+      "stanza:default": "#999999",
       "stanza:description": "Stanza border color"
     },
     {
@@ -86,7 +86,7 @@
     {
       "stanza:key": "--togostanza-fonts-font_color_primary",
       "stanza:type": "color",
-      "stanza:default": "#256D80",
+      "stanza:default": "#6590e6",
       "stanza:description": "Font color of key text"
     },
     {
@@ -104,7 +104,7 @@
     {
       "stanza:key": "--togostanza-fonts-font_size_secondary",
       "stanza:type": "text",
-      "stanza:default": "9px",
+      "stanza:default": "12px",
       "stanza:description": "Font size of description text"
     },
     {
