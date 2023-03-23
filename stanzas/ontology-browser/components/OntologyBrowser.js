@@ -6,7 +6,6 @@ import { applyConstructor, cachedAxios, getByPath } from "../utils.js";
 
 import "./OntologyBrowserOntologyView";
 import "./OntologyBrowserError";
-import "./OntologyBrowserPath.js";
 
 export class OntologyBrowser extends LitElement {
   static get styles() {
@@ -92,9 +91,6 @@ export class OntologyBrowser extends LitElement {
     this.showKeys = ["id", "label"];
     this.pathArray = [];
     this.activeNode = {};
-
-    this.historyClicked = false;
-
     this.API = new cachedAxios();
   }
 
@@ -138,10 +134,6 @@ export class OntologyBrowser extends LitElement {
           id: this.data.details.id,
           label: this.data.details.label,
         };
-
-        if (!this.historyClicked) {
-          this.pathArray = [...this.pathArray, this.activeNode];
-        }
       })
       .catch((e) => {
         console.error(e);
@@ -153,7 +145,6 @@ export class OntologyBrowser extends LitElement {
   }
 
   willUpdate(changed) {
-    console.log("this.historyClicked", this.historyClicked);
     if (
       (changed.has("diseaseId") || changed.has("apiEndpoint")) &&
       this.diseaseId
@@ -161,20 +152,11 @@ export class OntologyBrowser extends LitElement {
       this.error = { message: "", isError: false };
       this._loadData();
     }
-    if (changed.has("pathArray")) {
-      if (this.pathArray.length > 10) {
-        this.pathArray = this.pathArray.slice(1);
-      }
-    }
   }
 
   firstUpdated() {
     this._loadingStarted();
     this.diseaseId = this.initialId;
-  }
-  _handleHistoryClick({ detail: { id } }) {
-    this.historyClicked = true;
-    this.diseaseId = id;
   }
 
   _getDataObject(incomingData) {
@@ -245,7 +227,6 @@ export class OntologyBrowser extends LitElement {
 
   _changeDiseaseEventHadnler(e) {
     e.stopPropagation();
-    this.historyClicked = false;
     this.diseaseId = e.detail.id;
     this.clickedRole = e.detail.role;
     this._loadingStarted();
@@ -283,13 +264,6 @@ export class OntologyBrowser extends LitElement {
   render() {
     return html`
       <div class="container">
-        ${this.showHistory
-          ? html`<ontology-browser-path
-              @history-clicked="${this._handleHistoryClick}"
-              .path=${this.pathArray}
-            >
-            </ontology-browser-path>`
-          : nothing}
         ${this.loading
           ? html`<div class="spinner">
               <img src="${loaderPNG}"></img>

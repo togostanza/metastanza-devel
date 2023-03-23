@@ -92,13 +92,6 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "show_history",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:description": "Whether to show history of navigation",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "togostanza-custom_css_url",
       "type": "string",
       "stanza:example": "",
@@ -113,6 +106,12 @@
       "stanza:type": "text",
       "stanza:default": "500px",
       "stanza:description": "Stanza height. Width is always 100%, a la div with `display: block`"
+    },
+    {
+      "stanza:key": "--togostanza-canvas-padding",
+      "stanza:type": "text",
+      "stanza:default": "10px",
+      "stanza:description": "Stanza padding CSS string"
     },
     {
       "stanza:key": "--togostanza-fonts-font_family",
