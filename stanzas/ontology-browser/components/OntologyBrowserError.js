@@ -17,7 +17,7 @@ class OntologyError extends LitElement {
       .error-container {
         width: max(50%, 15rem);
         min-width: 5rem;
-        background-color: var(--togostanza-node-bg-color);
+        background-color: var(--togostanza-node-background_color);
         border-radius: 15px;
         padding: 0 1rem;
         border: 1px solid var(--togostanza-node-border-color);

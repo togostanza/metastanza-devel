@@ -140,26 +140,32 @@
     {
       "stanza:key": "--togostanza-border-color",
       "stanza:type": "color",
-      "stanza:default": "#9b9ca1",
+      "stanza:default": "#999999",
       "stanza:description": "Border color"
     },
     {
       "stanza:key": "--togostanza-border-color_selected",
       "stanza:type": "color",
-      "stanza:default": "#1f9dad",
+      "stanza:default": "#666666",
       "stanza:description": "Selected border color"
     },
     {
-      "stanza:key": "--togostanza-node-bg-color",
+      "stanza:key": "--togostanza-node-background_color",
       "stanza:type": "color",
       "stanza:default": "#ffffff",
       "stanza:description": "Node background color"
     },
     {
-      "stanza:key": "--togostanza-node-bg-color_selected",
+      "stanza:key": "--togostanza-node-selected_background_color",
       "stanza:type": "color",
-      "stanza:default": "#fff6e0",
+      "stanza:default": "#C7EEFF",
       "stanza:description": "Selected node background color"
+    },
+    {
+      "stanza:key": "--togostanza-node-hover_background_color",
+      "stanza:type": "color",
+      "stanza:default": "#C7EEFF",
+      "stanza:description": "Hover node background color"
     },
     {
       "stanza:key": "--togostanza-theme-background_color",

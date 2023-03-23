@@ -7,7 +7,7 @@ export class OntologyCard extends LitElement {
     :host {
       display: block;
       position: relative;
-      --default-bg-color: white;
+      --default-background_color: white;
       font-family: var(--togostanza-fonts-font_family);
       font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
       color: var(--togostanza-fonts-font_color);
@@ -211,7 +211,7 @@ export class OntologyCard extends LitElement {
       font-family: var(--togostanza-font-family);
       border: 1px solid var(--togostanza-border-color);
       border-radius: 4px;
-      background-color: var(--togostanza-node-bg-color);
+      background-color: var(--togostanza-node-background_color);
       cursor: pointer;
       position: relative;
       width: min(85%, 20rem);
@@ -222,7 +222,8 @@ export class OntologyCard extends LitElement {
     }
 
     .ontology-card:hover {
-      filter: brightness(0.98)
+      background-color: var(--togostanza-node-hover_background_color);
+      border-color: var(--togostanza-border-color_selected);
     }
 
     .children-arrow {
@@ -261,7 +262,7 @@ export class OntologyCard extends LitElement {
     }
 
     .selected {
-      background-color: var(--togostanza-node-bg-color_selected);
+      background-color: var(--togostanza-node-selected_background_color);
       border-color: var(--togostanza-border-color_selected);
     }
 
@@ -399,11 +400,11 @@ export class OntologyCard extends LitElement {
 
   firstUpdated() {
     this.defaultBgColor = getComputedStyle(this.cardRef.value).getPropertyValue(
-      "--default-bg-color"
+      "--default-background_color"
     );
     this.selectedBgColor = getComputedStyle(
       this.cardRef.value
-    ).getPropertyValue("--selected-bg-color");
+    ).getPropertyValue("--selected-background_color");
   }
 
   render() {
