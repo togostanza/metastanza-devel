@@ -207,10 +207,10 @@ export class OntologyCard extends LitElement {
     }
 
     .ontology-card {
-      padding: 10px;
+      padding: 6px 10px;
       font-family: var(--togostanza-font-family);
       border: 1px solid var(--togostanza-border-color);
-      border-radius: 8px;
+      border-radius: 4px;
       background-color: var(--togostanza-node-bg-color);
       cursor: pointer;
       position: relative;
