@@ -3,5 +3,5 @@
 
 main {
   background-color: var(--togostanza-theme-background_color);
-  height: var(--togostanza-canvas-height);
+  height: calc(var(--togostanza-canvas-height) * 1px);
 }

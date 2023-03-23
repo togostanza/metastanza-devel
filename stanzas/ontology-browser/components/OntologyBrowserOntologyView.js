@@ -11,7 +11,7 @@ export class OntologyBrowserView extends LitElement {
       :host {
         font-size: 10px;
         display: block;
-        height: var(--togostanza-canvas-height);
+        height: calc(var(--togostanza-canvas-height) * 1px);
         padding: var(--togostanza-canvas-padding);
       }
 

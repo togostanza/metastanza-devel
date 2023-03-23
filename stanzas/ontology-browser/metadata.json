@@ -103,8 +103,8 @@
   "stanza:style": [
     {
       "stanza:key": "--togostanza-canvas-height",
-      "stanza:type": "text",
-      "stanza:default": "500px",
+      "stanza:type": "number",
+      "stanza:default": 500,
       "stanza:description": "Stanza height. Width is always 100%, a la div with `display: block`"
     },
     {
