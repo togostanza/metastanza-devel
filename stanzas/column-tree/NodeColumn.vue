@@ -13,25 +13,28 @@
       ]"
       @click="hasChildren(node.children) ? setParent(node.id) : null"
     >
-      <input
-        type="checkbox"
-        :checked="checkedNodes.get(node.id)"
-        @input="setCheckedNode(node)"
-      />
+      <span class="inner">
 
-      <span class="label" :class="`-${nodeValueAlignment}`">
-        <strong class="title">
-          {{ node[keys.label] }}
-        </strong>
-        <span class="value">
-          {{ node[keys.value] ?? valueObj.fallback }}
+        <input
+          type="checkbox"
+          :checked="checkedNodes.get(node.id)"
+          @input="setCheckedNode(node)"
+        />
+
+        <span class="label" :class="`-${nodeValueAlignment}`">
+          <strong class="title">
+            {{ node[keys.label] }}
+          </strong>
+          <span class="value">
+            {{ node[keys.value] ?? valueObj.fallback }}
+          </span>
         </span>
+        <font-awesome-icon
+          v-if="hasChildren(node.children)"
+          icon="chevron-right"
+          class="icon"
+        />
       </span>
-      <font-awesome-icon
-        v-if="hasChildren(node.children)"
-        icon="chevron-right"
-        class="icon"
-      />
     </span>
   </div>
 </template>

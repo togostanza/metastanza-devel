@@ -63,19 +63,19 @@
   .icon {
     width: calc(var(--togostanza-fonts-font_size_primary) * 0.6 * 1px);
   }
-  .-with-border {
-    &:after {
-      position: absolute;
-      content: "";
-      display: block;
-      width: 100%;
-      top: 0;
-      left: 0;
-      border-top: solid
-        calc(var(--togostanza-column-node_delimiter_width) * 1px)
-        var(--togostanza-column-border_color);
-    }
-  }
+  // .-with-border {
+  //   &:after {
+  //     position: absolute;
+  //     content: "";
+  //     display: block;
+  //     width: 100%;
+  //     top: -2px;
+  //     left: 0;
+  //     border-top: solid
+  //       1px
+  //       var(--togostanza-column-border_color);
+  //   }
+  // }
   > .search-field-view {
     margin-bottom: 1rem;
     > .inputcontainer {
@@ -102,59 +102,55 @@
     display: flex;
     width: fit-content;
     height: 100%;
-    gap: calc(var(--togostanza-column-gap) * 1px);
     padding: 1px;
     > .column {
       overflow: auto;
       background-color: var(--togostanza-column-background_color);
-      padding: calc(var(--togostanza-column-padding) * 1px);
       width: max-content;
       outline: 1px solid;
       outline-color: var(--togostanza-column-border_color);
-      border-radius: calc(var(--togostanza-column-border_radius) * 1px);
       > .node {
+        display: block;
         position: relative;
-        display: grid;
-        grid-template-columns: 1.5rem auto 1.5rem;
-        align-items: center;
-        border-radius: calc(var(--togostanza-node-border_radius) * 1px);
-        padding-top: calc(var(--togostanza-node-padding_vertical) * 1px);
-        padding-bottom: calc(var(--togostanza-node-padding_vertical) * 1px);
-        padding-left: calc(var(--togostanza-node-padding_horizontal) * 1px);
-        padding-right: calc(var(--togostanza-node-padding_horizontal) * 1px);
-        > .label {
-          &.-vertical {
-            margin-left: 0.5rem;
+        padding: 2px;
+        border-bottom: solid 1px var(--togostanza-column-node_delimiter_color);
+        > .inner {
+          grid-template-columns: 1.5rem auto 1.5rem;
+          align-items: center;
+          border-radius: 3px;
+          padding: 4px 6px;
+          display: grid;
+          > .label {
+            &.-vertical {
+              margin-left: 0.5rem;
+            }
+          }
+          > .icon {
+            align-self: center;
+            justify-self: flex-end;
+          }
+          > input[type="checkbox"] {
+            &:hover {
+              cursor: pointer;
+            }
+          }
+          &:first-child {
+            &.-with-border:after {
+              border-top: none;
+            }
           }
         }
-        > .icon {
-          align-self: center;
-          justify-self: flex-end;
-        }
-        > input[type="checkbox"] {
-          &:hover {
-            cursor: pointer;
-          }
-        }
-        &:first-child {
-          &.-with-border:after {
-            border-top: none;
-          }
-        }
-        &.-highlighted {
-          background-color: var(--togostanza-node-selected_background_color);
-          color: var(--togostanza-node-selected_text_color);
-          > svg > path {
+        &.-highlighted, &:hover {
+          > .inner {
+            background-color: var(--togostanza-node-selected_background_color);
             color: var(--togostanza-node-selected_text_color);
+            > svg > path {
+              color: var(--togostanza-node-selected_text_color);
+            }
           }
         }
         &:hover {
-          background-color: var(--togostanza-node-hover_background_color);
-          color: var(--togostanza-node-hover_text_color);
           cursor: pointer;
-          > svg > path {
-            color: var(--togostanza-node-hover_text_color);
-          }
         }
       }
     }
