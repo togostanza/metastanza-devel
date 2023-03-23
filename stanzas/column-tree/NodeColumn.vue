@@ -25,8 +25,8 @@
           <strong class="title">
             {{ node[keys.label] }}
           </strong>
-          <span class="value">
-            {{ node[keys.value] ?? valueObj.fallback }}
+          <span class="value" :class="{fallback: !node[keys.value]}">
+            {{ node[keys.value]?.toLocaleString() ?? valueObj.fallback }}
           </span>
         </span>
         <font-awesome-icon
