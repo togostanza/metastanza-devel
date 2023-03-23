@@ -4,16 +4,17 @@
   },
   "@id": "chord-diagram",
   "stanza:label": "Chord diagram",
-  "stanza:definition": "Chord diagram MetaStanza",
+  "stanza:definition": "Chord diagram / circle layout graph",
   "stanza:license": "MIT",
-  "stanza:author": "永野 朗夫",
-  "stanza:contributor": [],
-  "stanza:created": "2021-11-12",
-  "stanza:updated": "2021-11-12",
+  "stanza:author": "DBCLS",
+  "stanza:address": "https://github.com/togostanza/metastanza",
+  "stanza:contributor": ["PENQE", "Einishi Tech"],
+  "stanza:created": "2022-03-29",
+  "stanza:updated": "2023-03-22",
   "stanza:parameter": [
     {
       "stanza:key": "data-url",
-      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/main/samples/json/directed-graph-data.json",
+      "stanza:example": "https://gist.githubusercontent.com/abkunal/98d35b9b235312e90f3e43c9f7b6932b/raw/d5589ddd53731ae8eec7abd091320df91cdcf5cd/miserables.json",
       "stanza:description": "Data source URL",
       "stanza:required": true
     },
@@ -26,38 +27,67 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "width",
-      "stanza:type": "number",
-      "stanza:example": 400,
-      "stanza:description": "Width",
-      "stanza:required": true
-    },
-    {
-      "stanza:key": "height",
-      "stanza:type": "number",
-      "stanza:example": 400,
-      "stanza:description": "Height",
-      "stanza:required": true
-    },
-    {
-      "stanza:key": "arcs-gap",
-      "stanza:type": "number",
-      "stanza:example": 10,
-      "stanza:description": "Gap between arcs",
-      "stanza:required": true
-    },
-    {
-      "stanza:key": "edge-offset",
-      "stanza:type": "number",
-      "stanza:example": 0.5,
-      "stanza:description": "Gap between arc and edge",
-      "stanza:required": true
-    },
-    {
       "stanza:key": "togostanza-custom_css_url",
       "stanza:example": "",
-      "stanza:description": "Stylesheet(css file) URL to override current style",
-      "stanza:required": false
+      "stanza:description": "Custom CSS URL"
+    },
+    {
+      "stanza:key": "node-label_key",
+      "stanza:type": "string",
+      "stanza:example": "id",
+      "stanza:description": "Key of the node label"
+    },
+    {
+      "stanza:key": "node-color_key",
+      "stanza:type": "text",
+      "stanza:example": "group",
+      "stanza:description": "Node's color key"
+    },
+    {
+      "stanza:key": "nodes-sort-key",
+      "stanza:type": "string",
+      "stanza:example": "group",
+      "stanza:description": "Sort by value of this key"
+    },
+    {
+      "stanza:key": "nodes-sort-order",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["descending", "ascending"],
+      "stanza:example": "ascending",
+      "stanza:description": "Sort order"
+    },
+    {
+      "stanza:key": "node-size-fixed",
+      "stanza:type": "boolean",
+      "stanza:example": false,
+      "stanza:label": "Toggle",
+      "stanza:description": "Whether to render a chord diagram or circle layout graph"
+    },
+    {
+      "stanza:key": "edge-width-key",
+      "stanza:type": "string",
+      "stanza:example": "value",
+      "stanza:description": "Set width of the edge  data key"
+    },
+    {
+      "stanza:key": "edge-width-min",
+      "stanza:type": "number",
+      "stanza:example": 0.5,
+      "stanza:description": "Minimum edge width in px. (Effective only in circle layout graph mode)"
+    },
+    {
+      "stanza:key": "edge-width-max",
+      "stanza:type": "number",
+      "stanza:example": 3,
+      "stanza:description": "Maximum edge width in px (Effective only in circle layout graph mode)"
+    },
+
+    {
+      "stanza:key": "tooltips-key",
+      "stanza:type": "string",
+      "stanza:default": "id",
+      "stanza:example": "id",
+      "stanza:description": "Node tooltips data key. If empty, no tooltips will be shown"
     }
   ],
   "stanza:menu-placement": "bottom-right",
@@ -69,11 +99,61 @@
       "stanza:description": "Font family"
     },
     {
+      "stanza:key": "--togostanza-fonts-font_color",
+      "stanza:type": "color",
+      "stanza:default": "#4E5059",
+      "stanza:description": "Font color"
+    },
+    {
       "stanza:key": "--togostanza-fonts-font_size_primary",
       "stanza:type": "number",
-      "stanza:default": 12,
-      "stanza:description": "Font size"
+      "stanza:default": 9,
+      "stanza:description": "Primary font size"
     },
+    {
+      "stanza:key": "--togostanza-canvas-width",
+      "stanza:type": "number",
+      "stanza:default": 500,
+      "stanza:description": "Stanza width in px"
+    },
+    {
+      "stanza:key": "--togostanza-canvas-height",
+      "stanza:type": "number",
+      "stanza:default": 500,
+      "stanza:description": "Stanza height in px"
+    },
+    {
+      "stanza:key": "--togostanza-canvas-padding",
+      "stanza:type": "text",
+      "stanza:default": "10 20",
+      "stanza:description": "Stanza margins in px"
+    },
+    {
+      "stanza:key": "--togostanza-border-color",
+      "stanza:type": "color",
+      "stanza:default": "#4E5059",
+      "stanza:description": "Border color"
+    },
+    {
+      "stanza:key": "--togostanza-border-width",
+      "stanza:type": "number",
+      "stanza:default": 0,
+      "stanza:description": "Border width in px"
+    },
+
+    {
+      "stanza:key": "--togostanza-edge-color",
+      "stanza:type": "color",
+      "stanza:default": "#6590e6",
+      "stanza:description": "Egdes default color"
+    },
+    {
+      "stanza:key": "--togostanza-edge-opacity",
+      "stanza:type": "number",
+      "stanza:default": 0.7,
+      "stanza:description": "Egdes opacity"
+    },
+
     {
       "stanza:key": "--togostanza-theme-series_0_color",
       "stanza:type": "color",
@@ -95,7 +175,7 @@
     {
       "stanza:key": "--togostanza-theme-series_3_color",
       "stanza:type": "color",
-      "stanza:default": "#F5DA64",
+      "stanza:default": "#E6BB1A",
       "stanza:description": "Group color 3"
     },
     {
@@ -107,10 +187,20 @@
     {
       "stanza:key": "--togostanza-theme-series_5_color",
       "stanza:type": "color",
-      "stanza:default": "#E472C6",
+      "stanza:default": "#F75976",
       "stanza:description": "Group color 5"
+    },
+    {
+      "stanza:key": "--togostanza-theme-background_color",
+      "stanza:type": "color",
+      "stanza:default": "rgba(255,255,255,0)",
+      "stanza:description": "Nodes default color"
+    },
+    {
+      "stanza:key": "--togostanza-background-color",
+      "stanza:type": "color",
+      "stanza:default": "rgba(255,255,255,0)",
+      "stanza:description": "Background color"
     }
-  ],
-  "stanza:incomingEvent": [],
-  "stanza:outgoingEvent": []
+  ]
 }

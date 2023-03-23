@@ -117,23 +117,21 @@ export default function (
     .attr(
       "transform",
       (d) =>
-        `translate(${WIDTH / 2 + R},${HEIGHT / 2}) rotate(${angleScale(d.id)} ${
-          -WIDTH / 2
-        } 0)`
+        `translate(${WIDTH / 2},${HEIGHT / 2})  rotate(${angleScale(
+          d.id
+        )}) translate(${R},  0)`
     );
 
   const nodeCircles = nodeGroups
     .append("circle")
     .attr("class", "node")
     .style("fill", (d) => d[symbols.nodeColorSym])
-    .attr("r", (d) => d[symbols.nodeSizeSym]);
-
-  if (tooltipParams.show) {
-    nodeCircles.attr("data-tooltip", (d) => d[tooltipParams.dataKey]);
-  }
+    .attr("r", (d) => {
+      return d[symbols.nodeSizeSym]; //OK
+    });
 
   if (nodeLabelParams.dataKey !== "" && nodes[0][nodeLabelParams.dataKey]) {
-    nodeGroups
+    const nodeLabels = nodeGroups
       .append("text")
       .text((d) => d[nodeLabelParams.dataKey])
       .attr("alignment-baseline", "middle")
@@ -147,6 +145,7 @@ export default function (
         if (angleScale(d.id) > 90 && angleScale(d.id) < 270) {
           return -nodeLabelParams.margin - d[symbols.nodeSizeSym];
         }
+
         return nodeLabelParams.margin + d[symbols.nodeSizeSym];
       })
       .attr("transform", (d) => {
@@ -156,6 +155,14 @@ export default function (
         return null;
       })
       .attr("class", "label");
+
+    if (tooltipParams.show) {
+      nodeLabels.attr("data-tooltip", (d) => d[tooltipParams.dataKey]);
+    }
+  }
+
+  if (tooltipParams.show) {
+    nodeCircles.attr("data-tooltip", (d) => d[tooltipParams.dataKey]);
   }
 
   if (highlightAdjEdges) {

@@ -1,11 +1,73 @@
 // Load the repository-wide global style here. The actual file is located at ../common.scss for details.
 @use "@/common.scss";
 
-// The following is just an example. Feel free to modify it.
-// --greeting-color and --greeting-align are style variables, which are defined in metadata.json.
-main {
-  font: calc(var(--togostanza-fonts-font_size_primary) * 1px)
-    var(--togostanza-fonts-font_family);
+svg {
+  background-color: var(--togostanza-background-color);
+}
+
+.label,
+.node,
+.link,
+.active,
+.fadeout,
+.half-active {
+  transition: var(--togostanza-fadeout-transition);
+  transition-property: opacity, stroke-width, stroke-opacity;
+}
+
+.label {
+  font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+  font-family: var(--togostanza-fonts-font_family);
+  fill: var(--togostanza-fonts-font_color);
+  cursor: pointer;
+}
+
+.node {
+  stroke: var(--togostanza-border-color);
+  stroke-width: var(--togostanza-border-width);
+  cursor: pointer;
+}
+
+.link {
+  stroke-opacity: var(--togostanza-edge-opacity);
+  stroke-linecap: round;
+  fill: none;
+  stroke: var(--togostanza-edge-color);
+  &.chord {
+    stroke: none;
+  }
+}
+
+.active {
+  & > .node {
+    stroke-width: calc(var(--togostanza-border-width) * 2.5px);
+    stroke-opacity: 1;
+  }
+  & > .link {
+    stroke-opacity: 1;
+  }
+  & > .label {
+    opacity: 1;
+  }
+}
+
+.fadeout {
+  opacity: var(--togostanza-fadeout-opacity);
+  & > .link {
+    stroke-opacity: var(--togostanza-fadeout-opacity);
+  }
+}
+
+.half-active {
+  opacity: 0.8;
+  & > .node {
+    stroke-width: calc(var(--togostanza-border-width) * 1.6px);
+    stroke-opacity: 0.8;
+  }
+
+  & > .label {
+    opacity: 0.8;
+  }
 }
 
 .fullsircle {
