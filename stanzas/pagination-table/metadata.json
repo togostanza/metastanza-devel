@@ -86,7 +86,7 @@
     {
       "stanza:key": "--togostanza-table-border",
       "stanza:type": "text",
-      "stanza:default": "1px solid #EEEEEE",
+      "stanza:default": "2px solid #3c3744",
       "stanza:description": "Table border style"
     },
     {
@@ -98,19 +98,19 @@
     {
       "stanza:key": "--togostanza-thead-border-bottom",
       "stanza:type": "text",
-      "stanza:default": "1px solid #EEEEEE",
+      "stanza:default": "2px solid #3c3744",
       "stanza:description": "Border bottom of table header"
     },
     {
       "stanza:key": "--togostanza-thead-font-color",
       "stanza:type": "color",
-      "stanza:default": "#FFFFFF",
+      "stanza:default": "#3c3744",
       "stanza:description": "Font color of table header"
     },
     {
       "stanza:key": "--togostanza-thead-background-color",
       "stanza:type": "color",
-      "stanza:default": "#256D80",
+      "stanza:default": "#FFFFFF",
       "stanza:description": "Background color of table header"
     },
     {
@@ -122,13 +122,13 @@
     {
       "stanza:key": "--togostanza-thead-font-weight",
       "stanza:type": "text",
-      "stanza:default": "400",
+      "stanza:default": "bold",
       "stanza:description": "Font weight of table header"
     },
     {
       "stanza:key": "--togostanza-tbody-border-bottom",
       "stanza:type": "text",
-      "stanza:default": "0.5px solid #EEEEEE",
+      "stanza:default": "1px solid #3c3744",
       "stanza:description": "Border bottom of table body"
     },
     {
@@ -274,7 +274,7 @@
     {
       "stanza:key": "--togostanza-background-color",
       "stanza:type": "color",
-      "stanza:default": "#F8F9FA",
+      "stanza:default": "#FFFFFF",
       "stanza:description": "Background color"
     }
   ],

@@ -130,7 +130,7 @@
     {
       "stanza:key": "--togostanza-tbody-border-bottom",
       "stanza:type": "text",
-      "stanza:default": "0.5px solid #3c3744",
+      "stanza:default": "1px solid #3c3744",
       "stanza:description": "Border bottom of tbody"
     },
     {
