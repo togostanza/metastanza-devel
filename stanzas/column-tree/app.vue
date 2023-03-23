@@ -1,7 +1,7 @@
 <template>
   <section id="wrapper">
     <div
-      class="search-container"
+      class="search-container search-field-view"
       @mouseleave="state.showSuggestions ? toggleSuggestions() : null"
     >
       <input

@@ -1,5 +1,10 @@
 // Load the repository-wide global style here. The actual file is located at ../common.scss for details.
 @use "@/common.scss";
+@use "@/scss/search-field-view";
+
+:root {
+  --border-color: #999;
+}
 
 *,
 *:before,
@@ -68,16 +73,15 @@
         var(--togostanza-column-border_color);
     }
   }
-  > .search-container {
+  > .search-field-view {
     margin-bottom: 1rem;
-    margin-left: 5px;
     > input {
       position: relative;
       margin-right: 1rem;
       width: 190px;
-      height: 20px;
-      border: solid 1px #d9d9d9;
-      border-radius: calc(var(--togostanza-column-border_radius) * 1px);
+      // height: 20px;
+      // border: solid 1px #d9d9d9;
+      // border-radius: calc(var(--togostanza-column-border_radius) * 1px);
     }
     > .search-wrapper {
       min-height: fit-content;
