@@ -1,5 +1,5 @@
 <template>
-  <div v-show="showSuggestions" class="search-wrapper">
+  <div v-show="showSuggestions" class="search-wrapper suggestionscontainer">
     <ul class="suggestions">
       <li
         v-for="(node, index) of data"
