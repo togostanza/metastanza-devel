@@ -272,10 +272,12 @@ export class OntologyCard extends LitElement {
 
     .table-container {
       overflow-y: auto;
+      margin-top: 2px;
     }
 
     .hero-list {
-      padding-inline-start: 1rem;
+      padding-inline-start: 0.2rem;
+      margin: 0;
     }
 
     .hero-list li {
@@ -286,12 +288,19 @@ export class OntologyCard extends LitElement {
       width: 100%
       max-width: 10rem;
       table-layout: fixed;
-      font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px)
+      font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+      border-spacing: 0;
+      opacity: .7;
     }
 
-    table td.key {
+    table th, table td {
+      padding-top: 3px;
+    }
+
+    table th.key {
       vertical-align: top;
-      font-style: italic;
+      text-align: left;
+      padding-right: .8em;
     }
 
     table td.data {
@@ -427,7 +436,7 @@ export class OntologyCard extends LitElement {
                       ${this.data.showDetailsKeys?.map((key) => {
                         return html`
                           <tr>
-                            <td class="key">${key}</td>
+                            <th class="key">${key}</th>
                             <td class="data">
                               ${this.data[key] instanceof Array
                                 ? html`<ul class="hero-list">
