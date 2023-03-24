@@ -80,13 +80,13 @@
     {
       "stanza:key": "--togostanza-font-family",
       "stanza:type": "text",
-      "stanza:default": "Helvetica",
+      "stanza:default": "Helvetica, Arial, sans-serif",
       "stanza:description": "Font family"
     },
     {
       "stanza:key": "--togostanza-table-border",
       "stanza:type": "text",
-      "stanza:default": "1px solid #EEEEEE",
+      "stanza:default": "2px solid #3c3744",
       "stanza:description": "Table border style"
     },
     {
@@ -98,19 +98,19 @@
     {
       "stanza:key": "--togostanza-thead-border-bottom",
       "stanza:type": "text",
-      "stanza:default": "1px solid #EEEEEE",
+      "stanza:default": "2px solid #3c3744",
       "stanza:description": "Border bottom of table header"
     },
     {
       "stanza:key": "--togostanza-thead-font-color",
       "stanza:type": "color",
-      "stanza:default": "#FFFFFF",
+      "stanza:default": "#3c3744",
       "stanza:description": "Font color of table header"
     },
     {
       "stanza:key": "--togostanza-thead-background-color",
       "stanza:type": "color",
-      "stanza:default": "#256D80",
+      "stanza:default": "#FFFFFF",
       "stanza:description": "Background color of table header"
     },
     {
@@ -122,13 +122,13 @@
     {
       "stanza:key": "--togostanza-thead-font-weight",
       "stanza:type": "text",
-      "stanza:default": "400",
+      "stanza:default": "bold",
       "stanza:description": "Font weight of table header"
     },
     {
       "stanza:key": "--togostanza-tbody-border-bottom",
       "stanza:type": "text",
-      "stanza:default": "0.5px solid #EEEEEE",
+      "stanza:default": "1px solid #3c3744",
       "stanza:description": "Border bottom of table body"
     },
     {
@@ -164,19 +164,19 @@
     {
       "stanza:key": "--togostanza-control-border",
       "stanza:type": "text",
-      "stanza:default": "1px solid #256D80",
+      "stanza:default": "1px solid #999",
       "stanza:description": "Color of control area"
     },
     {
       "stanza:key": "--togostanza-control-active-color",
       "stanza:type": "color",
-      "stanza:default": "#ffdf3d",
+      "stanza:default": "#6590e6",
       "stanza:description": "Active color of control area"
     },
     {
       "stanza:key": "--togostanza-non-active-color",
       "stanza:type": "color",
-      "stanza:default": "rgba(255, 255, 255, .7)",
+      "stanza:default": "#00000044",
       "stanza:description": "Non active color of control area"
     },
     {
@@ -242,19 +242,19 @@
     {
       "stanza:key": "--togostanza-pagination-current-background-color",
       "stanza:type": "color",
-      "stanza:default": "#256D80",
+      "stanza:default": "#6590e6",
       "stanza:description": "Background color of pagination button (at current page)"
     },
     {
       "stanza:key": "--togostanza-pagination-current-border",
       "stanza:type": "text",
-      "stanza:default": "1px solid #256D80",
+      "stanza:default": "1px solid #6590e6",
       "stanza:description": "Border style of pagination button (at current page)"
     },
     {
       "stanza:key": "--togostanza-pagination-arrow-color",
       "stanza:type": "color",
-      "stanza:default": "#256D80",
+      "stanza:default": "#6590e6",
       "stanza:description": "Color of pagination arrow button"
     },
     {
@@ -274,7 +274,7 @@
     {
       "stanza:key": "--togostanza-background-color",
       "stanza:type": "color",
-      "stanza:default": "#F8F9FA",
+      "stanza:default": "#FFFFFF",
       "stanza:description": "Background color"
     }
   ],

@@ -22,7 +22,7 @@ class OntologyPath extends LitElement {
 
       .path-header {
         display: block;
-        font-size: var(--togostanza-fonts-font_size_primary);
+        font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
         margin: 0;
         padding: 0;
         width: calc(100% - (100% / 3 - min(85% / 3, 20rem)));
@@ -44,7 +44,7 @@ class OntologyPath extends LitElement {
       .node {
         cursor: pointer;
         display: inline-block;
-        font-size: var(--togostanza-fonts-font_size_secondary);
+        font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
         padding: 0 0.6em;
         width: 10em;
         white-space: nowrap;
@@ -64,7 +64,7 @@ class OntologyPath extends LitElement {
         display: block;
         width: 5px;
         height: 5px;
-        border: 1px solid var(--togostanza-border-color);
+        border: 1px solid var(--togostanza-node-border_color);
         position: absolute;
         border-radius: 50%;
         bottom: 0;
@@ -75,7 +75,7 @@ class OntologyPath extends LitElement {
         display: block;
         width: 2.35em;
         height: 1px;
-        border-bottom: 1px solid var(--togostanza-border-color);
+        border-bottom: 1px solid var(--togostanza-node-border_color);
         transform: rotate(200deg);
         transform-origin: left bottom;
         box-sizing: border-box;

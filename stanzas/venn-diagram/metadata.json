@@ -73,7 +73,7 @@
     {
       "stanza:key": "--togostanza-fonts-font_family",
       "stanza:type": "text",
-      "stanza:default": "Helvetica Neue",
+      "stanza:default": "Helvetica, Arial, sans-serif",
       "stanza:description": "Font family"
     },
     {

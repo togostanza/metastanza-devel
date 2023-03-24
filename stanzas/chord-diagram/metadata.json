@@ -95,7 +95,7 @@
     {
       "stanza:key": "--togostanza-fonts-font_family",
       "stanza:type": "text",
-      "stanza:default": "Helvetica Neue",
+      "stanza:default": "Helvetica, Arial, sans-serif",
       "stanza:description": "Font family"
     },
     {
@@ -144,7 +144,7 @@
     {
       "stanza:key": "--togostanza-edge-color",
       "stanza:type": "color",
-      "stanza:default": "#6590e6",
+      "stanza:default": "#999999",
       "stanza:description": "Egdes default color"
     },
     {

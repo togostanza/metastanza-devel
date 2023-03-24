@@ -92,7 +92,7 @@
     {
       "stanza:key": "--togostanza-fonts-font_family",
       "stanza:type": "text",
-      "stanza:default": "Helvetica",
+      "stanza:default": "Helvetica, Arial, sans-serif",
       "stanza:description": "Font family"
     },
     {
@@ -110,61 +110,25 @@
     {
       "stanza:key": "--togostanza-column-background_color",
       "stanza:type": "color",
-      "stanza:default": "#F8F9FA",
+      "stanza:default": "#FFFFFF",
       "stanza:description": "Background color for single column"
     },
     {
-      "stanza:key": "--togostanza-column-node_delimiter_width",
-      "stanza:type": "number",
-      "stanza:default": 0,
+      "stanza:key": "--togostanza-column-node_delimiter_color",
+      "stanza:type": "color",
+      "stanza:default": "#DDDDDD",
       "stanza:description": "Border color between nodes"
     },
     {
       "stanza:key": "--togostanza-column-border_color",
       "stanza:type": "color",
-      "stanza:default": "#D9D9D9",
+      "stanza:default": "#999999",
       "stanza:description": "Border color for single column"
-    },
-    {
-      "stanza:key": "--togostanza-column-border_radius",
-      "stanza:type": "number",
-      "stanza:default": 0,
-      "stanza:description": "Border radius for single column"
-    },
-    {
-      "stanza:key": "--togostanza-column-gap",
-      "stanza:type": "number",
-      "stanza:default": 0,
-      "stanza:description": "Gap between columns"
-    },
-    {
-      "stanza:key": "--togostanza-column-padding",
-      "stanza:type": "number",
-      "stanza:default": 6,
-      "stanza:description": "Padding for single column"
-    },
-    {
-      "stanza:key": "--togostanza-node-padding_vertical",
-      "stanza:type": "number",
-      "stanza:default": 6,
-      "stanza:description": "Vertical padding for nodes"
-    },
-    {
-      "stanza:key": "--togostanza-node-padding_horizontal",
-      "stanza:type": "number",
-      "stanza:default": 6,
-      "stanza:description": "Horizontal padding for nodes"
-    },
-    {
-      "stanza:key": "--togostanza-node-border_radius",
-      "stanza:type": "number",
-      "stanza:default": 9,
-      "stanza:description": "Border radius of highlighted/selected nodes"
     },
     {
       "stanza:key": "--togostanza-node-selected_background_color",
       "stanza:type": "color",
-      "stanza:default": "#256D80",
+      "stanza:default": "#6590e6",
       "stanza:description": "Background color for selected items"
     },
     {
@@ -176,7 +140,7 @@
     {
       "stanza:key": "--togostanza-node-hover_background_color",
       "stanza:type": "color",
-      "stanza:default": "#FFFDD1",
+      "stanza:default": "#C7EEFF",
       "stanza:description": "Hover color for background when hovering over items"
     },
     {

@@ -103,8 +103,8 @@
   "stanza:style": [
     {
       "stanza:key": "--togostanza-canvas-height",
-      "stanza:type": "text",
-      "stanza:default": "500px",
+      "stanza:type": "number",
+      "stanza:default": 500,
       "stanza:description": "Stanza height. Width is always 100%, a la div with `display: block`"
     },
     {
@@ -116,7 +116,7 @@
     {
       "stanza:key": "--togostanza-fonts-font_family",
       "stanza:type": "text",
-      "stanza:default": "Helvetica Neue",
+      "stanza:default": "Helvetica, Arial, sans-serif",
       "stanza:description": "Font family"
     },
     {
@@ -127,39 +127,51 @@
     },
     {
       "stanza:key": "--togostanza-fonts-font_size_primary",
-      "stanza:type": "text",
-      "stanza:default": "10px",
+      "stanza:type": "number",
+      "stanza:default": 12,
       "stanza:description": "Card title font size"
     },
     {
       "stanza:key": "--togostanza-fonts-font_size_secondary",
-      "stanza:type": "text",
-      "stanza:default": "8px",
+      "stanza:type": "number",
+      "stanza:default": 10,
       "stanza:description": "Card contents font size"
     },
     {
-      "stanza:key": "--togostanza-border-color",
+      "stanza:key": "--togostanza-node-border_color",
       "stanza:type": "color",
-      "stanza:default": "#9b9ca1",
+      "stanza:default": "#999999",
       "stanza:description": "Border color"
     },
     {
-      "stanza:key": "--togostanza-border-color_selected",
+      "stanza:key": "--togostanza-node-selected_border_color",
       "stanza:type": "color",
-      "stanza:default": "#1f9dad",
+      "stanza:default": "#666666",
       "stanza:description": "Selected border color"
     },
     {
-      "stanza:key": "--togostanza-node-bg-color",
+      "stanza:key": "--togostanza-node-background_color",
       "stanza:type": "color",
       "stanza:default": "#ffffff",
       "stanza:description": "Node background color"
     },
     {
-      "stanza:key": "--togostanza-node-bg-color_selected",
+      "stanza:key": "--togostanza-node-selected_background_color",
       "stanza:type": "color",
-      "stanza:default": "#fff6e0",
+      "stanza:default": "#C7EEFF",
       "stanza:description": "Selected node background color"
+    },
+    {
+      "stanza:key": "--togostanza-node-hover_background_color",
+      "stanza:type": "color",
+      "stanza:default": "#C7EEFF",
+      "stanza:description": "Hover node background color"
+    },
+    {
+      "stanza:key": "--togostanza-edge-border_color",
+      "stanza:type": "color",
+      "stanza:default": "#999999",
+      "stanza:description": "Border color"
     },
     {
       "stanza:key": "--togostanza-theme-background_color",

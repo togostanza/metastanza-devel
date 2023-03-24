@@ -191,6 +191,7 @@ function draw(el, dataset, opts) {
 
     node
       .filter((d) => {
+        console.log(d);
         return d === root ? d.parent : d.children;
       })
       .attr("cursor", "pointer")
@@ -255,7 +256,7 @@ function draw(el, dataset, opts) {
       .append("text")
       .attr("clip-path", (d) => d.clipUid)
       .attr("y", "1.5em")
-      .attr("x", "1em")
+      .attr("x", (d) => (d === root ? "0.2em" : "1em"))
       .text((d) => {
         if (d === root) {
           return name(d);

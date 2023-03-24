@@ -1,17 +1,19 @@
 <template>
   <section id="wrapper">
     <div
-      class="search-container"
+      class="search-container search-field-view"
       @mouseleave="state.showSuggestions ? toggleSuggestions() : null"
     >
-      <input
-        v-model="state.searchTerm"
-        type="text"
-        placeholder="Search for keywords"
-        class="search"
-        @focus="toggleSuggestionsIfValid"
-        @input="toggleSuggestionsIfValid"
-      />
+      <div class="inputcontainer">
+        <input
+          v-model="state.searchTerm"
+          type="text"
+          placeholder="Search for keywords"
+          class="search"
+          @focus="toggleSuggestionsIfValid"
+          @input="toggleSuggestionsIfValid"
+        />
+      </div>
       <search-suggestions
         :show-suggestions="state.showSuggestions"
         :search-input="state.searchTerm"

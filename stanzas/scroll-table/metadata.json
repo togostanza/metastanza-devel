@@ -14,7 +14,7 @@
   "stanza:parameter": [
     {
       "stanza:key": "data-url",
-      "stanza:example": "https://togovar-dev.biosciencedbc.jp/sparqlist/api/gene_gwas?ep=https%3A%2F%2Ftogovar-dev.biosciencedbc.jp%2Fsparql&hgnc_id=404",
+      "stanza:example": "https://togovar.biosciencedbc.jp/sparqlist/api/gene_gwas?ep=https%3A%2F%2Ftogovar.biosciencedbc.jp%2Fsparql&hgnc_id=404",
       "stanza:description": "Data source URL",
       "stanza:required": true
     },
@@ -82,13 +82,13 @@
     {
       "stanza:key": "--togostanza-font-family",
       "stanza:type": "text",
-      "stanza:default": "Helvetica",
+      "stanza:default": "Helvetica, Arial, sans-serif",
       "stanza:description": "Font family"
     },
     {
       "stanza:key": "--togostanza-table-border",
       "stanza:type": "text",
-      "stanza:default": "1px solid #EEEEEE",
+      "stanza:default": "2px solid #3c3744",
       "stanza:description": "Table border style"
     },
     {
@@ -100,7 +100,7 @@
     {
       "stanza:key": "--togostanza-thead-border-bottom",
       "stanza:type": "text",
-      "stanza:default": "1px solid #EEEEEE",
+      "stanza:default": "2px solid #3c3744",
       "stanza:description": "Border bottom of table header"
     },
     {
@@ -112,31 +112,31 @@
     {
       "stanza:key": "--togostanza-thead-font-color",
       "stanza:type": "color",
-      "stanza:default": "#ffffff",
+      "stanza:default": "#3c3744",
       "stanza:description": "Font color of table header"
     },
     {
       "stanza:key": "--togostanza-thead-font-weight",
       "stanza:type": "text",
-      "stanza:default": "400",
+      "stanza:default": "bold",
       "stanza:description": "Font weight of table header"
     },
     {
       "stanza:key": "--togostanza-thead-background-color",
       "stanza:type": "color",
-      "stanza:default": "#256D80",
+      "stanza:default": "#FFFFFF",
       "stanza:description": "Background color of table header"
     },
     {
       "stanza:key": "--togostanza-tbody-border-bottom",
       "stanza:type": "text",
-      "stanza:default": "0.5px solid #EEEEEE",
+      "stanza:default": "1px solid #3c3744",
       "stanza:description": "Border bottom of tbody"
     },
     {
       "stanza:key": "--togostanza-tbody-font-color",
       "stanza:type": "color",
-      "stanza:default": "#333333",
+      "stanza:default": "#3c3744",
       "stanza:description": "Font color of table body"
     },
     {
@@ -166,7 +166,7 @@
     {
       "stanza:key": "--togostanza-background-color",
       "stanza:type": "color",
-      "stanza:default": "#F8F9FA",
+      "stanza:default": "#FFFFFF",
       "stanza:description": "Background color"
     }
   ]
