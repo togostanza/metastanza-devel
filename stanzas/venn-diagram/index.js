@@ -163,7 +163,7 @@ export default class VennStanza extends Stanza {
         selectedDiagram.classList.remove("-hovering")
       );
       // tooltip
-      group.dataset.tooltip = `<strong>${labels.join("∩")}</strong>: ${count}`;
+      group.dataset.tooltip = `${labels.join("∩")}: ${count}`;
       group.dataset.tooltipHtml = true;
     });
     this.tooltip.setup(selectedDiagram.querySelectorAll("[data-tooltip]"));
