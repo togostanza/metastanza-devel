@@ -36,6 +36,8 @@ export default class VennStanza extends Stanza {
     if (!this.tooltip) {
       this.tooltip = new ToolTip();
       root.append(this.tooltip);
+    }
+    if (this.params["legend-visible"]) {
       this.legend = new Legend();
       root.append(this.legend);
     }
@@ -166,7 +168,7 @@ export default class VennStanza extends Stanza {
       group.dataset.tooltip = `${labels.join("∩")}: ${count}`;
       group.dataset.tooltipHtml = true;
     });
-    this.tooltip.setup(selectedDiagram.querySelectorAll("[data-tooltip]"));
+    // this.tooltip.setup(selectedDiagram.querySelectorAll("[data-tooltip]"));
 
     // legend
     const items = this.data.map((datum) => {
