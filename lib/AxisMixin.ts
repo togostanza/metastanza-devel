@@ -685,7 +685,10 @@ export class Axis {
   }
 
   private _checkScaleErrors(scale: ScaleType, domain: d3.AxisDomain[]) {
-    if (scale === "log10" && domain.some((d) => d < 0)) {
+    if (
+      scale === "log10" &&
+      domain.some((d) => typeof d !== "number" || d < 0)
+    ) {
       throw new Error(
         `Log scale can be set only for domains with positive values. Got domain [${domain.join(
           ","
