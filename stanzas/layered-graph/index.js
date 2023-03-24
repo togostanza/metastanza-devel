@@ -18,7 +18,6 @@ import {
   downloadTSVMenuItem,
   appendCustomCss,
 } from "togostanza-utils";
-import { symbol } from "d3";
 
 export default class ForceGraph extends Stanza {
   menu() {
@@ -321,7 +320,7 @@ export default class ForceGraph extends Stanza {
 
       const points = svgG.selectAll("g.node-g").data(data[0], key);
 
-      const p = points
+      points
         .enter()
         .append("g")
         .classed("node-g", true)
