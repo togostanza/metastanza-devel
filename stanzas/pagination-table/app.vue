@@ -330,6 +330,16 @@ export default defineComponent({
     const sliderPagination = ref();
     const pageSizeOption = params.pageSizeOption.split(",").map(Number);
 
+        //
+        console.log(this);
+        console.log(this.root.querySelector(".wrapper"));
+    const style = window.getComputedStyle(this.element);
+    const value = style.getPropertyValue(
+      "--togostanza-vertical-pagination-placement"
+    );
+    console.log(value);
+
+
     const state = reactive({
       responseJSON: null, // for download. may consume extra memory
 
