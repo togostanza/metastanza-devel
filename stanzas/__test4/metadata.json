@@ -2,9 +2,9 @@
   "@context": {
     "stanza": "http://togostanza.org/resource/stanza#"
   },
-  "@id": "__test",
-  "stanza:label": "__test",
-  "stanza:definition": "__test",
+  "@id": "__test4",
+  "stanza:label": "__test4",
+  "stanza:definition": "__test4",
   "stanza:type": "Stanza",
   "stanza:display": "Image",
   "stanza:provider": "TogoStanza",

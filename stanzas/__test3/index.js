@@ -9,10 +9,6 @@ import {
   downloadTSVMenuItem,
   appendCustomCss,
 } from "togostanza-utils";
-import ToolTip from "@/lib/ToolTip";
-import Legend from "@/lib/Legend";
-
-const LINE_HEIGHT = 1;
 
 export default class VennStanza extends Stanza {
   menu() {
@@ -29,9 +25,16 @@ export default class VennStanza extends Stanza {
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     this.renderTemplate({ template: "stanza.html.hbs" });
+    // console.log(this.params);
+  }
 
-    this.element.dispatchEvent(
-      new CustomEvent("valueChanged", { detail: { value: 42 } })
-    );
+  handleEvent(event) {
+    // console.log(event);
+    this.renderTemplate({
+      template: "stanza.html.hbs",
+      parameters: {
+        name: event.detail.value,
+      },
+    });
   }
 }
