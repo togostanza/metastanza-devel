@@ -269,27 +269,6 @@
       "stanza:description": "Color of pagination arrow button"
     },
     {
-      "stanza:key": "--togostanza-vertical-pagination-placement",
-      "stanza:type": "single-choice",
-      "stanza:choice": [
-        "column",
-        "column-reverse"
-      ],
-      "stanza:default": "column-reverse",
-      "stanza:description": "Vertical pacement of pagination"
-    },
-    {
-      "stanza:key": "--togostanza-horizonal-pagination-placement",
-      "stanza:type": "single-choice",
-      "stanza:choice": [
-        "left",
-        "center",
-        "right"
-      ],
-      "stanza:default": "center",
-      "stanza:description": "Horizonal placement of pagination"
-    },
-    {
       "stanza:key": "--togostanza-pagination-placement-vertical",
       "stanza:type": "single-choice",
       "stanza:choice": [
