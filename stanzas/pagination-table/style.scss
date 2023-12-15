@@ -64,7 +64,6 @@
 
 .wrapper {
   display: flex;
-  flex-direction: var(--togostanza-vertical-pagination-placement);
   > .tableOptionWrapper {
     min-height: 430px;
     > .tableOption {
@@ -403,7 +402,6 @@
   }
   > .paginationWrapper {
     display: flex;
-    // flex-direction: var(--togostanza-vertical-pagination-placement);
     width: calc(100% - 30px);
     margin: 10px auto;
     > .serialPagination {
