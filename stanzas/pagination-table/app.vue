@@ -192,7 +192,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(row, row_index) in rowsInCurrentPage" :key="row.id">
+            <tr v-for="(row, row_index) in rowsInCurrentPage" :key="row.id" :data-index="row_index"  :data-id="row.id" @click="handleRowClick(row)">
               <td
                 v-for="(cell, i) in row"
                 :key="cell.column.id"
@@ -327,6 +327,7 @@ export default defineComponent({
   ],
 
   setup(params) {
+    console.log(params)
     const sliderPagination = ref();
     const pageSizeOption = params.pageSizeOption.split(",").map(Number);
 
@@ -548,6 +549,7 @@ export default defineComponent({
     async function fetchData() {
       const data = await loadData(params.dataUrl, params.dataType, params.main);
       // const data = testData;
+      console.log(data)
 
       state.responseJSON = data;
       let columns;
@@ -600,6 +602,10 @@ export default defineComponent({
       return state.responseJSON;
     };
 
+    const handleRowClick = (row) => {
+      console.log("Row row:", row);
+    }
+
     return {
       width: params.width ? params.width + "px" : "100%",
       sliderPagination,
@@ -620,6 +626,7 @@ export default defineComponent({
       handleAxisSelectorButton,
       handleAxisSelected,
       showAxisSelector: params.showAxisSelector,
+      handleRowClick
     };
   },
 });
