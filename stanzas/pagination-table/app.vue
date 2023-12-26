@@ -192,7 +192,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(row, row_index) in rowsInCurrentPage" :key="row.id" :data-index="row_index"  :data-id="row.id" @click="handleRowClick(row)">
+            <tr v-for="(row, row_index) in rowsInCurrentPage" :key="row.id" @click="handleRowClick((state.pagination.currentPage - 1) * state.pagination.perPage + row_index)">
               <td
                 v-for="(cell, i) in row"
                 :key="cell.column.id"
@@ -350,6 +350,8 @@ export default defineComponent({
       },
 
       axisSelectorActiveColumn: null,
+
+      selectingRows: [],
     });
 
     const filteredRows = computed(() => {
@@ -602,8 +604,8 @@ export default defineComponent({
       return state.responseJSON;
     };
 
-    const handleRowClick = (row) => {
-      console.log("Row row:", row);
+    const handleRowClick = (index) => {
+      console.log(index)
     }
 
     return {
