@@ -192,7 +192,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(row, row_index) in rowsInCurrentPage" :key="row.id" @click="handleRowClick((state.pagination.currentPage - 1) * state.pagination.perPage + row_index)">
+            <tr
+              v-for="(row, row_index) in rowsInCurrentPage"
+              :key="row.id"
+              :class="{ selected: isSelectedRow(row_index) }"
+              @click="handleRowClick(row_index)"
+            >
               <td
                 v-for="(cell, i) in row"
                 :key="cell.column.id"
@@ -605,11 +610,14 @@ export default defineComponent({
     };
 
     const handleRowClick = (rowIndex) => {
-      const index = state.selectingRows.indexOf(rowIndex);
-      if (index === -1) state.selectingRows.push(rowIndex);
-      else state.selectingRows.splice(index, 1);
+      const actualRowIndex = (state.pagination.currentPage - 1) * state.pagination.perPage + rowIndex;
+      console.log(rowIndex, actualRowIndex)
+      const indexInSelectingRows = state.selectingRows.indexOf(actualRowIndex);
+      if (indexInSelectingRows === -1) state.selectingRows.push(actualRowIndex);
+      else state.selectingRows.splice(indexInSelectingRows, 1);
       console.log(state.selectingRows)
     }
+
 
     return {
       width: params.width ? params.width + "px" : "100%",
@@ -631,9 +639,18 @@ export default defineComponent({
       handleAxisSelectorButton,
       handleAxisSelected,
       showAxisSelector: params.showAxisSelector,
-      handleRowClick
+      handleRowClick,
     };
   },
+
+  methods: {
+    isSelectedRow(rowIndex) {
+      console.log(rowIndex)
+      return true;
+      // const actualRowIndex = (state.pagination.currentPage - 1) * state.pagination.perPage + rowIndex;
+      // return state.selectingRows.includes(actualRowIndex);
+    },
+  }
 });
 
 function createColumnState(columnDef, values) {
@@ -773,4 +790,6 @@ function formattedValue(format, val) {
     return val;
   }
 }
+
+
 </script>
