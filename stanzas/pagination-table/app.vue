@@ -618,6 +618,10 @@ export default defineComponent({
       console.log(state.selectingRows)
     }
 
+    const isSelectedRow = (rowIndex) => {
+      const actualRowIndex = (state.pagination.currentPage - 1) * state.pagination.perPage + rowIndex;
+      return state.selectingRows.includes(actualRowIndex);
+    }
 
     return {
       width: params.width ? params.width + "px" : "100%",
@@ -640,17 +644,10 @@ export default defineComponent({
       handleAxisSelected,
       showAxisSelector: params.showAxisSelector,
       handleRowClick,
+      isSelectedRow,
     };
   },
 
-  methods: {
-    isSelectedRow(rowIndex) {
-      console.log(rowIndex)
-      return true;
-      // const actualRowIndex = (state.pagination.currentPage - 1) * state.pagination.perPage + rowIndex;
-      // return state.selectingRows.includes(actualRowIndex);
-    },
-  }
 });
 
 function createColumnState(columnDef, values) {
