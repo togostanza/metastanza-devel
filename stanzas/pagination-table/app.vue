@@ -604,8 +604,11 @@ export default defineComponent({
       return state.responseJSON;
     };
 
-    const handleRowClick = (index) => {
-      console.log(index)
+    const handleRowClick = (rowIndex) => {
+      const index = state.selectingRows.indexOf(rowIndex);
+      if (index === -1) state.selectingRows.push(rowIndex);
+      else state.selectingRows.splice(index, 1);
+      console.log(state.selectingRows)
     }
 
     return {
