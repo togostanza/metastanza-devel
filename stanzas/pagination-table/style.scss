@@ -134,6 +134,7 @@
         border-top: var(--togostanza-table-border);
         border-bottom: var(--togostanza-table-border);
         box-shadow: var(--togostanza-table-shadow);
+        line-height: 1.2;
         > thead {
           background-color: var(--togostanza-thead-background-color);
           color: var(--togostanza-thead-font-color);
@@ -394,6 +395,11 @@
             &:last-of-type {
               > td {
                 border-bottom: none;
+              }
+            }
+            &.selected {
+              > td, > td.fixed {
+                background-color: var(--togostanza-theme-selected_color);
               }
             }
           }

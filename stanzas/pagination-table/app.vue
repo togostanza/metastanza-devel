@@ -332,7 +332,6 @@ export default defineComponent({
   ],
 
   setup(params) {
-    console.log(params)
     const sliderPagination = ref();
     const pageSizeOption = params.pageSizeOption.split(",").map(Number);
 
@@ -555,8 +554,6 @@ export default defineComponent({
 
     async function fetchData() {
       const data = await loadData(params.dataUrl, params.dataType, params.main);
-      // const data = testData;
-      console.log(data)
 
       state.responseJSON = data;
       let columns;
@@ -611,11 +608,12 @@ export default defineComponent({
 
     const handleRowClick = (rowIndex) => {
       const actualRowIndex = (state.pagination.currentPage - 1) * state.pagination.perPage + rowIndex;
-      console.log(rowIndex, actualRowIndex)
       const indexInSelectingRows = state.selectingRows.indexOf(actualRowIndex);
-      if (indexInSelectingRows === -1) state.selectingRows.push(actualRowIndex);
-      else state.selectingRows.splice(indexInSelectingRows, 1);
-      console.log(state.selectingRows)
+      if (indexInSelectingRows === -1) {
+        state.selectingRows.push(actualRowIndex);
+      } else {
+        state.selectingRows.splice(indexInSelectingRows, 1);
+      }
     }
 
     const isSelectedRow = (rowIndex) => {
@@ -787,6 +785,5 @@ function formattedValue(format, val) {
     return val;
   }
 }
-
 
 </script>
