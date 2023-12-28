@@ -298,7 +298,7 @@
     {
       "stanza:key": "--togostanza-theme-selected_color",
       "stanza:type": "color",
-      "stanza:default": "yellow",
+      "stanza:default": "#FFEE0088",
       "stanza:description": "Color applied to the selected item"
     }
   ],
