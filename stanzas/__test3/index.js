@@ -1,6 +1,4 @@
 import Stanza from "togostanza/stanza";
-import loadData from "togostanza-utils/load-data";
-import Color from "color";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -11,6 +9,8 @@ import {
 } from "togostanza-utils";
 
 export default class VennStanza extends Stanza {
+  receiveData;
+
   menu() {
     return [
       downloadSvgMenuItem(this, "vennstanza"),
@@ -29,11 +29,18 @@ export default class VennStanza extends Stanza {
   }
 
   handleEvent(event) {
-    // console.log(event);
+    console.log(event);
+    if (event.type !== "changeSelectedNodes") {
+      return;
+    }
+    console.log(event.detail);
+    console.log(event.detail.value);
+    // this.receiveData = event.detail.
+
     this.renderTemplate({
       template: "stanza.html.hbs",
       parameters: {
-        name: event.detail.value,
+        name: event.detail,
       },
     });
   }

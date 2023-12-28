@@ -30,6 +30,10 @@
     {
       "stanza:key": "valueChanged",
       "stanza:description": "event used to notify a change of the value. payload is something like {value: 42}"
+    },
+    {
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
     }
   ],
   "stanza:outgoingEvent": []

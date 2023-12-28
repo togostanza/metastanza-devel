@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <div class="wrapper" :style="`width: ${width};`">
+  <div class="wrapper" :style="`width: ${width};`" ref="rootElement">
     <div class="tableOptionWrapper">
       <div class="tableOption">
         <input
@@ -275,6 +275,7 @@ import {
   watchEffect,
   onMounted,
   onRenderTriggered,
+  getCurrentInstance,
 } from "vue";
 
 import SliderPagination from "./SliderPagination.vue";
@@ -595,6 +596,8 @@ export default defineComponent({
     onMounted(fetchData);
 
     const thead = ref(null);
+    const rootElement = ref(null);
+
     onRenderTriggered(() => {
       setTimeout(() => {
         const thList = thead.value.children[0].children;
@@ -614,6 +617,27 @@ export default defineComponent({
       } else {
         state.selectingRows.splice(indexInSelectingRows, 1);
       }
+      // dispatch event
+      const selectedRows = state.selectingRows;
+      console.log(selectedRows)
+      console.log(JSON.parse(JSON.stringify(selectedRows)))
+      console.log(rootElement)
+      console.log(rootElement.value)
+      console.log(rootElement.value.parentNode)
+      console.log(rootElement.value.parentNode.parentNode)
+      console.log(rootElement.value.parentNode.parentNode.parentNode)
+      console.log(rootElement.value.parentNode.parentNode.parentNode.host)
+      const stanza = rootElement.value.parentNode.parentNode.parentNode.host;
+
+      const instance = getCurrentInstance();
+      console.log(instance)
+      // const rootInstance = instance.proxy.$root;
+
+      // // ルートインスタンスへのアクセス
+      // console.log(rootInstance);
+      stanza.dispatchEvent(new CustomEvent("changeSelectedNodes", {
+        detail: JSON.parse(JSON.stringify(selectedRows)),
+      }));
     }
 
     const isSelectedRow = (rowIndex) => {
@@ -637,6 +661,7 @@ export default defineComponent({
       closeModal,
       updateCurrentPage,
       thead,
+      rootElement,
       json,
       handleAxisSelectorButton,
       handleAxisSelected,

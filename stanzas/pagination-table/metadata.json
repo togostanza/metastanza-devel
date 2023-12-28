@@ -302,8 +302,17 @@
       "stanza:description": "Color applied to the selected item"
     }
   ],
-  "stanza:incomingEvent": [],
+  "stanza:incomingEvent": [
+    {
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
+    }
+  ],
   "stanza:outgoingEvent": [
+    {
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
+    },
     {
       "stanza:key": "xaxis",
       "stanza:description": "xaxis changed event"

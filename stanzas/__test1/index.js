@@ -29,6 +29,7 @@ export default class VennStanza extends Stanza {
     this.renderTemplate({ template: "stanza.html.hbs" });
 
     setTimeout(() => {
+      console.log(this.element);
       this.element.dispatchEvent(
         new CustomEvent("valueChanged", { detail: { value: 64 } })
       );
