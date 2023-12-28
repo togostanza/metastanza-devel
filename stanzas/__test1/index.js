@@ -1,6 +1,4 @@
 import Stanza from "togostanza/stanza";
-import loadData from "togostanza-utils/load-data";
-import Color from "color";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -9,8 +7,6 @@ import {
   downloadTSVMenuItem,
   appendCustomCss,
 } from "togostanza-utils";
-import ToolTip from "@/lib/ToolTip";
-import Legend from "@/lib/Legend";
 
 export default class VennStanza extends Stanza {
   menu() {
@@ -29,7 +25,6 @@ export default class VennStanza extends Stanza {
     this.renderTemplate({ template: "stanza.html.hbs" });
 
     setTimeout(() => {
-      console.log(this.element);
       this.element.dispatchEvent(
         new CustomEvent("valueChanged", { detail: { value: 64 } })
       );

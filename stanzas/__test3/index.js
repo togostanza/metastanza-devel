@@ -33,14 +33,10 @@ export default class VennStanza extends Stanza {
     if (event.type !== "changeSelectedNodes") {
       return;
     }
-    console.log(event.detail);
-    console.log(event.detail.value);
-    // this.receiveData = event.detail.
-
     this.renderTemplate({
       template: "stanza.html.hbs",
       parameters: {
-        name: event.detail,
+        nodes: event.detail,
       },
     });
   }

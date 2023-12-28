@@ -356,7 +356,7 @@ export default defineComponent({
 
       axisSelectorActiveColumn: null,
 
-      selectingRows: [],
+      selectedRows: [],
     });
 
     const filteredRows = computed(() => {
@@ -610,31 +610,17 @@ export default defineComponent({
     };
 
     const handleRowClick = (rowIndex) => {
+      // get selected rows
       const actualRowIndex = (state.pagination.currentPage - 1) * state.pagination.perPage + rowIndex;
-      const indexInSelectingRows = state.selectingRows.indexOf(actualRowIndex);
-      if (indexInSelectingRows === -1) {
-        state.selectingRows.push(actualRowIndex);
+      const indexInSelectedRows = state.selectedRows.indexOf(actualRowIndex);
+      if (indexInSelectedRows === -1) {
+        state.selectedRows.push(actualRowIndex);
       } else {
-        state.selectingRows.splice(indexInSelectingRows, 1);
+        state.selectedRows.splice(indexInSelectedRows, 1);
       }
       // dispatch event
-      const selectedRows = state.selectingRows;
-      console.log(selectedRows)
-      console.log(JSON.parse(JSON.stringify(selectedRows)))
-      console.log(rootElement)
-      console.log(rootElement.value)
-      console.log(rootElement.value.parentNode)
-      console.log(rootElement.value.parentNode.parentNode)
-      console.log(rootElement.value.parentNode.parentNode.parentNode)
-      console.log(rootElement.value.parentNode.parentNode.parentNode.host)
+      const selectedRows = state.selectedRows;
       const stanza = rootElement.value.parentNode.parentNode.parentNode.host;
-
-      const instance = getCurrentInstance();
-      console.log(instance)
-      // const rootInstance = instance.proxy.$root;
-
-      // // ルートインスタンスへのアクセス
-      // console.log(rootInstance);
       stanza.dispatchEvent(new CustomEvent("changeSelectedNodes", {
         detail: JSON.parse(JSON.stringify(selectedRows)),
       }));
@@ -642,7 +628,7 @@ export default defineComponent({
 
     const isSelectedRow = (rowIndex) => {
       const actualRowIndex = (state.pagination.currentPage - 1) * state.pagination.perPage + rowIndex;
-      return state.selectingRows.includes(actualRowIndex);
+      return state.selectedRows.includes(actualRowIndex);
     }
 
     return {
