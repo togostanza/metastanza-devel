@@ -621,6 +621,7 @@ export default defineComponent({
       // dispatch event
       const selectedRows = state.selectedRows;
       const stanza = rootElement.value.parentNode.parentNode.parentNode.host;
+      console.log(selectedRows, stanza)
       stanza.dispatchEvent(new CustomEvent("changeSelectedNodes", {
         detail: JSON.parse(JSON.stringify(selectedRows)),
       }));

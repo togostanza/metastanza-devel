@@ -259,6 +259,16 @@ export default class Barchart extends MetaStanza {
       this.tooltips.setup(this._main.querySelectorAll("[data-tooltip]"));
     }
   }
+
+  handleEvent(event) {
+    console.log(event);
+    console.log(this._main);
+    console.log(this.xAxisGen);
+    console.log(this.yAxisGen);
+    console.log(this._graphArea);
+    console.log(this._dataByGroup);
+    console.log(this._dataByX);
+  }
 }
 
 interface DrawFnParamsI {
@@ -298,7 +308,10 @@ function drawGroupedBars(
 
   barGroup
     .selectAll("rect")
-    .data((d) => d[1])
+    .data((d) => {
+      console.log(d);
+      return d[1];
+    })
     .enter()
     .append("rect")
     .attr("y", (d) => this.yAxisGen.scale(d[y2Sym]))
