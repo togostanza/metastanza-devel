@@ -413,10 +413,16 @@ function emitSelectedEvent(this: Barchart, id: any) {
   const ids = filteredBars
     .data()
     .map((datum) => datum[1][0]["__togostanza_id_dummy__"]);
+  const indexInSelectedBars = ids.indexOf(id);
+  if (indexInSelectedBars === -1) {
+    ids.push(id);
+  } else {
+    ids.splice(indexInSelectedBars, 1);
+  }
   // dispatch event
   this.element.dispatchEvent(
     new CustomEvent("changeSelectedNodes", {
-      detail: [...ids, id],
+      detail: ids,
     })
   );
 }

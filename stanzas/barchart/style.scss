@@ -56,6 +56,10 @@ svg {
   }
 }
 
+.axis-container {
+  pointer-events: none;
+}
+
 main {
   background-color: var(--togostanza-theme-background_color);
 }
