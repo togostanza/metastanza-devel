@@ -261,13 +261,9 @@ export default class Barchart extends MetaStanza {
   }
 
   handleEvent(event) {
-    console.log(event);
-    console.log(this._main);
-    console.log(this.xAxisGen);
-    console.log(this.yAxisGen);
-    console.log(this._graphArea);
-    console.log(this._dataByGroup);
-    console.log(this._dataByX);
+    const selectedNodes = event.detail;
+    const barGroups = this._graphArea.selectAll("g.bar-group");
+    barGroups.classed("-selected", (_, i) => selectedNodes.indexOf(i) !== -1);
   }
 }
 

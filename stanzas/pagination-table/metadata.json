@@ -296,7 +296,7 @@
       "stanza:description": "Background color"
     },
     {
-      "stanza:key": "--togostanza-theme-selected_color",
+      "stanza:key": "--togostanza-theme-selected_background_color",
       "stanza:type": "color",
       "stanza:default": "#FFEE0088",
       "stanza:description": "Color applied to the selected item"
