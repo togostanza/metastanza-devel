@@ -610,7 +610,7 @@ export default defineComponent({
     };
 
     const handleRowClick = (rowIndex) => {
-      // get selected rows
+      // collect selected rows
       const actualRowIndex = (state.pagination.currentPage - 1) * state.pagination.perPage + rowIndex;
       const row = state.responseJSON[actualRowIndex];
       const indexInSelectedRows = state.selectedRows.indexOf(row.__togostanza_id_dummy__);

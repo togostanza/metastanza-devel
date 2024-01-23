@@ -358,10 +358,9 @@ function drawStackedBars(
     )
     .attr("fill", (d) => d[colorSym])
     .attr("data-tooltip", (d) => d[tooltipSym])
-    .on("click", (e, d) => {
-      console.log(e, d);
-      console.log(this._dataByX);
-    });
+    .on("click", (_, d) =>
+      emitSelectedEvent.apply(this, [d["__togostanza_id_dummy__"]])
+    );
 
   return { barGroup };
 }
@@ -404,4 +403,20 @@ function addErrorBars(
     .attr("y2", (d) => this.yAxisGen.scale(d[errorKeyName][1]))
     .attr("x1", (d) => groupScale(d[groupKeyName]))
     .attr("x2", (d) => groupScale(d[groupKeyName]) + groupScale.bandwidth());
+}
+
+// emit selected event
+function emitSelectedEvent(this: Barchart, id: any) {
+  // collect selected bars
+  const barGroups = this._graphArea.selectAll("g.bar-group");
+  const filteredBars = barGroups.filter(".-selected");
+  const ids = filteredBars
+    .data()
+    .map((datum) => datum[1][0]["__togostanza_id_dummy__"]);
+  // dispatch event
+  this.element.dispatchEvent(
+    new CustomEvent("changeSelectedNodes", {
+      detail: [...ids, id],
+    })
+  );
 }
