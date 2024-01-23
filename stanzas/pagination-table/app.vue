@@ -612,16 +612,16 @@ export default defineComponent({
     const handleRowClick = (rowIndex) => {
       // get selected rows
       const actualRowIndex = (state.pagination.currentPage - 1) * state.pagination.perPage + rowIndex;
-      const indexInSelectedRows = state.selectedRows.indexOf(actualRowIndex);
+      const row = state.responseJSON[actualRowIndex];
+      const indexInSelectedRows = state.selectedRows.indexOf(row.__togostanza_id_dummy__);
       if (indexInSelectedRows === -1) {
-        state.selectedRows.push(actualRowIndex);
+        state.selectedRows.push(row.__togostanza_id_dummy__);
       } else {
         state.selectedRows.splice(indexInSelectedRows, 1);
       }
       // dispatch event
       const selectedRows = state.selectedRows;
       const stanza = rootElement.value.parentNode.parentNode.parentNode.host;
-      console.log(selectedRows, stanza)
       stanza.dispatchEvent(new CustomEvent("changeSelectedNodes", {
         detail: JSON.parse(JSON.stringify(selectedRows)),
       }));

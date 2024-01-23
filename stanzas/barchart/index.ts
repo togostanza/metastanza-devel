@@ -263,7 +263,10 @@ export default class Barchart extends MetaStanza {
   handleEvent(event) {
     const selectedNodes = event.detail;
     const barGroups = this._graphArea.selectAll("g.bar-group");
-    barGroups.classed("-selected", (_, i) => selectedNodes.indexOf(i) !== -1);
+    barGroups.classed(
+      "-selected",
+      (d) => selectedNodes.indexOf(d[1][0].__togostanza_id_dummy__) !== -1
+    );
   }
 }
 
@@ -354,7 +357,11 @@ function drawStackedBars(
       Math.abs(this.yAxisGen.scale(d[y1Sym]) - this.yAxisGen.scale(d[y2Sym]))
     )
     .attr("fill", (d) => d[colorSym])
-    .attr("data-tooltip", (d) => d[tooltipSym]);
+    .attr("data-tooltip", (d) => d[tooltipSym])
+    .on("click", (e, d) => {
+      console.log(e, d);
+      console.log(this._dataByX);
+    });
 
   return { barGroup };
 }
