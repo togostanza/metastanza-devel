@@ -191,6 +191,12 @@
       "stanza:description": "Group color 5"
     },
     {
+      "stanza:key": "--togostanza-theme-selected_border_color",
+      "stanza:type": "color",
+      "stanza:default": "#FFEE00",
+      "stanza:description": "Color applied to the selected item"
+    },
+    {
       "stanza:key": "--togostanza-theme-background_color",
       "stanza:type": "color",
       "stanza:default": "rgba(255,255,255,0)",
