@@ -16,9 +16,14 @@ import {
 import { getMarginsFromCSSString, MarginsI } from "../../lib/utils";
 import { drawChordDiagram } from "./drawChordDiagram";
 
+interface Datum {
+  id: string;
+}
+
 export default class ChordDiagram extends Stanza {
   _data: object;
   tooltip: ToolTip;
+  _chartArea: d3.Selection<SVGGElement, any, SVGElement, any>;
 
   menu() {
     return [
@@ -74,6 +79,8 @@ export default class ChordDiagram extends Stanza {
       .append("svg")
       .attr("width", width)
       .attr("height", height);
+
+    this._chartArea = svg;
 
     this.tooltip = new ToolTip();
     root.append(this.tooltip);
@@ -184,6 +191,19 @@ export default class ChordDiagram extends Stanza {
     }
 
     this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
+
+    this._chartArea.selectAll("g.node").on("click", (_, d: Datum) => {
+      const clickedNode = prepNodes.find(({ id }) => id === d.id);
+      return emitSelectedEvent.apply(this, [clickedNode.id]);
+    });
+  }
+
+  handleEvent(event) {
+    const selectedNodes = event.detail;
+    const nodeGroups = this._chartArea.selectAll("g.node");
+    nodeGroups.classed("-selected", (d: Datum) => {
+      return selectedNodes.includes(d.id);
+    });
   }
 }
 
@@ -203,4 +223,23 @@ function getLongestLabelWidth(
 
   labelsG.remove();
   return width;
+}
+
+function emitSelectedEvent(this: ChordDiagram, id: string) {
+  // get selected pies
+  const nodeGroups = this._chartArea.selectAll("g.node");
+  const filteredNodes = nodeGroups.filter(".-selected");
+  const ids = filteredNodes.data().map((datum: Datum) => datum.id);
+  if (!ids.includes(id)) {
+    ids.push(id);
+  } else {
+    ids.splice(ids.indexOf(id), 1);
+  }
+
+  // dispatch event
+  this.element.dispatchEvent(
+    new CustomEvent("changeSelectedNodes", {
+      detail: ids,
+    })
+  );
 }

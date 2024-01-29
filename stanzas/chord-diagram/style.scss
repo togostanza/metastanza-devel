@@ -26,6 +26,12 @@ svg {
   stroke: var(--togostanza-border-color);
   stroke-width: var(--togostanza-border-width);
   cursor: pointer;
+
+  &.-selected {
+    text {
+      fill: var(--togostanza-theme-selected_border_color);
+    }
+  }
 }
 
 .link {
