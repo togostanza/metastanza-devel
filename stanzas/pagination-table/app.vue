@@ -610,6 +610,9 @@ export default defineComponent({
     };
 
     const handleRowClick = (rowIndex) => {
+      if (!params.eventOutgo_change_selected_nodes) {
+        return;
+      }
       // collect selected rows
       const actualRowIndex = (state.pagination.currentPage - 1) * state.pagination.perPage + rowIndex;
       const selectedRows = [...state.selectedRows];
@@ -625,6 +628,7 @@ export default defineComponent({
       stanza.dispatchEvent(new CustomEvent("changeSelectedNodes", {
         detail: selectedRows,
       }));
+      state.selectedRows = [...selectedRows];
     }
 
     const isSelectedRow = (rowIndex) => {

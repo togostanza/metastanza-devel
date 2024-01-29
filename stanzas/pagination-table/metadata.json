@@ -80,6 +80,20 @@
       "stanza:description": "Show axis selector button"
     },
     {
+      "stanza:key": "event-income_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Emit a selection nodes change event",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "event-outgo_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Receive a selection nodes change event",
+      "stanza:required": false
+    },
+    {
       "stanza:key": "togostanza-custom_css_url",
       "stanza:example": "",
       "stanza:description": "Stylesheet(css file) URL to override current style",

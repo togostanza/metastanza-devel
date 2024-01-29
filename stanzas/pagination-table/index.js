@@ -36,6 +36,9 @@ export default class PaginationTable extends Stanza {
   }
 
   handleEvent(event) {
-    this._component.updateSelectedRows(event.detail);
+    if (this.params["event-income_change_selected_nodes"]) {
+      console.log(event.detail);
+      this._component.updateSelectedRows(event.detail);
+    }
   }
 }
