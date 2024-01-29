@@ -214,7 +214,6 @@ function getMarginsFromCSSString(str) {
 }
 
 function emitSelectedEvent(graph, id) {
-  // get selected pies
   const nodeGroups = graph._graphArea.selectAll("g.node-group");
   const filteredNodes = nodeGroups.filter(".-selected");
   const ids = filteredNodes.data().map((datum) => datum.id);

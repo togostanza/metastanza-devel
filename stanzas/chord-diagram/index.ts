@@ -226,7 +226,6 @@ function getLongestLabelWidth(
 }
 
 function emitSelectedEvent(this: ChordDiagram, id: string) {
-  // get selected pies
   const nodeGroups = this._chartArea.selectAll("g.node");
   const filteredNodes = nodeGroups.filter(".-selected");
   const ids = filteredNodes.data().map((datum: Datum) => datum.id);
