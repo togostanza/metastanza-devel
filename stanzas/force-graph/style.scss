@@ -26,6 +26,14 @@ svg > defs > marker > path {
   cursor: pointer;
 }
 
+.node-group {
+  &.-selected {
+    text {
+      fill: var(--togostanza-theme-selected_border_color);
+    }
+  }
+}
+
 .link {
   stroke-opacity: var(--togostanza-edge-opacity);
   stroke-linecap: round;

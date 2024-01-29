@@ -15,6 +15,8 @@ import {
 } from "togostanza-utils";
 
 export default class ForceGraph extends Stanza {
+  _graphArea;
+
   menu() {
     return [
       downloadSvgMenuItem(this, "force-graph"),
@@ -122,7 +124,7 @@ export default class ForceGraph extends Stanza {
     if (existingSvg) {
       existingSvg.remove();
     }
-    const svg = d3
+    this._graphArea = d3
       .select(el)
       .append("svg")
       .attr("width", width)
@@ -135,7 +137,7 @@ export default class ForceGraph extends Stanza {
       MARGIN,
       width,
       height,
-      svg,
+      svg: this._graphArea,
       color,
       highlightAdjEdges,
       nodeSizeParams,
@@ -152,7 +154,7 @@ export default class ForceGraph extends Stanza {
       params
     );
 
-    drawForceLayout(svg, prepNodes, prepEdges, {
+    drawForceLayout(this._graphArea, prepNodes, prepEdges, {
       ...params,
       symbols,
     });
@@ -160,6 +162,18 @@ export default class ForceGraph extends Stanza {
     if (tooltipParams.show) {
       this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
     }
+    this._graphArea.selectAll("g.node-group").on("click", (_, d) => {
+      const clickedNode = prepNodes.find(({ id }) => id === d.id);
+      return emitSelectedEvent.apply(null, [this, clickedNode.id]);
+    });
+  }
+
+  handleEvent(event) {
+    const selectedNodes = event.detail;
+    const nodeGroups = this._graphArea.selectAll("g.node-group");
+    nodeGroups.classed("-selected", (d) => {
+      return selectedNodes.includes(d.id);
+    });
   }
 }
 
@@ -197,4 +211,23 @@ function getMarginsFromCSSString(str) {
   }
 
   return res;
+}
+
+function emitSelectedEvent(graph, id) {
+  // get selected pies
+  const nodeGroups = graph._graphArea.selectAll("g.node-group");
+  const filteredNodes = nodeGroups.filter(".-selected");
+  const ids = filteredNodes.data().map((datum) => datum.id);
+  if (!ids.includes(id)) {
+    ids.push(id);
+  } else {
+    ids.splice(ids.indexOf(id), 1);
+  }
+
+  // dispatch event
+  graph.element.dispatchEvent(
+    new CustomEvent("changeSelectedNodes", {
+      detail: ids,
+    })
+  );
 }
