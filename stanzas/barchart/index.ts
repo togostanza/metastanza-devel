@@ -218,12 +218,11 @@ export default class Barchart extends MetaStanza {
           );
         }
     }
-    if (this.params["event-outgo_change_selected_nodes"])
-      barGroup.on("click", (_, d) => {
-        if (this.params["event-outgo_change_selected_nodes"]) {
-          emitSelectedEvent.apply(this, [d[1][0]["__togostanza_id_dummy__"]]);
-        }
-      });
+    if (this.params["event-outgo_change_selected_nodes"]) {
+      barGroup.on("click", (_, d) =>
+        emitSelectedEvent.apply(this, [d[1][0]["__togostanza_id_dummy__"]])
+      );
+    }
 
     if (showLegend) {
       if (!this.legend) {
