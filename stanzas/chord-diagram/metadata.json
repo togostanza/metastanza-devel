@@ -88,6 +88,20 @@
       "stanza:default": "id",
       "stanza:example": "id",
       "stanza:description": "Node tooltips data key. If empty, no tooltips will be shown"
+    },
+    {
+      "stanza:key": "event-income_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Emit a selection nodes change event",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "event-outgo_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Receive a selection nodes change event",
+      "stanza:required": false
     }
   ],
   "stanza:menu-placement": "bottom-right",
