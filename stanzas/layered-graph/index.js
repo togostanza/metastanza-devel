@@ -20,6 +20,8 @@ import {
 } from "togostanza-utils";
 
 export default class ForceGraph extends Stanza {
+  _graphArea;
+
   menu() {
     return [
       downloadSvgMenuItem(this, "graph-3d-circle"),
@@ -250,6 +252,8 @@ export default class ForceGraph extends Stanza {
         d3.drag().on("drag", dragged).on("start", dragStart).on("end", dragEnd)
       )
       .append("g");
+
+    this._graphArea = svgG;
 
     var mx, my, mouseX, mouseY;
 
@@ -704,6 +708,21 @@ export default class ForceGraph extends Stanza {
       });
       this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
     }
+
+    if (this.params["event-outgoing_change_selected_nodes"]) {
+      const nodeGroups = this._graphArea.selectAll(".node-g");
+      nodeGroups.on("click", (_, d) => {
+        const clickedNode = prepNodes.find(({ id }) => id === d.id);
+        console.log(clickedNode);
+        return emitSelectedEvent.apply(null, [this, clickedNode.id]);
+      });
+    }
+  }
+
+  handleEvent(event) {
+    if (this.params["event-incoming_change_selected_nodes"]) {
+      changeSelectedStyle.apply(null, [this, event.detail]);
+    }
   }
 }
 
@@ -741,4 +760,30 @@ function getMarginsFromCSSString(str) {
   }
 
   return res;
+}
+
+function emitSelectedEvent(graph, id) {
+  console.log(graph, id);
+  const nodeGroups = graph._graphArea.selectAll(".node-g");
+  const filteredNodes = nodeGroups.filter(".-selected");
+  const ids = filteredNodes.data().map((datum) => datum.id);
+  if (!ids.includes(id)) {
+    ids.push(id);
+  } else {
+    ids.splice(ids.indexOf(id), 1);
+  }
+
+  // dispatch event
+  graph.element.dispatchEvent(
+    new CustomEvent("changeSelectedNodes", {
+      detail: ids,
+    })
+  );
+}
+
+function changeSelectedStyle(graph, ids) {
+  const nodeGroups = graph._graphArea.selectAll("g.node-g");
+  nodeGroups.classed("-selected", (d) => {
+    return ids.includes(d.id);
+  });
 }
