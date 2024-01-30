@@ -192,18 +192,18 @@ export default class ChordDiagram extends Stanza {
 
     this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
 
-    this._chartArea.selectAll("g.node").on("click", (_, d: Datum) => {
-      const clickedNode = prepNodes.find(({ id }) => id === d.id);
-      return emitSelectedEvent.apply(this, [clickedNode.id]);
-    });
+    if (this.params["event-outgoing_change_selected_nodes"]) {
+      this._chartArea.selectAll("g.node").on("click", (_, d: Datum) => {
+        const clickedNode = prepNodes.find(({ id }) => id === d.id);
+        return emitSelectedEvent.apply(this, [clickedNode.id]);
+      });
+    }
   }
 
   handleEvent(event) {
-    const selectedNodes = event.detail;
-    const nodeGroups = this._chartArea.selectAll("g.node");
-    nodeGroups.classed("-selected", (d: Datum) => {
-      return selectedNodes.includes(d.id);
-    });
+    if (this.params["event-incoming_change_selected_nodes"]) {
+      changeSelectedStyle.apply(this, [event.detail]);
+    }
   }
 }
 
@@ -241,4 +241,11 @@ function emitSelectedEvent(this: ChordDiagram, id: string) {
       detail: ids,
     })
   );
+}
+
+function changeSelectedStyle(this: ChordDiagram, ids: Array<string | number>) {
+  const nodeGroups = this._chartArea.selectAll("g.node");
+  nodeGroups.classed("-selected", (d: Datum) => {
+    return ids.includes(d.id);
+  });
 }
