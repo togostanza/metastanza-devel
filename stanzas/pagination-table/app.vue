@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <div class="wrapper" :style="`width: ${width};`" ref="rootElement">
+  <div ref="rootElement" class="wrapper" :style="`width: ${width};`">
     <div class="tableOptionWrapper">
       <div class="tableOption">
         <input
@@ -610,14 +610,18 @@ export default defineComponent({
     };
 
     const handleRowClick = (rowIndex) => {
-      if (!params.eventOutgo_change_selected_nodes) {
+      if (!params.eventOutgoing_change_selected_nodes) {
         return;
       }
       // collect selected rows
-      const actualRowIndex = (state.pagination.currentPage - 1) * state.pagination.perPage + rowIndex;
+      const actualRowIndex =
+        (state.pagination.currentPage - 1) * state.pagination.perPage +
+        rowIndex;
       const selectedRows = [...state.selectedRows];
       const row = state.responseJSON[actualRowIndex];
-      const indexInSelectedRows = state.selectedRows.indexOf(row.__togostanza_id_dummy__);
+      const indexInSelectedRows = state.selectedRows.indexOf(
+        row.__togostanza_id_dummy__
+      );
       if (indexInSelectedRows === -1) {
         selectedRows.push(row.__togostanza_id_dummy__);
       } else {
@@ -625,20 +629,24 @@ export default defineComponent({
       }
       // dispatch event
       const stanza = rootElement.value.parentNode.parentNode.parentNode.host;
-      stanza.dispatchEvent(new CustomEvent("changeSelectedNodes", {
-        detail: selectedRows,
-      }));
+      stanza.dispatchEvent(
+        new CustomEvent("changeSelectedNodes", {
+          detail: selectedRows,
+        })
+      );
       state.selectedRows = [...selectedRows];
-    }
+    };
 
     const isSelectedRow = (rowIndex) => {
-      const actualRowIndex = (state.pagination.currentPage - 1) * state.pagination.perPage + rowIndex;
+      const actualRowIndex =
+        (state.pagination.currentPage - 1) * state.pagination.perPage +
+        rowIndex;
       return state.selectedRows.includes(actualRowIndex);
-    }
+    };
 
     const updateSelectedRows = (rows) => {
       state.selectedRows = [...rows];
-    } 
+    };
 
     return {
       width: params.width ? params.width + "px" : "100%",
@@ -666,7 +674,6 @@ export default defineComponent({
       updateSelectedRows,
     };
   },
-
 });
 
 function createColumnState(columnDef, values) {
@@ -806,5 +813,4 @@ function formattedValue(format, val) {
     return val;
   }
 }
-
 </script>

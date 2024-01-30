@@ -218,7 +218,7 @@ export default class Barchart extends MetaStanza {
           );
         }
     }
-    if (this.params["event-outgo_change_selected_nodes"]) {
+    if (this.params["event-outgoing_change_selected_nodes"]) {
       barGroup.on("click", (_, d) =>
         emitSelectedEvent.apply(this, [d[1][0]["__togostanza_id_dummy__"]])
       );
@@ -266,7 +266,7 @@ export default class Barchart extends MetaStanza {
   }
 
   handleEvent(event) {
-    if (this.params["event-income_change_selected_nodes"]) {
+    if (this.params["event-incoming_change_selected_nodes"]) {
       changeSelectedStyle.apply(this, [event.detail]);
     }
   }
