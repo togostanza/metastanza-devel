@@ -710,7 +710,7 @@ export default class ForceGraph extends Stanza {
     }
 
     if (this.params["event-outgoing_change_selected_nodes"]) {
-      const nodeGroups = this._graphArea.selectAll(".node-g");
+      const nodeGroups = this._graphArea.selectAll("circle.node");
       nodeGroups.on("click", (_, d) => {
         const clickedNode = prepNodes.find(({ id }) => id === d.id);
         console.log(clickedNode);
@@ -782,7 +782,7 @@ function emitSelectedEvent(graph, id) {
 }
 
 function changeSelectedStyle(graph, ids) {
-  const nodeGroups = graph._graphArea.selectAll("g.node-g");
+  const nodeGroups = graph._graphArea.selectAll(".node-g");
   nodeGroups.classed("-selected", (d) => {
     return ids.includes(d.id);
   });

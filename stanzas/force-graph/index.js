@@ -162,7 +162,7 @@ export default class ForceGraph extends Stanza {
     if (tooltipParams.show) {
       this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
     }
-    this._graphArea.selectAll("g.node-group").on("click", (_, d) => {
+    this._graphArea.selectAll("circle.node").on("click", (_, d) => {
       const clickedNode = prepNodes.find(({ id }) => id === d.id);
       return emitSelectedEvent.apply(null, [this, clickedNode.id]);
     });
