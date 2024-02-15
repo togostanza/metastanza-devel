@@ -295,10 +295,22 @@ export default class Sunburst extends MetaStanza {
       )
       .attr("d", (d) => arc(d.current));
 
+    let timer;
+
     path
       .filter((d) => d.children)
       .style("cursor", "pointer")
-      .on("dblclick", clicked);
+      .on("click", (e, d) => {
+        if (e.detail === 1) {
+          timer = setTimeout(() => {
+            console.log("click");
+          }, 200);
+        }
+      })
+      .on("dblclick", (e, d) => {
+        clearTimeout(timer);
+        clicked(e, d);
+      });
 
     path.append("title").text((d) => {
       return `${d

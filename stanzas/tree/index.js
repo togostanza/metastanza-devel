@@ -398,6 +398,8 @@ export default class Tree extends MetaStanza {
           .selectAll("g")
           .data(treeRoot.descendants(), (d) => d.id || (d.id = ++i));
 
+        let timer;
+
         //Generate new elements of circle
         const nodeCirclesEnter = nodeCirclesUpdate
           .enter()
@@ -413,7 +415,15 @@ export default class Tree extends MetaStanza {
                 }, 0)`;
             }
           })
+          .on("click", (e, d) => {
+            if (e.detail === 1) {
+              timer = setTimeout(() => {
+                console.log("click");
+              }, 200);
+            }
+          })
           .on("dblclick", (e, d) => {
+            clearTimeout(timer);
             toggle(d);
             update(d);
           });

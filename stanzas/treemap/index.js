@@ -189,13 +189,25 @@ function draw(el, dataset, opts) {
       .data(root.children.concat(root))
       .join("g");
 
+    let timer;
+
     node
       .filter((d) => {
         console.log(d);
         return d === root ? d.parent : d.children;
       })
       .attr("cursor", "pointer")
-      .on("dblclick", (_, d) => (d === root ? zoomout(root) : zoomin(d)));
+      .on("click", (e, d) => {
+        if (e.detail === 1) {
+          timer = setTimeout(() => {
+            console.log("click");
+          }, 200);
+        }
+      })
+      .on("dblclick", (e, d) => {
+        clearTimeout(timer);
+        d === root ? zoomout(root) : zoomin(d);
+      });
 
     node
       .append("title")
