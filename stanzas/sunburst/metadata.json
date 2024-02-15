@@ -195,14 +195,14 @@
   ],
   "stanza:incomingEvent": [
     {
-      "stanza:key": "selectedDatumChanged",
-      "stanza:description": "Event, wich dispatches when user selects some node in other stanza"
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
     }
   ],
   "stanza:outgoingEvent": [
     {
-      "stanza:key": "selectedDatumChanged",
-      "stanza:description": "Event, wich dispatches when user selects some node"
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
     }
   ]
 }
