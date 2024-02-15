@@ -195,7 +195,7 @@ function draw(el, dataset, opts) {
         return d === root ? d.parent : d.children;
       })
       .attr("cursor", "pointer")
-      .on("click", (_, d) => (d === root ? zoomout(root) : zoomin(d)));
+      .on("dblclick", (_, d) => (d === root ? zoomout(root) : zoomin(d)));
 
     node
       .append("title")

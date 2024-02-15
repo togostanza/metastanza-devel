@@ -298,7 +298,7 @@ export default class Sunburst extends MetaStanza {
     path
       .filter((d) => d.children)
       .style("cursor", "pointer")
-      .on("click", clicked);
+      .on("dblclick", clicked);
 
     path.append("title").text((d) => {
       return `${d
@@ -335,7 +335,7 @@ export default class Sunburst extends MetaStanza {
       .attr("r", radius - borderWidth / 2)
       .attr("fill", "none")
       .attr("pointer-events", "all")
-      .on("click", clicked);
+      .on("dblclick", clicked);
 
     //Text labels
     const textLabels = g

@@ -413,7 +413,7 @@ export default class Tree extends MetaStanza {
                 }, 0)`;
             }
           })
-          .on("click", (e, d) => {
+          .on("dblclick", (e, d) => {
             toggle(d);
             update(d);
           });
