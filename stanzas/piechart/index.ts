@@ -85,7 +85,7 @@ export default class Piechart extends MetaStanza {
       .attr("d", <any>arcGenerator)
       .attr("fill", (d) => d.data[colorSym]);
 
-    if (this.params["event-outgo_change_selected_nodes"]) {
+    if (this.params["event-outgoing_change_selected_nodes"]) {
       pieGroups.on("click", (_, d) =>
         emitSelectedEvent.apply(this, [d.data["__togostanza_id_dummy__"]])
       );
@@ -133,7 +133,7 @@ export default class Piechart extends MetaStanza {
   }
 
   handleEvent(event) {
-    if (this.params["event-income_change_selected_nodes"]) {
+    if (this.params["event-incoming_change_selected_nodes"]) {
       changeSelectedStyle.apply(this, [event.detail]);
     }
   }
