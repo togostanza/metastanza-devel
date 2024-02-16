@@ -10,6 +10,12 @@ import getStanzaColors from "../../lib/ColorGenerator";
 import Legend from "../../lib/Legend2";
 import MetaStanza from "../../lib/MetaStanza";
 
+interface Datum {
+  data: {
+    __togostanza_id_dummy__: string | number;
+  };
+}
+
 export default class Piechart extends MetaStanza {
   legend: Legend;
   _chartArea: d3.Selection<SVGGElement, {}, SVGElement, any>;
@@ -124,13 +130,9 @@ export default class Piechart extends MetaStanza {
   }
 
   handleEvent(event) {
-    // console.log(event);
     const selectedNodes = event.detail;
-    // console.log(selectedNodes);
     const pieGroups = this._chartArea.selectAll(".pie-slice");
-    // console.log(pieGroups);
-    pieGroups.classed("-selected", (d: any) => {
-      console.log(d.data.__togostanza_id_dummy__);
+    pieGroups.classed("-selected", (d: Datum) => {
       return selectedNodes.indexOf(d.data.__togostanza_id_dummy__) !== -1;
     });
   }
@@ -138,19 +140,18 @@ export default class Piechart extends MetaStanza {
 
 // emit selected event
 function emitSelectedEvent(this: Piechart, id: string | number) {
-  console.log(id);
-  // collect selected bars
+  // get selected pies
   const pieGroups = this._chartArea.selectAll(".pie-slice");
   const filteredPies = pieGroups.filter(".-selected");
   const ids = filteredPies
     .data()
-    .map((datum: any) => datum.data.__togostanza_id_dummy__);
-  const indexInSelectedPies = ids.indexOf(id);
-  if (indexInSelectedPies === -1) {
+    .map((datum: Datum) => datum.data.__togostanza_id_dummy__);
+  if (!ids.includes(id)) {
     ids.push(id);
   } else {
-    ids.splice(indexInSelectedPies, 1);
+    ids.splice(ids.indexOf(id), 1);
   }
+
   // dispatch event
   this.element.dispatchEvent(
     new CustomEvent("changeSelectedNodes", {
