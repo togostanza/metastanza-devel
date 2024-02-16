@@ -12,7 +12,7 @@ import MetaStanza from "../../lib/MetaStanza";
 
 interface Datum {
   data: {
-    __togostanza_id_dummy__: string | number;
+    __togostanza_id__: string | number;
   };
 }
 
@@ -86,9 +86,10 @@ export default class Piechart extends MetaStanza {
       .attr("fill", (d) => d.data[colorSym]);
 
     if (this.params["event-outgoing_change_selected_nodes"]) {
-      pieGroups.on("click", (_, d) =>
-        emitSelectedEvent.apply(this, [d.data["__togostanza_id_dummy__"]])
-      );
+      pieGroups.on("click", (_, d) => {
+        console.log(d.data);
+        return emitSelectedEvent.apply(this, [d.data["__togostanza_id__"]]);
+      });
     }
 
     if (showLegend) {
@@ -146,7 +147,7 @@ function emitSelectedEvent(this: Piechart, id: string | number) {
   const filteredPies = pieGroups.filter(".-selected");
   const ids = filteredPies
     .data()
-    .map((datum: Datum) => datum.data.__togostanza_id_dummy__);
+    .map((datum: Datum) => datum.data.__togostanza_id__);
   if (!ids.includes(id)) {
     ids.push(id);
   } else {
@@ -164,6 +165,6 @@ function emitSelectedEvent(this: Piechart, id: string | number) {
 function changeSelectedStyle(this: Piechart, ids: Array<string | number>) {
   const pieGroups = this._chartArea.selectAll(".pie-slice");
   pieGroups.classed("-selected", (d: Datum) => {
-    return ids.indexOf(d.data.__togostanza_id_dummy__) !== -1;
+    return ids.indexOf(d.data.__togostanza_id__) !== -1;
   });
 }

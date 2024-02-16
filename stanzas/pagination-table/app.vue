@@ -632,10 +632,10 @@ export default defineComponent({
       const selectedRows = [...state.selectedRows];
       const row = state.responseJSON[actualRowIndex];
       const indexInSelectedRows = state.selectedRows.indexOf(
-        row.__togostanza_id_dummy__
+        row.__togostanza_id__
       );
       if (indexInSelectedRows === -1) {
-        selectedRows.push(row.__togostanza_id_dummy__);
+        selectedRows.push(row.__togostanza_id__);
       } else {
         selectedRows.splice(indexInSelectedRows, 1);
       }
