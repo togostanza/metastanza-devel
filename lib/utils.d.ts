@@ -15,7 +15,7 @@ export function emitSelectedEvent({
   idPath,
 }): void;
 
-export function changeSelectedStyle({
+export function updateSelectedElementClassName({
   drawing,
   selectedIds,
   targetElementSelector,
