@@ -9,12 +9,7 @@ import {
 import getStanzaColors from "../../lib/ColorGenerator";
 import Legend from "../../lib/Legend2";
 import MetaStanza from "../../lib/MetaStanza";
-
-interface Datum {
-  data: {
-    __togostanza_id__: string | number;
-  };
-}
+import { emitSelectedEvent, changeSelectedStyle } from "../../lib/utils";
 
 export default class Piechart extends MetaStanza {
   legend: Legend;
@@ -88,7 +83,15 @@ export default class Piechart extends MetaStanza {
     if (this.params["event-outgoing_change_selected_nodes"]) {
       pieGroups.on("click", (_, d) => {
         console.log(d.data);
-        return emitSelectedEvent.apply(this, [d.data["__togostanza_id__"]]);
+        return emitSelectedEvent.apply(null, [
+          {
+            drawing: this,
+            targetId: d.data["__togostanza_id__"],
+            targetElementSelector: ".pie-slice",
+            selectedElementSelector: ".-selected",
+            idPath: "data.__togostanza_id__",
+          },
+        ]);
       });
     }
 
@@ -135,36 +138,15 @@ export default class Piechart extends MetaStanza {
 
   handleEvent(event) {
     if (this.params["event-incoming_change_selected_nodes"]) {
-      changeSelectedStyle.apply(this, [event.detail]);
+      changeSelectedStyle.apply(null, [
+        {
+          drawing: this,
+          selectedIds: event.detail,
+          targetElementSelector: ".pie-slice",
+          selectedElementClassName: "-selected",
+          idPath: "data.__togostanza_id__",
+        },
+      ]);
     }
   }
-}
-
-// emit selected event
-function emitSelectedEvent(this: Piechart, id: string | number) {
-  // get selected pies
-  const pieGroups = this._chartArea.selectAll(".pie-slice");
-  const filteredPies = pieGroups.filter(".-selected");
-  const ids = filteredPies
-    .data()
-    .map((datum: Datum) => datum.data.__togostanza_id__);
-  if (!ids.includes(id)) {
-    ids.push(id);
-  } else {
-    ids.splice(ids.indexOf(id), 1);
-  }
-
-  // dispatch event
-  this.element.dispatchEvent(
-    new CustomEvent("changeSelectedNodes", {
-      detail: ids,
-    })
-  );
-}
-
-function changeSelectedStyle(this: Piechart, ids: Array<string | number>) {
-  const pieGroups = this._chartArea.selectAll(".pie-slice");
-  pieGroups.classed("-selected", (d: Datum) => {
-    return ids.indexOf(d.data.__togostanza_id__) !== -1;
-  });
 }
