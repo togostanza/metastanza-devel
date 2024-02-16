@@ -1,18 +1,12 @@
-import Stanza from "togostanza/stanza";
-import loadData from "togostanza-utils/load-data";
-import Color from "color";
 import {
-  downloadSvgMenuItem,
-  downloadPngMenuItem,
-  downloadJSONMenuItem,
-  downloadCSVMenuItem,
-  downloadTSVMenuItem,
   appendCustomCss,
+  downloadCSVMenuItem,
+  downloadJSONMenuItem,
+  downloadPngMenuItem,
+  downloadSvgMenuItem,
+  downloadTSVMenuItem,
 } from "togostanza-utils";
-import ToolTip from "@/lib/ToolTip";
-import Legend from "@/lib/Legend";
-
-const LINE_HEIGHT = 1;
+import Stanza from "togostanza/stanza";
 
 export default class VennStanza extends Stanza {
   menu() {
