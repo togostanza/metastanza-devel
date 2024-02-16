@@ -78,15 +78,18 @@ export default class Piechart extends MetaStanza {
 
     const chart = chartG.selectAll("path").data(dataReady);
 
-    chart
+    const pieGroups = chart
       .enter()
       .append("path")
       .classed("pie-slice", true)
       .attr("d", <any>arcGenerator)
-      .attr("fill", (d) => d.data[colorSym])
-      .on("click", (_, d) =>
+      .attr("fill", (d) => d.data[colorSym]);
+
+    if (this.params["event-outgo_change_selected_nodes"]) {
+      pieGroups.on("click", (_, d) =>
         emitSelectedEvent.apply(this, [d.data["__togostanza_id_dummy__"]])
       );
+    }
 
     if (showLegend) {
       if (!this.legend) {
@@ -130,11 +133,9 @@ export default class Piechart extends MetaStanza {
   }
 
   handleEvent(event) {
-    const selectedNodes = event.detail;
-    const pieGroups = this._chartArea.selectAll(".pie-slice");
-    pieGroups.classed("-selected", (d: Datum) => {
-      return selectedNodes.indexOf(d.data.__togostanza_id_dummy__) !== -1;
-    });
+    if (this.params["event-income_change_selected_nodes"]) {
+      changeSelectedStyle.apply(this, [event.detail]);
+    }
   }
 }
 
@@ -158,4 +159,11 @@ function emitSelectedEvent(this: Piechart, id: string | number) {
       detail: ids,
     })
   );
+}
+
+function changeSelectedStyle(this: Piechart, ids: Array<string | number>) {
+  const pieGroups = this._chartArea.selectAll(".pie-slice");
+  pieGroups.classed("-selected", (d: Datum) => {
+    return ids.indexOf(d.data.__togostanza_id_dummy__) !== -1;
+  });
 }
