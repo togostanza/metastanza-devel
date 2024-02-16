@@ -9,7 +9,10 @@ import {
 import getStanzaColors from "../../lib/ColorGenerator";
 import Legend from "../../lib/Legend2";
 import MetaStanza from "../../lib/MetaStanza";
-import { emitSelectedEvent, changeSelectedStyle } from "../../lib/utils";
+import {
+  emitSelectedEvent,
+  updateSelectedElementClassName,
+} from "../../lib/utils";
 
 export default class Piechart extends MetaStanza {
   legend: Legend;
@@ -142,7 +145,7 @@ export default class Piechart extends MetaStanza {
 
   handleEvent(event) {
     if (this.params["event-incoming_change_selected_nodes"]) {
-      changeSelectedStyle.apply(null, [
+      updateSelectedElementClassName.apply(null, [
         {
           selectedIds: event.detail,
           ...this.selectedEventParams,
