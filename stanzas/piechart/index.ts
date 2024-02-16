@@ -124,15 +124,15 @@ export default class Piechart extends MetaStanza {
   }
 
   handleEvent(event) {
-    console.log(event);
+    // console.log(event);
     const selectedNodes = event.detail;
-    console.log(selectedNodes);
+    // console.log(selectedNodes);
     const pieGroups = this._chartArea.selectAll(".pie-slice");
-    console.log(pieGroups);
-    pieGroups.classed(
-      "-selected",
-      (d) => selectedNodes.indexOf(d[1][0].__togostanza_id_dummy__) !== -1
-    );
+    // console.log(pieGroups);
+    pieGroups.classed("-selected", (d: any) => {
+      console.log(d.data.__togostanza_id_dummy__);
+      return selectedNodes.indexOf(d.data.__togostanza_id_dummy__) !== -1;
+    });
   }
 }
 
@@ -140,11 +140,11 @@ export default class Piechart extends MetaStanza {
 function emitSelectedEvent(this: Piechart, id: string | number) {
   console.log(id);
   // collect selected bars
-  const pieGroups = this._chartArea.selectAll("g.chart");
+  const pieGroups = this._chartArea.selectAll(".pie-slice");
   const filteredPies = pieGroups.filter(".-selected");
   const ids = filteredPies
     .data()
-    .map((datum) => datum[1][0]["__togostanza_id_dummy__"]);
+    .map((datum: any) => datum.data.__togostanza_id_dummy__);
   const indexInSelectedPies = ids.indexOf(id);
   if (indexInSelectedPies === -1) {
     ids.push(id);
