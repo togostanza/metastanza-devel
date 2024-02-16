@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <div ref="rootElement" class="wrapper" :style="`width: ${width};`">
+  <div ref="wrapper" class="wrapper" :style="`width: ${width};`">
     <div class="tableOptionWrapper">
       <div class="tableOption">
         <input
@@ -332,18 +332,21 @@ export default defineComponent({
   ],
 
   setup(params) {
+    const wrapper = ref(null);
+
+    onMounted(() => {
+      const style = window.getComputedStyle(wrapper.value);
+      const value = style.getPropertyValue(
+        "--togostanza-pagination-placement-vertical"
+      );
+      wrapper.value.style.flexDirection = {
+        top: "column-reverse",
+        bottom: "column",
+      }[value];
+    });
+
     const sliderPagination = ref();
     const pageSizeOption = params.pageSizeOption.split(",").map(Number);
-
-        //
-        console.log(this);
-        console.log(this.root.querySelector(".wrapper"));
-    const style = window.getComputedStyle(this.element);
-    const value = style.getPropertyValue(
-      "--togostanza-vertical-pagination-placement"
-    );
-    console.log(value);
-
 
     const state = reactive({
       responseJSON: null, // for download. may consume extra memory
@@ -678,9 +681,7 @@ export default defineComponent({
       handleAxisSelectorButton,
       handleAxisSelected,
       showAxisSelector: params.showAxisSelector,
-      handleRowClick,
-      isSelectedRow,
-      updateSelectedRows,
+      wrapper,
     };
   },
 });

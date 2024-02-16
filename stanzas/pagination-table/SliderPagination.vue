@@ -121,6 +121,7 @@ export default defineComponent({
     const paginationWrapper = ref(null);
     const canvas = ref(null);
     const paginationNumList = ref(null);
+
     function drawKnobArrow() {
       setTimeout(() => {
         const totalPages = props.totalPages;
@@ -131,13 +132,20 @@ export default defineComponent({
         canvas.value.width = paginationWrapper.value.clientWidth;
         canvas.value.height = 50;
 
-        const sliderY =
-          paginationWrapper.value.getElementsByClassName("pageSlider")[0]
-            .offsetTop;
-        const tablePaginationOrder =
-          paginationNumList.value.offsetTop < sliderY
-            ? "column"
-            : "column-reverse";
+        // const sliderY =
+        //   paginationWrapper.value.getElementsByClassName("pageSlider")[0]
+        //     .offsetTop;
+          //   const tablePaginationOrder =
+          // paginationNumList.value.offsetTop < sliderY
+          //   ? "column"
+          //   : "column-reverse";
+        const style = window.getComputedStyle(paginationWrapper.value);
+        const value = style.getPropertyValue(
+          "--togostanza-pagination-placement-vertical"
+        );
+        const tablePaginationOrder = {top: "column", bottom: "column-reverse"}[value];
+
+        paginationWrapper.value.style.flexDirection = tablePaginationOrder;
 
         const paginationNumListX = paginationNumList.value.offsetLeft;
         const paginationNumListY = tablePaginationOrder === "column" ? 0 : 50;

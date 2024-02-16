@@ -310,7 +310,7 @@
         "bottom",
         "top"
       ],
-      "stanza:default": "column-reverse",
+      "stanza:default": "bottom",
       "stanza:description": "Vertical pacement of pagination"
     },
     {
