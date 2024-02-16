@@ -12,6 +12,7 @@ import MetaStanza from "../../lib/MetaStanza";
 
 export default class Piechart extends MetaStanza {
   legend: Legend;
+  _chartArea: d3.Selection<SVGGElement, {}, SVGElement, any>;
 
   menu() {
     return [
@@ -44,18 +45,18 @@ export default class Piechart extends MetaStanza {
       d[colorSym] = d[colorKey] ?? color(d[categoryKey]);
     });
 
-    let svg = select(this._main).select("svg");
-    if (svg.empty()) {
-      svg = select(this._main).append("svg");
+    this._chartArea = select(this._main).select("svg");
+    if (this._chartArea.empty()) {
+      this._chartArea = select(this._main).append("svg");
     }
 
-    svg.attr("width", width).attr("height", height);
+    this._chartArea.attr("width", width).attr("height", height);
 
-    const existingChart = svg.select("g.chart");
+    const existingChart = this._chartArea.select("g.chart");
     if (!existingChart.empty()) {
       existingChart.remove();
     }
-    const chartG = svg.append("g").classed("chart", true);
+    const chartG = this._chartArea.append("g").classed("chart", true);
     chartG.attr("transform", `translate(${width / 2},${height / 2})`);
 
     const WIDTH = width - this.MARGIN.LEFT - this.MARGIN.RIGHT;
@@ -76,7 +77,10 @@ export default class Piechart extends MetaStanza {
       .append("path")
       .classed("pie-slice", true)
       .attr("d", <any>arcGenerator)
-      .attr("fill", (d) => d.data[colorSym]);
+      .attr("fill", (d) => d.data[colorSym])
+      .on("click", (_, d) =>
+        emitSelectedEvent.apply(this, [d.data["__togostanza_id_dummy__"]])
+      );
 
     if (showLegend) {
       if (!this.legend) {
@@ -118,4 +122,27 @@ export default class Piechart extends MetaStanza {
       this.legend = null;
     }
   }
+}
+
+// emit selected event
+function emitSelectedEvent(this: Piechart, id: string | number) {
+  console.log(id);
+  // collect selected bars
+  const pieGroups = this._chartArea.selectAll("g.chart");
+  const filteredPies = pieGroups.filter(".-selected");
+  const ids = filteredPies
+    .data()
+    .map((datum) => datum[1][0]["__togostanza_id_dummy__"]);
+  const indexInSelectedPies = ids.indexOf(id);
+  if (indexInSelectedPies === -1) {
+    ids.push(id);
+  } else {
+    ids.splice(indexInSelectedPies, 1);
+  }
+  // dispatch event
+  this.element.dispatchEvent(
+    new CustomEvent("changeSelectedNodes", {
+      detail: ids,
+    })
+  );
 }
