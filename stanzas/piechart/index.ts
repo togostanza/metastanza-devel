@@ -14,6 +14,13 @@ import { emitSelectedEvent, changeSelectedStyle } from "../../lib/utils";
 export default class Piechart extends MetaStanza {
   legend: Legend;
   _chartArea: d3.Selection<SVGGElement, {}, SVGElement, any>;
+  selectedEventParams = {
+    drawing: this,
+    targetElementSelector: ".pie-slice",
+    selectedElementClassName: "-selected",
+    selectedElementSelector: ".-selected",
+    idPath: "data.__togostanza_id__",
+  };
 
   menu() {
     return [
@@ -85,11 +92,8 @@ export default class Piechart extends MetaStanza {
         console.log(d.data);
         return emitSelectedEvent.apply(null, [
           {
-            drawing: this,
             targetId: d.data["__togostanza_id__"],
-            targetElementSelector: ".pie-slice",
-            selectedElementSelector: ".-selected",
-            idPath: "data.__togostanza_id__",
+            ...this.selectedEventParams,
           },
         ]);
       });
@@ -140,11 +144,8 @@ export default class Piechart extends MetaStanza {
     if (this.params["event-incoming_change_selected_nodes"]) {
       changeSelectedStyle.apply(null, [
         {
-          drawing: this,
           selectedIds: event.detail,
-          targetElementSelector: ".pie-slice",
-          selectedElementClassName: "-selected",
-          idPath: "data.__togostanza_id__",
+          ...this.selectedEventParams,
         },
       ]);
     }
