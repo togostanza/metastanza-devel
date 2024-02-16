@@ -122,6 +122,18 @@ export default class Piechart extends MetaStanza {
       this.legend = null;
     }
   }
+
+  handleEvent(event) {
+    console.log(event);
+    const selectedNodes = event.detail;
+    console.log(selectedNodes);
+    const pieGroups = this._chartArea.selectAll(".pie-slice");
+    console.log(pieGroups);
+    pieGroups.classed(
+      "-selected",
+      (d) => selectedNodes.indexOf(d[1][0].__togostanza_id_dummy__) !== -1
+    );
+  }
 }
 
 // emit selected event

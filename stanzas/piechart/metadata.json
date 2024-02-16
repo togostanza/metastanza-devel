@@ -11,8 +11,6 @@
   "stanza:created": "2023-01-24",
   "stanza:updated": "2023-01-24",
   "stanza:menu-placement": "bottom-right",
-  "stanza:incomingEvent": [],
-  "stanza:outgoingEvent": [],
   "stanza:parameter": [
     {
       "stanza:key": "data-url",
@@ -137,6 +135,18 @@
       "stanza:type": "number",
       "stanza:default": 9,
       "stanza:description": "Secondary font size"
+    }
+  ],
+  "stanza:incomingEvent": [
+    {
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
+    }
+  ],
+  "stanza:outgoingEvent": [
+    {
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
     }
   ]
 }
