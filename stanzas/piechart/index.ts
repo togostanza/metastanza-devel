@@ -1,13 +1,12 @@
-import { select, pie, arc, scaleOrdinal, DefaultArcObject } from "d3";
-import getStanzaColors from "../../lib/ColorGenerator";
+import { arc, pie, scaleOrdinal, select } from "d3";
 import {
-  downloadSvgMenuItem,
-  downloadPngMenuItem,
-  downloadJSONMenuItem,
   downloadCSVMenuItem,
+  downloadJSONMenuItem,
+  downloadPngMenuItem,
+  downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
-import ToolTip from "../../lib/ToolTip";
+import getStanzaColors from "../../lib/ColorGenerator";
 import Legend from "../../lib/Legend2";
 import MetaStanza from "../../lib/MetaStanza";
 
