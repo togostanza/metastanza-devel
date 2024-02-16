@@ -186,7 +186,7 @@
                 <AxisSelectorModal
                   :active="state.axisSelectorActiveColumn === column"
                   :label="column.label"
-                  @axisSelected="handleAxisSelected"
+                  @axis-selected="handleAxisSelected"
                 />
               </th>
             </tr>
@@ -236,7 +236,7 @@
                     :char-clamp-on="cell.charClampOn"
                     :unescape="cell.column.unescape"
                     :value="cell.value"
-                    @toggleCharClampOn="cell.charClampOn = !cell.charClampOn"
+                    @toggle-char-clamp-on="cell.charClampOn = !cell.charClampOn"
                   />
                 </span>
                 <span
@@ -255,7 +255,7 @@
       :current-page="state.pagination.currentPage"
       :total-pages="totalPages"
       :is-slider-on="state.pagination.isSliderOn"
-      @updateCurrentPage="updateCurrentPage"
+      @update-current-page="updateCurrentPage"
     />
     <div
       v-if="isPopupOrModalShowing"
@@ -275,7 +275,6 @@ import {
   watchEffect,
   onMounted,
   onRenderTriggered,
-  getCurrentInstance,
 } from "vue";
 
 import SliderPagination from "./SliderPagination.vue";
