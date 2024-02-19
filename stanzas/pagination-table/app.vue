@@ -623,7 +623,7 @@ export default defineComponent({
       const actualRowIndex =
         (state.pagination.currentPage - 1) * state.pagination.perPage +
         rowIndex;
-      const rowId = state.responseJSON[actualRowIndex].__togostanza_id_dummy__;
+      const rowId = state.responseJSON[actualRowIndex].__togostanza_id__;
       // selected rows
       let selectedRows = [...state.selectedRows];
       // const indexInSelectedRows = selectedRows.indexOf(rowId);
