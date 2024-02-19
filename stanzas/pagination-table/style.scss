@@ -64,7 +64,6 @@
 
 .wrapper {
   display: flex;
-  flex-direction: var(--togostanza-vertical-pagination-placement);
   > .tableOptionWrapper {
     min-height: 430px;
     > .tableOption {
@@ -409,12 +408,11 @@
   }
   > .paginationWrapper {
     display: flex;
-    flex-direction: var(--togostanza-vertical-pagination-placement);
     width: calc(100% - 30px);
     margin: 10px auto;
     > .serialPagination {
       display: flex;
-      justify-content: var(--togostanza-horizonal-pagination-placement);
+      justify-content: var(--togostanza-pagination-placement-horizonal);
       align-items: stretch;
       > ul.paginationNumList {
         display: flex;

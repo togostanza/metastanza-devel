@@ -1,18 +1,29 @@
-import { select, pie, arc, scaleOrdinal, DefaultArcObject } from "d3";
-import getStanzaColors from "../../lib/ColorGenerator";
+import { arc, pie, scaleOrdinal, select } from "d3";
 import {
-  downloadSvgMenuItem,
-  downloadPngMenuItem,
-  downloadJSONMenuItem,
   downloadCSVMenuItem,
+  downloadJSONMenuItem,
+  downloadPngMenuItem,
+  downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
-import ToolTip from "../../lib/ToolTip";
+import getStanzaColors from "../../lib/ColorGenerator";
 import Legend from "../../lib/Legend2";
 import MetaStanza from "../../lib/MetaStanza";
+import {
+  emitSelectedEvent,
+  updateSelectedElementClassName,
+} from "../../lib/utils";
 
 export default class Piechart extends MetaStanza {
   legend: Legend;
+  _chartArea: d3.Selection<SVGGElement, {}, SVGElement, any>;
+  selectedEventParams = {
+    drawing: this,
+    targetElementSelector: ".pie-slice",
+    selectedElementClassName: "-selected",
+    selectedElementSelector: ".-selected",
+    idPath: "data.__togostanza_id__",
+  };
 
   menu() {
     return [
@@ -45,18 +56,18 @@ export default class Piechart extends MetaStanza {
       d[colorSym] = d[colorKey] ?? color(d[categoryKey]);
     });
 
-    let svg = select(this._main).select("svg");
-    if (svg.empty()) {
-      svg = select(this._main).append("svg");
+    this._chartArea = select(this._main).select("svg");
+    if (this._chartArea.empty()) {
+      this._chartArea = select(this._main).append("svg");
     }
 
-    svg.attr("width", width).attr("height", height);
+    this._chartArea.attr("width", width).attr("height", height);
 
-    const existingChart = svg.select("g.chart");
+    const existingChart = this._chartArea.select("g.chart");
     if (!existingChart.empty()) {
       existingChart.remove();
     }
-    const chartG = svg.append("g").classed("chart", true);
+    const chartG = this._chartArea.append("g").classed("chart", true);
     chartG.attr("transform", `translate(${width / 2},${height / 2})`);
 
     const WIDTH = width - this.MARGIN.LEFT - this.MARGIN.RIGHT;
@@ -72,12 +83,23 @@ export default class Piechart extends MetaStanza {
 
     const chart = chartG.selectAll("path").data(dataReady);
 
-    chart
+    const pieGroups = chart
       .enter()
       .append("path")
       .classed("pie-slice", true)
       .attr("d", <any>arcGenerator)
       .attr("fill", (d) => d.data[colorSym]);
+
+    if (this.params["event-outgoing_change_selected_nodes"]) {
+      pieGroups.on("click", (_, d) => {
+        return emitSelectedEvent.apply(null, [
+          {
+            targetId: d.data["__togostanza_id__"],
+            ...this.selectedEventParams,
+          },
+        ]);
+      });
+    }
 
     if (showLegend) {
       if (!this.legend) {
@@ -117,6 +139,17 @@ export default class Piechart extends MetaStanza {
     } else {
       this.legend.remove();
       this.legend = null;
+    }
+  }
+
+  handleEvent(event) {
+    if (this.params["event-incoming_change_selected_nodes"]) {
+      updateSelectedElementClassName.apply(null, [
+        {
+          selectedIds: event.detail,
+          ...this.selectedEventParams,
+        },
+      ]);
     }
   }
 }

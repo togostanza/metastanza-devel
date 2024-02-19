@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <div ref="rootElement" class="wrapper" :style="`width: ${width};`">
+  <div ref="wrapper" class="wrapper" :style="`width: ${width};`">
     <div class="tableOptionWrapper">
       <div class="tableOption">
         <input
@@ -332,6 +332,19 @@ export default defineComponent({
   ],
 
   setup(params) {
+    const wrapper = ref(null);
+
+    onMounted(() => {
+      const style = window.getComputedStyle(wrapper.value);
+      const value = style.getPropertyValue(
+        "--togostanza-pagination-placement-vertical"
+      );
+      wrapper.value.style.flexDirection = {
+        top: "column-reverse",
+        bottom: "column",
+      }[value];
+    });
+
     const sliderPagination = ref();
     const pageSizeOption = params.pageSizeOption.split(",").map(Number);
 
@@ -619,10 +632,10 @@ export default defineComponent({
       const selectedRows = [...state.selectedRows];
       const row = state.responseJSON[actualRowIndex];
       const indexInSelectedRows = state.selectedRows.indexOf(
-        row.__togostanza_id_dummy__
+        row.__togostanza_id__
       );
       if (indexInSelectedRows === -1) {
-        selectedRows.push(row.__togostanza_id_dummy__);
+        selectedRows.push(row.__togostanza_id__);
       } else {
         selectedRows.splice(indexInSelectedRows, 1);
       }
@@ -668,9 +681,7 @@ export default defineComponent({
       handleAxisSelectorButton,
       handleAxisSelected,
       showAxisSelector: params.showAxisSelector,
-      handleRowClick,
-      isSelectedRow,
-      updateSelectedRows,
+      wrapper,
     };
   },
 });
