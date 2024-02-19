@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <div ref="rootElement" class="wrapper" :style="`width: ${width};`">
+  <div ref="wrapper" class="wrapper" :style="`width: ${width};`">
     <div class="tableOptionWrapper">
       <div class="tableOption">
         <input
@@ -186,7 +186,7 @@
                 <AxisSelectorModal
                   :active="state.axisSelectorActiveColumn === column"
                   :label="column.label"
-                  @axisSelected="handleAxisSelected"
+                  @axis-selected="handleAxisSelected"
                 />
               </th>
             </tr>
@@ -236,7 +236,7 @@
                     :char-clamp-on="cell.charClampOn"
                     :unescape="cell.column.unescape"
                     :value="cell.value"
-                    @toggleCharClampOn="cell.charClampOn = !cell.charClampOn"
+                    @toggle-char-clamp-on="cell.charClampOn = !cell.charClampOn"
                   />
                 </span>
                 <span
@@ -255,7 +255,7 @@
       :current-page="state.pagination.currentPage"
       :total-pages="totalPages"
       :is-slider-on="state.pagination.isSliderOn"
-      @updateCurrentPage="updateCurrentPage"
+      @update-current-page="updateCurrentPage"
     />
     <div
       v-if="isPopupOrModalShowing"
@@ -275,7 +275,6 @@ import {
   watchEffect,
   onMounted,
   onRenderTriggered,
-  getCurrentInstance,
 } from "vue";
 
 import SliderPagination from "./SliderPagination.vue";
@@ -333,6 +332,19 @@ export default defineComponent({
   ],
 
   setup(params) {
+    const wrapper = ref(null);
+
+    onMounted(() => {
+      const style = window.getComputedStyle(wrapper.value);
+      const value = style.getPropertyValue(
+        "--togostanza-pagination-placement-vertical"
+      );
+      wrapper.value.style.flexDirection = {
+        top: "column-reverse",
+        bottom: "column",
+      }[value];
+    });
+
     const sliderPagination = ref();
     const pageSizeOption = params.pageSizeOption.split(",").map(Number);
 
@@ -620,10 +632,10 @@ export default defineComponent({
       const selectedRows = [...state.selectedRows];
       const row = state.responseJSON[actualRowIndex];
       const indexInSelectedRows = state.selectedRows.indexOf(
-        row.__togostanza_id_dummy__
+        row.__togostanza_id__
       );
       if (indexInSelectedRows === -1) {
-        selectedRows.push(row.__togostanza_id_dummy__);
+        selectedRows.push(row.__togostanza_id__);
       } else {
         selectedRows.splice(indexInSelectedRows, 1);
       }
@@ -669,9 +681,7 @@ export default defineComponent({
       handleAxisSelectorButton,
       handleAxisSelected,
       showAxisSelector: params.showAxisSelector,
-      handleRowClick,
-      isSelectedRow,
-      updateSelectedRows,
+      wrapper,
     };
   },
 });

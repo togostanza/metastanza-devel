@@ -11,9 +11,7 @@
   "stanza:license": "MIT",
   "stanza:author": "DBCLS",
   "stanza:address": "https://github.com/togostanza/metastanza",
-  "stanza:contributor": [
-    "PENQE"
-  ],
+  "stanza:contributor": ["PENQE"],
   "stanza:created": "2021-08-03",
   "stanza:updated": "2022-01-23",
   "stanza:parameter": [
