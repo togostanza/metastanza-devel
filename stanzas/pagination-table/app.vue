@@ -356,7 +356,7 @@ export default defineComponent({
       axisSelectorActiveColumn: null,
 
       selectedRows: [],
-      lastSelectedRow: null
+      lastSelectedRow: null,
     });
 
     const filteredRows = computed(() => {
@@ -610,29 +610,49 @@ export default defineComponent({
     };
 
     const handleRowClick = (event, rowIndex) => {
-      console.log(event, event.shiftKey)
       if (!params.eventOutgoing_change_selected_nodes) {
         return;
       }
       console.log(state.lastSelectedRow);
       console.log([...state.selectedRows]);
-      
+      const isShift = event.shiftKey;
+      const isCmd = event.metaKey || event.ctrlKey;
+      console.log(isShift, isCmd);
 
-
-      // collect selected rows
+      // get index and ID
       const actualRowIndex =
         (state.pagination.currentPage - 1) * state.pagination.perPage +
         rowIndex;
-      const rowData = state.responseJSON[actualRowIndex];
-      const selectedRows = [...state.selectedRows];
-      const indexInSelectedRows = selectedRows.indexOf(
-        rowData.__togostanza_id__
-      );
-      if (indexInSelectedRows === -1) {
-        selectedRows.push(rowData.__togostanza_id__);
+      const rowId = state.responseJSON[actualRowIndex].__togostanza_id_dummy__;
+      // selected rows
+      let selectedRows = [...state.selectedRows];
+      // const indexInSelectedRows = selectedRows.indexOf(rowId);
+      // if (indexInSelectedRows === -1) {
+      //   selectedRows.push(rowId);
+      // } else {
+      //   selectedRows.splice(indexInSelectedRows, 1);
+      // }
+
+      if (isShift && state.lastSelectedRow !== null) {
+        // const start = Math.min(state.lastSelectedRow, actualRowIndex);
+        // const end = Math.max(state.lastSelectedRow, actualRowIndex);
+        // for (let i = start; i <= end; i++) {
+        //   if (selectedRows.includes(i)) {
+        //     selectedRows.splice(selectedRows.indexOf(i), 1);
+        //   } else {
+        //     selectedRows.push(i);
+        //   }
+        // }
+      } else if (isCmd) {
+        // if (selectedRows.includes(actualRowIndex)) {
+        //   selectedRows.splice(selectedRows.indexOf(actualRowIndex), 1);
+        // } else {
+        //   selectedRows.push(actualRowIndex);
+        // }
       } else {
-        selectedRows.splice(indexInSelectedRows, 1);
+        selectedRows = [rowId];
       }
+
       // dispatch event
       const stanza = rootElement.value.parentNode.parentNode.parentNode.host;
       stanza.dispatchEvent(
@@ -640,6 +660,7 @@ export default defineComponent({
           detail: selectedRows,
         })
       );
+      state.lastSelectedRow = rowId;
       state.selectedRows = [...selectedRows];
     };
 
