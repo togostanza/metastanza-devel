@@ -1,26 +1,29 @@
-import MetaStanza from "../../lib/MetaStanza";
+import { getCirculateColor } from "@/lib/ColorGenerator";
+import ToolTip from "@/lib/ToolTip";
 import {
-  select,
-  min,
-  max,
-  scaleSqrt,
-  stratify,
-  tree,
   cluster,
   linkHorizontal,
-  linkVertical,
   linkRadial,
+  linkVertical,
+  max,
+  min,
+  scaleSqrt,
+  select,
+  stratify,
+  tree,
 } from "d3";
-import ToolTip from "@/lib/ToolTip";
-import { getCirculateColor } from "@/lib/ColorGenerator";
-
 import {
-  downloadSvgMenuItem,
-  downloadPngMenuItem,
-  downloadJSONMenuItem,
   downloadCSVMenuItem,
+  downloadJSONMenuItem,
+  downloadPngMenuItem,
+  downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
+import MetaStanza from "../../lib/MetaStanza";
+import {
+  emitSelectedEvent,
+  updateSelectedElementClassName,
+} from "../../lib/utils";
 
 //Declaring constants
 const ASCENDING = "ascending",
@@ -34,6 +37,13 @@ const ASCENDING = "ascending",
 
 export default class Tree extends MetaStanza {
   _chartArea;
+  selectedEventParams = {
+    drawing: this,
+    targetElementSelector: "g circle",
+    selectedElementClassName: "-selected",
+    selectedElementSelector: ".-selected",
+    idPath: "id",
+  };
   //Stanza download menu contents
   menu() {
     return [
@@ -399,8 +409,6 @@ export default class Tree extends MetaStanza {
           .selectAll("g")
           .data(treeRoot.descendants(), (d) => d.id || (d.id = ++i));
 
-        let timeout;
-
         //Generate new elements of circle
         const nodeCirclesEnter = nodeCirclesUpdate
           .enter()
@@ -417,12 +425,19 @@ export default class Tree extends MetaStanza {
             }
           });
 
+        let timeout;
+
         if (this.params["event-outgoing_change_selected_nodes"]) {
           nodeCirclesEnter
             .on("click", (e, d) => {
               if (e.detail === 1) {
                 timeout = setTimeout(() => {
-                  return emitSelectedEvent.apply(null, [this, d.id]);
+                  return emitSelectedEvent.apply(null, [
+                    {
+                      targetId: d.id,
+                      ...this.selectedEventParams,
+                    },
+                  ]);
                 }, 500);
               }
             })
@@ -705,34 +720,12 @@ export default class Tree extends MetaStanza {
 
   handleEvent(event) {
     if (this.params["event-incoming_change_selected_nodes"]) {
-      changeSelectedStyle.apply(null, [this, event.detail]);
+      updateSelectedElementClassName.apply(null, [
+        {
+          selectedIds: event.detail,
+          ...this.selectedEventParams,
+        },
+      ]);
     }
   }
-}
-
-// emit selected event
-function emitSelectedEvent(chart, id) {
-  const nodes = chart._chartArea.selectAll("g circle");
-  console.log(nodes);
-  const filteredNodes = nodes.filter(".-selected");
-  const ids = filteredNodes.data().map((d) => d.id);
-  if (!ids.includes(id)) {
-    ids.push(id);
-  } else {
-    ids.splice(ids.indexOf(id), 1);
-  }
-
-  // dispatch event
-  chart.element.dispatchEvent(
-    new CustomEvent("changeSelectedNodes", {
-      detail: ids,
-    })
-  );
-}
-
-function changeSelectedStyle(chart, ids) {
-  const nodes = chart._chartArea.selectAll("g circle");
-  nodes.classed("-selected", (d) => {
-    return ids.indexOf(d.id) !== -1;
-  });
 }

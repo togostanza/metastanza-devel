@@ -21,8 +21,21 @@ import {
 } from "togostanza-utils"; // from "@/lib/metastanza_utils.js"; //
 import shadeColor from "./shadeColor";
 import treemapBinaryLog from "./treemapBinaryLog";
+import {
+  emitSelectedEvent,
+  updateSelectedElementClassName,
+} from "../../lib/utils";
 
 export default class TreeMapStanza extends MetaStanza {
+  _chartArea;
+  selectedEventParams = {
+    drawing: this,
+    targetElementSelector: "g rect",
+    selectedElementClassName: "-selected",
+    selectedElementSelector: ".-selected",
+    idPath: "id",
+  };
+
   menu() {
     return [
       downloadSvgMenuItem(this, "treemap"),
@@ -90,6 +103,17 @@ export default class TreeMapStanza extends MetaStanza {
     };
 
     draw(treeMapElement, filteredData, opts);
+  }
+
+  handleEvent(event) {
+    if (this.params["event-incoming_change_selected_nodes"]) {
+      updateSelectedElementClassName.apply(null, [
+        {
+          selectedIds: event.detail,
+          ...this.selectedEventParams,
+        },
+      ]);
+    }
   }
 }
 
@@ -189,7 +213,7 @@ function draw(el, dataset, opts) {
       .data(root.children.concat(root))
       .join("g");
 
-    let timer;
+    let timeout;
 
     node
       .filter((d) => {
@@ -199,13 +223,18 @@ function draw(el, dataset, opts) {
       .attr("cursor", "pointer")
       .on("click", (e, d) => {
         if (e.detail === 1) {
-          timer = setTimeout(() => {
-            console.log("click");
-          }, 200);
+          timeout = setTimeout(() => {
+            return emitSelectedEvent.apply(null, [
+              {
+                targetId: d.id,
+                ...this.selectedEventParams,
+              },
+            ]);
+          }, 500);
         }
       })
       .on("dblclick", (e, d) => {
-        clearTimeout(timer);
+        clearTimeout(timeout);
         d === root ? zoomout(root) : zoomin(d);
       });
 
