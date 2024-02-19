@@ -195,8 +195,10 @@
             <tr
               v-for="(row, row_index) in rowsInCurrentPage"
               :key="row.id"
-              :class="{ selected: isSelectedRow(row_index) }"
-              @click="handleRowClick($event, row_index)"
+              :data-key="row.id"
+              :data-togostanza-id="row.__togostanza_id__"
+              :class="{ selected: isSelectedRow(row_index, row) }"
+              @click="handleRowClick($event, row_index, row)"
             >
               <td
                 v-for="(cell, i) in row"
@@ -627,24 +629,25 @@ export default defineComponent({
       return state.responseJSON;
     };
 
-    const handleRowClick = (event, rowIndex) => {
+    const handleRowClick = (event, rowIndex, row) => {
       if (!params.eventOutgoing_change_selected_nodes) {
         return;
       }
+      console.log(row);
       console.log(state.lastSelectedRow);
       console.log([...state.selectedRows]);
       const isShift = event.shiftKey;
       const isCmd = event.metaKey || event.ctrlKey;
       console.log(isShift, isCmd);
       console.log(filteredRows.value);
-      console.log(filteredRows.value["__togostanza_id__"]);
 
       // get index and ID
       const actualRowIndex =
         (state.pagination.currentPage - 1) * state.pagination.perPage +
         rowIndex;
-      const rowId = filteredRows.value[actualRowIndex].__togostanza_id__;
-      console.log(filteredRows.value[actualRowIndex]);
+      const rowId = filteredRows.value[actualRowIndex].find(
+        (obj) => obj.column.id === "__togostanza_id__"
+      ).value;
       console.log(actualRowIndex, rowId);
       // selected rows
       let selectedRows = [...state.selectedRows];
@@ -686,14 +689,23 @@ export default defineComponent({
       state.selectedRows = [...selectedRows];
     };
 
-    const isSelectedRow = (rowIndex) => {
+    const isSelectedRow = (rowIndex, row) => {
+      console.log(row);
+      console.log(row.find((column) => console.log(column)));
+      console.log(row.find((column) => console.log(column.column)));
+      console.log(row.find((column) => console.log(column.column.id)));
+      const rowID = row.find(
+        (column) => column.column.id === "__togostanza_id__"
+      ).value;
+      console.log(rowID);
       const actualRowIndex =
         (state.pagination.currentPage - 1) * state.pagination.perPage +
         rowIndex;
-      return state.selectedRows.includes(actualRowIndex);
+      return state.selectedRows.includes(rowID);
     };
 
     const updateSelectedRows = (rows) => {
+      console.log(rows);
       state.selectedRows = [...rows];
     };
 
