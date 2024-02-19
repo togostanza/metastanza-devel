@@ -368,6 +368,7 @@ export default defineComponent({
       });
 
       const sortColumn = state.sorting.column;
+      console.log(sortColumn);
 
       if (sortColumn) {
         filtered = orderBy(
@@ -575,7 +576,9 @@ export default defineComponent({
       } else {
         columns = [];
       }
+      columns.push({ id: "__togostanza_id__", label: "", fixed: false });
 
+      console.log(columns);
       state.columns = columns.map((column) => {
         const values = data.map((obj) => obj[column.id]);
         return createColumnState(column, values);
@@ -591,6 +594,7 @@ export default defineComponent({
           };
         });
       });
+      console.log(state.allRows);
     }
 
     onMounted(fetchData);
@@ -618,12 +622,16 @@ export default defineComponent({
       const isShift = event.shiftKey;
       const isCmd = event.metaKey || event.ctrlKey;
       console.log(isShift, isCmd);
+      console.log(filteredRows.value);
+      console.log(filteredRows.value["__togostanza_id__"]);
 
       // get index and ID
       const actualRowIndex =
         (state.pagination.currentPage - 1) * state.pagination.perPage +
         rowIndex;
-      const rowId = state.responseJSON[actualRowIndex].__togostanza_id__;
+      const rowId = filteredRows.value[actualRowIndex].__togostanza_id__;
+      console.log(filteredRows.value[actualRowIndex]);
+      console.log(actualRowIndex, rowId);
       // selected rows
       let selectedRows = [...state.selectedRows];
       // const indexInSelectedRows = selectedRows.indexOf(rowId);
