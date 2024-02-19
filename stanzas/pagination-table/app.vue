@@ -196,7 +196,7 @@
               v-for="(row, row_index) in rowsInCurrentPage"
               :key="row.id"
               :class="{ selected: isSelectedRow(row_index) }"
-              @click="handleRowClick(row_index)"
+              @click="handleRowClick($event, row_index)"
             >
               <td
                 v-for="(cell, i) in row"
@@ -357,6 +357,7 @@ export default defineComponent({
       axisSelectorActiveColumn: null,
 
       selectedRows: [],
+      lastSelectedRow: null
     });
 
     const filteredRows = computed(() => {
@@ -609,21 +610,27 @@ export default defineComponent({
       return state.responseJSON;
     };
 
-    const handleRowClick = (rowIndex) => {
+    const handleRowClick = (event, rowIndex) => {
+      console.log(event, event.shiftKey)
       if (!params.eventOutgoing_change_selected_nodes) {
         return;
       }
+      console.log(state.lastSelectedRow);
+      console.log([...state.selectedRows]);
+      
+
+
       // collect selected rows
       const actualRowIndex =
         (state.pagination.currentPage - 1) * state.pagination.perPage +
         rowIndex;
+      const rowData = state.responseJSON[actualRowIndex];
       const selectedRows = [...state.selectedRows];
-      const row = state.responseJSON[actualRowIndex];
-      const indexInSelectedRows = state.selectedRows.indexOf(
-        row.__togostanza_id_dummy__
+      const indexInSelectedRows = selectedRows.indexOf(
+        rowData.__togostanza_id__
       );
       if (indexInSelectedRows === -1) {
-        selectedRows.push(row.__togostanza_id_dummy__);
+        selectedRows.push(rowData.__togostanza_id__);
       } else {
         selectedRows.splice(indexInSelectedRows, 1);
       }
