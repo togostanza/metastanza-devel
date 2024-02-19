@@ -92,7 +92,6 @@ export default class Piechart extends MetaStanza {
 
     if (this.params["event-outgoing_change_selected_nodes"]) {
       pieGroups.on("click", (_, d) => {
-        console.log(d.data);
         return emitSelectedEvent.apply(null, [
           {
             targetId: d.data["__togostanza_id__"],
