@@ -195,9 +195,7 @@
             <tr
               v-for="(row, row_index) in rowsInCurrentPage"
               :key="row.id"
-              :data-key="row.id"
-              :data-togostanza-id="row.__togostanza_id__"
-              :class="{ selected: isSelectedRow(row_index, row) }"
+              :class="{ selected: isSelectedRow(row) }"
               @click="handleRowClick($event, row_index, row)"
             >
               <td
@@ -336,7 +334,6 @@ export default defineComponent({
   setup(params) {
     onMounted(() => {
       requestAnimationFrame(() => {
-        console.log(rootElement.value);
         const style = window.getComputedStyle(rootElement.value);
         const value = style.getPropertyValue(
           "--togostanza-pagination-placement-vertical"
@@ -594,7 +591,6 @@ export default defineComponent({
       }
       columns.push({ id: "__togostanza_id__", label: "", fixed: false });
 
-      console.log(columns);
       state.columns = columns.map((column) => {
         const values = data.map((obj) => obj[column.id]);
         return createColumnState(column, values);
@@ -610,7 +606,6 @@ export default defineComponent({
           };
         });
       });
-      console.log(state.allRows);
     }
 
     onMounted(fetchData);
@@ -689,23 +684,14 @@ export default defineComponent({
       state.selectedRows = [...selectedRows];
     };
 
-    const isSelectedRow = (rowIndex, row) => {
-      console.log(row);
-      console.log(row.find((column) => console.log(column)));
-      console.log(row.find((column) => console.log(column.column)));
-      console.log(row.find((column) => console.log(column.column.id)));
+    const isSelectedRow = (row) => {
       const rowID = row.find(
         (column) => column.column.id === "__togostanza_id__"
       ).value;
-      console.log(rowID);
-      const actualRowIndex =
-        (state.pagination.currentPage - 1) * state.pagination.perPage +
-        rowIndex;
       return state.selectedRows.includes(rowID);
     };
 
     const updateSelectedRows = (rows) => {
-      console.log(rows);
       state.selectedRows = [...rows];
     };
 
