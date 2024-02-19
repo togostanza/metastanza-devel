@@ -332,6 +332,20 @@ export default defineComponent({
   ],
 
   setup(params) {
+    onMounted(() => {
+      requestAnimationFrame(() => {
+        console.log(rootElement.value);
+        const style = window.getComputedStyle(rootElement.value);
+        const value = style.getPropertyValue(
+          "--togostanza-pagination-placement-vertical"
+        );
+        rootElement.value.style.flexDirection = {
+          top: "column-reverse",
+          bottom: "column",
+        }[value];
+      });
+    });
+
     const sliderPagination = ref();
     const pageSizeOption = params.pageSizeOption.split(",").map(Number);
 
