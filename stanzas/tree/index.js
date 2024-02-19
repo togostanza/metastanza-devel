@@ -33,6 +33,7 @@ const ASCENDING = "ascending",
   SCREEN = "screen";
 
 export default class Tree extends MetaStanza {
+  _chartArea;
   //Stanza download menu contents
   menu() {
     return [
@@ -167,13 +168,13 @@ export default class Tree extends MetaStanza {
 
     //Setting svg area
     select(root).select("svg").remove();
-    const svg = select(root)
+    this._chartArea = select(root)
       .append("svg")
       .attr("width", svgWidth)
       .attr("height", svgHeight);
 
     //Get width of root label
-    const rootGroup = svg
+    const rootGroup = this._chartArea
       .append("text")
       .text(treeDescendants[0].data.label || "");
     const rootLabelWidth = rootGroup.node().getBBox().width;
@@ -185,7 +186,7 @@ export default class Tree extends MetaStanza {
     for (const n of data) {
       n.depth === maxDepth ? labels.push(n.data.label || "") : "";
     }
-    const maxLabelGroup = svg.append("g");
+    const maxLabelGroup = this._chartArea.append("g");
     maxLabelGroup
       .selectAll("text")
       .data(labels)
@@ -196,7 +197,7 @@ export default class Tree extends MetaStanza {
     maxLabelGroup.remove();
 
     //Create each group
-    const g = svg.append("g");
+    const g = this._chartArea.append("g");
     const gCircles = g.append("g").attr("class", "circles");
     const gLabels = g.append("g").attr("class", "labels");
 
@@ -398,7 +399,7 @@ export default class Tree extends MetaStanza {
           .selectAll("g")
           .data(treeRoot.descendants(), (d) => d.id || (d.id = ++i));
 
-        let timer;
+        let timeout;
 
         //Generate new elements of circle
         const nodeCirclesEnter = nodeCirclesUpdate
@@ -414,19 +415,23 @@ export default class Tree extends MetaStanza {
                   source.y0
                 }, 0)`;
             }
-          })
-          .on("click", (e, d) => {
-            if (e.detail === 1) {
-              timer = setTimeout(() => {
-                console.log("click");
-              }, 200);
-            }
-          })
-          .on("dblclick", (e, d) => {
-            clearTimeout(timer);
-            toggle(d);
-            update(d);
           });
+
+        if (this.params["event-outgoing_change_selected_nodes"]) {
+          nodeCirclesEnter
+            .on("click", (e, d) => {
+              if (e.detail === 1) {
+                timeout = setTimeout(() => {
+                  return emitSelectedEvent.apply(null, [this, d.id]);
+                }, 500);
+              }
+            })
+            .on("dblclick", (e, d) => {
+              clearTimeout(timeout);
+              toggle(d);
+              update(d);
+            });
+        }
 
         //Update circle color when opening and closing
         nodeCirclesUpdate
@@ -697,4 +702,37 @@ export default class Tree extends MetaStanza {
       throw new Error(`${message}`);
     }
   }
+
+  handleEvent(event) {
+    if (this.params["event-incoming_change_selected_nodes"]) {
+      changeSelectedStyle.apply(null, [this, event.detail]);
+    }
+  }
+}
+
+// emit selected event
+function emitSelectedEvent(chart, id) {
+  const nodes = chart._chartArea.selectAll("g circle");
+  console.log(nodes);
+  const filteredNodes = nodes.filter(".-selected");
+  const ids = filteredNodes.data().map((d) => d.id);
+  if (!ids.includes(id)) {
+    ids.push(id);
+  } else {
+    ids.splice(ids.indexOf(id), 1);
+  }
+
+  // dispatch event
+  chart.element.dispatchEvent(
+    new CustomEvent("changeSelectedNodes", {
+      detail: ids,
+    })
+  );
+}
+
+function changeSelectedStyle(chart, ids) {
+  const nodes = chart._chartArea.selectAll("g circle");
+  nodes.classed("-selected", (d) => {
+    return ids.indexOf(d.id) !== -1;
+  });
 }
