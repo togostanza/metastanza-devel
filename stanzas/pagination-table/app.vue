@@ -628,47 +628,35 @@ export default defineComponent({
       if (!params.eventOutgoing_change_selected_nodes) {
         return;
       }
-      console.log(row);
-      console.log(state.lastSelectedRow);
-      console.log([...state.selectedRows]);
       const isShift = event.shiftKey;
       const isCmd = event.metaKey || event.ctrlKey;
-      console.log(isShift, isCmd);
-      console.log(filteredRows.value);
+      const filteredRowIds = filteredRows.value.map((row) => {
+        return row.find((obj) => obj.column.id === "__togostanza_id__").value;
+      });
 
       // get index and ID
       const actualRowIndex =
         (state.pagination.currentPage - 1) * state.pagination.perPage +
         rowIndex;
-      const rowId = filteredRows.value[actualRowIndex].find(
-        (obj) => obj.column.id === "__togostanza_id__"
-      ).value;
-      console.log(actualRowIndex, rowId);
+      const rowId = filteredRowIds[actualRowIndex]
       // selected rows
       let selectedRows = [...state.selectedRows];
-      // const indexInSelectedRows = selectedRows.indexOf(rowId);
-      // if (indexInSelectedRows === -1) {
-      //   selectedRows.push(rowId);
-      // } else {
-      //   selectedRows.splice(indexInSelectedRows, 1);
-      // }
-
+      // update selected rows
       if (isShift && state.lastSelectedRow !== null) {
-        // const start = Math.min(state.lastSelectedRow, actualRowIndex);
-        // const end = Math.max(state.lastSelectedRow, actualRowIndex);
-        // for (let i = start; i <= end; i++) {
-        //   if (selectedRows.includes(i)) {
-        //     selectedRows.splice(selectedRows.indexOf(i), 1);
-        //   } else {
-        //     selectedRows.push(i);
-        //   }
-        // }
+        const lastSelectedRowIndex = filteredRowIds.indexOf(state.lastSelectedRow);
+        const start = Math.min(lastSelectedRowIndex, actualRowIndex);
+        const end = Math.max(lastSelectedRowIndex, actualRowIndex);
+        for (let i = start; i <= end; i++) {
+          if (!selectedRows.includes(filteredRowIds[i])) {
+            selectedRows.push(filteredRowIds[i]);
+          }
+        }
       } else if (isCmd) {
-        // if (selectedRows.includes(actualRowIndex)) {
-        //   selectedRows.splice(selectedRows.indexOf(actualRowIndex), 1);
-        // } else {
-        //   selectedRows.push(actualRowIndex);
-        // }
+        if (selectedRows.includes(rowId)) {
+          selectedRows.splice(selectedRows.indexOf(rowId), 1);
+        } else {
+          selectedRows.push(rowId);
+        }
       } else {
         selectedRows = [rowId];
       }
