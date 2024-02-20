@@ -324,7 +324,7 @@ export default class Sunburst extends MetaStanza {
         if (e.detail === 1) {
           timeout = setTimeout(() => {
             return emitSelectedEvent({
-              drawing: this._chartArea,
+              stanza: this._chartArea,
               element: this.element,
               targetId: d.data.id,
               ...this.selectedEventParams,

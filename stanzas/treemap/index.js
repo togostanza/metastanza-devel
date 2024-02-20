@@ -225,7 +225,7 @@ function draw(el, dataset, opts, stanza) {
         if (e.detail === 1) {
           timeout = setTimeout(() => {
             return emitSelectedEvent({
-              drawing: stanza._chartArea,
+              stanza: stanza._chartArea,
               element: stanza.element,
               targetId: d.data.id,
               ...stanza.selectedEventParams,

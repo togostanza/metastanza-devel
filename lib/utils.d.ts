@@ -8,7 +8,7 @@ interface MarginsI {
 export function getMarginsFromCSSString(cssString: string): MarginsI;
 
 export function emitSelectedEvent({
-  drawing,
+  stanza,
   targetId,
   targetElementSelector,
   selectedElementSelector,
@@ -16,7 +16,7 @@ export function emitSelectedEvent({
 }): void;
 
 export function updateSelectedElementClassName({
-  drawing,
+  stanza,
   selectedIds,
   targetElementSelector,
   selectedElementClassName,

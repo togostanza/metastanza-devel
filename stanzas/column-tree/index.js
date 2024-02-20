@@ -11,7 +11,7 @@ import { updateSelectedElementClassName } from "../../lib/utils";
 
 export default class ColumnTree extends MetaStanza {
   selectedEventParams = {
-    drawing: this,
+    stanza: this,
     targetElementSelector: "g circle",
     selectedElementClassName: "-selected",
     selectedElementSelector: ".-selected",

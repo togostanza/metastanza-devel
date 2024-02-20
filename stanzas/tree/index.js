@@ -38,7 +38,7 @@ const ASCENDING = "ascending",
 export default class Tree extends MetaStanza {
   _chartArea;
   selectedEventParams = {
-    drawing: this,
+    stanza: this,
     targetElementSelector: "g circle",
     selectedElementClassName: "-selected",
     selectedElementSelector: ".-selected",
