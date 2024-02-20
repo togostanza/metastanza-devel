@@ -14,18 +14,20 @@
       @click="hasChildren(node.children) ? setParent(node.id) : null"
     >
       <span class="inner">
-
         <input
           type="checkbox"
           :checked="checkedNodes.get(node.id)"
-          @input="setCheckedNode(node)"
+          @input="handleCheckboxClick(node)"
         />
 
         <span class="label" :class="`-${nodeValueAlignment}`">
           <strong class="title">
             {{ node[keys.label] }}
           </strong>
-          <span class="value" :class="{fallback: node[keys.value] === undefined}">
+          <span
+            class="value"
+            :class="{ fallback: node[keys.value] === undefined }"
+          >
             {{ node[keys.value]?.toLocaleString() ?? valueObj.fallback }}
           </span>
         </span>
@@ -102,10 +104,15 @@ export default defineComponent({
     function setParent(id) {
       context.emit("setParent", [props.layer + 1, id]);
     }
+
+    function handleCheckboxClick(node) {
+      setCheckedNode(node);
+      console.log(node);
+    }
     return {
       setParent,
-      setCheckedNode,
       hasChildren,
+      handleCheckboxClick,
     };
   },
 });

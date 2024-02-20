@@ -20,10 +20,22 @@ import {
   downloadCSVMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
+import {
+  emitSelectedEvent,
+  updateSelectedElementClassName,
+} from "../../lib/utils";
 
 let path;
 
 export default class Sunburst extends MetaStanza {
+  _chartArea;
+  selectedEventParams = {
+    targetElementSelector: "g path",
+    selectedElementClassName: "-selected",
+    selectedElementSelector: ".-selected",
+    idPath: "data.id",
+  };
+
   constructor(...args) {
     super(...args);
     this.state = {
@@ -45,6 +57,14 @@ export default class Sunburst extends MetaStanza {
     event.stopPropagation();
     if (event.target !== this.element) {
       this.state.currentId = "" + event.detail.id;
+    }
+    if (this.params["event-incoming_change_selected_nodes"]) {
+      updateSelectedElementClassName.apply(null, [
+        {
+          selectedIds: event.detail,
+          ...this.selectedEventParams,
+        },
+      ]);
     }
   }
 
@@ -258,14 +278,14 @@ export default class Sunburst extends MetaStanza {
     }
 
     select(main).select("svg").remove();
-    const svg = select(main)
+    this._chartArea = select(main)
       .append("svg")
       .attr("width", width)
       .attr("height", height)
       .attr("viewBox", `${-width / 2} ${-height / 2} ${width} ${height}`);
 
     //Get character width
-    const testText = svg
+    const testText = this._chartArea
       .append("g")
       .attr("class", "labels")
       .append("text")
@@ -273,7 +293,7 @@ export default class Sunburst extends MetaStanza {
     const CHAR_SPACE = testText.node().getComputedTextLength();
     testText.remove();
 
-    const g = svg.append("g");
+    const g = this._chartArea.append("g");
 
     path = g
       .append("g")
@@ -295,20 +315,25 @@ export default class Sunburst extends MetaStanza {
       )
       .attr("d", (d) => arc(d.current));
 
-    let timer;
+    let timeout;
 
     path
       .filter((d) => d.children)
       .style("cursor", "pointer")
       .on("click", (e, d) => {
         if (e.detail === 1) {
-          timer = setTimeout(() => {
-            console.log("click");
-          }, 200);
+          timeout = setTimeout(() => {
+            return emitSelectedEvent({
+              drawing: this._chartArea,
+              element: this.element,
+              targetId: d.data.id,
+              ...this.selectedEventParams,
+            });
+          }, 500);
         }
       })
       .on("dblclick", (e, d) => {
-        clearTimeout(timer);
+        clearTimeout(timeout);
         clicked(e, d);
       });
 

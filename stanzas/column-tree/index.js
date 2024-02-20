@@ -7,8 +7,17 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 import { camelCase } from "lodash";
+import { updateSelectedElementClassName } from "../../lib/utils";
 
 export default class ColumnTree extends MetaStanza {
+  selectedEventParams = {
+    drawing: this,
+    targetElementSelector: "g circle",
+    selectedElementClassName: "-selected",
+    selectedElementSelector: ".-selected",
+    idPath: "id",
+  };
+
   menu() {
     return [
       downloadJSONMenuItem(this, "column-tree", this._data),
@@ -28,5 +37,17 @@ export default class ColumnTree extends MetaStanza {
     this._app?.unmount();
     this._app = createApp(App, { ...camelCaseParams, root });
     this._app.mount(root);
+  }
+
+  handleEvent(event) {
+    console.log(event);
+    if (this.params["event-incoming_change_selected_nodes"]) {
+      updateSelectedElementClassName.apply(null, [
+        {
+          selectedIds: event.detail,
+          ...this.selectedEventParams,
+        },
+      ]);
+    }
   }
 }
