@@ -336,7 +336,6 @@ export default defineComponent({
   setup(params) {
     onMounted(() => {
       requestAnimationFrame(() => {
-        console.log(rootElement.value);
         const style = window.getComputedStyle(rootElement.value);
         const value = style.getPropertyValue(
           "--togostanza-pagination-placement-vertical"
@@ -384,7 +383,6 @@ export default defineComponent({
       });
 
       const sortColumn = state.sorting.column;
-      console.log(sortColumn);
 
       if (sortColumn) {
         filtered = orderBy(
@@ -594,7 +592,6 @@ export default defineComponent({
       }
       columns.push({ id: "__togostanza_id__", label: "", fixed: false });
 
-      console.log(columns);
       state.columns = columns.map((column) => {
         const values = data.map((obj) => obj[column.id]);
         return createColumnState(column, values);
@@ -610,7 +607,6 @@ export default defineComponent({
           };
         });
       });
-      console.log(state.allRows);
     }
 
     onMounted(fetchData);
@@ -633,13 +629,8 @@ export default defineComponent({
       if (!params.eventOutgoing_change_selected_nodes) {
         return;
       }
-      console.log(row);
-      console.log(state.lastSelectedRow);
-      console.log([...state.selectedRows]);
       const isShift = event.shiftKey;
       const isCmd = event.metaKey || event.ctrlKey;
-      console.log(isShift, isCmd);
-      console.log(filteredRows.value);
 
       // get index and ID
       const actualRowIndex =
@@ -648,15 +639,8 @@ export default defineComponent({
       const rowId = filteredRows.value[actualRowIndex].find(
         (obj) => obj.column.id === "__togostanza_id__"
       ).value;
-      console.log(actualRowIndex, rowId);
       // selected rows
       let selectedRows = [...state.selectedRows];
-      // const indexInSelectedRows = selectedRows.indexOf(rowId);
-      // if (indexInSelectedRows === -1) {
-      //   selectedRows.push(rowId);
-      // } else {
-      //   selectedRows.splice(indexInSelectedRows, 1);
-      // }
 
       if (isShift && state.lastSelectedRow !== null) {
         // const start = Math.min(state.lastSelectedRow, actualRowIndex);
@@ -690,22 +674,13 @@ export default defineComponent({
     };
 
     const isSelectedRow = (rowIndex, row) => {
-      console.log(row);
-      console.log(row.find((column) => console.log(column)));
-      console.log(row.find((column) => console.log(column.column)));
-      console.log(row.find((column) => console.log(column.column.id)));
       const rowID = row.find(
         (column) => column.column.id === "__togostanza_id__"
       ).value;
-      console.log(rowID);
-      const actualRowIndex =
-        (state.pagination.currentPage - 1) * state.pagination.perPage +
-        rowIndex;
       return state.selectedRows.includes(rowID);
     };
 
     const updateSelectedRows = (rows) => {
-      console.log(rows);
       state.selectedRows = [...rows];
     };
 
