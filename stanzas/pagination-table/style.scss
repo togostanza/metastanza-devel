@@ -546,3 +546,10 @@
 .modal_bg-leave-active {
   transition: opacity 0.4s;
 }
+
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}

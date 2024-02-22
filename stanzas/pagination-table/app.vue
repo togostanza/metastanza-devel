@@ -20,7 +20,12 @@
         </p>
       </div>
       <div class="tableWrapper" :style="`width: ${width};`">
-        <table v-if="state.allRows">
+        <table
+          ref="table"
+          v-if="state.allRows"
+          @mousedown="handleMouseDown"
+          @mouseup="handleMouseUp"
+        >
           <thead ref="thead">
             <tr>
               <th
@@ -381,7 +386,6 @@ export default defineComponent({
       });
 
       const sortColumn = state.sorting.column;
-      console.log(sortColumn);
 
       if (sortColumn) {
         filtered = orderBy(
@@ -610,6 +614,7 @@ export default defineComponent({
 
     onMounted(fetchData);
 
+    const table = ref(null);
     const thead = ref(null);
     const rootElement = ref(null);
 
@@ -624,7 +629,7 @@ export default defineComponent({
       return state.responseJSON;
     };
 
-    const handleRowClick = (event, rowIndex, row) => {
+    const handleRowClick = (event, rowIndex) => {
       if (!params.eventOutgoing_change_selected_nodes) {
         return;
       }
@@ -638,12 +643,14 @@ export default defineComponent({
       const actualRowIndex =
         (state.pagination.currentPage - 1) * state.pagination.perPage +
         rowIndex;
-      const rowId = filteredRowIds[actualRowIndex]
+      const rowId = filteredRowIds[actualRowIndex];
       // selected rows
       let selectedRows = [...state.selectedRows];
       // update selected rows
       if (isShift && state.lastSelectedRow !== null) {
-        const lastSelectedRowIndex = filteredRowIds.indexOf(state.lastSelectedRow);
+        const lastSelectedRowIndex = filteredRowIds.indexOf(
+          state.lastSelectedRow
+        );
         const start = Math.min(lastSelectedRowIndex, actualRowIndex);
         const end = Math.max(lastSelectedRowIndex, actualRowIndex);
         for (let i = start; i <= end; i++) {
@@ -672,6 +679,22 @@ export default defineComponent({
       state.selectedRows = [...selectedRows];
     };
 
+    const handleMouseDown = (event) => {
+      if (event.shiftKey) {
+        preventTextSelection(true);
+      }
+    };
+    const handleMouseUp = () => {
+      preventTextSelection(false);
+    };
+    const preventTextSelection = (disable) => {
+      if (disable) {
+        table.value.classList.add("no-select");
+      } else {
+        table.value.classList.remove("no-select");
+      }
+    };
+
     const isSelectedRow = (row) => {
       const rowID = row.find(
         (column) => column.column.id === "__togostanza_id__"
@@ -698,6 +721,7 @@ export default defineComponent({
       showModal,
       closeModal,
       updateCurrentPage,
+      table,
       thead,
       rootElement,
       json,
@@ -705,6 +729,8 @@ export default defineComponent({
       handleAxisSelected,
       showAxisSelector: params.showAxisSelector,
       handleRowClick,
+      handleMouseDown,
+      handleMouseUp,
       isSelectedRow,
       updateSelectedRows,
     };
