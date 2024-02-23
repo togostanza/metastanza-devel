@@ -28,172 +28,174 @@
         >
           <thead ref="thead">
             <tr>
-              <th
-                v-for="(column, i) in state.columns"
-                :key="column.id"
-                :class="{ fixed: column.fixed }"
-                :style="
-                  column.fixed
-                    ? `left: ${i === 0 ? 0 : state.thListWidth[i - 1]}px;`
-                    : null
-                "
-              >
-                {{ column.label }}
-                <font-awesome-icon
-                  v-if="state.sorting.column === column"
-                  :key="`sort-${
-                    state.sorting.direction === 'asc' ? 'up' : 'down'
-                  }`"
-                  class="icon sort active"
-                  :icon="`sort-${
-                    state.sorting.direction === 'asc' ? 'up' : 'down'
-                  }`"
-                  @click="setSorting(column)"
-                />
-                <font-awesome-icon
-                  v-else
-                  class="icon sort"
-                  icon="sort"
-                  @click="setSorting(column)"
-                />
+              <template v-for="(column, i) in state.columns">
+                <th
+                  v-if="i !== state.columns.length - 1"
+                  :key="column.id"
+                  :class="{ fixed: column.fixed }"
+                  :style="
+                    column.fixed
+                      ? `left: ${i === 0 ? 0 : state.thListWidth[i - 1]}px;`
+                      : null
+                  "
+                >
+                  {{ column.label }}
+                  <font-awesome-icon
+                    v-if="state.sorting.column === column"
+                    :key="`sort-${
+                      state.sorting.direction === 'asc' ? 'up' : 'down'
+                    }`"
+                    class="icon sort active"
+                    :icon="`sort-${
+                      state.sorting.direction === 'asc' ? 'up' : 'down'
+                    }`"
+                    @click="setSorting(column)"
+                  />
+                  <font-awesome-icon
+                    v-else
+                    class="icon sort"
+                    icon="sort"
+                    @click="setSorting(column)"
+                  />
 
-                <font-awesome-icon
-                  :class="[
-                    'icon',
-                    'search',
-                    { active: column.isSearchConditionGiven },
-                  ]"
-                  icon="search"
-                  @click="showModal(column)"
-                />
-                <font-awesome-icon
-                  v-if="column.searchType === 'category'"
-                  icon="filter"
-                  :class="[
-                    'icon',
-                    'filter',
-                    { isShowing: column.isFilterPopupShowing },
-                    {
-                      active: column.filters.some((filter) => !filter.checked),
-                    },
-                  ]"
-                  @click="column.isFilterPopupShowing = true"
-                />
-                <transition name="modal">
-                  <div
-                    v-if="column.isFilterPopupShowing"
+                  <font-awesome-icon
                     :class="[
-                      'filterWrapper',
-                      'modal',
-                      { lastCol: state.columns.length - 1 === i },
+                      'icon',
+                      'search',
+                      { active: column.isSearchConditionGiven },
                     ]"
-                  >
-                    <div class="filterWindow">
-                      <p class="filterWindowTitle">{{ column.label }}</p>
-                      <ul class="filters">
-                        <li
-                          v-for="filter in column.filters"
-                          :key="filter.value"
-                        >
-                          <label :for="filter.id">
+                    icon="search"
+                    @click="showModal(column)"
+                  />
+                  <font-awesome-icon
+                    v-if="column.searchType === 'category'"
+                    icon="filter"
+                    :class="[
+                      'icon',
+                      'filter',
+                      { isShowing: column.isFilterPopupShowing },
+                      {
+                        active: column.filters.some((filter) => !filter.checked),
+                      },
+                    ]"
+                    @click="column.isFilterPopupShowing = true"
+                  />
+                  <transition name="modal">
+                    <div
+                      v-if="column.isFilterPopupShowing"
+                      :class="[
+                        'filterWrapper',
+                        'modal',
+                        { lastCol: state.columns.length - 1 === i },
+                      ]"
+                    >
+                      <div class="filterWindow">
+                        <p class="filterWindowTitle">{{ column.label }}</p>
+                        <ul class="filters">
+                          <li
+                            v-for="filter in column.filters"
+                            :key="filter.value"
+                          >
+                            <label :for="filter.id">
+                              <input
+                                :id="filter.value"
+                                v-model="filter.checked"
+                                type="checkbox"
+                                name="items"
+                              />
+                              {{ filter.value }}
+                            </label>
+                          </li>
+                        </ul>
+                        <div class="toggleAllButton">
+                          <button
+                            class="selectAll"
+                            @click="setFilters(column, true)"
+                          >
+                            Select All
+                          </button>
+                          <button
+                            class="clear"
+                            @click="setFilters(column, false)"
+                          >
+                            Clear
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </transition>
+                  <transition name="modal">
+                    <div
+                      v-if="column.isSearchModalShowing"
+                      :class="[
+                        'textSearchByColumnWrapper',
+                        'modal',
+                        { lastCol: state.columns.length - 1 === i },
+                      ]"
+                    >
+                      <p class="title">
+                        <template v-if="column.searchType === 'number'">
+                          {{ column.label }} range
+                        </template>
+                        <template v-else>
+                          {{ column.label }}
+                        </template>
+                      </p>
+                      <div v-if="column.searchType === 'number'">
+                        <Slider
+                          :model-value="column.range"
+                          :min="column.minValue"
+                          :max="column.maxValue"
+                          :tooltips="false"
+                          :step="-1"
+                          @update="column.setRange"
+                        ></Slider>
+                        <div class="rangeInput">
+                          <div>
+                            <span class="rangeInputLabel"> From </span>
                             <input
-                              :id="filter.value"
-                              v-model="filter.checked"
-                              type="checkbox"
-                              name="items"
+                              v-model.number="column.inputtingRangeMin"
+                              type="text"
+                              class="min"
+                              @input="setRangeFilters(column)"
                             />
-                            {{ filter.value }}
-                          </label>
-                        </li>
-                      </ul>
-                      <div class="toggleAllButton">
-                        <button
-                          class="selectAll"
-                          @click="setFilters(column, true)"
-                        >
-                          Select All
-                        </button>
-                        <button
-                          class="clear"
-                          @click="setFilters(column, false)"
-                        >
-                          Clear
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </transition>
-                <transition name="modal">
-                  <div
-                    v-if="column.isSearchModalShowing"
-                    :class="[
-                      'textSearchByColumnWrapper',
-                      'modal',
-                      { lastCol: state.columns.length - 1 === i },
-                    ]"
-                  >
-                    <p class="title">
-                      <template v-if="column.searchType === 'number'">
-                        {{ column.label }} range
-                      </template>
-                      <template v-else>
-                        {{ column.label }}
-                      </template>
-                    </p>
-                    <div v-if="column.searchType === 'number'">
-                      <Slider
-                        :model-value="column.range"
-                        :min="column.minValue"
-                        :max="column.maxValue"
-                        :tooltips="false"
-                        :step="-1"
-                        @update="column.setRange"
-                      ></Slider>
-                      <div class="rangeInput">
-                        <div>
-                          <span class="rangeInputLabel"> From </span>
-                          <input
-                            v-model.number="column.inputtingRangeMin"
-                            type="text"
-                            class="min"
-                            @input="setRangeFilters(column)"
-                          />
-                        </div>
-                        <span class="dash"></span>
-                        <div>
-                          <span class="rangeInputLabel"> To </span>
-                          <input
-                            v-model.number="column.inputtingRangeMax"
-                            type="text"
-                            class="max"
-                            @input="setRangeFilters(column)"
-                          />
+                          </div>
+                          <span class="dash"></span>
+                          <div>
+                            <span class="rangeInputLabel"> To </span>
+                            <input
+                              v-model.number="column.inputtingRangeMax"
+                              type="text"
+                              class="max"
+                              @input="setRangeFilters(column)"
+                            />
+                          </div>
                         </div>
                       </div>
+                      <input
+                        v-else
+                        v-model="column.query"
+                        type="text"
+                        placeholder="Search for keywords..."
+                        name="queryInputByColumn"
+                        class="textSearchInput"
+                      />
                     </div>
-                    <input
-                      v-else
-                      v-model="column.query"
-                      type="text"
-                      placeholder="Search for keywords..."
-                      name="queryInputByColumn"
-                      class="textSearchInput"
-                    />
-                  </div>
-                </transition>
+                  </transition>
 
-                <font-awesome-icon
-                  v-if="showAxisSelector"
-                  :class="['icon', 'search']"
-                  icon="chart-bar"
-                  @click="handleAxisSelectorButton(column)"
-                />
-                <AxisSelectorModal
-                  :active="state.axisSelectorActiveColumn === column"
-                  :label="column.label"
-                  @axis-selected="handleAxisSelected"
-                />
-              </th>
+                  <font-awesome-icon
+                    v-if="showAxisSelector"
+                    :class="['icon', 'search']"
+                    icon="chart-bar"
+                    @click="handleAxisSelectorButton(column)"
+                  />
+                  <AxisSelectorModal
+                    :active="state.axisSelectorActiveColumn === column"
+                    :label="column.label"
+                    @axis-selected="handleAxisSelected"
+                  />
+                </th>
+              </template>
             </tr>
           </thead>
           <tbody>
@@ -203,53 +205,55 @@
               :class="{ selected: isSelectedRow(row) }"
               @click="handleRowClick($event, row_index, row)"
             >
-              <td
-                v-for="(cell, i) in row"
-                :key="cell.column.id"
-                :rowspan="cell.rowspanCount"
-                :class="[
-                  { hide: cell.hide },
-                  cell.column.align,
-                  { fixed: cell.column.fixed },
-                  cell.column.class,
-                ]"
-                :style="
-                  cell.column.fixed
-                    ? `left: ${i === 0 ? 0 : state.thListWidth[i - 1]}px;`
-                    : null
-                "
-              >
-                <span v-if="cell.href">
-                  <AnchorCell
-                    :href="cell.href"
-                    :value="cell.value"
-                    :target="
-                      cell.column.target ? `_${cell.column.target}` : '_blank'
-                    "
-                    :unescape="cell.column.unescape"
-                    :line-clamp="cell.column.lineClamp"
-                    :char-clamp="cell.column.charClamp"
-                    :char-clamp-on="cell.column.charClampOn"
-                  />
-                </span>
-                <span
-                  v-else-if="cell.column.lineClamp || cell.column.charClamp"
+              <template v-for="(cell, i) in row">
+                <td
+                  v-if="i !== state.columns.length - 1"
+                  :key="cell.column.id"
+                  :rowspan="cell.rowspanCount"
+                  :class="[
+                    { hide: cell.hide },
+                    cell.column.align,
+                    { fixed: cell.column.fixed },
+                    cell.column.class,
+                  ]"
+                  :style="
+                    cell.column.fixed
+                      ? `left: ${i === 0 ? 0 : state.thListWidth[i - 1]}px;`
+                      : null
+                  "
                 >
-                  <ClampCell
-                    :line-clamp="cell.column.lineClamp"
-                    :char-clamp="cell.column.charClamp"
-                    :char-clamp-on="cell.charClampOn"
-                    :unescape="cell.column.unescape"
-                    :value="cell.value"
-                    @toggle-char-clamp-on="cell.charClampOn = !cell.charClampOn"
-                  />
-                </span>
-                <span
-                  v-else-if="cell.column.unescape"
-                  v-html="cell.value"
-                ></span>
-                <span v-else>{{ cell.value }}</span>
-              </td>
+                  <span v-if="cell.href">
+                    <AnchorCell
+                      :href="cell.href"
+                      :value="cell.value"
+                      :target="
+                        cell.column.target ? `_${cell.column.target}` : '_blank'
+                      "
+                      :unescape="cell.column.unescape"
+                      :line-clamp="cell.column.lineClamp"
+                      :char-clamp="cell.column.charClamp"
+                      :char-clamp-on="cell.column.charClampOn"
+                    />
+                  </span>
+                  <span
+                    v-else-if="cell.column.lineClamp || cell.column.charClamp"
+                  >
+                    <ClampCell
+                      :line-clamp="cell.column.lineClamp"
+                      :char-clamp="cell.column.charClamp"
+                      :char-clamp-on="cell.charClampOn"
+                      :unescape="cell.column.unescape"
+                      :value="cell.value"
+                      @toggle-char-clamp-on="cell.charClampOn = !cell.charClampOn"
+                    />
+                  </span>
+                  <span
+                    v-else-if="cell.column.unescape"
+                    v-html="cell.value"
+                  ></span>
+                  <span v-else>{{ cell.value }}</span>
+                </td>
+              </template>
             </tr>
           </tbody>
         </table>
