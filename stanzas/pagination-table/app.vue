@@ -257,6 +257,9 @@
             </tr>
           </tbody>
         </table>
+        <div v-if="filteredRows && filteredRows.length === 0" class="no-data">
+          {{ fallbackMessage }}
+        </div>        
       </div>
     </div>
     <SliderPagination
@@ -380,6 +383,8 @@ export default defineComponent({
       selectedRows: [],
       lastSelectedRow: null,
     });
+
+    const fallbackMessage = ref(params.fallbackMessage);
 
     const filteredRows = computed(() => {
       const queryForAllColumns = state.queryForAllColumns;
@@ -712,9 +717,11 @@ export default defineComponent({
 
     return {
       width: params.width ? params.width + "px" : "100%",
+      fallbackMessage,
       sliderPagination,
       pageSizeOption,
       state,
+      filteredRows,
       totalPages,
       rowsInCurrentPage,
       isModalShowing,

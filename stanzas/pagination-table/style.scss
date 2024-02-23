@@ -553,3 +553,10 @@
   -moz-user-select: none;
   -ms-user-select: none;
 }
+
+.no-data {
+  text-align: center;
+  font-size: var(--togostanza-control-font-size);
+  color: var(--togostanza-control-font-color);
+  padding-top: 1em;
+}
