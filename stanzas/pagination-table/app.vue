@@ -75,7 +75,9 @@
                       'filter',
                       { isShowing: column.isFilterPopupShowing },
                       {
-                        active: column.filters.some((filter) => !filter.checked),
+                        active: column.filters.some(
+                          (filter) => !filter.checked
+                        ),
                       },
                     ]"
                     @click="column.isFilterPopupShowing = true"
@@ -244,7 +246,9 @@
                       :char-clamp-on="cell.charClampOn"
                       :unescape="cell.column.unescape"
                       :value="cell.value"
-                      @toggle-char-clamp-on="cell.charClampOn = !cell.charClampOn"
+                      @toggle-char-clamp-on="
+                        cell.charClampOn = !cell.charClampOn
+                      "
                     />
                   </span>
                   <span
@@ -258,8 +262,8 @@
           </tbody>
         </table>
         <div v-if="filteredRows && filteredRows.length === 0" class="no-data">
-          {{ fallbackMessage }}
-        </div>        
+          {{ no_data_message }}
+        </div>
       </div>
     </div>
     <SliderPagination
@@ -384,7 +388,7 @@ export default defineComponent({
       lastSelectedRow: null,
     });
 
-    const fallbackMessage = ref(params.fallbackMessage);
+    const no_data_message = ref(params.no_data_message);
 
     const filteredRows = computed(() => {
       const queryForAllColumns = state.queryForAllColumns;
@@ -717,7 +721,7 @@ export default defineComponent({
 
     return {
       width: params.width ? params.width + "px" : "100%",
-      fallbackMessage,
+      no_data_message,
       sliderPagination,
       pageSizeOption,
       state,
