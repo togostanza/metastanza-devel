@@ -30,7 +30,7 @@ let path;
 export default class Sunburst extends MetaStanza {
   _chartArea;
   selectedEventParams = {
-    targetElementSelector: "g path",
+    targetElementSelector: "g path.selectable",
     selectedElementClassName: "-selected",
     selectedElementSelector: ".-selected",
     idPath: "data.id",
@@ -54,23 +54,26 @@ export default class Sunburst extends MetaStanza {
   }
 
   handleEvent(event) {
-    event.stopPropagation();
-    if (event.target !== this.element) {
-      this.state.currentId = "" + event.detail.id;
-    }
+    console.log("sunburst handleevent");
     if (this.params["event-incoming_change_selected_nodes"]) {
       updateSelectedElementClassName.apply(null, [
         {
+          stanza: this._chartArea,
           selectedIds: event.detail,
           ...this.selectedEventParams,
         },
       ]);
+    }
+    event.stopPropagation();
+    if (event.target !== this.element) {
+      this.state.currentId = "" + event.detail.id;
     }
   }
 
   async renderNext() {
     this.state = new Proxy(this.state, {
       set(target, key, value) {
+        console.log(key, value);
         if (key === "currentId") {
           updateId(getNodeById(value));
         }
@@ -300,6 +303,7 @@ export default class Sunburst extends MetaStanza {
       .selectAll("path")
       .data(root.descendants())
       .join("path")
+      .classed("selectable", true)
       .attr("fill", (d) => {
         while (d.depth > 1) {
           d = d.parent;
@@ -372,7 +376,22 @@ export default class Sunburst extends MetaStanza {
       .attr("r", radius - borderWidth / 2)
       .attr("fill", "none")
       .attr("pointer-events", "all")
-      .on("dblclick", clicked);
+      .on("click", (e, d) => {
+        if (e.detail === 1) {
+          timeout = setTimeout(() => {
+            return emitSelectedEvent({
+              stanza: this._chartArea,
+              element: this.element,
+              targetId: d.data.id,
+              ...this.selectedEventParams,
+            });
+          }, 500);
+        }
+      })
+      .on("dblclick", (e, d) => {
+        clearTimeout(timeout);
+        clicked(e, d);
+      });
 
     //Text labels
     const textLabels = g
@@ -424,6 +443,7 @@ export default class Sunburst extends MetaStanza {
     }
 
     function updateId(p) {
+      console.log(p);
       if (!arcVisible(p.current) && p.current.y1 > 1) {
         return;
       }

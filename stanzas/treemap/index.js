@@ -106,9 +106,11 @@ export default class TreeMapStanza extends MetaStanza {
 
   handleEvent(event) {
     console.log(event);
+    console.log("treemap handleevent");
     if (this.params["event-incoming_change_selected_nodes"]) {
       updateSelectedElementClassName.apply(null, [
         {
+          stanza: this._chartArea,
           selectedIds: event.detail,
           ...this.selectedEventParams,
         },
@@ -217,7 +219,6 @@ function draw(el, dataset, opts, stanza) {
     console.log(stanza._chartArea.selectAll("g"));
     node
       .filter((d) => {
-        console.log(d);
         return d === root ? d.parent : d.children;
       })
       .attr("cursor", "pointer")
