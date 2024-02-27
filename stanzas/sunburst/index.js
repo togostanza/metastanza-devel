@@ -54,7 +54,6 @@ export default class Sunburst extends MetaStanza {
   }
 
   handleEvent(event) {
-    console.log("sunburst handleevent");
     if (this.params["event-incoming_change_selected_nodes"]) {
       updateSelectedElementClassName.apply(null, [
         {
@@ -73,7 +72,6 @@ export default class Sunburst extends MetaStanza {
   async renderNext() {
     this.state = new Proxy(this.state, {
       set(target, key, value) {
-        console.log(key, value);
         if (key === "currentId") {
           updateId(getNodeById(value));
         }
@@ -327,7 +325,6 @@ export default class Sunburst extends MetaStanza {
       .on("click", (e, d) => {
         if (e.detail === 1) {
           timeout = setTimeout(() => {
-            console.log(d.data.id);
             return emitSelectedEvent({
               stanza: this._chartArea,
               element: this.element,
@@ -444,7 +441,6 @@ export default class Sunburst extends MetaStanza {
     }
 
     function updateId(p) {
-      console.log(p);
       if (!arcVisible(p.current) && p.current.y1 > 1) {
         return;
       }
