@@ -18,7 +18,7 @@ svg text {
 
 g rect.selectable {
   &.-selected {
-    stroke-width: 2px;
+    stroke-width: 5px;
     stroke: var(--togostanza-theme-selected_border_color);
   }
 }
