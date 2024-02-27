@@ -108,7 +108,7 @@ export default class TreeMapStanza extends MetaStanza {
     if (this.params["event-incoming_change_selected_nodes"]) {
       updateSelectedElementClassName.apply(null, [
         {
-          stanza: this._chartArea,
+          drawing: this._chartArea,
           selectedIds: event.detail,
           ...this.selectedEventParams,
         },
@@ -223,8 +223,8 @@ function draw(el, dataset, opts, stanza) {
         if (e.detail === 1) {
           timeout = setTimeout(() => {
             return emitSelectedEvent({
-              stanza: stanza._chartArea,
-              element: stanza.element,
+              drawing: stanza._chartArea,
+              rootElement: stanza.element,
               targetId: d.data.data.id.toString(),
               ...stanza.selectedEventParams,
             });

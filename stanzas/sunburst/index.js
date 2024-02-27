@@ -57,7 +57,7 @@ export default class Sunburst extends MetaStanza {
     if (this.params["event-incoming_change_selected_nodes"]) {
       updateSelectedElementClassName.apply(null, [
         {
-          stanza: this._chartArea,
+          drawing: this._chartArea,
           selectedIds: event.detail,
           ...this.selectedEventParams,
         },
@@ -326,8 +326,8 @@ export default class Sunburst extends MetaStanza {
         if (e.detail === 1) {
           timeout = setTimeout(() => {
             return emitSelectedEvent({
-              stanza: this._chartArea,
-              element: this.element,
+              drawing: this._chartArea,
+              rootElement: this.element,
               targetId: d.data.id,
               ...this.selectedEventParams,
             });
@@ -378,8 +378,8 @@ export default class Sunburst extends MetaStanza {
         if (e.detail === 1) {
           timeout = setTimeout(() => {
             return emitSelectedEvent({
-              stanza: this._chartArea,
-              element: this.element,
+              drawing: this._chartArea,
+              rootElement: this.element,
               targetId: d.data.id,
               ...this.selectedEventParams,
             });
