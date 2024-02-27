@@ -225,7 +225,7 @@ function draw(el, dataset, opts, stanza) {
             return emitSelectedEvent({
               drawing: stanza._chartArea,
               rootElement: stanza.element,
-              targetId: d.data.data.id.toString(),
+              targetId: d.data.data.id,
               ...stanza.selectedEventParams,
             });
           }, 500);
