@@ -29,10 +29,10 @@ import {
 export default class TreeMapStanza extends MetaStanza {
   _chartArea;
   selectedEventParams = {
-    targetElementSelector: "g rect",
+    targetElementSelector: "g rect.selectable",
     selectedElementClassName: "-selected",
     selectedElementSelector: ".-selected",
-    idPath: "id",
+    idPath: "data.data.id",
   };
 
   menu() {
@@ -225,10 +225,11 @@ function draw(el, dataset, opts, stanza) {
       .on("click", (e, d) => {
         if (e.detail === 1) {
           timeout = setTimeout(() => {
+            console.log(d.data.data.id);
             return emitSelectedEvent({
               stanza: stanza._chartArea,
               element: stanza.element,
-              targetId: d.data.id,
+              targetId: d.data.data.id.toString(),
               ...stanza.selectedEventParams,
             });
           }, 500);
@@ -253,6 +254,7 @@ function draw(el, dataset, opts, stanza) {
 
     node
       .append("rect")
+      .classed("selectable", true)
       .attr("id", (d) => (d.leafUid = uid("leaf")).id)
       .attr("style", (d) => {
         return `fill: ${
@@ -273,6 +275,7 @@ function draw(el, dataset, opts, stanza) {
 
     innerNode
       .append("rect")
+      .classed("selectable", true)
       .attr("id", (d) => (d.leafUid = uid("leaf")).id)
       .attr("fill", "none")
       .attr("stroke-width", 1)
