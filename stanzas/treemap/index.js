@@ -222,7 +222,6 @@ function draw(el, dataset, opts, stanza) {
       .on("click", (e, d) => {
         if (e.detail === 1) {
           timeout = setTimeout(() => {
-            console.log(d);
             return emitSelectedEvent({
               drawing: stanza._chartArea,
               rootElement: stanza.element,
