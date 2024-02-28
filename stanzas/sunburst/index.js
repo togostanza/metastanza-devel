@@ -33,7 +33,7 @@ export default class Sunburst extends MetaStanza {
     targetElementSelector: "g path.selectable",
     selectedElementClassName: "-selected",
     selectedElementSelector: ".-selected",
-    idPath: "data.id",
+    idPath: "data.data.__togostanza_id__",
   };
 
   constructor(...args) {
@@ -325,10 +325,11 @@ export default class Sunburst extends MetaStanza {
       .on("click", (e, d) => {
         if (e.detail === 1) {
           timeout = setTimeout(() => {
+            console.log(d);
             return emitSelectedEvent({
               drawing: this._chartArea,
               rootElement: this.element,
-              targetId: d.data.id,
+              targetId: d.data.data.__togostanza_id__,
               ...this.selectedEventParams,
             });
           }, 500);
@@ -380,7 +381,7 @@ export default class Sunburst extends MetaStanza {
             return emitSelectedEvent({
               drawing: this._chartArea,
               rootElement: this.element,
-              targetId: d.data.id,
+              targetId: d.data.__togostanza_id__,
               ...this.selectedEventParams,
             });
           }, 500);

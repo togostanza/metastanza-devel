@@ -32,7 +32,7 @@ export default class TreeMapStanza extends MetaStanza {
     targetElementSelector: "g rect.selectable",
     selectedElementClassName: "-selected",
     selectedElementSelector: ".-selected",
-    idPath: "data.data.id",
+    idPath: "data.data.__togostanza_id__",
   };
 
   menu() {
@@ -222,10 +222,11 @@ function draw(el, dataset, opts, stanza) {
       .on("click", (e, d) => {
         if (e.detail === 1) {
           timeout = setTimeout(() => {
+            console.log(d);
             return emitSelectedEvent({
               drawing: stanza._chartArea,
               rootElement: stanza.element,
-              targetId: d.data.data.id,
+              targetId: d.data.data.__togostanza_id__,
               ...stanza.selectedEventParams,
             });
           }, 500);
