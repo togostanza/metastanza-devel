@@ -15,6 +15,10 @@
     >
       <span class="inner">
         <input
+          :id="`column-tree-checkbox-${node.__togostanza_id__}`"
+          ref="input"
+          class="selectable"
+          :class="{ '-selected': checkedNodes.get(node.id) }"
           type="checkbox"
           :checked="checkedNodes.get(node.id)"
           @input="handleCheckboxClick(node)"
@@ -42,11 +46,15 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, onMounted } from "vue";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faChevronRight, faClipboard } from "@fortawesome/free-solid-svg-icons";
 library.add(faChevronRight, faClipboard);
+import {
+  emitSelectedEvent,
+  updateSelectedElementClassName,
+} from "../../lib/utils";
 export default defineComponent({
   components: {
     FontAwesomeIcon,
@@ -105,10 +113,27 @@ export default defineComponent({
       context.emit("setParent", [props.layer + 1, id]);
     }
 
+    const selectedEventParams = {
+      targetElementSelector: "input.selectable",
+      selectedElementClassName: "-selected",
+      selectedElementSelector: ".-selected",
+    };
+
+    const drawing = document.querySelector("togostanza-column-tree");
+    const rootElement = drawing.shadowRoot.querySelector("div");
     function handleCheckboxClick(node) {
       setCheckedNode(node);
-      console.log(node);
+      // console.log(node);
+      // console.log(document.querySelector("togostanza-column-tree"));
+      // console.log(this.$refs.input);
+      emitSelectedEvent({
+        drawing,
+        rootElement,
+        targetId: node.__togostanza_id__,
+        ...selectedEventParams,
+      });
     }
+
     return {
       setParent,
       hasChildren,

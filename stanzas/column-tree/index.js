@@ -11,11 +11,9 @@ import { updateSelectedElementClassName } from "../../lib/utils";
 
 export default class ColumnTree extends MetaStanza {
   selectedEventParams = {
-    stanza: this,
-    targetElementSelector: "g circle",
+    targetElementSelector: "input.selectable",
     selectedElementClassName: "-selected",
     selectedElementSelector: ".-selected",
-    idPath: "id",
   };
 
   menu() {
@@ -41,9 +39,15 @@ export default class ColumnTree extends MetaStanza {
 
   handleEvent(event) {
     console.log(event);
+    console.log(this);
     if (this.params["event-incoming_change_selected_nodes"]) {
+      // const newArr = event.detail.map((d) => {
+      //   return `column-tree-checkbox-${d}`;
+      // });
+      // console.log(newArr);
       updateSelectedElementClassName.apply(null, [
         {
+          drawing: this.element,
           selectedIds: event.detail,
           ...this.selectedEventParams,
         },
