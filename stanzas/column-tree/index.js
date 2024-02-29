@@ -14,6 +14,7 @@ export default class ColumnTree extends MetaStanza {
     targetElementSelector: "input.selectable",
     selectedElementClassName: "-selected",
     selectedElementSelector: ".-selected",
+    idPrefix: "column-tree-checkbox-",
   };
 
   menu() {
@@ -40,6 +41,7 @@ export default class ColumnTree extends MetaStanza {
   handleEvent(event) {
     console.log(event);
     console.log(this);
+    console.log(this.params["event-incoming_change_selected_nodes"]);
     if (this.params["event-incoming_change_selected_nodes"]) {
       // const newArr = event.detail.map((d) => {
       //   return `column-tree-checkbox-${d}`;

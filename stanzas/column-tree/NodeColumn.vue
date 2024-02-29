@@ -120,7 +120,6 @@ export default defineComponent({
     };
 
     const drawing = document.querySelector("togostanza-column-tree");
-    const rootElement = drawing.shadowRoot.querySelector("div");
     function handleCheckboxClick(node) {
       setCheckedNode(node);
       // console.log(node);
@@ -128,7 +127,7 @@ export default defineComponent({
       // console.log(this.$refs.input);
       emitSelectedEvent({
         drawing,
-        rootElement,
+        rootElement: drawing,
         targetId: node.__togostanza_id__,
         ...selectedEventParams,
       });
