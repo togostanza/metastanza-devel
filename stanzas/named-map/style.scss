@@ -11,6 +11,10 @@ svg {
   &:hover {
     stroke: var(--togostanza-selected-color);
   }
+  &.-selected {
+    stroke-width: 2px;
+    stroke: var(--togostanza-event-color);
+  }
 }
 
 :host {

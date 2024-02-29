@@ -1,6 +1,7 @@
 import MetaStanza from "../../lib/MetaStanza";
 import { select, json, geoMercator, geoAlbersUsa, geoPath } from "d3";
 import { feature } from "topojson-client";
+import { emitSelectedEvent, updateSelectedElementClassName } from "@/lib/utils";
 import ToolTip from "@/lib/ToolTip";
 import Legend from "@/lib/Legend2";
 import { getGradationColor } from "@/lib/ColorGenerator";
@@ -34,6 +35,14 @@ const REGION = new Map([
 ]);
 
 export default class regionGeographicMap extends MetaStanza {
+  selectedEventParams = {
+    drawing: this,
+    targetElementSelector: ".path",
+    selectedElementClassName: "-selected",
+    selectedElementSelector: ".-selected",
+    idPath: "__togostanza_id__",
+  };
+
   menu() {
     return [
       downloadSvgMenuItem(this, "named-map"),
@@ -47,6 +56,7 @@ export default class regionGeographicMap extends MetaStanza {
   async renderNext() {
     const root = this._main;
     const dataset = this._data;
+    this._chartArea = select(root.querySelector("svg"));
 
     // Parameters
     const region = this.params["data-region"];
@@ -110,11 +120,11 @@ export default class regionGeographicMap extends MetaStanza {
 
     // Drawing svg
     select(root).select("svg").remove();
-    const svg = select(root)
+    this._chartArea = select(root)
       .append("svg")
       .attr("width", svgWidth)
       .attr("height", svgHeight);
-    const g = svg.append("g").classed("g-path", true);
+    const g = this._chartArea.append("g").classed("g-path", true);
 
     const existError = root.querySelector(".error");
     if (existError) {
@@ -139,11 +149,15 @@ export default class regionGeographicMap extends MetaStanza {
         );
         return Object.assign({}, geoDatum, {
           [areaColorValue]: matchData ? matchData[areaColorValue] : undefined,
+          __togostanza_id__: matchData
+            ? matchData.__togostanza_id__
+            : undefined,
         });
       });
 
       // Drawing path
-      g.selectAll("path")
+      const pathGroup = g
+        .selectAll("path")
         .data(allData)
         .enter()
         .append("path")
@@ -156,6 +170,17 @@ export default class regionGeographicMap extends MetaStanza {
         .on("mouseenter", function () {
           select(this).raise();
         });
+
+      if (this.params["event-outgoing_change_selected_nodes"]) {
+        pathGroup.on("click", (_, d) => {
+          return emitSelectedEvent.apply(null, [
+            {
+              targetId: d.__togostanza_id__,
+              ...this.selectedEventParams,
+            },
+          ]);
+        });
+      }
 
       // Change scale and translate of group of paths
       const paths = root.querySelectorAll(".path");
@@ -250,6 +275,17 @@ export default class regionGeographicMap extends MetaStanza {
           color: color(legendSteps),
         };
       });
+    }
+  }
+
+  handleEvent(event) {
+    if (this.params["event-incoming_change_selected_nodes"]) {
+      updateSelectedElementClassName.apply(null, [
+        {
+          selectedIds: event.detail,
+          ...this.selectedEventParams,
+        },
+      ]);
     }
   }
 }
