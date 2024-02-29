@@ -13,7 +13,7 @@
   "stanza:address": "https://github.com/togostanza/metastanza",
   "stanza:contributor": ["PENQE"],
   "stanza:created": "2021-08-26",
-  "stanza:updated": "2022-07-01",
+  "stanza:updated": "2024-03-01",
   "stanza:parameter": [
     {
       "stanza:key": "data-url",
@@ -162,6 +162,20 @@
       "stanza:description": "Data key to use as tooltip"
     },
     {
+      "stanza:key": "event-incoming_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:label": "Incoming event",
+      "stanza:example": true,
+      "stanza:description": "Receive a change event of selected nodes"
+    },
+    {
+      "stanza:key": "event-outgoing_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:label": "Outgoing event",
+      "stanza:example": true,
+      "stanza:description": "Emit a change event of selected nodes"
+    },
+    {
       "stanza:key": "togostanza-custom_css_url",
       "stanza:type": "text",
       "stanza:example": "",
@@ -271,8 +285,24 @@
       "stanza:type": "color",
       "stanza:default": "#FFDF3D",
       "stanza:description": "Hover border color"
+    },
+    {
+      "stanza:key": "--togostanza-event-color",
+      "stanza:type": "color",
+      "stanza:default": "#FF0000",
+      "stanza:description": "Color applied to the selected item"
     }
   ],
-  "stanza:incomingEvent": [],
-  "stanza:outgoingEvent": []
+  "stanza:incomingEvent": [
+    {
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
+    }
+  ],
+  "stanza:outgoingEvent": [
+    {
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
+    }
+  ]
 }
