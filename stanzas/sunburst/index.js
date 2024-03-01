@@ -63,10 +63,12 @@ export default class Sunburst extends MetaStanza {
         },
       ]);
     }
-    event.stopPropagation();
-    if (event.target !== this.element) {
-      this.state.currentId = "" + event.detail.id;
-    }
+
+    // event.stopPropagation();
+    // TODO not sure the purpose of this code
+    // if (event.target !== this.element) {
+    //   this.state.currentId = "" + event.detail.id;
+    // }
   }
 
   async renderNext() {
