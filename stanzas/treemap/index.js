@@ -22,8 +22,8 @@ import {
 import shadeColor from "./shadeColor";
 import treemapBinaryLog from "./treemapBinaryLog";
 import {
-  emitSelectedEvent,
-  updateSelectedElementClassName,
+  emitSelectedEventForD3,
+  updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
 
 export default class TreeMapStanza extends MetaStanza {
@@ -106,7 +106,7 @@ export default class TreeMapStanza extends MetaStanza {
 
   handleEvent(event) {
     if (this.params["event-incoming_change_selected_nodes"]) {
-      updateSelectedElementClassName.apply(null, [
+      updateSelectedElementClassNameForD3.apply(null, [
         {
           drawing: this._chartArea,
           selectedIds: event.detail,
@@ -222,7 +222,7 @@ function draw(el, dataset, opts, stanza) {
       .on("click", (e, d) => {
         if (e.detail === 1) {
           timeout = setTimeout(() => {
-            return emitSelectedEvent({
+            return emitSelectedEventForD3({
               drawing: stanza._chartArea,
               rootElement: stanza.element,
               targetId: d.data.data.__togostanza_id__,

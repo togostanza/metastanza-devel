@@ -21,8 +21,8 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 import {
-  emitSelectedEvent,
-  updateSelectedElementClassName,
+  emitSelectedEventForD3,
+  updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
 
 let path;
@@ -55,7 +55,7 @@ export default class Sunburst extends MetaStanza {
 
   handleEvent(event) {
     if (this.params["event-incoming_change_selected_nodes"]) {
-      updateSelectedElementClassName.apply(null, [
+      updateSelectedElementClassNameForD3.apply(null, [
         {
           drawing: this._chartArea,
           selectedIds: event.detail,
@@ -327,7 +327,7 @@ export default class Sunburst extends MetaStanza {
       .on("click", (e, d) => {
         if (e.detail === 1) {
           timeout = setTimeout(() => {
-            return emitSelectedEvent({
+            return emitSelectedEventForD3({
               drawing: this._chartArea,
               rootElement: this.element,
               targetId: d.data.data.__togostanza_id__,
@@ -379,7 +379,7 @@ export default class Sunburst extends MetaStanza {
       .on("click", (e, d) => {
         if (e.detail === 1) {
           timeout = setTimeout(() => {
-            return emitSelectedEvent({
+            return emitSelectedEventForD3({
               drawing: this._chartArea,
               rootElement: this.element,
               targetId: d.data.__togostanza_id__,

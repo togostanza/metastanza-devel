@@ -46,15 +46,11 @@
 </template>
 
 <script>
-import { defineComponent, onMounted } from "vue";
+import { defineComponent } from "vue";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faChevronRight, faClipboard } from "@fortawesome/free-solid-svg-icons";
 library.add(faChevronRight, faClipboard);
-import {
-  emitSelectedEvent,
-  updateSelectedElementClassName,
-} from "../../lib/utils";
 export default defineComponent({
   components: {
     FontAwesomeIcon,

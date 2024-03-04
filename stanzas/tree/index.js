@@ -21,8 +21,8 @@ import {
 } from "togostanza-utils";
 import MetaStanza from "../../lib/MetaStanza";
 import {
-  emitSelectedEvent,
-  updateSelectedElementClassName,
+  emitSelectedEventForD3,
+  updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
 
 //Declaring constants
@@ -432,7 +432,7 @@ export default class Tree extends MetaStanza {
             .on("click", (e, d) => {
               if (e.detail === 1) {
                 timeout = setTimeout(() => {
-                  return emitSelectedEvent.apply(null, [
+                  return emitSelectedEventForD3.apply(null, [
                     {
                       targetId: d.id,
                       ...this.selectedEventParams,
@@ -720,7 +720,7 @@ export default class Tree extends MetaStanza {
 
   handleEvent(event) {
     if (this.params["event-incoming_change_selected_nodes"]) {
-      updateSelectedElementClassName.apply(null, [
+      updateSelectedElementClassNameForD3.apply(null, [
         {
           selectedIds: event.detail,
           ...this.selectedEventParams,
