@@ -7,13 +7,12 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 import { camelCase } from "lodash";
-import { updateSelectedElementClassName } from "../../lib/utils";
+import { selectElement } from "../../lib/utils";
 
 export default class ColumnTree extends MetaStanza {
   selectedEventParams = {
     targetElementSelector: "input.selectable",
     selectedElementClassName: "-selected",
-    selectedElementSelector: ".-selected",
     idPrefix: "column-tree-checkbox-",
   };
 
@@ -47,7 +46,7 @@ export default class ColumnTree extends MetaStanza {
       //   return `column-tree-checkbox-${d}`;
       // });
       // console.log(newArr);
-      updateSelectedElementClassName.apply(null, [
+      selectElement.apply(null, [
         {
           drawing: this.element,
           selectedIds: event.detail,
