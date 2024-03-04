@@ -43,9 +43,7 @@ export default class ColumnTree extends MetaStanza {
         const isSelected = selectedIds.includes(targetTogostanzaId);
         const inputElement = this.element.shadowRoot.querySelector(`#${el.id}`);
 
-        if (isSelected && !inputElement.checked) {
-          inputElement.click();
-        } else if (!isSelected && inputElement.checked) {
+        if (isSelected !== inputElement.checked) {
           inputElement.click();
         }
       }
