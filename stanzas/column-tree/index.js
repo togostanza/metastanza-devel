@@ -33,15 +33,15 @@ export default class ColumnTree extends MetaStanza {
   handleEvent(event) {
     if (this.params["event-incoming_change_selected_nodes"]) {
       const selectedIds = event.detail;
-      const idPrefix = "column-tree-checkbox-";
       const targetElements =
         this.element.shadowRoot.querySelectorAll("input.selectable");
 
       for (const el of targetElements) {
-        const targetTogostanzaId = el.id.replace(idPrefix, "");
-
+        const targetTogostanzaId = Number(el.dataset.togostanzaId);
         const isSelected = selectedIds.includes(targetTogostanzaId);
-        const inputElement = this.element.shadowRoot.querySelector(`#${el.id}`);
+        const inputElement = this.element.shadowRoot.querySelector(
+          `input[data-togostanza-id="${targetTogostanzaId}"]`
+        );
 
         if (isSelected !== inputElement.checked) {
           inputElement.click();

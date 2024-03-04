@@ -15,8 +15,7 @@
     >
       <span class="inner">
         <input
-          :id="`column-tree-checkbox-${node.__togostanza_id__}`"
-          ref="input"
+          :data-togostanza-id="node.__togostanza_id__"
           class="selectable"
           :class="{ '-selected': checkedNodes.get(node.id) }"
           type="checkbox"
@@ -114,24 +113,18 @@ export default defineComponent({
 
       const drawing = document.querySelector("togostanza-column-tree");
 
-      const convertToString = (id) => {
-        return typeof id === "number" ? id.toString() : id;
-      };
-
-      const targetId = convertToString(node.__togostanza_id__);
-      const targetElementSelector = "input.selectable";
-      const selectedElementClassName = "-selected";
-
       // get filter nodes
       const targetElements = Array.from(
-        drawing.shadowRoot.querySelectorAll(targetElementSelector)
+        drawing.shadowRoot.querySelectorAll("input.selectable")
       );
       const selectedElements = targetElements.filter((el) => {
-        return el.classList.contains(selectedElementClassName);
+        return el.classList.contains("-selected");
       });
       const selectedIds = selectedElements.map((el) =>
-        el.id.replace("column-tree-checkbox-", "")
+        Number(el.dataset.togostanzaId)
       );
+
+      const targetId = node.__togostanza_id__;
 
       if (!selectedIds.includes(targetId)) {
         selectedIds.push(targetId);
