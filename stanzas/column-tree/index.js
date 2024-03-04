@@ -7,15 +7,8 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 import { camelCase } from "lodash";
-import { selectElement } from "../../lib/utils";
 
 export default class ColumnTree extends MetaStanza {
-  selectedEventParams = {
-    targetElementSelector: "input.selectable",
-    selectedElementClassName: "-selected",
-    idPrefix: "column-tree-checkbox-",
-  };
-
   menu() {
     return [
       downloadJSONMenuItem(this, "column-tree", this._data),
@@ -38,21 +31,24 @@ export default class ColumnTree extends MetaStanza {
   }
 
   handleEvent(event) {
-    console.log(event);
-    console.log(this);
-    console.log(this.params["event-incoming_change_selected_nodes"]);
     if (this.params["event-incoming_change_selected_nodes"]) {
-      // const newArr = event.detail.map((d) => {
-      //   return `column-tree-checkbox-${d}`;
-      // });
-      // console.log(newArr);
-      selectElement.apply(null, [
-        {
-          drawing: this.element,
-          selectedIds: event.detail,
-          ...this.selectedEventParams,
-        },
-      ]);
+      const selectedIds = event.detail;
+      const idPrefix = "column-tree-checkbox-";
+      const targetElements =
+        this.element.shadowRoot.querySelectorAll("input.selectable");
+
+      for (const el of targetElements) {
+        const targetTogostanzaId = el.id.replace(idPrefix, "");
+
+        const isSelected = selectedIds.includes(targetTogostanzaId);
+        const inputElement = this.element.shadowRoot.querySelector(`#${el.id}`);
+
+        if (isSelected && !inputElement.checked) {
+          inputElement.click();
+        } else if (!isSelected && inputElement.checked) {
+          inputElement.click();
+        }
+      }
     }
   }
 }
