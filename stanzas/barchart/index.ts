@@ -220,7 +220,7 @@ export default class Barchart extends MetaStanza {
     }
     if (this.params["event-outgoing_change_selected_nodes"]) {
       barGroup.on("click", (_, d) =>
-        emitSelectedEvent.apply(this, [d[1][0]["__togostanza_id__"]])
+        emitSelectedEventForD3.apply(this, [d[1][0]["__togostanza_id__"]])
       );
     }
 
@@ -404,7 +404,7 @@ function addErrorBars(
 }
 
 // emit selected event
-function emitSelectedEvent(this: Barchart, id: any) {
+function emitSelectedEventForD3(this: Barchart, id: any) {
   // collect selected bars
   const barGroups = this._graphArea.selectAll("g.bar-group");
   const filteredBars = barGroups.filter(".-selected");
