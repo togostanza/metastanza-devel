@@ -7,16 +7,17 @@ interface MarginsI {
 
 export function getMarginsFromCSSString(cssString: string): MarginsI;
 
-export function emitSelectedEvent({
-  stanza,
+export function emitSelectedEventForD3({
+  drawing,
+  rootElement,
   targetId,
   targetElementSelector,
   selectedElementSelector,
   idPath,
 }): void;
 
-export function updateSelectedElementClassName({
-  stanza,
+export function updateSelectedElementClassNameForD3({
+  drawing,
   selectedIds,
   targetElementSelector,
   selectedElementClassName,

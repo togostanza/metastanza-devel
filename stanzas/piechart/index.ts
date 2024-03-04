@@ -10,8 +10,8 @@ import getStanzaColors from "../../lib/ColorGenerator";
 import Legend from "../../lib/Legend2";
 import MetaStanza from "../../lib/MetaStanza";
 import {
-  emitSelectedEvent,
-  updateSelectedElementClassName,
+  emitSelectedEventForD3,
+  updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
 
 export default class Piechart extends MetaStanza {
@@ -92,7 +92,7 @@ export default class Piechart extends MetaStanza {
 
     if (this.params["event-outgoing_change_selected_nodes"]) {
       pieGroups.on("click", (_, d) => {
-        return emitSelectedEvent.apply(null, [
+        return emitSelectedEventForD3.apply(null, [
           {
             targetId: d.data["__togostanza_id__"],
             ...this.selectedEventParams,
@@ -144,7 +144,7 @@ export default class Piechart extends MetaStanza {
 
   handleEvent(event) {
     if (this.params["event-incoming_change_selected_nodes"]) {
-      updateSelectedElementClassName.apply(null, [
+      updateSelectedElementClassNameForD3.apply(null, [
         {
           selectedIds: event.detail,
           ...this.selectedEventParams,

@@ -640,7 +640,10 @@ export default defineComponent({
         selectedRows.splice(indexInSelectedRows, 1);
       }
       // dispatch event
+
       const stanza = rootElement.value.parentNode.parentNode.parentNode.host;
+      console.log(params);
+      console.log(params.dataUrl);
       stanza.dispatchEvent(
         new CustomEvent("changeSelectedNodes", {
           detail: selectedRows,
