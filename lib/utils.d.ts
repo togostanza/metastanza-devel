@@ -22,3 +22,10 @@ export function updateSelectedElementClassName({
   selectedElementClassName,
   idPath,
 }): void;
+
+export function selectElement({
+  stanza,
+  selectedIds,
+  targetElementSelector,
+  idPrefix,
+}): void;
