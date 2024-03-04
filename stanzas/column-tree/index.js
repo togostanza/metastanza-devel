@@ -37,7 +37,7 @@ export default class ColumnTree extends MetaStanza {
         this.element.shadowRoot.querySelectorAll("input.selectable");
 
       for (const el of targetElements) {
-        const targetTogostanzaId = Number(el.dataset.togostanzaId);
+        const targetTogostanzaId = +el.dataset.togostanzaId;
         const isSelected = selectedIds.includes(targetTogostanzaId);
         const inputElement = this.element.shadowRoot.querySelector(
           `input[data-togostanza-id="${targetTogostanzaId}"]`

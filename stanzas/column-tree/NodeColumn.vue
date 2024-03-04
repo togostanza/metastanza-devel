@@ -120,8 +120,8 @@ export default defineComponent({
       const selectedElements = targetElements.filter((el) => {
         return el.classList.contains("-selected");
       });
-      const selectedIds = selectedElements.map((el) =>
-        Number(el.dataset.togostanzaId)
+      const selectedIds = selectedElements.map(
+        (el) => +el.dataset.togostanzaId
       );
 
       const targetId = node.__togostanza_id__;
