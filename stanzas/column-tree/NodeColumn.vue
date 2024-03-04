@@ -113,24 +113,41 @@ export default defineComponent({
       context.emit("setParent", [props.layer + 1, id]);
     }
 
-    const selectedEventParams = {
-      targetElementSelector: "input.selectable",
-      selectedElementClassName: "-selected",
-      selectedElementSelector: ".-selected",
-    };
-
-    const drawing = document.querySelector("togostanza-column-tree");
     function handleCheckboxClick(node) {
       setCheckedNode(node);
-      // console.log(node);
-      // console.log(document.querySelector("togostanza-column-tree"));
-      // console.log(this.$refs.input);
-      emitSelectedEvent({
-        drawing,
-        rootElement: drawing,
-        targetId: node.__togostanza_id__,
-        ...selectedEventParams,
+
+      const drawing = document.querySelector("togostanza-column-tree");
+
+      const convertToString = (id) => {
+        return typeof id === "number" ? id.toString() : id;
+      };
+
+      const targetId = convertToString(node.__togostanza_id__);
+      const targetElementSelector = "input.selectable";
+      const selectedElementClassName = "-selected";
+
+      // get filter nodes
+      const targetElements = Array.from(
+        drawing.shadowRoot.querySelectorAll(targetElementSelector)
+      );
+      const selectedElements = targetElements.filter((el) => {
+        return el.classList.contains(selectedElementClassName);
       });
+      const selectedIds = selectedElements.map((el) =>
+        el.id.replace("column-tree-checkbox-", "")
+      );
+
+      if (!selectedIds.includes(targetId)) {
+        selectedIds.push(targetId);
+      } else {
+        selectedIds.splice(selectedIds.indexOf(targetId), 1);
+      }
+
+      drawing.dispatchEvent(
+        new CustomEvent("changeSelectedNodes", {
+          detail: selectedIds,
+        })
+      );
     }
 
     return {
