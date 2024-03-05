@@ -174,12 +174,11 @@ export default class Heatmap extends MetaStanza {
       .attr("data-tooltip", (d) => tooltipHTML(d))
       .attr("width", this.xAxisGen.scale.bandwidth())
       .attr("height", this.yAxisGen.scale.bandwidth())
-      .style("fill", (d) => setColor(d[cellColorKey]))
-      .on("mouseover", mouseover)
-      .on("mouseleave", mouseleave);
+      .style("fill", (d) => setColor(d[cellColorKey]));
 
     if (this.params["event-outgoing_change_selected_nodes"]) {
-      rectGroup.on("click", (_, d) => {
+      rectGroup.on("click", (e, d) => {
+        select(e.target).raise();
         return emitSelectedEvent.apply(null, [
           {
             targetId: d.__togostanza_id__,
@@ -213,22 +212,6 @@ export default class Heatmap extends MetaStanza {
     } else {
       this.legend?.remove();
       this.legend = null;
-    }
-
-    //Function of mouseover and mouse leave
-    function mouseover() {
-      select(this).classed("highlighted", true).raise();
-      if (!borderWidth) {
-        select(this).classed("highlighted", true).raise();
-      }
-    }
-    function mouseleave() {
-      select(this).classed("highlighted", false);
-      if (!borderWidth) {
-        select(this).classed("highlighted", false);
-        graphArea.selectAll(".x-axis").raise();
-        graphArea.selectAll(".y-axis").raise();
-      }
     }
 
     //create legend objects
