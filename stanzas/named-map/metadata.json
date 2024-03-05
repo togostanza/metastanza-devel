@@ -207,6 +207,12 @@
       "stanza:description": "Category color 5"
     },
     {
+      "stanza:key": "--togostanza-theme-selected_border_color",
+      "stanza:type": "color",
+      "stanza:default": "#FF0000",
+      "stanza:description": "Color applied to the selected item"
+    },
+    {
       "stanza:key": "--togostanza-theme-background_color",
       "stanza:type": "color",
       "stanza:default": "rgba(255,255,255,0)",
@@ -241,18 +247,6 @@
       "stanza:type": "color",
       "stanza:default": "black",
       "stanza:description": "Border color"
-    },
-    {
-      "stanza:key": "--togostanza-selected-color",
-      "stanza:type": "color",
-      "stanza:default": "#FFDF3D",
-      "stanza:description": "Hover color when hovering over region"
-    },
-    {
-      "stanza:key": "--togostanza-event-color",
-      "stanza:type": "color",
-      "stanza:default": "#FF0000",
-      "stanza:description": "Color applied to the selected item"
     }
   ],
   "stanza:incomingEvent": [
