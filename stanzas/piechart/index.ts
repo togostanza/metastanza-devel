@@ -18,7 +18,6 @@ export default class Piechart extends MetaStanza {
   legend: Legend;
   _chartArea: d3.Selection<SVGGElement, {}, SVGElement, any>;
   selectedEventParams = {
-    drawing: this,
     targetElementSelector: ".pie-slice",
     selectedElementClassName: "-selected",
     selectedElementSelector: ".-selected",
@@ -94,6 +93,8 @@ export default class Piechart extends MetaStanza {
       pieGroups.on("click", (_, d) => {
         return emitSelectedEventForD3.apply(null, [
           {
+            drawing: this._chartArea,
+            rootElement: this.element,
             targetId: d.data["__togostanza_id__"],
             ...this.selectedEventParams,
           },
@@ -146,6 +147,7 @@ export default class Piechart extends MetaStanza {
     if (this.params["event-incoming_change_selected_nodes"]) {
       updateSelectedElementClassNameForD3.apply(null, [
         {
+          drawing: this._chartArea,
           selectedIds: event.detail,
           ...this.selectedEventParams,
         },
