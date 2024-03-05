@@ -106,6 +106,7 @@ export default class TreeMapStanza extends MetaStanza {
 
   handleEvent(event) {
     if (this.params["event-incoming_change_selected_nodes"]) {
+      this.element.dataset.selectedIds = JSON.stringify(event.detail);
       updateSelectedElementClassNameForD3.apply(null, [
         {
           drawing: this._chartArea,
@@ -234,6 +235,14 @@ function draw(el, dataset, opts, stanza) {
       .on("dblclick", (e, d) => {
         clearTimeout(timeout);
         d === root ? zoomout(root) : zoomin(d);
+
+        updateSelectedElementClassNameForD3.apply(stanza, [
+          {
+            drawing: stanza._chartArea,
+            selectedIds: JSON.parse(stanza.element.dataset.selectedIds) ?? [],
+            ...stanza.selectedEventParams,
+          },
+        ]);
       });
 
     node
