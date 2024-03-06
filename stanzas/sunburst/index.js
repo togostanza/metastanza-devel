@@ -54,8 +54,6 @@ export default class Sunburst extends MetaStanza {
   }
 
   handleEvent(event) {
-    console.log(event);
-    console.log(event.type);
     if (this.params["event-incoming_change_selected_nodes"]) {
       updateSelectedElementClassNameForD3.apply(null, [
         {
@@ -64,7 +62,6 @@ export default class Sunburst extends MetaStanza {
           ...this.selectedEventParams,
         },
       ]);
-      // dispatchEvent
     }
 
     // event.stopPropagation();
