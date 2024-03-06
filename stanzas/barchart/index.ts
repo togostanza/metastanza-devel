@@ -218,6 +218,11 @@ export default class Barchart extends MetaStanza {
           );
         }
     }
+    if (this.params["event-outgoing_change_selected_nodes"]) {
+      barGroup.on("click", (_, d) =>
+        emitSelectedEvent.apply(this, [d[1][0]["__togostanza_id_dummy__"]])
+      );
+    }
 
     if (showLegend) {
       if (!this.legend) {
@@ -261,12 +266,9 @@ export default class Barchart extends MetaStanza {
   }
 
   handleEvent(event) {
-    const selectedNodes = event.detail;
-    const barGroups = this._graphArea.selectAll("g.bar-group");
-    barGroups.classed(
-      "-selected",
-      (d) => selectedNodes.indexOf(d[1][0].__togostanza_id_dummy__) !== -1
-    );
+    if (this.params["event-incoming_change_selected_nodes"]) {
+      changeSelectedStyle.apply(this, [event.detail]);
+    }
   }
 }
 
@@ -308,7 +310,6 @@ function drawGroupedBars(
   barGroup
     .selectAll("rect")
     .data((d) => {
-      console.log(d);
       return d[1];
     })
     .enter()
@@ -357,10 +358,7 @@ function drawStackedBars(
       Math.abs(this.yAxisGen.scale(d[y1Sym]) - this.yAxisGen.scale(d[y2Sym]))
     )
     .attr("fill", (d) => d[colorSym])
-    .attr("data-tooltip", (d) => d[tooltipSym])
-    .on("click", (_, d) =>
-      emitSelectedEvent.apply(this, [d["__togostanza_id_dummy__"]])
-    );
+    .attr("data-tooltip", (d) => d[tooltipSym]);
 
   return { barGroup };
 }
@@ -424,5 +422,15 @@ function emitSelectedEvent(this: Barchart, id: any) {
     new CustomEvent("changeSelectedNodes", {
       detail: ids,
     })
+  );
+  changeSelectedStyle.apply(this, [ids]);
+}
+
+function changeSelectedStyle(this: Barchart, ids: string[]) {
+  console.log(ids);
+  const barGroups = this._graphArea.selectAll("g.bar-group");
+  barGroups.classed(
+    "-selected",
+    (d) => ids.indexOf(d[1][0].__togostanza_id_dummy__) !== -1
   );
 }

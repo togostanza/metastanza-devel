@@ -8,10 +8,7 @@
   "stanza:license": "MIT",
   "stanza:author": "DBCLS",
   "stanza:address": "https://github.com/togostanza/metastanza",
-  "stanza:contributor": [
-    "PENQE",
-    "Einishi Tech"
-  ],
+  "stanza:contributor": ["PENQE", "Einishi Tech"],
   "stanza:created": "2021-01-18",
   "stanza:updated": "2021-02-16",
   "stanza:parameter": [
@@ -24,12 +21,7 @@
     {
       "stanza:key": "data-type",
       "stanza:type": "single-choice",
-      "stanza:choice": [
-        "json",
-        "tsv",
-        "csv",
-        "sparql-results-json"
-      ],
+      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
       "stanza:example": "json",
       "stanza:description": "Data type",
       "stanza:required": true
@@ -44,10 +36,7 @@
     {
       "stanza:key": "axis-x-placement",
       "stanza:type": "single-choice",
-      "stanza:choice": [
-        "top",
-        "bottom"
-      ],
+      "stanza:choice": ["top", "bottom"],
       "stanza:example": "bottom",
       "stanza:description": "axis placement",
       "stanza:required": false
@@ -109,10 +98,7 @@
     {
       "stanza:key": "axis-y-placement",
       "stanza:type": "single-choice",
-      "stanza:choice": [
-        "left",
-        "right"
-      ],
+      "stanza:choice": ["left", "right"],
       "stanza:example": "left",
       "stanza:description": "Y axis placement",
       "stanza:required": false
@@ -175,10 +161,7 @@
     {
       "stanza:key": "grouping-arrangement",
       "stanza:type": "single-choice",
-      "stanza:choice": [
-        "stacked",
-        "grouped"
-      ],
+      "stanza:choice": ["stacked", "grouped"],
       "stanza:example": "grouped",
       "stanza:description": "Bars arrangement",
       "stanza:required": false
@@ -216,6 +199,20 @@
       "stanza:type": "text",
       "stanza:example": "Category",
       "stanza:description": "Legend title"
+    },
+    {
+      "stanza:key": "event-incoming_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Receive a change event of selected nodes",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "event-outgoing_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Emit a change event of selected nodes",
+      "stanza:required": false
     },
     {
       "stanza:key": "togostanza-custom_css_url",
