@@ -34,6 +34,7 @@ export default class TreeMapStanza extends MetaStanza {
     selectedElementSelector: ".-selected",
     idPath: "data.data.__togostanza_id__",
   };
+  selectedIds;
 
   menu() {
     return [
@@ -106,6 +107,7 @@ export default class TreeMapStanza extends MetaStanza {
 
   handleEvent(event) {
     if (this.params["event-incoming_change_selected_nodes"]) {
+      this.selectedIds = event.detail;
       updateSelectedElementClassNameForD3.apply(null, [
         {
           drawing: this._chartArea,
@@ -234,6 +236,14 @@ function draw(el, dataset, opts, stanza) {
       .on("dblclick", (e, d) => {
         clearTimeout(timeout);
         d === root ? zoomout(root) : zoomin(d);
+
+        updateSelectedElementClassNameForD3.apply(stanza, [
+          {
+            drawing: stanza._chartArea,
+            selectedIds: stanza.selectedIds ?? [],
+            ...stanza.selectedEventParams,
+          },
+        ]);
       });
 
     node
