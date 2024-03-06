@@ -21,8 +21,20 @@ import {
 } from "togostanza-utils"; // from "@/lib/metastanza_utils.js"; //
 import shadeColor from "./shadeColor";
 import treemapBinaryLog from "./treemapBinaryLog";
+import {
+  emitSelectedEventForD3,
+  updateSelectedElementClassNameForD3,
+} from "../../lib/utils";
 
 export default class TreeMapStanza extends MetaStanza {
+  _chartArea;
+  selectedEventParams = {
+    targetElementSelector: "g rect.selectable",
+    selectedElementClassName: "-selected",
+    selectedElementSelector: ".-selected",
+    idPath: "data.data.__togostanza_id__",
+  };
+
   menu() {
     return [
       downloadSvgMenuItem(this, "treemap"),
@@ -89,7 +101,19 @@ export default class TreeMapStanza extends MetaStanza {
       valueKey,
     };
 
-    draw(treeMapElement, filteredData, opts);
+    draw(treeMapElement, filteredData, opts, this);
+  }
+
+  handleEvent(event) {
+    if (this.params["event-incoming_change_selected_nodes"]) {
+      updateSelectedElementClassNameForD3.apply(null, [
+        {
+          drawing: this._chartArea,
+          selectedIds: event.detail,
+          ...this.selectedEventParams,
+        },
+      ]);
+    }
   }
 }
 
@@ -104,7 +128,7 @@ function transformValue(logScale, value) {
   return value;
 }
 
-function draw(el, dataset, opts) {
+function draw(el, dataset, opts, stanza) {
   const { WIDTH, HEIGHT, logScale, colorScale, gapWidth, labelKey, valueKey } =
     opts;
 
@@ -167,13 +191,13 @@ function draw(el, dataset, opts) {
     );
 
   select(el).select("svg").remove();
-  const svg = select(el)
+  stanza._chartArea = select(el)
     .append("svg")
     .attr("width", WIDTH)
     .attr("height", HEIGHT)
     .attr("viewBox", [0, 0, WIDTH, HEIGHT]);
 
-  let group = svg.append("g").call(render, treemap(nested), null);
+  let group = stanza._chartArea.append("g").call(render, treemap(nested), null);
 
   function render(group, root, zoomInOut) {
     group
@@ -189,13 +213,28 @@ function draw(el, dataset, opts) {
       .data(root.children.concat(root))
       .join("g");
 
+    let timeout;
     node
       .filter((d) => {
-        console.log(d);
         return d === root ? d.parent : d.children;
       })
       .attr("cursor", "pointer")
-      .on("click", (_, d) => (d === root ? zoomout(root) : zoomin(d)));
+      .on("click", (e, d) => {
+        if (e.detail === 1) {
+          timeout = setTimeout(() => {
+            return emitSelectedEventForD3({
+              drawing: stanza._chartArea,
+              rootElement: stanza.element,
+              targetId: d.data.data.__togostanza_id__,
+              ...stanza.selectedEventParams,
+            });
+          }, 500);
+        }
+      })
+      .on("dblclick", (e, d) => {
+        clearTimeout(timeout);
+        d === root ? zoomout(root) : zoomin(d);
+      });
 
     node
       .append("title")
@@ -211,6 +250,7 @@ function draw(el, dataset, opts) {
 
     node
       .append("rect")
+      .classed("selectable", true)
       .attr("id", (d) => (d.leafUid = uid("leaf")).id)
       .attr("style", (d) => {
         return `fill: ${
@@ -231,6 +271,7 @@ function draw(el, dataset, opts) {
 
     innerNode
       .append("rect")
+      .classed("selectable", true)
       .attr("id", (d) => (d.leafUid = uid("leaf")).id)
       .attr("fill", "none")
       .attr("stroke-width", 1)
@@ -401,14 +442,16 @@ function draw(el, dataset, opts) {
   // When zooming in, draw the new nodes on top, and fade them in.
   function zoomin(d) {
     const group0 = group.attr("pointer-events", "none");
-    const group1 = (group = svg.append("g").call(render, d, "zoomin"));
+    const group1 = (group = stanza._chartArea
+      .append("g")
+      .call(render, d, "zoomin"));
 
     //re-define domain for scaling
 
     x.domain([d.x0, d.x1]);
     y.domain([d.y0, d.y1]);
 
-    svg
+    stanza._chartArea
       .transition()
       .duration(750)
       .call((t) => {
@@ -426,14 +469,14 @@ function draw(el, dataset, opts) {
   // When zooming out, draw the old nodes on top, and fade them out.
   function zoomout(d) {
     const group0 = group.attr("pointer-events", "none");
-    const group1 = (group = svg
+    const group1 = (group = stanza._chartArea
       .insert("g", "*")
       .call(render, d.parent, "zoomout"));
 
     x.domain([d.parent.x0, d.parent.x1]);
     y.domain([d.parent.y0, d.parent.y1]);
 
-    svg
+    stanza._chartArea
       .transition()
       .duration(750)
       .call((t) =>

@@ -21,3 +21,10 @@ g .hidden-arc {
 .no-fill {
   fill: none;
 }
+
+g path.selectable {
+  &.-selected {
+    stroke-width: 2px;
+    stroke: var(--togostanza-theme-selected_border_color);
+  }
+}

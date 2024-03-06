@@ -15,3 +15,10 @@ svg text {
     font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
   }
 }
+
+g rect.selectable {
+  &.-selected {
+    stroke-width: 5px;
+    stroke: var(--togostanza-theme-selected_border_color);
+  }
+}
