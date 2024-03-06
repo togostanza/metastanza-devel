@@ -20,16 +20,24 @@ svg {
     stroke: var(--togostanza-axis-zero_line_color);
   }
 
-  .bar-group > rect {
-    stroke-width: 0.5px;
-    stroke: var(--togostanza-border-color);
-    transition: var(--togostanza-fadeout-transition);
-    cursor: pointer;
-    &.-highlight {
-      opacity: 1;
+  .bar-group {
+    > rect {
+      stroke-width: 0.5px;
+      stroke: var(--togostanza-border-color);
+      transition: var(--togostanza-fadeout-transition);
+      cursor: pointer;
+      &.-highlight {
+        opacity: 1;
+      }
+      &.-fadeout {
+        opacity: var(--togostanza-fadeout-opacity);
+      }
     }
-    &.-fadeout {
-      opacity: var(--togostanza-fadeout-opacity);
+    &.-selected {
+      > rect {
+        stroke-width: 2px;
+        stroke: var(--togostanza-theme-selected_border_color);
+      }
     }
   }
 
@@ -46,6 +54,10 @@ svg {
       stroke-opacity: var(--togostanza-fadeout-opacity);
     }
   }
+}
+
+.axis-container {
+  pointer-events: none;
 }
 
 main {

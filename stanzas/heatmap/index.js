@@ -1,9 +1,13 @@
 import MetaStanza from "../../lib/MetaStanza";
 import { select } from "d3";
+import {
+  emitSelectedEventForD3,
+  updateSelectedElementClassNameForD3,
+} from "@/lib/utils";
 import ToolTip from "@/lib/ToolTip";
 import Legend from "@/lib/Legend2";
 import { getGradationColor } from "@/lib/ColorGenerator";
-import { Axis } from "../../lib/AxisMixin";
+import { Axis } from "@/lib/AxisMixin";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -13,6 +17,13 @@ import {
 } from "togostanza-utils";
 
 export default class Heatmap extends MetaStanza {
+  selectedEventParams = {
+    targetElementSelector: ".rect",
+    selectedElementClassName: "-selected",
+    selectedElementSelector: ".-selected",
+    idPath: "__togostanza_id__",
+  };
+
   menu() {
     return [
       downloadSvgMenuItem(this, "heatmap"),
@@ -27,6 +38,7 @@ export default class Heatmap extends MetaStanza {
     // Parameters
     const root = this._main;
     const dataset = this._data;
+    this._chartArea = select(root.querySelector("svg"));
     const legendTitle = this.params["legend-title"];
     const legendShow = this.params["legend-visible"];
     const legendGroups = this.params["legend-levels_number"];
@@ -40,7 +52,6 @@ export default class Heatmap extends MetaStanza {
     // Styles
     const width = parseFloat(this.css("--togostanza-canvas-width")) || 0;
     const height = parseFloat(this.css("--togostanza-canvas-height")) || 0;
-    const borderWidth = parseFloat(this.css("--togostanza-border-width")) || 0;
 
     // Color scale
     const cellColorKey = this.params["cell-color_key"].trim();
@@ -118,14 +129,13 @@ export default class Heatmap extends MetaStanza {
     yParams.margins = AxesMargins;
 
     //Drawing area
-    let svg = select(root.querySelector("svg"));
-    if (!svg.empty()) {
-      svg.remove();
+    if (!this._chartArea.empty()) {
+      this._chartArea.remove();
       this.xAxisGen = null;
       this.yAxisGen = null;
     }
 
-    svg = select(root)
+    this._chartArea = select(root)
       .append("svg")
       .classed("svg", true)
       .attr("width", width)
@@ -133,17 +143,17 @@ export default class Heatmap extends MetaStanza {
 
     //Drawing axis
     if (!this.xAxisGen) {
-      this.xAxisGen = new Axis(svg.node());
+      this.xAxisGen = new Axis(this._chartArea.node());
     }
     if (!this.yAxisGen) {
-      this.yAxisGen = new Axis(svg.node());
+      this.yAxisGen = new Axis(this._chartArea.node());
     }
     this.xAxisGen.update(xParams);
     this.yAxisGen.update(yParams);
     this.xAxisGen.axisGen.tickSizeOuter(0);
     this.yAxisGen.axisGen.tickSizeOuter(0);
 
-    const graphArea = svg
+    const graphArea = this._chartArea
       .append("g")
       .classed("graph", true)
       .attr(
@@ -152,7 +162,7 @@ export default class Heatmap extends MetaStanza {
       );
 
     //Set for each rect
-    graphArea
+    const rectGroup = graphArea
       .append("g")
       .classed("g-rect", true)
       .selectAll()
@@ -165,9 +175,21 @@ export default class Heatmap extends MetaStanza {
       .attr("data-tooltip", (d) => tooltipHTML(d))
       .attr("width", this.xAxisGen.scale.bandwidth())
       .attr("height", this.yAxisGen.scale.bandwidth())
-      .style("fill", (d) => setColor(d[cellColorKey]))
-      .on("mouseover", mouseover)
-      .on("mouseleave", mouseleave);
+      .style("fill", (d) => setColor(d[cellColorKey]));
+
+    if (this.params["event-outgoing_change_selected_nodes"]) {
+      rectGroup.on("click", (e, d) => {
+        select(e.target).raise();
+        return emitSelectedEventForD3.apply(null, [
+          {
+            drawing: this._chartArea,
+            rootElement: this.element,
+            targetId: d.__togostanza_id__,
+            ...this.selectedEventParams,
+          },
+        ]);
+      });
+    }
 
     this.xAxisGen._g.raise();
     this.yAxisGen._g.raise();
@@ -195,25 +217,6 @@ export default class Heatmap extends MetaStanza {
       this.legend = null;
     }
 
-    //Function of mouseover and mouse leave
-    function mouseover() {
-      select(this).classed("highlighted", true).raise();
-      if (!borderWidth) {
-        select(this)
-          .classed("highlighted", true)
-          .style("stroke-width", "1px")
-          .raise();
-      }
-    }
-    function mouseleave() {
-      select(this).classed("highlighted", false);
-      if (!borderWidth) {
-        select(this).classed("highlighted", false).style("stroke-width", "0px");
-        graphArea.selectAll(".x-axis").raise();
-        graphArea.selectAll(".y-axis").raise();
-      }
-    }
-
     //create legend objects
     function intervals(color, steps = legendGroups >= 2 ? legendGroups : 2) {
       return [...Array(steps).keys()].map((i) => {
@@ -226,6 +229,18 @@ export default class Heatmap extends MetaStanza {
           color: color(legendSteps),
         };
       });
+    }
+  }
+
+  handleEvent(event) {
+    if (this.params["event-incoming_change_selected_nodes"]) {
+      updateSelectedElementClassNameForD3.apply(null, [
+        {
+          drawing: this._chartArea,
+          selectedIds: event.detail,
+          ...this.selectedEventParams,
+        },
+      ]);
     }
   }
 }

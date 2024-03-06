@@ -29,4 +29,24 @@ export default class ColumnTree extends MetaStanza {
     this._app = createApp(App, { ...camelCaseParams, root });
     this._app.mount(root);
   }
+
+  handleEvent(event) {
+    if (this.params["event-incoming_change_selected_nodes"]) {
+      const selectedIds = event.detail;
+      const targetElements =
+        this.element.shadowRoot.querySelectorAll("input.selectable");
+
+      for (const el of targetElements) {
+        const targetTogostanzaId = +el.dataset.togostanzaId;
+        const isSelected = selectedIds.includes(targetTogostanzaId);
+        const inputElement = this.element.shadowRoot.querySelector(
+          `input[data-togostanza-id="${targetTogostanzaId}"]`
+        );
+
+        if (isSelected !== inputElement.checked) {
+          inputElement.click();
+        }
+      }
+    }
+  }
 }

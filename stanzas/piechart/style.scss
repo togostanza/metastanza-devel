@@ -13,6 +13,11 @@ svg {
       opacity: var(--togostanza-fadeout-opacity);
       transition: var(--togostanza-fadeout-transition);
     }
+
+    &.-selected {
+      stroke-width: 2px;
+      stroke: var(--togostanza-theme-selected_border_color);
+    }
   }
 }
 

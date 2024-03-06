@@ -34,4 +34,10 @@ export default class PaginationTable extends Stanza {
     });
     this._component = this._app.mount(main);
   }
+
+  handleEvent(event) {
+    if (this.params["event-incoming_change_selected_nodes"]) {
+      this._component.updateSelectedRows(event.detail);
+    }
+  }
 }

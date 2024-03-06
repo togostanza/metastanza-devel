@@ -201,6 +201,20 @@
       "stanza:description": "Legend title"
     },
     {
+      "stanza:key": "event-incoming_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Receive a change event of selected nodes",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "event-outgoing_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Emit a change event of selected nodes",
+      "stanza:required": false
+    },
+    {
       "stanza:key": "togostanza-custom_css_url",
       "stanza:type": "text",
       "stanza:example": "",
@@ -265,6 +279,12 @@
       "stanza:description": "Group color 5"
     },
     {
+      "stanza:key": "--togostanza-theme-selected_border_color",
+      "stanza:type": "color",
+      "stanza:default": "#FFEE00",
+      "stanza:description": "Color applied to the selected item"
+    },
+    {
       "stanza:key": "--togostanza-fonts-font_family",
       "stanza:type": "text",
       "stanza:default": "Helvetica, Arial, sans-serif",
@@ -311,6 +331,18 @@
       "stanza:type": "color",
       "stanza:default": "rgba(255,255,255,0.0)",
       "stanza:description": "Background color"
+    }
+  ],
+  "stanza:incomingEvent": [
+    {
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
+    }
+  ],
+  "stanza:outgoingEvent": [
+    {
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
     }
   ]
 }

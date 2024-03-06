@@ -8,10 +8,7 @@
   "stanza:license": "MIT",
   "stanza:author": "DBCLS",
   "stanza:address": "https://github.com/togostanza/metastanza",
-  "stanza:contributor": [
-    "PENQE",
-    "Enishi Tech"
-  ],
+  "stanza:contributor": ["PENQE", "Enishi Tech"],
   "stanza:created": "2020-12-09",
   "stanza:updated": "2020-12-09",
   "stanza:parameter": [
@@ -24,12 +21,7 @@
     {
       "stanza:key": "data-type",
       "stanza:type": "single-choice",
-      "stanza:choice": [
-        "json",
-        "tsv",
-        "csv",
-        "sparql-results-json"
-      ],
+      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
       "stanza:example": "json",
       "stanza:description": "Data type",
       "stanza:required": true
@@ -61,10 +53,7 @@
     {
       "stanza:key": "page-slider",
       "stanza:type": "single-choice",
-      "stanza:choice": [
-        "true",
-        "false"
-      ],
+      "stanza:choice": ["true", "false"],
       "stanza:example": true,
       "stanza:description": "Show page slider"
     },
@@ -78,6 +67,20 @@
       "stanza:type": "boolean",
       "stanza:example": false,
       "stanza:description": "Show axis selector button"
+    },
+    {
+      "stanza:key": "event-incoming_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Receive a change event of selected nodes",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "event-outgoing_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Emit a change event of selected nodes",
+      "stanza:required": false
     },
     {
       "stanza:key": "togostanza-custom_css_url",
@@ -271,21 +274,14 @@
     {
       "stanza:key": "--togostanza-pagination-placement-vertical",
       "stanza:type": "single-choice",
-      "stanza:choice": [
-        "bottom",
-        "top"
-      ],
+      "stanza:choice": ["bottom", "top"],
       "stanza:default": "bottom",
       "stanza:description": "Vertical pacement of pagination"
     },
     {
       "stanza:key": "--togostanza-pagination-placement-horizonal",
       "stanza:type": "single-choice",
-      "stanza:choice": [
-        "left",
-        "center",
-        "right"
-      ],
+      "stanza:choice": ["left", "center", "right"],
       "stanza:default": "center",
       "stanza:description": "Horizonal placement of pagination"
     },
@@ -294,10 +290,25 @@
       "stanza:type": "color",
       "stanza:default": "#FFFFFF",
       "stanza:description": "Background color"
+    },
+    {
+      "stanza:key": "--togostanza-theme-selected_background_color",
+      "stanza:type": "color",
+      "stanza:default": "#FFEE0088",
+      "stanza:description": "Color applied to the selected item"
     }
   ],
-  "stanza:incomingEvent": [],
+  "stanza:incomingEvent": [
+    {
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
+    }
+  ],
   "stanza:outgoingEvent": [
+    {
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
+    },
     {
       "stanza:key": "xaxis",
       "stanza:description": "xaxis changed event"

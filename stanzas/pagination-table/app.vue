@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <div class="wrapper" :style="`width: ${width};`" ref="wrapper">
+  <div ref="wrapper" class="wrapper" :style="`width: ${width};`">
     <div class="tableOptionWrapper">
       <div class="tableOption">
         <input
@@ -186,13 +186,18 @@
                 <AxisSelectorModal
                   :active="state.axisSelectorActiveColumn === column"
                   :label="column.label"
-                  @axisSelected="handleAxisSelected"
+                  @axis-selected="handleAxisSelected"
                 />
               </th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(row, row_index) in rowsInCurrentPage" :key="row.id">
+            <tr
+              v-for="(row, row_index) in rowsInCurrentPage"
+              :key="row.id"
+              :class="{ selected: isSelectedRow(row_index) }"
+              @click="handleRowClick(row_index)"
+            >
               <td
                 v-for="(cell, i) in row"
                 :key="cell.column.id"
@@ -231,7 +236,7 @@
                     :char-clamp-on="cell.charClampOn"
                     :unescape="cell.column.unescape"
                     :value="cell.value"
-                    @toggleCharClampOn="cell.charClampOn = !cell.charClampOn"
+                    @toggle-char-clamp-on="cell.charClampOn = !cell.charClampOn"
                   />
                 </span>
                 <span
@@ -250,7 +255,7 @@
       :current-page="state.pagination.currentPage"
       :total-pages="totalPages"
       :is-slider-on="state.pagination.isSliderOn"
-      @updateCurrentPage="updateCurrentPage"
+      @update-current-page="updateCurrentPage"
     />
     <div
       v-if="isPopupOrModalShowing"
@@ -327,7 +332,6 @@ export default defineComponent({
   ],
 
   setup(params) {
-
     const wrapper = ref(null);
 
     onMounted(() => {
@@ -335,12 +339,14 @@ export default defineComponent({
       const value = style.getPropertyValue(
         "--togostanza-pagination-placement-vertical"
       );
-      wrapper.value.style.flexDirection = {top: "column-reverse", bottom: "column"}[value];
+      wrapper.value.style.flexDirection = {
+        top: "column-reverse",
+        bottom: "column",
+      }[value];
     });
-    
+
     const sliderPagination = ref();
     const pageSizeOption = params.pageSizeOption.split(",").map(Number);
-
 
     const state = reactive({
       responseJSON: null, // for download. may consume extra memory
@@ -361,6 +367,8 @@ export default defineComponent({
       },
 
       axisSelectorActiveColumn: null,
+
+      selectedRows: [],
     });
 
     const filteredRows = computed(() => {
@@ -559,7 +567,6 @@ export default defineComponent({
 
     async function fetchData() {
       const data = await loadData(params.dataUrl, params.dataType, params.main);
-      // const data = testData;
 
       state.responseJSON = data;
       let columns;
@@ -601,6 +608,8 @@ export default defineComponent({
     onMounted(fetchData);
 
     const thead = ref(null);
+    const rootElement = ref(null);
+
     onRenderTriggered(() => {
       setTimeout(() => {
         const thList = thead.value.children[0].children;
@@ -610,6 +619,48 @@ export default defineComponent({
 
     const json = () => {
       return state.responseJSON;
+    };
+
+    const handleRowClick = (rowIndex) => {
+      if (!params.eventOutgoing_change_selected_nodes) {
+        return;
+      }
+      // collect selected rows
+      const actualRowIndex =
+        (state.pagination.currentPage - 1) * state.pagination.perPage +
+        rowIndex;
+      const selectedRows = [...state.selectedRows];
+      const row = state.responseJSON[actualRowIndex];
+      const indexInSelectedRows = state.selectedRows.indexOf(
+        row.__togostanza_id__
+      );
+      if (indexInSelectedRows === -1) {
+        selectedRows.push(row.__togostanza_id__);
+      } else {
+        selectedRows.splice(indexInSelectedRows, 1);
+      }
+      // dispatch event
+
+      const stanza = rootElement.value.parentNode.parentNode.parentNode.host;
+      console.log(params);
+      console.log(params.dataUrl);
+      stanza.dispatchEvent(
+        new CustomEvent("changeSelectedNodes", {
+          detail: selectedRows,
+        })
+      );
+      state.selectedRows = [...selectedRows];
+    };
+
+    const isSelectedRow = (rowIndex) => {
+      const actualRowIndex =
+        (state.pagination.currentPage - 1) * state.pagination.perPage +
+        rowIndex;
+      return state.selectedRows.includes(actualRowIndex);
+    };
+
+    const updateSelectedRows = (rows) => {
+      state.selectedRows = [...rows];
     };
 
     return {
@@ -628,11 +679,12 @@ export default defineComponent({
       closeModal,
       updateCurrentPage,
       thead,
+      rootElement,
       json,
       handleAxisSelectorButton,
       handleAxisSelected,
       showAxisSelector: params.showAxisSelector,
-      wrapper
+      wrapper,
     };
   },
 });

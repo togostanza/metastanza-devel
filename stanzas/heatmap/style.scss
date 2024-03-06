@@ -13,12 +13,15 @@
 .y-axis-label .tick .text {
   font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
 }
-.highlighted {
-  stroke: var(--togostanza-selected-color);
-}
+
 rect {
   stroke: var(--togostanza-border-color);
   stroke-width: calc(var(--togostanza-border-width) * 1px);
+
+  &.-selected {
+    stroke-width: 2px;
+    stroke: var(--togostanza-theme-selected_border_color);
+  }
 }
 
 :host {

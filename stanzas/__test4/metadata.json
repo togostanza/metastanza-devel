@@ -1,0 +1,29 @@
+{
+  "@context": {
+    "stanza": "http://togostanza.org/resource/stanza#"
+  },
+  "@id": "__test4",
+  "stanza:label": "__test4",
+  "stanza:definition": "__test4",
+  "stanza:type": "Stanza",
+  "stanza:display": "Image",
+  "stanza:provider": "TogoStanza",
+  "stanza:license": "MIT",
+  "stanza:author": "DBCLS",
+  "stanza:address": "https://github.com/togostanza/metastanza",
+  "stanza:contributor": ["PENQE"],
+  "stanza:created": "2021-08-03",
+  "stanza:updated": "2022-01-23",
+  "stanza:parameter": [
+    {
+      "stanza:key": "data-url",
+      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/main/samples/json/3sets-data.json",
+      "stanza:description": "Data source URL",
+      "stanza:required": true
+    }
+  ],
+  "stanza:menu-placement": "bottom-right",
+  "stanza:style": [],
+  "stanza:incomingEvent": [],
+  "stanza:outgoingEvent": []
+}

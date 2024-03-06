@@ -218,6 +218,11 @@ export default class Barchart extends MetaStanza {
           );
         }
     }
+    if (this.params["event-outgoing_change_selected_nodes"]) {
+      barGroup.on("click", (_, d) =>
+        emitSelectedEvent.apply(this, [d[1][0]["__togostanza_id__"]])
+      );
+    }
 
     if (showLegend) {
       if (!this.legend) {
@@ -259,6 +264,12 @@ export default class Barchart extends MetaStanza {
       this.tooltips.setup(this._main.querySelectorAll("[data-tooltip]"));
     }
   }
+
+  handleEvent(event) {
+    if (this.params["event-incoming_change_selected_nodes"]) {
+      changeSelectedStyle.apply(this, [event.detail]);
+    }
+  }
 }
 
 interface DrawFnParamsI {
@@ -298,7 +309,9 @@ function drawGroupedBars(
 
   barGroup
     .selectAll("rect")
-    .data((d) => d[1])
+    .data((d) => {
+      return d[1];
+    })
     .enter()
     .append("rect")
     .attr("y", (d) => this.yAxisGen.scale(d[y2Sym]))
@@ -388,4 +401,36 @@ function addErrorBars(
     .attr("y2", (d) => this.yAxisGen.scale(d[errorKeyName][1]))
     .attr("x1", (d) => groupScale(d[groupKeyName]))
     .attr("x2", (d) => groupScale(d[groupKeyName]) + groupScale.bandwidth());
+}
+
+// emit selected event
+function emitSelectedEvent(this: Barchart, id: any) {
+  // collect selected bars
+  const barGroups = this._graphArea.selectAll("g.bar-group");
+  const filteredBars = barGroups.filter(".-selected");
+  const ids = filteredBars
+    .data()
+    .map((datum) => datum[1][0]["__togostanza_id__"]);
+  const indexInSelectedBars = ids.indexOf(id);
+  if (indexInSelectedBars === -1) {
+    ids.push(id);
+  } else {
+    ids.splice(indexInSelectedBars, 1);
+  }
+  // dispatch event
+  this.element.dispatchEvent(
+    new CustomEvent("changeSelectedNodes", {
+      detail: ids,
+    })
+  );
+  changeSelectedStyle.apply(this, [ids]);
+}
+
+function changeSelectedStyle(this: Barchart, ids: string[]) {
+  console.log(ids);
+  const barGroups = this._graphArea.selectAll("g.bar-group");
+  barGroups.classed(
+    "-selected",
+    (d) => ids.indexOf(d[1][0].__togostanza_id__) !== -1
+  );
 }

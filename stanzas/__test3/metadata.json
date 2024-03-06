@@ -1,0 +1,38 @@
+{
+  "@context": {
+    "stanza": "http://togostanza.org/resource/stanza#"
+  },
+  "@id": "__test3",
+  "stanza:label": "__test3",
+  "stanza:definition": "__test3",
+  "stanza:type": "Stanza",
+  "stanza:display": "Image",
+  "stanza:provider": "TogoStanza",
+  "stanza:license": "MIT",
+  "stanza:author": "DBCLS",
+  "stanza:address": "https://github.com/togostanza/metastanza",
+  "stanza:contributor": ["PENQE"],
+  "stanza:created": "2021-08-03",
+  "stanza:updated": "2022-01-23",
+  "stanza:parameter": [
+    {
+      "stanza:key": "data-url",
+      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/main/samples/json/3sets-data.json",
+      "stanza:description": "Data source URL",
+      "stanza:required": true
+    }
+  ],
+  "stanza:menu-placement": "bottom-right",
+  "stanza:style": [],
+  "stanza:incomingEvent": [
+    {
+      "stanza:key": "valueChanged",
+      "stanza:description": "event used to notify a change of the value. payload is something like {value: 42}"
+    },
+    {
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
+    }
+  ],
+  "stanza:outgoingEvent": []
+}
