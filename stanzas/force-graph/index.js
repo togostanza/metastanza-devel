@@ -13,9 +13,19 @@ import {
   downloadTSVMenuItem,
   appendCustomCss,
 } from "togostanza-utils";
+import {
+  emitSelectedEventForD3,
+  updateSelectedElementClassNameForD3,
+} from "../../lib/utils";
 
 export default class ForceGraph extends Stanza {
   _graphArea;
+  selectedEventParams = {
+    targetElementSelector: ".node-group",
+    selectedElementClassName: "-selected",
+    selectedElementSelector: ".-selected",
+    idPath: "id",
+  };
 
   menu() {
     return [
@@ -163,14 +173,26 @@ export default class ForceGraph extends Stanza {
       this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
     }
     this._graphArea.selectAll("circle.node").on("click", (_, d) => {
-      const clickedNode = prepNodes.find(({ id }) => id === d.id);
-      return emitSelectedEvent.apply(null, [this, clickedNode.id]);
+      emitSelectedEventForD3.apply(null, [
+        {
+          drawing: this._graphArea,
+          rootElement: this.element,
+          targetId: d.id,
+          ...this.selectedEventParams,
+        },
+      ]);
     });
   }
 
   handleEvent(event) {
     if (this.params["event-incoming_change_selected_nodes"]) {
-      changeSelectedStyle.apply(null, [this, event.detail]);
+      updateSelectedElementClassNameForD3.apply(null, [
+        {
+          drawing: this._graphArea,
+          selectedIds: event.detail,
+          ...this.selectedEventParams,
+        },
+      ]);
     }
   }
 }
@@ -209,29 +231,4 @@ function getMarginsFromCSSString(str) {
   }
 
   return res;
-}
-
-function emitSelectedEvent(graph, id) {
-  const nodeGroups = graph._graphArea.selectAll("g.node-group");
-  const filteredNodes = nodeGroups.filter(".-selected");
-  const ids = filteredNodes.data().map((datum) => datum.id);
-  if (!ids.includes(id)) {
-    ids.push(id);
-  } else {
-    ids.splice(ids.indexOf(id), 1);
-  }
-
-  // dispatch event
-  graph.element.dispatchEvent(
-    new CustomEvent("changeSelectedNodes", {
-      detail: ids,
-    })
-  );
-}
-
-function changeSelectedStyle(graph, ids) {
-  const nodeGroups = graph._graphArea.selectAll("g.node-group");
-  nodeGroups.classed("-selected", (d) => {
-    return ids.includes(d.id);
-  });
 }

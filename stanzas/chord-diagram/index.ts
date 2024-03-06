@@ -15,6 +15,10 @@ import {
 } from "togostanza-utils";
 import { getMarginsFromCSSString, MarginsI } from "../../lib/utils";
 import { drawChordDiagram } from "./drawChordDiagram";
+import {
+  emitSelectedEventForD3,
+  updateSelectedElementClassNameForD3,
+} from "../../lib/utils";
 
 interface Datum {
   id: string;
@@ -24,6 +28,12 @@ export default class ChordDiagram extends Stanza {
   _data: object;
   tooltip: ToolTip;
   _chartArea: d3.Selection<SVGGElement, any, SVGElement, any>;
+  selectedEventParams = {
+    targetElementSelector: "g.node",
+    selectedElementClassName: "-selected",
+    selectedElementSelector: ".-selected",
+    idPath: "id",
+  };
 
   menu() {
     return [
@@ -193,16 +203,30 @@ export default class ChordDiagram extends Stanza {
     this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
 
     if (this.params["event-outgoing_change_selected_nodes"]) {
-      this._chartArea.selectAll("g.node").on("click", (_, d: Datum) => {
-        const clickedNode = prepNodes.find(({ id }) => id === d.id);
-        return emitSelectedEvent.apply(this, [clickedNode.id]);
-      });
+      this._chartArea
+        .selectAll(this.selectedEventParams.targetElementSelector)
+        .on("click", (_, d: Datum) => {
+          emitSelectedEventForD3.apply(null, [
+            {
+              drawing: this._chartArea,
+              rootElement: this.element,
+              targetId: d.id,
+              ...this.selectedEventParams,
+            },
+          ]);
+        });
     }
   }
 
   handleEvent(event) {
     if (this.params["event-incoming_change_selected_nodes"]) {
-      changeSelectedStyle.apply(this, [event.detail]);
+      updateSelectedElementClassNameForD3.apply(null, [
+        {
+          drawing: this._chartArea,
+          selectedIds: event.detail,
+          ...this.selectedEventParams,
+        },
+      ]);
     }
   }
 }
@@ -223,29 +247,4 @@ function getLongestLabelWidth(
 
   labelsG.remove();
   return width;
-}
-
-function emitSelectedEvent(this: ChordDiagram, id: string) {
-  const nodeGroups = this._chartArea.selectAll("g.node");
-  const filteredNodes = nodeGroups.filter(".-selected");
-  const ids = filteredNodes.data().map((datum: Datum) => datum.id);
-  if (!ids.includes(id)) {
-    ids.push(id);
-  } else {
-    ids.splice(ids.indexOf(id), 1);
-  }
-
-  // dispatch event
-  this.element.dispatchEvent(
-    new CustomEvent("changeSelectedNodes", {
-      detail: ids,
-    })
-  );
-}
-
-function changeSelectedStyle(this: ChordDiagram, ids: Array<string | number>) {
-  const nodeGroups = this._chartArea.selectAll("g.node");
-  nodeGroups.classed("-selected", (d: Datum) => {
-    return ids.includes(d.id);
-  });
 }
