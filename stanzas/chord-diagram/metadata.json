@@ -207,7 +207,7 @@
     {
       "stanza:key": "--togostanza-theme-selected_border_color",
       "stanza:type": "color",
-      "stanza:default": "#0000FF",
+      "stanza:default": "#FF0000",
       "stanza:description": "Color applied to the selected item"
     },
     {
