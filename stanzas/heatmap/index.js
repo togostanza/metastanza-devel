@@ -1,6 +1,9 @@
 import MetaStanza from "../../lib/MetaStanza";
 import { select } from "d3";
-import { emitSelectedEvent, updateSelectedElementClassName } from "@/lib/utils";
+import {
+  emitSelectedEventForD3,
+  updateSelectedElementClassNameForD3,
+} from "@/lib/utils";
 import ToolTip from "@/lib/ToolTip";
 import Legend from "@/lib/Legend2";
 import { getGradationColor } from "@/lib/ColorGenerator";
@@ -15,7 +18,6 @@ import {
 
 export default class Heatmap extends MetaStanza {
   selectedEventParams = {
-    drawing: this,
     targetElementSelector: ".rect",
     selectedElementClassName: "-selected",
     selectedElementSelector: ".-selected",
@@ -50,7 +52,6 @@ export default class Heatmap extends MetaStanza {
     // Styles
     const width = parseFloat(this.css("--togostanza-canvas-width")) || 0;
     const height = parseFloat(this.css("--togostanza-canvas-height")) || 0;
-    const borderWidth = parseFloat(this.css("--togostanza-border-width")) || 0;
 
     // Color scale
     const cellColorKey = this.params["cell-color_key"].trim();
@@ -179,8 +180,10 @@ export default class Heatmap extends MetaStanza {
     if (this.params["event-outgoing_change_selected_nodes"]) {
       rectGroup.on("click", (e, d) => {
         select(e.target).raise();
-        return emitSelectedEvent.apply(null, [
+        return emitSelectedEventForD3.apply(null, [
           {
+            drawing: this._chartArea,
+            rootElement: this.element,
             targetId: d.__togostanza_id__,
             ...this.selectedEventParams,
           },
@@ -231,8 +234,9 @@ export default class Heatmap extends MetaStanza {
 
   handleEvent(event) {
     if (this.params["event-incoming_change_selected_nodes"]) {
-      updateSelectedElementClassName.apply(null, [
+      updateSelectedElementClassNameForD3.apply(null, [
         {
+          drawing: this._chartArea,
           selectedIds: event.detail,
           ...this.selectedEventParams,
         },
