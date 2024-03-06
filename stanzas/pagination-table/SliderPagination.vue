@@ -132,13 +132,6 @@ export default defineComponent({
         canvas.value.width = paginationWrapper.value.clientWidth;
         canvas.value.height = 50;
 
-        // const sliderY =
-        //   paginationWrapper.value.getElementsByClassName("pageSlider")[0]
-        //     .offsetTop;
-        //   const tablePaginationOrder =
-        // paginationNumList.value.offsetTop < sliderY
-        //   ? "column"
-        //   : "column-reverse";
         const style = window.getComputedStyle(paginationWrapper.value);
         const value = style.getPropertyValue(
           "--togostanza-pagination-placement-vertical"
