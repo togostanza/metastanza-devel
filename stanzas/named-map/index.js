@@ -1,7 +1,10 @@
 import MetaStanza from "../../lib/MetaStanza";
 import { select, json, geoMercator, geoAlbersUsa, geoPath } from "d3";
 import { feature } from "topojson-client";
-import { emitSelectedEvent, updateSelectedElementClassName } from "@/lib/utils";
+import {
+  emitSelectedEventForD3,
+  updateSelectedElementClassNameForD3,
+} from "@/lib/utils";
 import ToolTip from "@/lib/ToolTip";
 import Legend from "@/lib/Legend2";
 import { getGradationColor } from "@/lib/ColorGenerator";
@@ -36,7 +39,6 @@ const REGION = new Map([
 
 export default class regionGeographicMap extends MetaStanza {
   selectedEventParams = {
-    drawing: this,
     targetElementSelector: ".path",
     selectedElementClassName: "-selected",
     selectedElementSelector: ".-selected",
@@ -173,8 +175,10 @@ export default class regionGeographicMap extends MetaStanza {
 
       if (this.params["event-outgoing_change_selected_nodes"]) {
         pathGroup.on("click", (_, d) => {
-          return emitSelectedEvent.apply(null, [
+          return emitSelectedEventForD3.apply(null, [
             {
+              drawing: this._chartArea,
+              rootElement: this.element,
               targetId: d.__togostanza_id__,
               ...this.selectedEventParams,
             },
@@ -280,8 +284,9 @@ export default class regionGeographicMap extends MetaStanza {
 
   handleEvent(event) {
     if (this.params["event-incoming_change_selected_nodes"]) {
-      updateSelectedElementClassName.apply(null, [
+      updateSelectedElementClassNameForD3.apply(null, [
         {
+          drawing: this._chartArea,
           selectedIds: event.detail,
           ...this.selectedEventParams,
         },
