@@ -14,18 +14,23 @@
       @click="hasChildren(node.children) ? setParent(node.id) : null"
     >
       <span class="inner">
-
         <input
+          :data-togostanza-id="node.__togostanza_id__"
+          class="selectable"
+          :class="{ '-selected': checkedNodes.get(node.id) }"
           type="checkbox"
           :checked="checkedNodes.get(node.id)"
-          @input="setCheckedNode(node)"
+          @input="handleCheckboxClick(node)"
         />
 
         <span class="label" :class="`-${nodeValueAlignment}`">
           <strong class="title">
             {{ node[keys.label] }}
           </strong>
-          <span class="value" :class="{fallback: node[keys.value] === undefined}">
+          <span
+            class="value"
+            :class="{ fallback: node[keys.value] === undefined }"
+          >
             {{ node[keys.value]?.toLocaleString() ?? valueObj.fallback }}
           </span>
         </span>
@@ -102,10 +107,42 @@ export default defineComponent({
     function setParent(id) {
       context.emit("setParent", [props.layer + 1, id]);
     }
+
+    function handleCheckboxClick(node) {
+      setCheckedNode(node);
+
+      const drawing = document.querySelector("togostanza-column-tree");
+
+      // get filter nodes
+      const targetElements = Array.from(
+        drawing.shadowRoot.querySelectorAll("input.selectable")
+      );
+      const selectedElements = targetElements.filter((el) => {
+        return el.classList.contains("-selected");
+      });
+      const selectedIds = selectedElements.map(
+        (el) => +el.dataset.togostanzaId
+      );
+
+      const targetId = node.__togostanza_id__;
+
+      if (!selectedIds.includes(targetId)) {
+        selectedIds.push(targetId);
+      } else {
+        selectedIds.splice(selectedIds.indexOf(targetId), 1);
+      }
+
+      drawing.dispatchEvent(
+        new CustomEvent("changeSelectedNodes", {
+          detail: selectedIds,
+        })
+      );
+    }
+
     return {
       setParent,
-      setCheckedNode,
       hasChildren,
+      handleCheckboxClick,
     };
   },
 });

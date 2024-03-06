@@ -20,10 +20,22 @@ import {
   downloadCSVMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
+import {
+  emitSelectedEventForD3,
+  updateSelectedElementClassNameForD3,
+} from "../../lib/utils";
 
 let path;
 
 export default class Sunburst extends MetaStanza {
+  _chartArea;
+  selectedEventParams = {
+    targetElementSelector: "g path.selectable",
+    selectedElementClassName: "-selected",
+    selectedElementSelector: ".-selected",
+    idPath: "data.data.__togostanza_id__",
+  };
+
   constructor(...args) {
     super(...args);
     this.state = {
@@ -42,10 +54,21 @@ export default class Sunburst extends MetaStanza {
   }
 
   handleEvent(event) {
-    event.stopPropagation();
-    if (event.target !== this.element) {
-      this.state.currentId = "" + event.detail.id;
+    if (this.params["event-incoming_change_selected_nodes"]) {
+      updateSelectedElementClassNameForD3.apply(null, [
+        {
+          drawing: this._chartArea,
+          selectedIds: event.detail,
+          ...this.selectedEventParams,
+        },
+      ]);
     }
+
+    // event.stopPropagation();
+    // TODO not sure the purpose of this code
+    // if (event.target !== this.element) {
+    //   this.state.currentId = "" + event.detail.id;
+    // }
   }
 
   async renderNext() {
@@ -258,14 +281,14 @@ export default class Sunburst extends MetaStanza {
     }
 
     select(main).select("svg").remove();
-    const svg = select(main)
+    this._chartArea = select(main)
       .append("svg")
       .attr("width", width)
       .attr("height", height)
       .attr("viewBox", `${-width / 2} ${-height / 2} ${width} ${height}`);
 
     //Get character width
-    const testText = svg
+    const testText = this._chartArea
       .append("g")
       .attr("class", "labels")
       .append("text")
@@ -273,13 +296,14 @@ export default class Sunburst extends MetaStanza {
     const CHAR_SPACE = testText.node().getComputedTextLength();
     testText.remove();
 
-    const g = svg.append("g");
+    const g = this._chartArea.append("g");
 
     path = g
       .append("g")
       .selectAll("path")
       .data(root.descendants())
       .join("path")
+      .classed("selectable", true)
       .attr("fill", (d) => {
         while (d.depth > 1) {
           d = d.parent;
@@ -295,10 +319,27 @@ export default class Sunburst extends MetaStanza {
       )
       .attr("d", (d) => arc(d.current));
 
+    let timeout;
+
     path
       .filter((d) => d.children)
       .style("cursor", "pointer")
-      .on("click", clicked);
+      .on("click", (e, d) => {
+        if (e.detail === 1) {
+          timeout = setTimeout(() => {
+            return emitSelectedEventForD3({
+              drawing: this._chartArea,
+              rootElement: this.element,
+              targetId: d.data.data.__togostanza_id__,
+              ...this.selectedEventParams,
+            });
+          }, 500);
+        }
+      })
+      .on("dblclick", (e, d) => {
+        clearTimeout(timeout);
+        clicked(e, d);
+      });
 
     path.append("title").text((d) => {
       return `${d
@@ -335,7 +376,22 @@ export default class Sunburst extends MetaStanza {
       .attr("r", radius - borderWidth / 2)
       .attr("fill", "none")
       .attr("pointer-events", "all")
-      .on("click", clicked);
+      .on("click", (e, d) => {
+        if (e.detail === 1) {
+          timeout = setTimeout(() => {
+            return emitSelectedEventForD3({
+              drawing: this._chartArea,
+              rootElement: this.element,
+              targetId: d.data.__togostanza_id__,
+              ...this.selectedEventParams,
+            });
+          }, 500);
+        }
+      })
+      .on("dblclick", (e, d) => {
+        clearTimeout(timeout);
+        clicked(e, d);
+      });
 
     //Text labels
     const textLabels = g

@@ -23,3 +23,10 @@ export function updateSelectedElementClassNameForD3({
   selectedElementClassName,
   idPath,
 }): void;
+
+export function selectElement({
+  stanza,
+  selectedIds,
+  targetElementSelector,
+  idPrefix,
+}): void;

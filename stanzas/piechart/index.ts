@@ -18,7 +18,7 @@ export default class Piechart extends MetaStanza {
   legend: Legend;
   _chartArea: d3.Selection<SVGGElement, {}, SVGElement, any>;
   selectedEventParams = {
-    drawing: this,
+    stanza: this,
     targetElementSelector: ".pie-slice",
     selectedElementClassName: "-selected",
     selectedElementSelector: ".-selected",

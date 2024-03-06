@@ -1,26 +1,29 @@
-import MetaStanza from "../../lib/MetaStanza";
+import { getCirculateColor } from "@/lib/ColorGenerator";
+import ToolTip from "@/lib/ToolTip";
 import {
-  select,
-  min,
-  max,
-  scaleSqrt,
-  stratify,
-  tree,
   cluster,
   linkHorizontal,
-  linkVertical,
   linkRadial,
+  linkVertical,
+  max,
+  min,
+  scaleSqrt,
+  select,
+  stratify,
+  tree,
 } from "d3";
-import ToolTip from "@/lib/ToolTip";
-import { getCirculateColor } from "@/lib/ColorGenerator";
-
 import {
-  downloadSvgMenuItem,
-  downloadPngMenuItem,
-  downloadJSONMenuItem,
   downloadCSVMenuItem,
+  downloadJSONMenuItem,
+  downloadPngMenuItem,
+  downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
+import MetaStanza from "../../lib/MetaStanza";
+import {
+  emitSelectedEventForD3,
+  updateSelectedElementClassNameForD3,
+} from "../../lib/utils";
 
 //Declaring constants
 const ASCENDING = "ascending",
@@ -33,6 +36,14 @@ const ASCENDING = "ascending",
   SCREEN = "screen";
 
 export default class Tree extends MetaStanza {
+  _chartArea;
+  selectedEventParams = {
+    stanza: this,
+    targetElementSelector: "g circle",
+    selectedElementClassName: "-selected",
+    selectedElementSelector: ".-selected",
+    idPath: "id",
+  };
   //Stanza download menu contents
   menu() {
     return [
@@ -167,13 +178,13 @@ export default class Tree extends MetaStanza {
 
     //Setting svg area
     select(root).select("svg").remove();
-    const svg = select(root)
+    this._chartArea = select(root)
       .append("svg")
       .attr("width", svgWidth)
       .attr("height", svgHeight);
 
     //Get width of root label
-    const rootGroup = svg
+    const rootGroup = this._chartArea
       .append("text")
       .text(treeDescendants[0].data.label || "");
     const rootLabelWidth = rootGroup.node().getBBox().width;
@@ -185,7 +196,7 @@ export default class Tree extends MetaStanza {
     for (const n of data) {
       n.depth === maxDepth ? labels.push(n.data.label || "") : "";
     }
-    const maxLabelGroup = svg.append("g");
+    const maxLabelGroup = this._chartArea.append("g");
     maxLabelGroup
       .selectAll("text")
       .data(labels)
@@ -196,7 +207,7 @@ export default class Tree extends MetaStanza {
     maxLabelGroup.remove();
 
     //Create each group
-    const g = svg.append("g");
+    const g = this._chartArea.append("g");
     const gCircles = g.append("g").attr("class", "circles");
     const gLabels = g.append("g").attr("class", "labels");
 
@@ -412,11 +423,30 @@ export default class Tree extends MetaStanza {
                   source.y0
                 }, 0)`;
             }
-          })
-          .on("click", (e, d) => {
-            toggle(d);
-            update(d);
           });
+
+        let timeout;
+
+        if (this.params["event-outgoing_change_selected_nodes"]) {
+          nodeCirclesEnter
+            .on("click", (e, d) => {
+              if (e.detail === 1) {
+                timeout = setTimeout(() => {
+                  return emitSelectedEventForD3.apply(null, [
+                    {
+                      targetId: d.id,
+                      ...this.selectedEventParams,
+                    },
+                  ]);
+                }, 500);
+              }
+            })
+            .on("dblclick", (e, d) => {
+              clearTimeout(timeout);
+              toggle(d);
+              update(d);
+            });
+        }
 
         //Update circle color when opening and closing
         nodeCirclesUpdate
@@ -685,6 +715,17 @@ export default class Tree extends MetaStanza {
       root.prepend(errorElement);
 
       throw new Error(`${message}`);
+    }
+  }
+
+  handleEvent(event) {
+    if (this.params["event-incoming_change_selected_nodes"]) {
+      updateSelectedElementClassNameForD3.apply(null, [
+        {
+          selectedIds: event.detail,
+          ...this.selectedEventParams,
+        },
+      ]);
     }
   }
 }
