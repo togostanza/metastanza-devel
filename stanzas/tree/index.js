@@ -23,6 +23,7 @@ import MetaStanza from "../../lib/MetaStanza";
 import {
   emitSelectedEventForD3,
   updateSelectedElementClassNameForD3,
+  toCamelCaseParams,
 } from "../../lib/utils";
 
 //Declaring constants
@@ -57,17 +58,10 @@ export default class Tree extends MetaStanza {
 
   async renderNext() {
     //Define from params
-    const nodeGroupKey = this.params["node-color-group"].trim();
-
+    const nodeKeys = toCamelCaseParams(this.params);
+    const { nodeGroupKey } = nodeKeys;
     const root = this._main,
-      dataset = this.__data.asTree({
-        nodeLabelKey: this.params["node-label-key"].trim(),
-        nodeColorKey: this.params["node-color-key"].trim(),
-        nodeGroupKey,
-        nodeOrderKey: this.params["sort-key"].trim(),
-        nodeValueKey: this.params["node-size-key"].trim(),
-        nodeDescriptionKey: this.params["tooltips-key"].trim(),
-      }).data,
+      dataset = this.__data.asTree(nodeKeys).data,
       width = parseFloat(this.css("--togostanza-canvas-width")) || 0,
       height = parseFloat(this.css("--togostanza-canvas-height")) || 0,
       padding = this.MARGIN,
@@ -80,7 +74,6 @@ export default class Tree extends MetaStanza {
       aveRadius = (minRadius + maxRadius) / 2,
       colorGroup = nodeGroupKey, // NOTE Actually, this variable is not needed (because asTree does the property name conversion), but since we cannot remove this variable without changing the getCirculateColor interface, we have left it in.
       colorMode = this.params["node-color-blend"];
-
     let colorModeProperty, colorModeValue;
     switch (colorMode) {
       case TRANSLUCENT:
