@@ -39,7 +39,7 @@ export default class ColumnTree extends MetaStanza {
       const targetElements = this._data.filter((d) =>
         selectedIds.includes(d.__togostanza_id__)
       );
-      console.log(targetElements);
+
       if (targetElements.length === 0) {
         this._component.state.checkedNodes = new Map();
         return;
@@ -49,37 +49,19 @@ export default class ColumnTree extends MetaStanza {
         (el) => el.__togostanza_id__ === targetId
       );
 
-      // for (const el of targetElements) {
       const isSelected = selectedIds.includes(targetId);
-      // const inputElement = this.element.shadowRoot.querySelector(
-      //   `input[data-togostanza-id="${targetTogostanzaId}"]`
-      // );
 
-      // if (!this._component.state.checkedNodes.has(el.id)) {
-      //   // inputElement.click();
-      //   this._component.state.checkedNodes.set(el.id, { id: el.id, ...el });
-      // }
-      console.log(
-        isSelected && !this._component.state.checkedNodes.has(targetId)
-      );
-      console.log(
-        !isSelected && this._component.state.checkedNodes.has(targetId)
-      );
-      if (isSelected && !this._component.state.checkedNodes.has(targetId)) {
-        this._component.state.checkedNodes.set(targetId, {
+      const { checkedNodes } = this._component.state;
+      const nodeExists = checkedNodes.has(targetId);
+
+      if (isSelected && !nodeExists) {
+        checkedNodes.set(targetId, {
           __togostanza_id__: targetId,
           ...targetElement,
         });
-      } else if (
-        !isSelected &&
-        this._component.state.checkedNodes.has(targetId)
-      ) {
-        this._component.state.checkedNodes.delete(targetId);
+      } else if (!isSelected && nodeExists) {
+        checkedNodes.delete(targetId);
       }
-      // this._component.state.checkedNodes.includes(el.id)
-      //   ? this._component.state.checkedNodes.delete(el.id)
-      //   : this._component.state.checkedNodes.set(el.id, { id: el.id, ...el });
-      // }
     }
   }
 }

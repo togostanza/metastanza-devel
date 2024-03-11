@@ -121,11 +121,9 @@ export default defineComponent({
     });
 
     function updateCheckedNodes(node) {
-      console.log(params.data._object.data);
       const targetData = params.data._object.data.find(
         (d) => d.__togostanza_id__ === node.__togostanza_id__
       );
-      console.log(targetData);
       const { __togostanza_id__, ...obj } = targetData;
       state.checkedNodes.has(__togostanza_id__)
         ? state.checkedNodes.delete(__togostanza_id__)
@@ -133,9 +131,6 @@ export default defineComponent({
             __togostanza_id__,
             ...obj,
           });
-      console.log(state.checkedNodes);
-      // TODO: add event handler
-      // console.log([...state.checkedNodes.values()]);
     }
     function getChildNodes([layer, parentId]) {
       state.highligthedNodes[layer - 1] = parentId;
