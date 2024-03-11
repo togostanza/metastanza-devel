@@ -31,8 +31,8 @@ export default class ColumnTree extends MetaStanza {
   }
 
   handleEvent(event) {
+    const { dataUrl, selectedIds } = event.detail;
     if (this.params["event-incoming_change_selected_nodes"]) {
-      const selectedIds = event.detail;
       const targetElements =
         this.element.shadowRoot.querySelectorAll("input.selectable");
 

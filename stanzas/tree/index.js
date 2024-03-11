@@ -722,7 +722,7 @@ export default class Tree extends MetaStanza {
     if (this.params["event-incoming_change_selected_nodes"]) {
       updateSelectedElementClassNameForD3.apply(null, [
         {
-          selectedIds: event.detail,
+          selectedIds: event.detail.selectedIds,
           ...this.selectedEventParams,
         },
       ]);
