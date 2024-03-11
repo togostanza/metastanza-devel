@@ -40,11 +40,6 @@ export default class ColumnTree extends MetaStanza {
         selectedIds.includes(d.__togostanza_id__)
       );
 
-      if (targetElements.length === 0) {
-        this._component.state.checkedNodes = new Map();
-        return;
-      }
-
       const targetElement = targetElements.find(
         (el) => el.__togostanza_id__ === targetId
       );
