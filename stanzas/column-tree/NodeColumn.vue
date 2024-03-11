@@ -134,7 +134,7 @@ export default defineComponent({
 
       drawing.dispatchEvent(
         new CustomEvent("changeSelectedNodes", {
-          detail: selectedIds,
+          detail: { selectedIds, dataUrl: "" },
         })
       );
     }
