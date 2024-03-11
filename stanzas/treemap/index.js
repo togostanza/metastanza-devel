@@ -262,6 +262,7 @@ function draw(el, dataset, opts, stanza) {
     node
       .append("rect")
       .classed("selectable", true)
+      .classed("breadcrumb", (d) => d === root)
       .attr("id", (d) => (d.leafUid = uid("leaf")).id)
       .attr("style", (d) => {
         return `fill: ${

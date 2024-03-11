@@ -16,7 +16,7 @@ svg text {
   }
 }
 
-g rect.selectable {
+g rect.selectable:not(.breadcrumb) {
   &.-selected {
     stroke-width: 5px;
     stroke: var(--togostanza-theme-selected_border_color);
