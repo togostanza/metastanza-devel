@@ -19,7 +19,7 @@
           class="selectable"
           :class="{ '-selected': checkedNodes.get(node.id) }"
           type="checkbox"
-          :checked="checkedNodes.get(node.id)"
+          :checked="checkedNodes.get(node.__togostanza_id__)"
           @input="handleCheckboxClick(node)"
         />
 
@@ -109,32 +109,35 @@ export default defineComponent({
     }
 
     function handleCheckboxClick(node) {
+      // console.log(node);
       setCheckedNode(node);
+      // console.log(this.checkedNodes);
+      console.log([...this.checkedNodes.keys()]);
 
       const drawing = document.querySelector("togostanza-column-tree");
 
-      // get filter nodes
-      const targetElements = Array.from(
-        drawing.shadowRoot.querySelectorAll("input.selectable")
-      );
-      const selectedElements = targetElements.filter((el) => {
-        return el.classList.contains("-selected");
-      });
-      const selectedIds = selectedElements.map(
-        (el) => +el.dataset.togostanzaId
-      );
+      // // get filter nodes
+      // const targetElements = Array.from(
+      //   drawing.shadowRoot.querySelectorAll("input.selectable")
+      // );
+      // const selectedElements = targetElements.filter((el) => {
+      //   return el.classList.contains("-selected");
+      // });
+      // const selectedIds = selectedElements.map(
+      //   (el) => +el.dataset.togostanzaId
+      // );
 
-      const targetId = node.__togostanza_id__;
+      // const targetId = node.__togostanza_id__;
 
-      if (!selectedIds.includes(targetId)) {
-        selectedIds.push(targetId);
-      } else {
-        selectedIds.splice(selectedIds.indexOf(targetId), 1);
-      }
+      // if (!selectedIds.includes(targetId)) {
+      //   selectedIds.push(targetId);
+      // } else {
+      //   selectedIds.splice(selectedIds.indexOf(targetId), 1);
+      // }
 
       drawing.dispatchEvent(
         new CustomEvent("changeSelectedNodes", {
-          detail: { selectedIds, dataUrl: "" },
+          detail: { selectedIds: [...this.checkedNodes.keys()], dataUrl: "" },
         })
       );
     }
