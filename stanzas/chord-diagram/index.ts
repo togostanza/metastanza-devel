@@ -15,10 +15,25 @@ import {
 } from "togostanza-utils";
 import { getMarginsFromCSSString, MarginsI } from "../../lib/utils";
 import { drawChordDiagram } from "./drawChordDiagram";
+import {
+  emitSelectedEventForD3,
+  updateSelectedElementClassNameForD3,
+} from "../../lib/utils";
+
+interface Datum {
+  id: string;
+}
 
 export default class ChordDiagram extends Stanza {
   _data: object;
   tooltip: ToolTip;
+  _chartArea: d3.Selection<SVGGElement, any, SVGElement, any>;
+  selectedEventParams = {
+    targetElementSelector: "g.node",
+    selectedElementClassName: "-selected",
+    selectedElementSelector: ".-selected",
+    idPath: "id",
+  };
 
   menu() {
     return [
@@ -74,6 +89,8 @@ export default class ChordDiagram extends Stanza {
       .append("svg")
       .attr("width", width)
       .attr("height", height);
+
+    this._chartArea = svg;
 
     this.tooltip = new ToolTip();
     root.append(this.tooltip);
@@ -184,6 +201,33 @@ export default class ChordDiagram extends Stanza {
     }
 
     this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
+
+    if (this.params["event-outgoing_change_selected_nodes"]) {
+      this._chartArea
+        .selectAll(this.selectedEventParams.targetElementSelector)
+        .on("click", (_, d: Datum) => {
+          emitSelectedEventForD3.apply(null, [
+            {
+              drawing: this._chartArea,
+              rootElement: this.element,
+              targetId: d.id,
+              ...this.selectedEventParams,
+            },
+          ]);
+        });
+    }
+  }
+
+  handleEvent(event) {
+    if (this.params["event-incoming_change_selected_nodes"]) {
+      updateSelectedElementClassNameForD3.apply(null, [
+        {
+          drawing: this._chartArea,
+          selectedIds: event.detail,
+          ...this.selectedEventParams,
+        },
+      ]);
+    }
   }
 }
 

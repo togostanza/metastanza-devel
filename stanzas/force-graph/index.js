@@ -13,8 +13,20 @@ import {
   downloadTSVMenuItem,
   appendCustomCss,
 } from "togostanza-utils";
+import {
+  emitSelectedEventForD3,
+  updateSelectedElementClassNameForD3,
+} from "../../lib/utils";
 
 export default class ForceGraph extends Stanza {
+  _graphArea;
+  selectedEventParams = {
+    targetElementSelector: ".node-group",
+    selectedElementClassName: "-selected",
+    selectedElementSelector: ".-selected",
+    idPath: "id",
+  };
+
   menu() {
     return [
       downloadSvgMenuItem(this, "force-graph"),
@@ -122,7 +134,7 @@ export default class ForceGraph extends Stanza {
     if (existingSvg) {
       existingSvg.remove();
     }
-    const svg = d3
+    this._graphArea = d3
       .select(el)
       .append("svg")
       .attr("width", width)
@@ -135,7 +147,7 @@ export default class ForceGraph extends Stanza {
       MARGIN,
       width,
       height,
-      svg,
+      svg: this._graphArea,
       color,
       highlightAdjEdges,
       nodeSizeParams,
@@ -152,13 +164,35 @@ export default class ForceGraph extends Stanza {
       params
     );
 
-    drawForceLayout(svg, prepNodes, prepEdges, {
+    drawForceLayout(this._graphArea, prepNodes, prepEdges, {
       ...params,
       symbols,
     });
 
     if (tooltipParams.show) {
       this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
+    }
+    this._graphArea.selectAll("circle.node").on("click", (_, d) => {
+      emitSelectedEventForD3.apply(null, [
+        {
+          drawing: this._graphArea,
+          rootElement: this.element,
+          targetId: d.id,
+          ...this.selectedEventParams,
+        },
+      ]);
+    });
+  }
+
+  handleEvent(event) {
+    if (this.params["event-incoming_change_selected_nodes"]) {
+      updateSelectedElementClassNameForD3.apply(null, [
+        {
+          drawing: this._graphArea,
+          selectedIds: event.detail,
+          ...this.selectedEventParams,
+        },
+      ]);
     }
   }
 }
