@@ -58,7 +58,7 @@ export default class Sunburst extends MetaStanza {
       updateSelectedElementClassNameForD3.apply(null, [
         {
           drawing: this._chartArea,
-          selectedIds: event.detail,
+          selectedIds: event.detail.selectedIds,
           ...this.selectedEventParams,
         },
       ]);

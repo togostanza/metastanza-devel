@@ -27,25 +27,35 @@ export default class ColumnTree extends MetaStanza {
 
     this._app?.unmount();
     this._app = createApp(App, { ...camelCaseParams, root });
-    this._app.mount(root);
+    this._component = this._app.mount(root);
   }
 
   handleEvent(event) {
-    if (this.params["event-incoming_change_selected_nodes"]) {
-      const selectedIds = event.detail;
-      const targetElements =
-        this.element.shadowRoot.querySelectorAll("input.selectable");
+    const { dataUrl, targetId, selectedIds } = event.detail;
+    if (
+      this.params["event-incoming_change_selected_nodes"] &&
+      event.srcElement !== this.element
+    ) {
+      const targetElements = this._data.filter((d) =>
+        selectedIds.includes(d.__togostanza_id__)
+      );
 
-      for (const el of targetElements) {
-        const targetTogostanzaId = +el.dataset.togostanzaId;
-        const isSelected = selectedIds.includes(targetTogostanzaId);
-        const inputElement = this.element.shadowRoot.querySelector(
-          `input[data-togostanza-id="${targetTogostanzaId}"]`
-        );
+      const targetElement = targetElements.find(
+        (el) => el.__togostanza_id__ === targetId
+      );
 
-        if (isSelected !== inputElement.checked) {
-          inputElement.click();
-        }
+      const isSelected = selectedIds.includes(targetId);
+
+      const { checkedNodes } = this._component.state;
+      const nodeExists = checkedNodes.has(targetId);
+
+      if (isSelected && !nodeExists) {
+        checkedNodes.set(targetId, {
+          __togostanza_id__: targetId,
+          ...targetElement,
+        });
+      } else if (!isSelected && nodeExists) {
+        checkedNodes.delete(targetId);
       }
     }
   }
