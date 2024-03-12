@@ -322,7 +322,6 @@ export default class Sunburst extends MetaStanza {
     let timeout;
 
     path
-      .filter((d) => d.children)
       .style("cursor", "pointer")
       .on("click", (e, d) => {
         if (e.detail === 1) {
@@ -336,6 +335,7 @@ export default class Sunburst extends MetaStanza {
           }, 500);
         }
       })
+      .filter((d) => d.children)
       .on("dblclick", (e, d) => {
         clearTimeout(timeout);
         clicked(e, d);
