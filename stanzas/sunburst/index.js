@@ -538,10 +538,6 @@ export default class Sunburst extends MetaStanza {
                 const selectedIds = stanza.selectedIds;
                 const targetId = d.data.data.__togostanza_id__;
 
-                // !stanza.selectedIds.includes(targetId)
-                //   ? stanza.selectedIds.push(targetId)
-                //   : stanza.selectedIds.splice(selectedIds.indexOf(targetId), 1);
-
                 return emitSelectedEventForD3({
                   drawing: stanza._chartArea,
                   rootElement: stanza.element,
