@@ -28,13 +28,12 @@ import {
 
 export default class TreeMapStanza extends MetaStanza {
   _chartArea;
+  selectedIds = [];
   selectedEventParams = {
     targetElementSelector: "g rect.selectable",
     selectedElementClassName: "-selected",
-    selectedElementSelector: ".-selected",
     idPath: "data.data.__togostanza_id__",
   };
-  selectedIds;
 
   menu() {
     return [
@@ -226,6 +225,7 @@ function draw(el, dataset, opts, stanza) {
               drawing: stanza._chartArea,
               rootElement: stanza.element,
               targetId: d.data.data.__togostanza_id__,
+              selectedIds: stanza.selectedIds,
               ...stanza.selectedEventParams,
             });
           }, 500);
@@ -241,7 +241,7 @@ function draw(el, dataset, opts, stanza) {
         updateSelectedElementClassNameForD3.apply(stanza, [
           {
             drawing: stanza._chartArea,
-            selectedIds: stanza.selectedIds ?? [],
+            selectedIds: stanza.selectedIds,
             ...stanza.selectedEventParams,
           },
         ]);

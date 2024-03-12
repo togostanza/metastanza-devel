@@ -29,11 +29,10 @@ let path;
 
 export default class Sunburst extends MetaStanza {
   _chartArea;
-  selectedIds;
+  selectedIds = [];
   selectedEventParams = {
     targetElementSelector: "g path.selectable",
     selectedElementClassName: "-selected",
-    selectedElementSelector: ".-selected",
     idPath: "data.data.__togostanza_id__",
   };
 
@@ -330,9 +329,9 @@ export default class Sunburst extends MetaStanza {
         if (e.detail === 1) {
           timeout = setTimeout(() => {
             return emitSelectedEventForD3({
-              drawing: this._chartArea,
               rootElement: this.element,
               targetId: d.data.data.__togostanza_id__,
+              selectedIds: this.selectedIds,
               ...this.selectedEventParams,
             });
           }, 500);
@@ -533,13 +532,16 @@ export default class Sunburst extends MetaStanza {
           .on("click", (e, d) => {
             if (e.detail === 1) {
               timeout = setTimeout(() => {
-                stanza.selectedIds =
-                  [...stanza.selectedIds, d.data.data.__togostanza_id__] ?? [];
+                stanza.selectedIds = [
+                  ...stanza.selectedIds,
+                  d.data.data.__togostanza_id__,
+                ];
                 console.log(stanza.selectedIds);
                 return emitSelectedEventForD3({
                   drawing: stanza._chartArea,
                   rootElement: stanza.element,
                   targetId: d.data.data.__togostanza_id__,
+                  selectedIds: stanza.selectedIds,
                   ...stanza.selectedEventParams,
                 });
               }, 500);
