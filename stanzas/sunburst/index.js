@@ -322,6 +322,7 @@ export default class Sunburst extends MetaStanza {
     let timeout;
 
     path
+      .filter((d) => d.children)
       .style("cursor", "pointer")
       .on("click", (e, d) => {
         if (e.detail === 1) {
@@ -335,7 +336,6 @@ export default class Sunburst extends MetaStanza {
           }, 500);
         }
       })
-      .filter((d) => d.children)
       .on("dblclick", (e, d) => {
         clearTimeout(timeout);
         clicked(e, d);
@@ -378,7 +378,23 @@ export default class Sunburst extends MetaStanza {
       .attr("pointer-events", "all")
       .on("dblclick", (e, d) => {
         clearTimeout(timeout);
-        clicked(e, d);
+        clicked(e, d.parent);
+      })
+      .on("click", (e, d) => {
+        const isBlankRoot = Boolean(d.current.children);
+        if (isBlankRoot) {
+          return;
+        }
+        if (e.detail === 1) {
+          timeout = setTimeout(() => {
+            return emitSelectedEventForD3({
+              drawing: this._chartArea,
+              rootElement: this.element,
+              targetId: d.data.data.__togostanza_id__,
+              ...this.selectedEventParams,
+            });
+          }, 500);
+        }
       });
 
     //Text labels
@@ -435,7 +451,7 @@ export default class Sunburst extends MetaStanza {
         return;
       }
 
-      parent.datum(p.parent || root);
+      parent.datum(p.parent ? p : root);
 
       parent.attr("cursor", (d) => (d === root ? "auto" : "pointer"));
 
