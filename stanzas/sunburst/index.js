@@ -29,6 +29,7 @@ let path;
 
 export default class Sunburst extends MetaStanza {
   _chartArea;
+  selectedIds;
   selectedEventParams = {
     targetElementSelector: "g path.selectable",
     selectedElementClassName: "-selected",
@@ -532,6 +533,9 @@ export default class Sunburst extends MetaStanza {
           .on("click", (e, d) => {
             if (e.detail === 1) {
               timeout = setTimeout(() => {
+                stanza.selectedIds =
+                  [...stanza.selectedIds, d.data.data.__togostanza_id__] ?? [];
+                console.log(stanza.selectedIds);
                 return emitSelectedEventForD3({
                   drawing: stanza._chartArea,
                   rootElement: stanza.element,
