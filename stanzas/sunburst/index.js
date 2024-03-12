@@ -55,6 +55,8 @@ export default class Sunburst extends MetaStanza {
 
   handleEvent(event) {
     if (this.params["event-incoming_change_selected_nodes"]) {
+      const { selectedIds } = event.detail;
+      this.selectedIds = selectedIds;
       updateSelectedElementClassNameForD3.apply(null, [
         {
           drawing: this._chartArea,
@@ -533,16 +535,18 @@ export default class Sunburst extends MetaStanza {
           .on("click", (e, d) => {
             if (e.detail === 1) {
               timeout = setTimeout(() => {
-                // stanza.selectedIds = [
-                //   ...stanza.selectedIds,
-                //   d.data.data.__togostanza_id__,
-                // ];
+                const selectedIds = stanza.selectedIds;
+                const targetId = d.data.data.__togostanza_id__;
+
+                // !stanza.selectedIds.includes(targetId)
+                //   ? stanza.selectedIds.push(targetId)
+                //   : stanza.selectedIds.splice(selectedIds.indexOf(targetId), 1);
 
                 return emitSelectedEventForD3({
                   drawing: stanza._chartArea,
                   rootElement: stanza.element,
-                  targetId: d.data.data.__togostanza_id__,
-                  selectedIds: stanza.selectedIds,
+                  targetId,
+                  selectedIds,
                   ...stanza.selectedEventParams,
                 });
               }, 500);
