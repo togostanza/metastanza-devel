@@ -218,9 +218,6 @@ function draw(el, dataset, opts, stanza) {
 
     let timeout;
     node
-      .filter((d) => {
-        return d === root ? d.parent : d.children;
-      })
       .attr("cursor", "pointer")
       .on("click", (e, d) => {
         if (e.detail === 1) {
@@ -233,6 +230,9 @@ function draw(el, dataset, opts, stanza) {
             });
           }, 500);
         }
+      })
+      .filter((d) => {
+        return d === root ? d.parent : d.children;
       })
       .on("dblclick", (e, d) => {
         clearTimeout(timeout);
