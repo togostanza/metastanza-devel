@@ -72,10 +72,12 @@ export default class Sunburst extends MetaStanza {
   }
 
   async renderNext() {
+    /* eslint-disable @typescript-eslint/no-this-alias */
+    const that = this;
     this.state = new Proxy(this.state, {
       set(target, key, value) {
         if (key === "currentId") {
-          updateId(getNodeById(value));
+          updateId(getNodeById(value), that);
         }
         return Reflect.set;
       },
@@ -322,7 +324,6 @@ export default class Sunburst extends MetaStanza {
     let timeout;
 
     path
-      .filter((d) => d.children)
       .style("cursor", "pointer")
       .on("click", (e, d) => {
         if (e.detail === 1) {
@@ -336,6 +337,7 @@ export default class Sunburst extends MetaStanza {
           }, 500);
         }
       })
+      .filter((d) => d.children)
       .on("dblclick", (e, d) => {
         clearTimeout(timeout);
         clicked(e, d);
@@ -375,27 +377,7 @@ export default class Sunburst extends MetaStanza {
       .datum(root)
       .attr("r", radius - borderWidth / 2)
       .attr("fill", "none")
-      .attr("pointer-events", "all")
-      .on("dblclick", (e, d) => {
-        clearTimeout(timeout);
-        clicked(e, d.parent);
-      })
-      .on("click", (e, d) => {
-        const isBlankRoot = Boolean(d.current.children);
-        if (isBlankRoot) {
-          return;
-        }
-        if (e.detail === 1) {
-          timeout = setTimeout(() => {
-            return emitSelectedEventForD3({
-              drawing: this._chartArea,
-              rootElement: this.element,
-              targetId: d.data.data.__togostanza_id__,
-              ...this.selectedEventParams,
-            });
-          }, 500);
-        }
-      });
+      .attr("pointer-events", "all");
 
     //Text labels
     const textLabels = g
@@ -446,7 +428,7 @@ export default class Sunburst extends MetaStanza {
       return root.descendants().find((d) => d.data.data.id === id);
     }
 
-    function updateId(p) {
+    function updateId(p, stanza) {
       if (!arcVisible(p.current) && p.current.y1 > 1) {
         return;
       }
@@ -541,6 +523,29 @@ export default class Sunburst extends MetaStanza {
       numArcs
         .transition(t)
         .attrTween("d", (d) => () => middleArcNumberLine(d.current));
+
+      const isBlankRoot = p.data.id === "-1";
+      if (isBlankRoot) {
+        parent.on("click", null).on("dblclick", null);
+      } else {
+        parent
+          .on("click", (e, d) => {
+            if (e.detail === 1) {
+              timeout = setTimeout(() => {
+                return emitSelectedEventForD3({
+                  drawing: stanza._chartArea,
+                  rootElement: stanza.element,
+                  targetId: d.data.data.__togostanza_id__,
+                  ...stanza.selectedEventParams,
+                });
+              }, 500);
+            }
+          })
+          .on("dblclick", (e, d) => {
+            clearTimeout(timeout);
+            clicked(e, d.parent);
+          });
+      }
     }
 
     function arcVisible(d) {
