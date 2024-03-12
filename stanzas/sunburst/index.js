@@ -533,10 +533,10 @@ export default class Sunburst extends MetaStanza {
           .on("click", (e, d) => {
             if (e.detail === 1) {
               timeout = setTimeout(() => {
-                stanza.selectedIds = [
-                  ...stanza.selectedIds,
-                  d.data.data.__togostanza_id__,
-                ];
+                // stanza.selectedIds = [
+                //   ...stanza.selectedIds,
+                //   d.data.data.__togostanza_id__,
+                // ];
 
                 return emitSelectedEventForD3({
                   drawing: stanza._chartArea,
