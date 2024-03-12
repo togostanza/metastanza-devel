@@ -8,6 +8,7 @@ export default abstract class extends Stanza {
   __data: Data;
   _main: HTMLElement;
   abstract renderNext(): Promise<void>;
+  _apiError = false;
 
   get MARGIN(): MarginsI {
     return getMarginsFromCSSString(this.css("--togostanza-canvas-padding"));
@@ -24,13 +25,17 @@ export default abstract class extends Stanza {
 
     // To maintain compatibility, we assign values to __data,
     // but in the future we would like to make _data the return value of Data.load itself.
-    this.__data = await Data.load(this.params["data-url"], {
-      type: this.params["data-type"],
-      mainElement: this._main,
-    });
-
-    this._data = this.__data.data;
-
-    await this.renderNext();
+    try {
+      this.__data = await Data.load(this.params["data-url"], {
+        type: this.params["data-type"],
+        mainElement: this._main,
+      });
+      this._data = this.__data.data;
+      this._apiError = false;
+    } catch (error) {
+      this._apiError = true;
+    } finally {
+      await this.renderNext();
+    }
   }
 }

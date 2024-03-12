@@ -48,6 +48,12 @@ export default class Heatmap extends MetaStanza {
       this.tooltip = new ToolTip();
       root.append(this.tooltip);
     }
+    if (this._apiError) {
+      this.legend?.remove();
+      this.legend = null;
+      this.tooltip?.remove();
+      this.tooltip = null;
+    }
 
     // Styles
     const width = parseFloat(this.css("--togostanza-canvas-width")) || 0;
@@ -135,86 +141,95 @@ export default class Heatmap extends MetaStanza {
       this.yAxisGen = null;
     }
 
-    this._chartArea = select(root)
-      .append("svg")
-      .classed("svg", true)
-      .attr("width", width)
-      .attr("height", height);
-
-    //Drawing axis
-    if (!this.xAxisGen) {
-      this.xAxisGen = new Axis(this._chartArea.node());
-    }
-    if (!this.yAxisGen) {
-      this.yAxisGen = new Axis(this._chartArea.node());
-    }
-    this.xAxisGen.update(xParams);
-    this.yAxisGen.update(yParams);
-    this.xAxisGen.axisGen.tickSizeOuter(0);
-    this.yAxisGen.axisGen.tickSizeOuter(0);
-
-    const graphArea = this._chartArea
-      .append("g")
-      .classed("graph", true)
-      .attr(
-        "transform",
-        `translate(${this.xAxisGen.axisArea.x},${this.xAxisGen.axisArea.y})`
+    if (!this._apiError) {
+      const errorMessageEl = root.querySelector(
+        ".metastanza-error-message-div"
       );
-
-    //Set for each rect
-    const rectGroup = graphArea
-      .append("g")
-      .classed("g-rect", true)
-      .selectAll()
-      .data(dataset, (d) => `${d[xKey]}:${d[yKey]}`)
-      .enter()
-      .append("rect")
-      .classed("rect", true)
-      .attr("x", (d) => this.xAxisGen.scale(d[xKey]))
-      .attr("y", (d) => this.yAxisGen.scale(d[yKey]))
-      .attr("data-tooltip", (d) => tooltipHTML(d))
-      .attr("width", this.xAxisGen.scale.bandwidth())
-      .attr("height", this.yAxisGen.scale.bandwidth())
-      .style("fill", (d) => setColor(d[cellColorKey]));
-
-    if (this.params["event-outgoing_change_selected_nodes"]) {
-      rectGroup.on("click", (e, d) => {
-        select(e.target).raise();
-        return emitSelectedEventForD3.apply(null, [
-          {
-            drawing: this._chartArea,
-            rootElement: this.element,
-            targetId: d.__togostanza_id__,
-            ...this.selectedEventParams,
-          },
-        ]);
-      });
-    }
-
-    this.xAxisGen._g.raise();
-    this.yAxisGen._g.raise();
-
-    this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
-
-    if (legendShow) {
-      if (!this.legend) {
-        this.legend = new Legend();
-        this.root.append(this.legend);
+      if (errorMessageEl) {
+        errorMessageEl.remove();
       }
-      this.legend.setup({
-        items: intervals(setColor).map((interval) => ({
-          id: interval.label,
-          color: interval.color,
-          value: interval.label,
-        })),
-        title: legendTitle,
-        options: {
-          shape: "square",
-        },
-      });
-    } else {
-      this.legend?.remove();
-      this.legend = null;
+
+      this._chartArea = select(root)
+        .append("svg")
+        .classed("svg", true)
+        .attr("width", width)
+        .attr("height", height);
+
+      //Drawing axis
+      if (!this.xAxisGen) {
+        this.xAxisGen = new Axis(this._chartArea.node());
+      }
+      if (!this.yAxisGen) {
+        this.yAxisGen = new Axis(this._chartArea.node());
+      }
+      this.xAxisGen.update(xParams);
+      this.yAxisGen.update(yParams);
+      this.xAxisGen.axisGen.tickSizeOuter(0);
+      this.yAxisGen.axisGen.tickSizeOuter(0);
+
+      const graphArea = this._chartArea
+        .append("g")
+        .classed("graph", true)
+        .attr(
+          "transform",
+          `translate(${this.xAxisGen?.axisArea.x},${this.xAxisGen.axisArea.y})`
+        );
+
+      //Set for each rect
+      const rectGroup = graphArea
+        .append("g")
+        .classed("g-rect", true)
+        .selectAll()
+        .data(dataset, (d) => `${d[xKey]}:${d[yKey]}`)
+        .enter()
+        .append("rect")
+        .classed("rect", true)
+        .attr("x", (d) => this.xAxisGen.scale(d[xKey]))
+        .attr("y", (d) => this.yAxisGen.scale(d[yKey]))
+        .attr("data-tooltip", (d) => tooltipHTML(d))
+        .attr("width", this.xAxisGen.scale.bandwidth())
+        .attr("height", this.yAxisGen.scale.bandwidth())
+        .style("fill", (d) => setColor(d[cellColorKey]));
+
+      if (this.params["event-outgoing_change_selected_nodes"]) {
+        rectGroup.on("click", (e, d) => {
+          select(e.target).raise();
+          return emitSelectedEventForD3.apply(null, [
+            {
+              drawing: this._chartArea,
+              rootElement: this.element,
+              targetId: d.__togostanza_id__,
+              ...this.selectedEventParams,
+            },
+          ]);
+        });
+      }
+
+      this.xAxisGen._g.raise();
+      this.yAxisGen._g.raise();
+
+      this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
+
+      if (legendShow) {
+        if (!this.legend) {
+          this.legend = new Legend();
+          this.root.append(this.legend);
+        }
+        this.legend.setup({
+          items: intervals(setColor).map((interval) => ({
+            id: interval.label,
+            color: interval.color,
+            value: interval.label,
+          })),
+          title: legendTitle,
+          options: {
+            shape: "square",
+          },
+        });
+      } else {
+        this.legend?.remove();
+        this.legend = null;
+      }
     }
 
     //create legend objects
