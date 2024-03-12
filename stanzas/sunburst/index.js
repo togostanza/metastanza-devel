@@ -537,7 +537,7 @@ export default class Sunburst extends MetaStanza {
                   ...stanza.selectedIds,
                   d.data.data.__togostanza_id__,
                 ];
-                console.log(stanza.selectedIds);
+
                 return emitSelectedEventForD3({
                   drawing: stanza._chartArea,
                   rootElement: stanza.element,
