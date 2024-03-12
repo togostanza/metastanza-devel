@@ -107,11 +107,12 @@ export default class TreeMapStanza extends MetaStanza {
 
   handleEvent(event) {
     if (this.params["event-incoming_change_selected_nodes"]) {
-      this.selectedIds = event.detail;
+      const { selectedIds } = event.detail;
+      this.selectedIds = selectedIds;
       updateSelectedElementClassNameForD3.apply(null, [
         {
           drawing: this._chartArea,
-          selectedIds: event.detail.selectedIds,
+          selectedIds,
           ...this.selectedEventParams,
         },
       ]);
@@ -261,6 +262,7 @@ function draw(el, dataset, opts, stanza) {
     node
       .append("rect")
       .classed("selectable", true)
+      .classed("breadcrumb", (d) => d === root)
       .attr("id", (d) => (d.leafUid = uid("leaf")).id)
       .attr("style", (d) => {
         return `fill: ${

@@ -376,18 +376,6 @@ export default class Sunburst extends MetaStanza {
       .attr("r", radius - borderWidth / 2)
       .attr("fill", "none")
       .attr("pointer-events", "all")
-      .on("click", (e, d) => {
-        if (e.detail === 1) {
-          timeout = setTimeout(() => {
-            return emitSelectedEventForD3({
-              drawing: this._chartArea,
-              rootElement: this.element,
-              targetId: d.data.__togostanza_id__,
-              ...this.selectedEventParams,
-            });
-          }, 500);
-        }
-      })
       .on("dblclick", (e, d) => {
         clearTimeout(timeout);
         clicked(e, d);
