@@ -59,6 +59,7 @@ export default class Sunburst extends MetaStanza {
         {
           drawing: this._chartArea,
           selectedIds: event.detail.selectedIds,
+          targetId: event.detail.targetId,
           ...this.selectedEventParams,
         },
       ]);

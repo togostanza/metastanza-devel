@@ -112,6 +112,7 @@ export default class TreeMapStanza extends MetaStanza {
         {
           drawing: this._chartArea,
           selectedIds,
+          targetId: event.detail.targetId,
           ...this.selectedEventParams,
         },
       ]);
