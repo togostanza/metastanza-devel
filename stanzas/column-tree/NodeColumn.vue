@@ -111,11 +111,13 @@ export default defineComponent({
     function handleCheckboxClick(node) {
       setCheckedNode(node);
 
-      const drawing = document.querySelector("togostanza-column-tree");
-
-      drawing.dispatchEvent(
+      document.querySelector("togostanza-column-tree").dispatchEvent(
         new CustomEvent("changeSelectedNodes", {
-          detail: { selectedIds: [...this.checkedNodes.keys()], dataUrl: "" },
+          detail: {
+            selectedIds: [...this.checkedNodes.keys()],
+            targetId: node.__togostanza_id__,
+            dataUrl: "",
+          },
         })
       );
     }

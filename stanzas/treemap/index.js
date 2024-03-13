@@ -28,13 +28,12 @@ import {
 
 export default class TreeMapStanza extends MetaStanza {
   _chartArea;
+  selectedIds = [];
   selectedEventParams = {
     targetElementSelector: "g rect.selectable",
     selectedElementClassName: "-selected",
-    selectedElementSelector: ".-selected",
     idPath: "data.data.__togostanza_id__",
   };
-  selectedIds;
 
   menu() {
     return [
@@ -113,6 +112,7 @@ export default class TreeMapStanza extends MetaStanza {
         {
           drawing: this._chartArea,
           selectedIds,
+          targetId: event.detail.targetId,
           ...this.selectedEventParams,
         },
       ]);
@@ -218,9 +218,6 @@ function draw(el, dataset, opts, stanza) {
 
     let timeout;
     node
-      .filter((d) => {
-        return d === root ? d.parent : d.children;
-      })
       .attr("cursor", "pointer")
       .on("click", (e, d) => {
         if (e.detail === 1) {
@@ -229,10 +226,14 @@ function draw(el, dataset, opts, stanza) {
               drawing: stanza._chartArea,
               rootElement: stanza.element,
               targetId: d.data.data.__togostanza_id__,
+              selectedIds: stanza.selectedIds,
               ...stanza.selectedEventParams,
             });
           }, 500);
         }
+      })
+      .filter((d) => {
+        return d === root ? d.parent : d.children;
       })
       .on("dblclick", (e, d) => {
         clearTimeout(timeout);
@@ -241,7 +242,7 @@ function draw(el, dataset, opts, stanza) {
         updateSelectedElementClassNameForD3.apply(stanza, [
           {
             drawing: stanza._chartArea,
-            selectedIds: stanza.selectedIds ?? [],
+            selectedIds: stanza.selectedIds,
             ...stanza.selectedEventParams,
           },
         ]);
