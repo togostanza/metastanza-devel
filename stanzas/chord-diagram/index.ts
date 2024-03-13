@@ -28,6 +28,7 @@ export default class ChordDiagram extends Stanza {
   _data: object;
   tooltip: ToolTip;
   _chartArea: d3.Selection<SVGGElement, any, SVGElement, any>;
+  selectedIds: Array<string | number> = [];
   selectedEventParams = {
     targetElementSelector: "g.node",
     selectedElementClassName: "-selected",
@@ -211,6 +212,7 @@ export default class ChordDiagram extends Stanza {
               drawing: this._chartArea,
               rootElement: this.element,
               targetId: d.id,
+              selectedIds: this.selectedIds,
               ...this.selectedEventParams,
             },
           ]);
@@ -220,10 +222,11 @@ export default class ChordDiagram extends Stanza {
 
   handleEvent(event) {
     if (this.params["event-incoming_change_selected_nodes"]) {
+      this.selectedIds = event.detail.selectedIds;
       updateSelectedElementClassNameForD3.apply(null, [
         {
           drawing: this._chartArea,
-          selectedIds: event.detail,
+          selectedIds: event.detail.selectedIds,
           ...this.selectedEventParams,
         },
       ]);
