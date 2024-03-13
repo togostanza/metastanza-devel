@@ -146,10 +146,12 @@ export default class Piechart extends MetaStanza {
 
   handleEvent(event) {
     if (this.params["event-incoming_change_selected_nodes"]) {
+      const { selectedIds } = event.detail;
+      this.selectedIds = selectedIds;
       updateSelectedElementClassNameForD3.apply(null, [
         {
           drawing: this._chartArea,
-          selectedIds: event.detail.selectedIds,
+          selectedIds,
           ...this.selectedEventParams,
         },
       ]);
