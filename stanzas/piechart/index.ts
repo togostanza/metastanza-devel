@@ -98,6 +98,7 @@ export default class Piechart extends MetaStanza {
             selectedIds: this.selectedIds,
             targetId: d.data["__togostanza_id__"],
             ...this.selectedEventParams,
+            dataUrl: this.params["data-url"],
           },
         ]);
       });
@@ -145,8 +146,12 @@ export default class Piechart extends MetaStanza {
   }
 
   handleEvent(event) {
-    if (this.params["event-incoming_change_selected_nodes"]) {
-      const { selectedIds } = event.detail;
+    const { selectedIds, dataUrl } = event.detail;
+    console.log(dataUrl, this.params["data-url"]);
+    if (
+      this.params["event-incoming_change_selected_nodes"] &&
+      dataUrl === this.params["data-url"]
+    ) {
       this.selectedIds = selectedIds;
       updateSelectedElementClassNameForD3.apply(null, [
         {

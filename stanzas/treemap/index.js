@@ -105,8 +105,12 @@ export default class TreeMapStanza extends MetaStanza {
   }
 
   handleEvent(event) {
-    if (this.params["event-incoming_change_selected_nodes"]) {
-      const { selectedIds } = event.detail;
+    const { selectedIds, dataUrl } = event.detail;
+    console.log(selectedIds, dataUrl);
+    if (
+      this.params["event-incoming_change_selected_nodes"] &&
+      dataUrl === this.params["data-url"]
+    ) {
       this.selectedIds = selectedIds;
       updateSelectedElementClassNameForD3.apply(null, [
         {
@@ -228,6 +232,7 @@ function draw(el, dataset, opts, stanza) {
               targetId: d.data.data.__togostanza_id__,
               selectedIds: stanza.selectedIds,
               ...stanza.selectedEventParams,
+              dataUrl: stanza.params["data-url"],
             });
           }, 500);
         }
