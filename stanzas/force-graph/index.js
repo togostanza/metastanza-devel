@@ -14,7 +14,7 @@ import {
   appendCustomCss,
 } from "togostanza-utils";
 import {
-  emitSelectedEventForD3,
+  emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
 
@@ -174,7 +174,7 @@ export default class ForceGraph extends Stanza {
       this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
     }
     this._graphArea.selectAll("circle.node").on("click", (_, d) => {
-      emitSelectedEventForD3.apply(null, [
+      emitSelectedEvent.apply(null, [
         {
           drawing: this._graphArea,
           rootElement: this.element,

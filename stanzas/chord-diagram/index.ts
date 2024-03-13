@@ -16,7 +16,7 @@ import {
 import { getMarginsFromCSSString, MarginsI } from "../../lib/utils";
 import { drawChordDiagram } from "./drawChordDiagram";
 import {
-  emitSelectedEventForD3,
+  emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
 
@@ -207,7 +207,7 @@ export default class ChordDiagram extends Stanza {
       this._chartArea
         .selectAll(this.selectedEventParams.targetElementSelector)
         .on("click", (_, d: Datum) => {
-          emitSelectedEventForD3.apply(null, [
+          emitSelectedEvent.apply(null, [
             {
               drawing: this._chartArea,
               rootElement: this.element,

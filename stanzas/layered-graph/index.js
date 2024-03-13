@@ -19,7 +19,7 @@ import {
   appendCustomCss,
 } from "togostanza-utils";
 import {
-  emitSelectedEventForD3,
+  emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
 
@@ -723,7 +723,7 @@ export default class ForceGraph extends Stanza {
     if (this.params["event-outgoing_change_selected_nodes"]) {
       const nodeGroups = this._graphArea.selectAll("circle.node");
       nodeGroups.on("click", (_, d) => {
-        emitSelectedEventForD3.apply(null, [
+        emitSelectedEvent.apply(null, [
           {
             drawing: this._graphArea,
             rootElement: this.element,

@@ -22,7 +22,7 @@ import {
 import shadeColor from "./shadeColor";
 import treemapBinaryLog from "./treemapBinaryLog";
 import {
-  emitSelectedEventForD3,
+  emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
 
@@ -222,7 +222,7 @@ function draw(el, dataset, opts, stanza) {
       .on("click", (e, d) => {
         if (e.detail === 1) {
           timeout = setTimeout(() => {
-            return emitSelectedEventForD3({
+            return emitSelectedEvent({
               drawing: stanza._chartArea,
               rootElement: stanza.element,
               targetId: d.data.data.__togostanza_id__,

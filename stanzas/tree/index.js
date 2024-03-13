@@ -21,7 +21,7 @@ import {
 } from "togostanza-utils";
 import MetaStanza from "../../lib/MetaStanza";
 import {
-  emitSelectedEventForD3,
+  emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
 
@@ -432,7 +432,7 @@ export default class Tree extends MetaStanza {
             .on("click", (e, d) => {
               if (e.detail === 1) {
                 timeout = setTimeout(() => {
-                  return emitSelectedEventForD3.apply(null, [
+                  return emitSelectedEvent.apply(null, [
                     {
                       targetId: d.id,
                       ...this.selectedEventParams,
