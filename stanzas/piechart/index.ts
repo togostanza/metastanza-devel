@@ -147,7 +147,7 @@ export default class Piechart extends MetaStanza {
 
   handleEvent(event) {
     const { selectedIds, dataUrl } = event.detail;
-    console.log(dataUrl, this.params["data-url"]);
+
     if (
       this.params["event-incoming_change_selected_nodes"] &&
       dataUrl === this.params["data-url"]

@@ -87,6 +87,10 @@ export default defineComponent({
       type: String,
       default: "horizontal",
     },
+    params: {
+      type: Object,
+      required: true,
+    },
   },
   emits: ["setParent", "setCheckedNode"],
   setup(props, context) {
@@ -111,15 +115,17 @@ export default defineComponent({
     function handleCheckboxClick(node) {
       setCheckedNode(node);
 
-      document.querySelector("togostanza-column-tree").dispatchEvent(
-        new CustomEvent("changeSelectedNodes", {
-          detail: {
-            selectedIds: [...this.checkedNodes.keys()],
-            targetId: node.__togostanza_id__,
-            dataUrl: "",
-          },
-        })
-      );
+      if (this.params.data._object.eventOutgoingChangeSelectedNodes) {
+        document.querySelector("togostanza-column-tree").dispatchEvent(
+          new CustomEvent("changeSelectedNodes", {
+            detail: {
+              selectedIds: [...this.checkedNodes.keys()],
+              targetId: node.__togostanza_id__,
+              dataUrl: this.params.data._object.dataUrl,
+            },
+          })
+        );
+      }
     }
 
     return {

@@ -55,7 +55,7 @@ export default class Sunburst extends MetaStanza {
 
   handleEvent(event) {
     const { selectedIds, dataUrl } = event.detail;
-    console.log(selectedIds, dataUrl);
+
     if (
       this.params["event-incoming_change_selected_nodes"] &&
       dataUrl === this.params["data-url"]
