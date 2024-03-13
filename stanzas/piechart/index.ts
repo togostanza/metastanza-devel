@@ -17,10 +17,10 @@ import {
 export default class Piechart extends MetaStanza {
   legend: Legend;
   _chartArea: d3.Selection<SVGGElement, {}, SVGElement, any>;
+  selectedIds: Array<string | number> = [];
   selectedEventParams = {
     targetElementSelector: ".pie-slice",
     selectedElementClassName: "-selected",
-    selectedElementSelector: ".-selected",
     idPath: "data.__togostanza_id__",
   };
 
@@ -95,6 +95,7 @@ export default class Piechart extends MetaStanza {
           {
             drawing: this._chartArea,
             rootElement: this.element,
+            selectedIds: this.selectedIds,
             targetId: d.data["__togostanza_id__"],
             ...this.selectedEventParams,
           },
