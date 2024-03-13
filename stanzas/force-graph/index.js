@@ -14,7 +14,7 @@ import {
   appendCustomCss,
 } from "togostanza-utils";
 import {
-  emitSelectedEventForD3,
+  emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
 
@@ -26,6 +26,7 @@ export default class ForceGraph extends Stanza {
     selectedElementSelector: ".-selected",
     idPath: "id",
   };
+  selectedIds = [];
 
   menu() {
     return [
@@ -173,11 +174,12 @@ export default class ForceGraph extends Stanza {
       this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
     }
     this._graphArea.selectAll("circle.node").on("click", (_, d) => {
-      emitSelectedEventForD3.apply(null, [
+      emitSelectedEvent.apply(null, [
         {
           drawing: this._graphArea,
           rootElement: this.element,
           targetId: d.id,
+          selectedIds: this.selectedIds,
           ...this.selectedEventParams,
         },
       ]);
@@ -186,10 +188,11 @@ export default class ForceGraph extends Stanza {
 
   handleEvent(event) {
     if (this.params["event-incoming_change_selected_nodes"]) {
+      this.selectedIds = event.detail.selectedIds;
       updateSelectedElementClassNameForD3.apply(null, [
         {
           drawing: this._graphArea,
-          selectedIds: event.detail,
+          selectedIds: event.detail.selectedIds,
           ...this.selectedEventParams,
         },
       ]);

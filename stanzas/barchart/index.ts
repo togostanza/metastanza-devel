@@ -267,7 +267,7 @@ export default class Barchart extends MetaStanza {
 
   handleEvent(event) {
     if (this.params["event-incoming_change_selected_nodes"]) {
-      changeSelectedStyle.apply(this, [event.detail]);
+      changeSelectedStyle.apply(this, [event.detail.selectedIds]);
     }
   }
 }
@@ -420,7 +420,7 @@ function emitSelectedEvent(this: Barchart, id: any) {
   // dispatch event
   this.element.dispatchEvent(
     new CustomEvent("changeSelectedNodes", {
-      detail: ids,
+      detail: { selectedIds: ids, targetId: id },
     })
   );
   changeSelectedStyle.apply(this, [ids]);

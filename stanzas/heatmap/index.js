@@ -1,7 +1,7 @@
 import MetaStanza from "../../lib/MetaStanza";
 import { select } from "d3";
 import {
-  emitSelectedEventForD3,
+  emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "@/lib/utils";
 import ToolTip from "@/lib/ToolTip";
@@ -39,6 +39,7 @@ export default class Heatmap extends MetaStanza {
     const root = this._main;
     const dataset = this._data;
     this._chartArea = select(root.querySelector("svg"));
+    this.selectedIds = []
     const legendTitle = this.params["legend-title"];
     const legendShow = this.params["legend-visible"];
     const legendGroups = this.params["legend-levels_number"];
@@ -194,11 +195,12 @@ export default class Heatmap extends MetaStanza {
       if (this.params["event-outgoing_change_selected_nodes"]) {
         rectGroup.on("click", (e, d) => {
           select(e.target).raise();
-          return emitSelectedEventForD3.apply(null, [
+          return emitSelectedEvent.apply(null, [
             {
               drawing: this._chartArea,
               rootElement: this.element,
               targetId: d.__togostanza_id__,
+              selectedIds: this.selectedIds,
               ...this.selectedEventParams,
             },
           ]);
@@ -249,10 +251,11 @@ export default class Heatmap extends MetaStanza {
 
   handleEvent(event) {
     if (this.params["event-incoming_change_selected_nodes"]) {
+      this.selectedIds = event.detail.selectedIds;
       updateSelectedElementClassNameForD3.apply(null, [
         {
           drawing: this._chartArea,
-          selectedIds: event.detail,
+          selectedIds: event.detail.selectedIds,
           ...this.selectedEventParams,
         },
       ]);

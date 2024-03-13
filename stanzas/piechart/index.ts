@@ -10,17 +10,17 @@ import getStanzaColors from "../../lib/ColorGenerator";
 import Legend from "../../lib/Legend2";
 import MetaStanza from "../../lib/MetaStanza";
 import {
-  emitSelectedEventForD3,
+  emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
 
 export default class Piechart extends MetaStanza {
   legend: Legend;
   _chartArea: d3.Selection<SVGGElement, {}, SVGElement, any>;
+  selectedIds: Array<string | number> = [];
   selectedEventParams = {
     targetElementSelector: ".pie-slice",
     selectedElementClassName: "-selected",
-    selectedElementSelector: ".-selected",
     idPath: "data.__togostanza_id__",
   };
 
@@ -91,10 +91,11 @@ export default class Piechart extends MetaStanza {
 
     if (this.params["event-outgoing_change_selected_nodes"]) {
       pieGroups.on("click", (_, d) => {
-        return emitSelectedEventForD3.apply(null, [
+        return emitSelectedEvent.apply(null, [
           {
             drawing: this._chartArea,
             rootElement: this.element,
+            selectedIds: this.selectedIds,
             targetId: d.data["__togostanza_id__"],
             ...this.selectedEventParams,
           },
@@ -145,10 +146,12 @@ export default class Piechart extends MetaStanza {
 
   handleEvent(event) {
     if (this.params["event-incoming_change_selected_nodes"]) {
+      const { selectedIds } = event.detail;
+      this.selectedIds = selectedIds;
       updateSelectedElementClassNameForD3.apply(null, [
         {
           drawing: this._chartArea,
-          selectedIds: event.detail.selectedIds,
+          selectedIds,
           ...this.selectedEventParams,
         },
       ]);

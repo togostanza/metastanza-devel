@@ -2,7 +2,7 @@ import MetaStanza from "../../lib/MetaStanza";
 import { select, json, geoMercator, geoAlbersUsa, geoPath } from "d3";
 import { feature } from "topojson-client";
 import {
-  emitSelectedEventForD3,
+  emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "@/lib/utils";
 import ToolTip from "@/lib/ToolTip";
@@ -59,6 +59,7 @@ export default class regionGeographicMap extends MetaStanza {
     const root = this._main;
     const dataset = this._data;
     this._chartArea = select(root.querySelector("svg"));
+    this.selectedIds = []
 
     // Parameters
     const region = this.params["data-region"];
@@ -194,11 +195,12 @@ export default class regionGeographicMap extends MetaStanza {
 
         if (this.params["event-outgoing_change_selected_nodes"]) {
           pathGroup.on("click", (_, d) => {
-            return emitSelectedEventForD3.apply(null, [
+            return emitSelectedEvent.apply(null, [
               {
                 drawing: this._chartArea,
                 rootElement: this.element,
                 targetId: d.__togostanza_id__,
+                selectedIds: this.selectedIds,
                 ...this.selectedEventParams,
               },
             ]);
@@ -306,10 +308,11 @@ export default class regionGeographicMap extends MetaStanza {
 
   handleEvent(event) {
     if (this.params["event-incoming_change_selected_nodes"]) {
+      this.selectedIds = event.detail.selectedIds;
       updateSelectedElementClassNameForD3.apply(null, [
         {
           drawing: this._chartArea,
-          selectedIds: event.detail,
+          selectedIds: event.detail.selectedIds,
           ...this.selectedEventParams,
         },
       ]);
