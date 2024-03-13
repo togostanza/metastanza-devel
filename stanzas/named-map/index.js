@@ -85,6 +85,12 @@ export default class regionGeographicMap extends MetaStanza {
       this.tooltip = new ToolTip();
       root.append(this.tooltip);
     }
+    if (this._apiError) {
+      this.legend?.remove();
+      this.legend = null;
+      this.tooltip?.remove();
+      this.tooltip = null;
+    }
 
     // Color scale
     const areaColorKey = this.params["area-color_key"].trim();
@@ -128,138 +134,154 @@ export default class regionGeographicMap extends MetaStanza {
       .attr("height", svgHeight);
     const g = this._chartArea.append("g").classed("g-path", true);
 
+    // for data-layer error
     const existError = root.querySelector(".error");
     if (existError) {
       root.removeChild(existError);
     }
 
-    // Setting  projection
-    const projection = region === "us" ? geoAlbersUsa() : geoMercator();
-    const path = geoPath().projection(projection);
-
-    let topoJsonType;
-    try {
-      // Combine data
-      const areaUrl = REGION.get(region).url;
-      const topoJson = await json(areaUrl);
-      topoJsonType = Object.keys(topoJson.objects);
-      const geoJson = feature(topoJson, topoJson.objects[objectType]).features;
-
-      const allData = geoJson.map((geoDatum) => {
-        const matchData = dataset.find(
-          (val) => switchProperty(geoDatum) === val[areaColorKey]
-        );
-        return Object.assign({}, geoDatum, {
-          [areaColorValue]: matchData ? matchData[areaColorValue] : undefined,
-          __togostanza_id__: matchData
-            ? matchData.__togostanza_id__
-            : undefined,
-        });
-      });
-
-      // Drawing path
-      const pathGroup = g
-        .selectAll("path")
-        .data(allData)
-        .enter()
-        .append("path")
-        .classed("path", true)
-        .attr("d", path)
-        .attr("data-tooltip", (d) => d[tooltipKey])
-        .attr("fill", (d) =>
-          switchProperty(d) ? setColor(d[areaColorValue]) : "#555"
-        )
-        .on("mouseenter", function () {
-          select(this).raise();
-        });
-
-      if (this.params["event-outgoing_change_selected_nodes"]) {
-        pathGroup.on("click", (_, d) => {
-          return emitSelectedEvent.apply(null, [
-            {
-              drawing: this._chartArea,
-              rootElement: this.element,
-              targetId: d.__togostanza_id__,
-              ...this.selectedEventParams,
-            },
-          ]);
-        });
+    if (!this._apiError) {
+      // for api error
+      const errorMessageEl = root.querySelector(
+        ".metastanza-error-message-div"
+      );
+      if (errorMessageEl) {
+        errorMessageEl.remove();
       }
 
-      // Change scale and translate of group of paths
-      const paths = root.querySelectorAll(".path");
-      let xmin = Infinity,
-        ymin = Infinity,
-        xmax = -Infinity,
-        ymax = -Infinity;
-      paths.forEach((path) => {
-        const bbox = path.getBBox();
-        xmin = Math.min(xmin, bbox.x);
-        ymin = Math.min(ymin, bbox.y);
-        xmax = Math.max(xmax, bbox.x + bbox.width);
-        ymax = Math.max(ymax, bbox.y + bbox.height);
-      });
-      const gPathBbox = {
-        x: xmin,
-        y: ymin,
-        width: xmax - xmin,
-        height: ymax - ymin,
-      };
-      const gPathScale = Math.min(
-        svgWidth / gPathBbox.width,
-        svgHeight / gPathBbox.height
-      );
-      g.attr(
-        "transform",
-        `scale(${gPathScale}) translate(${
-          -gPathBbox.x + (svgWidth / gPathScale - gPathBbox.width) / 2
-        },${-gPathBbox.y + (svgHeight / gPathScale - gPathBbox.height) / 2})`
-      );
-    } catch (error) {
-      const errorElement = document.createElement("p");
-      errorElement.classList.add("error");
+      // Setting  projection
+      const projection = region === "us" ? geoAlbersUsa() : geoMercator();
+      const path = geoPath().projection(projection);
 
-      const topoJsonTypeEl = () =>
-        topoJsonType === undefined
-          ? ""
-          : `( <strong>${topoJsonType.join("</strong>, <strong>")}</strong> )`;
+      let topoJsonType;
+      try {
+        // Combine data
+        const areaUrl = REGION.get(region).url;
+        const topoJson = await json(areaUrl);
+        topoJsonType = Object.keys(topoJson.objects);
+        const geoJson = feature(
+          topoJson,
+          topoJson.objects[objectType]
+        ).features;
 
-      if (region === "user") {
-        errorElement.innerHTML = `<p>Set <strong>"data-user_topojson"</strong> and <strong>"data-layer"</strong>
+        const allData = geoJson.map((geoDatum) => {
+          const matchData = dataset.find(
+            (val) => switchProperty(geoDatum) === val[areaColorKey]
+          );
+          return Object.assign({}, geoDatum, {
+            [areaColorValue]: matchData ? matchData[areaColorValue] : undefined,
+            __togostanza_id__: matchData
+              ? matchData.__togostanza_id__
+              : undefined,
+          });
+        });
+
+        // Drawing path
+        const pathGroup = g
+          .selectAll("path")
+          .data(allData)
+          .enter()
+          .append("path")
+          .classed("path", true)
+          .attr("d", path)
+          .attr("data-tooltip", (d) => d[tooltipKey])
+          .attr("fill", (d) =>
+            switchProperty(d) ? setColor(d[areaColorValue]) : "#555"
+          )
+          .on("mouseenter", function () {
+            select(this).raise();
+          });
+
+        if (this.params["event-outgoing_change_selected_nodes"]) {
+          pathGroup.on("click", (_, d) => {
+            return emitSelectedEvent.apply(null, [
+              {
+                drawing: this._chartArea,
+                rootElement: this.element,
+                targetId: d.__togostanza_id__,
+                ...this.selectedEventParams,
+              },
+            ]);
+          });
+        }
+
+        // Change scale and translate of group of paths
+        const paths = root.querySelectorAll(".path");
+        let xmin = Infinity,
+          ymin = Infinity,
+          xmax = -Infinity,
+          ymax = -Infinity;
+        paths.forEach((path) => {
+          const bbox = path.getBBox();
+          xmin = Math.min(xmin, bbox.x);
+          ymin = Math.min(ymin, bbox.y);
+          xmax = Math.max(xmax, bbox.x + bbox.width);
+          ymax = Math.max(ymax, bbox.y + bbox.height);
+        });
+        const gPathBbox = {
+          x: xmin,
+          y: ymin,
+          width: xmax - xmin,
+          height: ymax - ymin,
+        };
+        const gPathScale = Math.min(
+          svgWidth / gPathBbox.width,
+          svgHeight / gPathBbox.height
+        );
+        g.attr(
+          "transform",
+          `scale(${gPathScale}) translate(${
+            -gPathBbox.x + (svgWidth / gPathScale - gPathBbox.width) / 2
+          },${-gPathBbox.y + (svgHeight / gPathScale - gPathBbox.height) / 2})`
+        );
+      } catch (error) {
+        const errorElement = document.createElement("p");
+        errorElement.classList.add("error");
+
+        const topoJsonTypeEl = () =>
+          topoJsonType === undefined
+            ? ""
+            : `( <strong>${topoJsonType.join(
+                "</strong>, <strong>"
+              )}</strong> )`;
+
+        if (region === "user") {
+          errorElement.innerHTML = `<p>Set <strong>"data-user_topojson"</strong> and <strong>"data-layer"</strong>
           ${topoJsonTypeEl()} correctly!</p>`;
-      } else {
-        errorElement.innerHTML = `<p>Set <strong>"data-layer"</strong>
+        } else {
+          errorElement.innerHTML = `<p>Set <strong>"data-layer"</strong>
         (<strong>${topoJsonType.join(
           "</strong>, <strong>"
         )}</strong>) correctly!</p>`;
+        }
+
+        root.prepend(errorElement);
       }
 
-      root.prepend(errorElement);
-    }
+      // Setting tooltip
+      this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
 
-    // Setting tooltip
-    this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
-
-    // Setting legend
-    if (legendVisible) {
-      if (!this.legend) {
-        this.legend = new Legend();
-        this.root.append(this.legend);
+      // Setting legend
+      if (legendVisible) {
+        if (!this.legend) {
+          this.legend = new Legend();
+          this.root.append(this.legend);
+        }
+        this.legend.setup({
+          items: intervals(setColor).map((interval) => ({
+            id: interval.label,
+            color: interval.color,
+            value: interval.label,
+          })),
+          title: legendTitle,
+          options: {
+            shape: "square",
+          },
+        });
+      } else {
+        this.legend?.remove();
+        this.legend = null;
       }
-      this.legend.setup({
-        items: intervals(setColor).map((interval) => ({
-          id: interval.label,
-          color: interval.color,
-          value: interval.label,
-        })),
-        title: legendTitle,
-        options: {
-          shape: "square",
-        },
-      });
-    } else {
-      this.legend?.remove();
-      this.legend = null;
     }
 
     //Create legend objects
