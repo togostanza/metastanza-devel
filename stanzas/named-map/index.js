@@ -2,7 +2,7 @@ import MetaStanza from "../../lib/MetaStanza";
 import { select, json, geoMercator, geoAlbersUsa, geoPath } from "d3";
 import { feature } from "topojson-client";
 import {
-  emitSelectedEventForD3,
+  emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "@/lib/utils";
 import ToolTip from "@/lib/ToolTip";
@@ -175,7 +175,7 @@ export default class regionGeographicMap extends MetaStanza {
 
       if (this.params["event-outgoing_change_selected_nodes"]) {
         pathGroup.on("click", (_, d) => {
-          return emitSelectedEventForD3.apply(null, [
+          return emitSelectedEvent.apply(null, [
             {
               drawing: this._chartArea,
               rootElement: this.element,

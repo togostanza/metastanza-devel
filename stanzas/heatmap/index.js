@@ -1,7 +1,7 @@
 import MetaStanza from "../../lib/MetaStanza";
 import { select } from "d3";
 import {
-  emitSelectedEventForD3,
+  emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "@/lib/utils";
 import ToolTip from "@/lib/ToolTip";
@@ -194,7 +194,7 @@ export default class Heatmap extends MetaStanza {
       if (this.params["event-outgoing_change_selected_nodes"]) {
         rectGroup.on("click", (e, d) => {
           select(e.target).raise();
-          return emitSelectedEventForD3.apply(null, [
+          return emitSelectedEvent.apply(null, [
             {
               drawing: this._chartArea,
               rootElement: this.element,
