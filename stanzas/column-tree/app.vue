@@ -37,6 +37,7 @@
         :highlighted-node="state.highligthedNodes[index]"
         :value-obj="valueObj"
         :node-value-alignment="state.nodeValueAlignment"
+        :params="params"
         @set-parent="updatePartialColumnData"
         @set-checked-node="updateCheckedNodes"
       />
@@ -90,7 +91,6 @@ export default defineComponent({
   emits: ["resetHighlightedNode"],
   setup(params) {
     params = toRefs(params);
-
     const layerRefs = ref([]);
     const state = reactive({
       keys: {
@@ -203,6 +203,7 @@ export default defineComponent({
       return state.responseJSON.filter(isNormalSearchHit); // array of nodes.
     });
     return {
+      params,
       isValidSearchNode,
       state,
       layerRefs,

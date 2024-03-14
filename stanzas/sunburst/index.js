@@ -54,8 +54,12 @@ export default class Sunburst extends MetaStanza {
   }
 
   handleEvent(event) {
-    if (this.params["event-incoming_change_selected_nodes"]) {
-      const { selectedIds } = event.detail;
+    const { selectedIds, dataUrl } = event.detail;
+
+    if (
+      this.params["event-incoming_change_selected_nodes"] &&
+      dataUrl === this.params["data-url"]
+    ) {
       this.selectedIds = selectedIds;
       updateSelectedElementClassNameForD3.apply(null, [
         {
@@ -336,6 +340,7 @@ export default class Sunburst extends MetaStanza {
               targetId: d.data.data.__togostanza_id__,
               selectedIds: this.selectedIds,
               ...this.selectedEventParams,
+              dataUrl: this.params["data-url"],
             });
           }, 500);
         }
