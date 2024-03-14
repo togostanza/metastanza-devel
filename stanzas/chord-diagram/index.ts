@@ -214,6 +214,7 @@ export default class ChordDiagram extends Stanza {
               targetId: d.id,
               selectedIds: this.selectedIds,
               ...this.selectedEventParams,
+              dataUrl: this.params["data-url"],
             },
           ]);
         });
@@ -221,12 +222,16 @@ export default class ChordDiagram extends Stanza {
   }
 
   handleEvent(event) {
-    if (this.params["event-incoming_change_selected_nodes"]) {
-      this.selectedIds = event.detail.selectedIds;
+    const { selectedIds, dataUrl } = event.detail;
+    if (
+      this.params["event-incoming_change_selected_nodes"] &&
+      dataUrl === this.params["data-url"]
+    ) {
+      this.selectedIds = selectedIds;
       updateSelectedElementClassNameForD3.apply(null, [
         {
           drawing: this._chartArea,
-          selectedIds: event.detail.selectedIds,
+          selectedIds,
           ...this.selectedEventParams,
         },
       ]);
