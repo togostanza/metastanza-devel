@@ -102,6 +102,17 @@ export default class TreeMapStanza extends MetaStanza {
     };
 
     draw(treeMapElement, filteredData, opts, this);
+    if (this._apiError) {
+      this._chartArea?.remove();
+      this._chartArea = null;
+    } else {
+      const errorMessageEl = this._main.querySelector(
+        ".metastanza-error-message-div"
+      );
+      if (errorMessageEl) {
+        errorMessageEl.remove();
+      }
+    }
   }
 
   handleEvent(event) {
