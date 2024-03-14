@@ -567,5 +567,17 @@ export default class Sunburst extends MetaStanza {
     function labelVisible(d) {
       return d.y1 <= depthLim + 1 && d.y0 >= 0;
     }
+
+    if (this._apiError) {
+      this._chartArea?.remove();
+      this._chartArea = null;
+    } else {
+      const errorMessageEl = this._main.querySelector(
+        ".metastanza-error-message-div"
+      );
+      if (errorMessageEl) {
+        errorMessageEl.remove();
+      }
+    }
   }
 }
