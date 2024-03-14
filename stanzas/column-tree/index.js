@@ -34,7 +34,7 @@ export default class ColumnTree extends MetaStanza {
     const { dataUrl, targetId, selectedIds } = event.detail;
     if (
       this.params["event-incoming_change_selected_nodes"] &&
-      event.srcElement !== this.element
+      dataUrl === this.params["data-url"]
     ) {
       const targetElements = this._data.filter((d) =>
         selectedIds.includes(d.__togostanza_id__)

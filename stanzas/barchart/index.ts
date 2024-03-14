@@ -220,7 +220,10 @@ export default class Barchart extends MetaStanza {
     }
     if (this.params["event-outgoing_change_selected_nodes"]) {
       barGroup.on("click", (_, d) =>
-        emitSelectedEvent.apply(this, [d[1][0]["__togostanza_id__"]])
+        emitSelectedEvent.apply(this, [
+          d[1][0]["__togostanza_id__"],
+          this.params["data-url"],
+        ])
       );
     }
 
@@ -266,7 +269,11 @@ export default class Barchart extends MetaStanza {
   }
 
   handleEvent(event) {
-    if (this.params["event-incoming_change_selected_nodes"]) {
+    const { dataUrl } = event.detail;
+    if (
+      this.params["event-incoming_change_selected_nodes"] &&
+      dataUrl === this.params["data-url"]
+    ) {
       changeSelectedStyle.apply(this, [event.detail.selectedIds]);
     }
   }
@@ -404,7 +411,7 @@ function addErrorBars(
 }
 
 // emit selected event
-function emitSelectedEvent(this: Barchart, id: any) {
+function emitSelectedEvent(this: Barchart, id: any, dataUrl: string) {
   // collect selected bars
   const barGroups = this._graphArea.selectAll("g.bar-group");
   const filteredBars = barGroups.filter(".-selected");
@@ -420,7 +427,11 @@ function emitSelectedEvent(this: Barchart, id: any) {
   // dispatch event
   this.element.dispatchEvent(
     new CustomEvent("changeSelectedNodes", {
-      detail: { selectedIds: ids, targetId: id },
+      detail: {
+        selectedIds: ids,
+        targetId: id,
+        dataUrl,
+      },
     })
   );
   changeSelectedStyle.apply(this, [ids]);
