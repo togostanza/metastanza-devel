@@ -60,7 +60,8 @@ interface LegendOptions {
  * Also manages legend and tooltip based on the configuration.
  */
 export function handleApiError(options: HandleApiErrorOptions) {
-  const { stanzaData, drawContent, hasLegend, hasTooltip, legendOptions } = options;
+  const { stanzaData, drawContent, hasLegend, hasTooltip, legendOptions } =
+    options;
   const { _main: main, _apiError: apiError, root } = stanzaData;
   const { isLegendVisible, legendConfiguration } = legendOptions;
 
@@ -108,7 +109,7 @@ function manageLegend(
   config: LegendConfiguration,
   root: ShadowRoot,
   apiError: boolean
-): void {
+) {
   const legendElement = root.querySelector("togostanza--legend2");
   if (!isShow || apiError) {
     legendElement?.remove();
@@ -123,7 +124,7 @@ function manageLegend(
  * Manages the tooltip by removing any existing tooltip and creating a new one if necessary.
  * @param main - The main HTML element where the tooltip will be displayed.
  */
-function manageTooltip(main: HTMLElement): void {
+function manageTooltip(main: HTMLElement) {
   const tooltipElement = main.querySelector("togostanza--tooltip");
   tooltipElement?.remove();
   if (!tooltipElement) {
