@@ -37,11 +37,10 @@ const ASCENDING = "ascending",
 
 export default class Tree extends MetaStanza {
   _chartArea;
+  selectedIds = [];
   selectedEventParams = {
-    stanza: this,
-    targetElementSelector: "g circle",
+    targetElementSelector: "g.circles g",
     selectedElementClassName: "-selected",
-    selectedElementSelector: ".-selected",
     idPath: "id",
   };
   //Stanza download menu contents
@@ -434,8 +433,11 @@ export default class Tree extends MetaStanza {
                 timeout = setTimeout(() => {
                   return emitSelectedEvent.apply(null, [
                     {
+                      rootElement: this.element,
                       targetId: d.id,
+                      selectedIds: this.selectedIds,
                       ...this.selectedEventParams,
+                      dataUrl: this.params["data-url"],
                     },
                   ]);
                 }, 500);
@@ -445,6 +447,14 @@ export default class Tree extends MetaStanza {
               clearTimeout(timeout);
               toggle(d);
               update(d);
+
+              updateSelectedElementClassNameForD3.apply(this, [
+                {
+                  drawing: this._chartArea,
+                  selectedIds: this.selectedIds,
+                  ...this.selectedEventParams,
+                },
+              ]);
             });
         }
 
@@ -719,10 +729,18 @@ export default class Tree extends MetaStanza {
   }
 
   handleEvent(event) {
-    if (this.params["event-incoming_change_selected_nodes"]) {
+    const { selectedIds, dataUrl, targetId } = event.detail;
+
+    if (
+      this.params["event-incoming_change_selected_nodes"] &&
+      dataUrl === this.params["data-url"]
+    ) {
+      this.selectedIds = selectedIds;
       updateSelectedElementClassNameForD3.apply(null, [
         {
-          selectedIds: event.detail.selectedIds,
+          drawing: this._chartArea,
+          selectedIds,
+          targetId,
           ...this.selectedEventParams,
         },
       ]);
