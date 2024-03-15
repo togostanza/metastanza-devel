@@ -57,11 +57,22 @@ export default class TreeMapStanza extends MetaStanza {
     const gapWidth = 2;
 
     console.log(this);
-    const dataset = this.__data.asTree({
-      nodeLabelKey: this.params["node-label_key"].trim(),
-      nodeGroupKey: this.params["node-group_key"].trim(),
-      nodeValueKey: this.params["node-value_key"].trim(),
-    }).data;
+    const dataset = this.__data
+      .asTree({
+        nodeLabelKey: this.params["node-label_key"].trim(),
+        nodeGroupKey: this.params["node-group_key"].trim(),
+        nodeValueKey: this.params["node-value_key"].trim(),
+      })
+      .data.map((d) => {
+        d.__togostanza_id__ = d.id;
+        return d;
+      });
+
+    this.__data.data = this.__data.data.map((d) => {
+      d.__togostanza_id__ = d.id;
+      return d;
+    });
+
     console.log(this.__data.data[2]);
     console.log(dataset[2]);
 
@@ -226,6 +237,7 @@ function draw(el, dataset, opts, stanza) {
     node
       .attr("cursor", "pointer")
       .on("click", (e, d) => {
+        console.log(d.data.data);
         if (e.detail === 1) {
           timeout = setTimeout(() => {
             return emitSelectedEvent({
