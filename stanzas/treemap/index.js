@@ -56,18 +56,23 @@ export default class TreeMapStanza extends MetaStanza {
     const logScale = this.params["node-log_scale"];
     const gapWidth = 2;
 
-    const labelKey = this.params["node-label_key"];
-    const valueKey = this.params["node-value_key"];
+    console.log(this);
+    const dataset = this.__data.asTree({
+      nodeLabelKey: this.params["node-label_key"].trim(),
+      nodeGroupKey: this.params["node-group_key"].trim(),
+      nodeValueKey: this.params["node-value_key"].trim(),
+    }).data;
+    console.log(this.__data.data[2]);
+    console.log(dataset[2]);
 
-    const data = this._data;
-
+    const data = dataset;
     // filter out all elements with n=0
     const filteredData = data.filter(
       (item) =>
-        (item.children && !item[valueKey]) ||
-        (item[valueKey] && item[valueKey] > 0)
+        (item.children?.length > 0 && !item["value"]) ||
+        (item["value"] && item["value"] > 0)
     );
-
+    console.log(filteredData);
     //Add root element if there are more than one elements without parent. D3 cannot process data with more than one root elements
     const rootElems = filteredData
       .map((d, i) => ({
@@ -97,8 +102,6 @@ export default class TreeMapStanza extends MetaStanza {
       colorScale,
       logScale,
       gapWidth,
-      labelKey,
-      valueKey,
     };
 
     draw(treeMapElement, filteredData, opts, this);
@@ -136,8 +139,7 @@ function transformValue(logScale, value) {
 }
 
 function draw(el, dataset, opts, stanza) {
-  const { WIDTH, HEIGHT, logScale, colorScale, gapWidth, labelKey, valueKey } =
-    opts;
+  const { WIDTH, HEIGHT, logScale, colorScale, gapWidth } = opts;
 
   const nested = stratify()
     .id(function (d) {
@@ -169,7 +171,7 @@ function draw(el, dataset, opts, stanza) {
       .ancestors()
       .reverse()
       .map((d) => {
-        return d.data.data[labelKey];
+        return d.data.data["label"];
       })
       .join(" > ");
   };
@@ -190,7 +192,7 @@ function draw(el, dataset, opts, stanza) {
   const treemap = (data) =>
     d3treemap().tile(tile)(
       hierarchy(data)
-        .sum((d) => d.data[valueKey])
+        .sum((d) => d.data["value"])
         .sort((a, b) => b.value - a.value)
         .each((d) => {
           d.value2 = transformValue(logScale, d.value);
@@ -260,8 +262,8 @@ function draw(el, dataset, opts, stanza) {
           ? ""
           : `${name(d)}\n${
               d?.children
-                ? format(sum(d, (d) => d?.data?.data[valueKey] || 0))
-                : d.data.data[valueKey]
+                ? format(sum(d, (d) => d?.data?.data["value"] || 0))
+                : d.data.data["value"]
             }`
       );
 
@@ -274,7 +276,7 @@ function draw(el, dataset, opts, stanza) {
         return `fill: ${
           d === root
             ? "var(--togostanza-theme-background_color)"
-            : colorScale(d.data.data[labelKey])
+            : colorScale(d.data.data["label"])
         }`;
       });
 
@@ -294,7 +296,7 @@ function draw(el, dataset, opts, stanza) {
       .attr("fill", "none")
       .attr("stroke-width", 1)
       .attr("stroke", (d) =>
-        shadeColor(colorScale(d.parent.data.data[labelKey]), -15)
+        shadeColor(colorScale(d.parent.data.data["label"]), -15)
       );
 
     innerNode
@@ -320,7 +322,7 @@ function draw(el, dataset, opts, stanza) {
         if (d === root) {
           return name(d);
         } else {
-          return `${d.data.data[labelKey] || ""}`;
+          return `${d.data.data["label"] || ""}`;
         }
       });
 
@@ -403,7 +405,7 @@ function draw(el, dataset, opts, stanza) {
         .attr("class", "number-label")
         .attr("dy", "1.6em")
         .attr("x", "1.6em")
-        .text((d) => format(sum(d, (d) => d?.data?.data[valueKey] || 0)));
+        .text((d) => format(sum(d, (d) => d?.data?.data["value"] || 0)));
     }
   }
 
