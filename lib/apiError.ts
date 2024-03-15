@@ -6,16 +6,16 @@ import Legend from "./Legend2.js";
  * @interface
  * @property {StanzaData} stanzaData - The data of the current stanza.
  * @property {() => void} drawContent - A function to draw the content of the stanza.
- * @property {boolean} hasLegend - Indicates whether the legend should be displayed.
- * @property {boolean} hasTooltip - Indicates whether tooltips should be displayed.
- * @property {LegendOptions} legendOptions - Configuration options for the legend.
+ * @property {boolean} [hasLegend] - Indicates whether the legend should be displayed.
+ * @property {boolean} [hasTooltip] - Indicates whether tooltips should be displayed.
+ * @property {LegendOptions} [legendOptions] - Configuration options for the legend.
  */
 interface HandleApiErrorOptions {
   stanzaData: StanzaData;
   drawContent: () => void;
-  hasLegend: boolean;
-  hasTooltip: boolean;
-  legendOptions: LegendOptions; // または適切な型
+  hasLegend?: boolean;
+  hasTooltip?: boolean;
+  legendOptions?: LegendOptions;
 }
 
 /**
