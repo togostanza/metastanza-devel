@@ -2,12 +2,29 @@ import ToolTip from "./ToolTip.js";
 import Legend from "./Legend2.js";
 
 /**
+ * Options for handling API errors in the visualization.
+ * @interface
+ * @property {StanzaData} stanzaData - The data of the current stanza.
+ * @property {() => void} drawContent - A function to draw the content of the stanza.
+ * @property {boolean} hasLegend - Indicates whether the legend should be displayed.
+ * @property {boolean} hasTooltip - Indicates whether tooltips should be displayed.
+ * @property {LegendOptions} legendOptions - Configuration options for the legend.
+ */
+interface HandleApiErrorOptions {
+  stanzaData: StanzaData;
+  drawContent: () => void;
+  hasLegend: boolean;
+  hasTooltip: boolean;
+  legendOptions: LegendOptions; // または適切な型
+}
+
+/**
  * Represents the data needed to handle an API error.
  */
 interface StanzaData {
   _main: HTMLElement;
   _apiError: boolean;
-  root: HTMLElement;
+  root: ShadowRoot;
 }
 
 /**
@@ -41,19 +58,9 @@ interface LegendOptions {
 /**
  * Handles API errors by displaying an error message or rendering the content.
  * Also manages legend and tooltip based on the configuration.
- * @param stanzaData - Data related to the stanza.
- * @param drawContent - A function to draw content if there is no error.
- * @param hasLegend - Indicates if the legend should be displayed.
- * @param hasTooltip - Indicates if the tooltip should be displayed.
- * @param legendOptions - Configuration options for the legend.
  */
-export function handleApiError(
-  stanzaData: StanzaData,
-  drawContent: () => void,
-  hasLegend = false,
-  hasTooltip = false,
-  legendOptions: LegendOptions
-): void {
+export function handleApiError(options: HandleApiErrorOptions) {
+  const { stanzaData, drawContent, hasLegend, hasTooltip, legendOptions } = options;
   const { _main: main, _apiError: apiError, root } = stanzaData;
   const { isLegendVisible, legendConfiguration } = legendOptions;
 
@@ -74,7 +81,7 @@ export function handleApiError(
  * @param apiError - Indicates if there is an API error.
  * @param main - The main HTML element to display the error message.
  */
-function handleErrorMessage(apiError: boolean, main: HTMLElement): void {
+function handleErrorMessage(apiError: boolean, main: HTMLElement) {
   const errorMessageEl = main.querySelector(".metastanza-error-message-div");
 
   if (apiError) {
@@ -96,7 +103,12 @@ function handleErrorMessage(apiError: boolean, main: HTMLElement): void {
  * @param root - The root HTML element where the legend will be displayed.
  * @param apiError - Indicates if there is an API error.
  */
-function manageLegend(isShow: boolean, config: LegendConfiguration, root: HTMLElement, apiError: boolean): void {
+function manageLegend(
+  isShow: boolean,
+  config: LegendConfiguration,
+  root: ShadowRoot,
+  apiError: boolean
+): void {
   const legendElement = root.querySelector("togostanza--legend2");
   if (!isShow || apiError) {
     legendElement?.remove();
