@@ -57,6 +57,8 @@ export default class TreeMapStanza extends MetaStanza {
     const gapWidth = 2;
 
     console.log(this);
+
+    // TODO no __togostanza_id__ in data
     const dataset = this.__data
       .asTree({
         nodeLabelKey: this.params["node-label_key"].trim(),
@@ -64,12 +66,12 @@ export default class TreeMapStanza extends MetaStanza {
         nodeValueKey: this.params["node-value_key"].trim(),
       })
       .data.map((d) => {
-        d.__togostanza_id__ = d.id;
+        d.__togostanza_id__ = d.id - 1;
         return d;
       });
 
     this.__data.data = this.__data.data.map((d) => {
-      d.__togostanza_id__ = d.id;
+      d.__togostanza_id__ = d.id - 1;
       return d;
     });
 
