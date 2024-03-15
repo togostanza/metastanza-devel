@@ -4,8 +4,7 @@ import {
   emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "@/lib/utils";
-import ToolTip from "@/lib/ToolTip";
-import Legend from "@/lib/Legend2";
+import { handleApiError } from "@/lib/apiError";
 import { getGradationColor } from "@/lib/ColorGenerator";
 import { Axis } from "@/lib/AxisMixin";
 import {
@@ -39,26 +38,7 @@ export default class Heatmap extends MetaStanza {
     const root = this._main;
     const dataset = this._data;
     this._chartArea = select(root.querySelector("svg"));
-    this.selectedIds = []
-    const legendTitle = this.params["legend-title"];
-    const legendShow = this.params["legend-visible"];
-    const legendGroups = this.params["legend-levels_number"];
-    const tooltipKey = this.params["tooltips-key"].trim();
-    const tooltipHTML = (d) => d[tooltipKey];
-    if (!this.tooltip) {
-      this.tooltip = new ToolTip();
-      root.append(this.tooltip);
-    }
-    if (this._apiError) {
-      this.legend?.remove();
-      this.legend = null;
-      this.tooltip?.remove();
-      this.tooltip = null;
-    }
-
-    // Styles
-    const width = parseFloat(this.css("--togostanza-canvas-width")) || 0;
-    const height = parseFloat(this.css("--togostanza-canvas-height")) || 0;
+    this.selectedIds = [];
 
     // Color scale
     const cellColorKey = this.params["cell-color_key"].trim();
@@ -85,6 +65,30 @@ export default class Heatmap extends MetaStanza {
       [cellColorMin, cellColorMid, cellColorMax],
       [cellDomainMin, cellDomainMid, cellDomainMax]
     );
+
+    // Legend
+    const legendTitle = this.params["legend-title"];
+    const legendShow = this.params["legend-visible"];
+    const legendGroups = this.params["legend-levels_number"];
+    const legendConfiguration = {
+      items: intervals(setColor).map((interval) => ({
+        id: interval.label,
+        color: interval.color,
+        value: interval.label,
+      })),
+      title: legendTitle,
+      options: {
+        shape: "square",
+      },
+    };
+
+    // Tooltip
+    const tooltipKey = this.params["tooltips-key"].trim();
+    const tooltipHTML = (d) => d[tooltipKey];
+
+    // Styles
+    const width = parseFloat(this.css("--togostanza-canvas-width")) || 0;
+    const height = parseFloat(this.css("--togostanza-canvas-height")) || 0;
 
     // Axis
     const axisArea = {
@@ -142,14 +146,7 @@ export default class Heatmap extends MetaStanza {
       this.yAxisGen = null;
     }
 
-    if (!this._apiError) {
-      const errorMessageEl = root.querySelector(
-        ".metastanza-error-message-div"
-      );
-      if (errorMessageEl) {
-        errorMessageEl.remove();
-      }
-
+    const drawContent = () => {
       this._chartArea = select(root)
         .append("svg")
         .classed("svg", true)
@@ -209,30 +206,14 @@ export default class Heatmap extends MetaStanza {
 
       this.xAxisGen._g.raise();
       this.yAxisGen._g.raise();
+    };
 
-      this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
-
-      if (legendShow) {
-        if (!this.legend) {
-          this.legend = new Legend();
-          this.root.append(this.legend);
-        }
-        this.legend.setup({
-          items: intervals(setColor).map((interval) => ({
-            id: interval.label,
-            color: interval.color,
-            value: interval.label,
-          })),
-          title: legendTitle,
-          options: {
-            shape: "square",
-          },
-        });
-      } else {
-        this.legend?.remove();
-        this.legend = null;
-      }
-    }
+    const legendOptions = {
+      isLegendVisible: legendShow,
+      legendConfiguration,
+    };
+    // Draw content and handle api errors
+    handleApiError(this, drawContent, true, true, legendOptions);
 
     //create legend objects
     function intervals(color, steps = legendGroups >= 2 ? legendGroups : 2) {
