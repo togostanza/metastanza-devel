@@ -220,6 +220,7 @@ export default class Heatmap extends MetaStanza {
             {
               drawing: this._chartArea,
               rootElement: this.element,
+              dataUrl: this.params["data-url"],
               targetId: d["__togostanza_id__"],
               selectedIds: this.selectedIds,
               ...this.selectedEventParams,
