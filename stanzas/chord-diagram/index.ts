@@ -16,6 +16,7 @@ import {
   MarginsI,
   emitSelectedEvent,
   getMarginsFromCSSString,
+  toggleSelectIds,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
 import { drawChordDiagram } from "./drawChordDiagram";
@@ -215,10 +216,23 @@ export default class ChordDiagram extends MetaStanza {
 
     this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
 
-    if (this.params["event-outgoing_change_selected_nodes"]) {
-      this._chartArea
-        .selectAll(this.selectedEventParams.targetElementSelector)
-        .on("click", (_, d: Datum) => {
+    this._chartArea
+      .selectAll(this.selectedEventParams.targetElementSelector)
+      .on("click", (_, d: Datum) => {
+        toggleSelectIds.apply(null, [
+          {
+            selectedIds: this.selectedIds,
+            targetId: d.id,
+          },
+        ]);
+        updateSelectedElementClassNameForD3.apply(null, [
+          {
+            drawing: this._chartArea,
+            selectedIds: this.selectedIds,
+            ...this.selectedEventParams,
+          },
+        ]);
+        if (this.params["event-outgoing_change_selected_nodes"]) {
           emitSelectedEvent.apply(null, [
             {
               drawing: this._chartArea,
@@ -229,8 +243,8 @@ export default class ChordDiagram extends MetaStanza {
               dataUrl: this.params["data-url"],
             },
           ]);
-        });
-    }
+        }
+      });
   }
 
   handleEvent(event) {

@@ -18,6 +18,7 @@ import {
 import loadData from "togostanza-utils/load-data";
 import MetaStanza from "../../lib/MetaStanza";
 import {
+  toggleSelectIds,
   emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
@@ -720,9 +721,22 @@ export default class ForceGraph extends MetaStanza {
       this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
     }
 
-    if (this.params["event-outgoing_change_selected_nodes"]) {
-      const nodeGroups = this._graphArea.selectAll("circle.node");
-      nodeGroups.on("click", (_, d) => {
+    const nodeGroups = this._graphArea.selectAll("circle.node");
+    nodeGroups.on("click", (_, d) => {
+      toggleSelectIds.apply(null, [
+        {
+          selectedIds: this.selectedIds,
+          targetId: d.id,
+        },
+      ]);
+      updateSelectedElementClassNameForD3.apply(null, [
+        {
+          drawing: this._graphArea,
+          selectedIds: this.selectedIds,
+          ...this.selectedEventParams,
+        },
+      ]);
+      if (this.params["event-outgoing_change_selected_nodes"]) {
         emitSelectedEvent.apply(null, [
           {
             drawing: this._graphArea,
@@ -733,8 +747,8 @@ export default class ForceGraph extends MetaStanza {
             dataUrl: this.params["data-url"],
           },
         ]);
-      });
-    }
+      }
+    });
 
     if (this._apiError) {
       this._graphArea?.remove();
