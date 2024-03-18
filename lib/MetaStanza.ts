@@ -9,6 +9,7 @@ export default abstract class extends Stanza {
   _main: HTMLElement;
   abstract renderNext(): Promise<void>;
   _apiError = false;
+  _error: Error;
 
   get MARGIN(): MarginsI {
     return getMarginsFromCSSString(this.css("--togostanza-canvas-padding"));
@@ -34,6 +35,7 @@ export default abstract class extends Stanza {
       this._apiError = false;
     } catch (error) {
       this._apiError = true;
+      this._error = error;
     } finally {
       await this.renderNext();
     }
