@@ -267,8 +267,12 @@ export default class Heatmap extends MetaStanza {
   }
 
   handleEvent(event: CustomEvent) {
-    if (this.params["event-incoming_change_selected_nodes"]) {
-      this.selectedIds = event.detail.selectedIds;
+    const { selectedIds, dataUrl } = event.detail;
+    if (
+      this.params["event-incoming_change_selected_nodes"] &&
+      dataUrl === this.params["data-url"]
+    ){
+      this.selectedIds = selectedIds;
       updateSelectedElementClassNameForD3.apply(null, [
         {
           drawing: this._chartArea,
