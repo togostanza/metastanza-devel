@@ -7,6 +7,8 @@ interface MarginsI {
 
 export function getMarginsFromCSSString(cssString: string): MarginsI;
 
+export function toggleSelectIds({ targetId, selectedIds }): void;
+
 export function emitSelectedEvent({
   drawing,
   rootElement,
