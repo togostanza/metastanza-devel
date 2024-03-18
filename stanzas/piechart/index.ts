@@ -143,6 +143,20 @@ export default class Piechart extends MetaStanza {
       this.legend.remove();
       this.legend = null;
     }
+
+    if (this._apiError) {
+      this.legend.remove();
+      this.legend = null;
+      this._chartArea.remove();
+      this._chartArea = null;
+    } else {
+      const errorMessageEl = this._main.querySelector(
+        ".metastanza-error-message-div"
+      );
+      if (errorMessageEl) {
+        errorMessageEl.remove();
+      }
+    }
   }
 
   handleEvent(event) {

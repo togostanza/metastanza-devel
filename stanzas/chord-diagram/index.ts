@@ -1,31 +1,31 @@
-import Stanza from "togostanza/stanza";
 import * as d3 from "d3";
+import {
+  appendCustomCss,
+  downloadCSVMenuItem,
+  downloadJSONMenuItem,
+  downloadPngMenuItem,
+  downloadSvgMenuItem,
+  downloadTSVMenuItem,
+} from "togostanza-utils";
 import loadData from "togostanza-utils/load-data";
+import getStanzaColors from "../../lib/ColorGenerator";
+import MetaStanza from "../../lib/MetaStanza";
 import ToolTip from "../../lib/ToolTip";
 import prepareGraphData from "../../lib/prepareGraphData";
-import drawCircleLayout from "./drawCircleLayout";
-import getStanzaColors from "../../lib/ColorGenerator";
 import {
-  downloadSvgMenuItem,
-  downloadPngMenuItem,
-  downloadJSONMenuItem,
-  downloadCSVMenuItem,
-  downloadTSVMenuItem,
-  appendCustomCss,
-} from "togostanza-utils";
-import { getMarginsFromCSSString, MarginsI } from "../../lib/utils";
-import { drawChordDiagram } from "./drawChordDiagram";
-import {
+  MarginsI,
   emitSelectedEvent,
+  getMarginsFromCSSString,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
+import { drawChordDiagram } from "./drawChordDiagram";
+import drawCircleLayout from "./drawCircleLayout";
 
 interface Datum {
   id: string;
 }
 
-export default class ChordDiagram extends Stanza {
-  _data: object;
+export default class ChordDiagram extends MetaStanza {
   tooltip: ToolTip;
   _chartArea: d3.Selection<SVGGElement, any, SVGElement, any>;
   selectedIds: Array<string | number> = [];
@@ -46,7 +46,7 @@ export default class ChordDiagram extends Stanza {
     ];
   }
 
-  async render() {
+  async renderNext() {
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     const setFallbackVal = (param, defVal) => {
@@ -61,6 +61,18 @@ export default class ChordDiagram extends Stanza {
 
     const width = parseInt(css("--togostanza-canvas-width"));
     const height = parseInt(css("--togostanza-canvas-height"));
+
+    if (this._apiError) {
+      this._chartArea?.remove();
+      this._chartArea = null;
+    } else {
+      const errorMessageEl = this._main.querySelector(
+        ".metastanza-error-message-div"
+      );
+      if (errorMessageEl) {
+        errorMessageEl.remove();
+      }
+    }
 
     const values = await loadData(
       this.params["data-url"],

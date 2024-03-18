@@ -1,29 +1,29 @@
-import Stanza from "togostanza/stanza";
-import * as d3 from "d3";
-import { _3d } from "d3-3d";
-import loadData from "togostanza-utils/load-data";
-import ToolTip from "@/lib/ToolTip";
 import getStanzaColors from "@/lib/ColorGenerator";
 import { LayeredGraphDataModel } from "@/lib/GraphDataSchema";
-import { curvedLink, straightLink } from "./curvedLink";
+import ToolTip from "@/lib/ToolTip";
 import prepareGraphData, {
   get3DEdges,
   getGroupPlanes,
 } from "@/lib/prepareGraphData";
+import * as d3 from "d3";
+import { _3d } from "d3-3d";
 import {
-  downloadSvgMenuItem,
-  downloadPngMenuItem,
-  downloadJSONMenuItem,
-  downloadCSVMenuItem,
-  downloadTSVMenuItem,
   appendCustomCss,
+  downloadCSVMenuItem,
+  downloadJSONMenuItem,
+  downloadPngMenuItem,
+  downloadSvgMenuItem,
+  downloadTSVMenuItem,
 } from "togostanza-utils";
+import loadData from "togostanza-utils/load-data";
+import MetaStanza from "../../lib/MetaStanza";
 import {
   emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
+import { curvedLink, straightLink } from "./curvedLink";
 
-export default class ForceGraph extends Stanza {
+export default class ForceGraph extends MetaStanza {
   _graphArea;
   selectedEventParams = {
     targetElementSelector: ".node-g._3d",
@@ -43,7 +43,7 @@ export default class ForceGraph extends Stanza {
     ];
   }
 
-  async render() {
+  async renderNext() {
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
@@ -734,6 +734,18 @@ export default class ForceGraph extends Stanza {
           },
         ]);
       });
+    }
+
+    if (this._apiError) {
+      this._graphArea?.remove();
+      this._graphArea = null;
+    } else {
+      const errorMessageEl = this._main.querySelector(
+        ".metastanza-error-message-div"
+      );
+      if (errorMessageEl) {
+        errorMessageEl.remove();
+      }
     }
   }
 

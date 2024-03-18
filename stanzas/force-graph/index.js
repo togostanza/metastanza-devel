@@ -1,24 +1,24 @@
-import Stanza from "togostanza/stanza";
+import ToolTip from "@/lib/ToolTip";
+import prepareGraphData from "@/lib/prepareGraphData";
 import * as d3 from "d3";
 import { Data } from "togostanza-utils/data";
-import ToolTip from "@/lib/ToolTip";
+import MetaStanza from "../../lib/MetaStanza";
 import drawForceLayout from "./drawForceLayout";
-import prepareGraphData from "@/lib/prepareGraphData";
 
 import {
-  downloadSvgMenuItem,
-  downloadPngMenuItem,
-  downloadJSONMenuItem,
-  downloadCSVMenuItem,
-  downloadTSVMenuItem,
   appendCustomCss,
+  downloadCSVMenuItem,
+  downloadJSONMenuItem,
+  downloadPngMenuItem,
+  downloadSvgMenuItem,
+  downloadTSVMenuItem,
 } from "togostanza-utils";
 import {
   emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
 
-export default class ForceGraph extends Stanza {
+export default class ForceGraph extends MetaStanza {
   _graphArea;
   selectedEventParams = {
     targetElementSelector: ".node-group",
@@ -38,7 +38,7 @@ export default class ForceGraph extends Stanza {
     ];
   }
 
-  async render() {
+  async renderNext() {
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
@@ -185,6 +185,18 @@ export default class ForceGraph extends Stanza {
         },
       ]);
     });
+
+    if (this._apiError) {
+      this._graphArea?.remove();
+      this._graphArea = null;
+    } else {
+      const errorMessageEl = this._main.querySelector(
+        ".metastanza-error-message-div"
+      );
+      if (errorMessageEl) {
+        errorMessageEl.remove();
+      }
+    }
   }
 
   handleEvent(event) {
