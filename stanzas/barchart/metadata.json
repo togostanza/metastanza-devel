@@ -27,6 +27,12 @@
       "stanza:required": true
     },
     {
+      "stanza:key": "data-bin_key",
+      "stanza:type": "text",
+      "stanza:example": "count",
+      "stanza:description": "If specified, the key is processed as a bin"
+    },
+    {
       "stanza:key": "axis-x-key",
       "stanza:type": "text",
       "stanza:example": "chromosome",

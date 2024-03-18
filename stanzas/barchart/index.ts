@@ -33,6 +33,17 @@ export default class Barchart extends MetaStanza {
   }
 
   async renderNext() {
+    // If "binKey" is specified, this component behaves as a histogram; if not, it behaves as a bar chart.
+    const binKey = this.params["data-bin_key"];
+    console.log(binKey)
+    if (binKey) {
+      this.drawHistogram(binKey);
+    } else {
+      this.drawBarChart();
+    }
+  }
+
+  drawBarChart() {
     const color = scaleOrdinal().range(getStanzaColors(this));
 
     const width = +this.css("--togostanza-canvas-width");
@@ -40,6 +51,7 @@ export default class Barchart extends MetaStanza {
 
     const xKeyName = this.params["axis-x-key"];
     const yKeyName = this.params["axis-y-key"];
+    console.log(xKeyName, yKeyName)
     const xAxisTitle =
       typeof this.params["axis-x-title"] === "undefined"
         ? xKeyName
@@ -64,6 +76,7 @@ export default class Barchart extends MetaStanza {
     const y2Sym = Symbol("y2");
 
     const values = structuredClone(this._data);
+    console.log(values);
 
     const xAxisLabels = [
       ...new Set(values.map((d) => d[xKeyName])),
@@ -84,6 +97,7 @@ export default class Barchart extends MetaStanza {
       map.get(curr[groupKeyName]).push(curr);
       return map;
     }, new Map());
+    console.log(this._dataByGroup)
 
     this._dataByX = values.reduce((map, curr) => {
       if (!map.has(curr[xKeyName])) {
@@ -92,8 +106,10 @@ export default class Barchart extends MetaStanza {
       map.get(curr[xKeyName]).push(curr);
       return map;
     }, new Map());
+    console.log(this._dataByX)
 
     const groupNames = this._dataByGroup.keys() as Iterable<string>;
+    console.log(groupKeyName)
 
     color.domain(groupNames);
 
@@ -263,6 +279,11 @@ export default class Barchart extends MetaStanza {
       }
       this.tooltips.setup(this._main.querySelectorAll("[data-tooltip]"));
     }
+
+  }
+
+  drawHistogram(binKey: string,) {
+    console.log(binKey)
   }
 
   handleEvent(event) {
