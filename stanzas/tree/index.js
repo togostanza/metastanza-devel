@@ -476,7 +476,12 @@ export default class Tree extends MetaStanza {
               ? nodeRadius(d.data.value)
               : parseFloat(aveRadius)
           )
-          .attr("fill", setColor);
+          .attr("fill", setColor)
+          .attr("data-id", (d) => {
+            console.log(d);
+            // TODO change to togostanza id later
+            return d.id;
+          });
 
         if (showToolTips) {
           this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
@@ -538,6 +543,11 @@ export default class Tree extends MetaStanza {
               case RADIAL:
                 return d.x < Math.PI === !d.children ? "start" : "end";
             }
+          })
+          .attr("data-id", (d) => {
+            console.log(d);
+            // TODO change to togostanza id later
+            return d.id;
           })
           .text((d) => d.data.label || "");
 
