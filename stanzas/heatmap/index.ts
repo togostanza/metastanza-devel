@@ -1,13 +1,13 @@
 import MetaStanza from "../../lib/MetaStanza";
 import { select } from "d3";
+import { ScaleLinear } from "d3-scale";
 import {
   emitSelectedEvent,
   updateSelectedElementClassNameForD3,
-} from "@/lib/utils";
-import ToolTip from "@/lib/ToolTip";
-import Legend from "@/lib/Legend2";
-import { getGradationColor } from "@/lib/ColorGenerator";
-import { Axis } from "@/lib/AxisMixin";
+} from "../../lib/utils";
+import { handleApiError } from "../../lib/apiError";
+import { getGradationColor } from "../../lib/ColorGenerator";
+import { Axis } from "../../lib/AxisMixin";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -16,7 +16,21 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 
+interface DataItem {
+  [key: string]: string | number;
+  __togostanza_id: number | string;
+}
+interface Interval {
+  label: number;
+  color: string;
+}
+
 export default class Heatmap extends MetaStanza {
+  _chartArea: d3.Selection<SVGGElement, unknown, SVGElement, undefined>;
+  selectedIds: Array<string | number> = [];
+  xAxisGen = null;
+  yAxisGen = null;
+
   selectedEventParams = {
     targetElementSelector: ".rect",
     selectedElementClassName: "-selected",
@@ -37,54 +51,61 @@ export default class Heatmap extends MetaStanza {
   async renderNext() {
     // Parameters
     const root = this._main;
-    const dataset = this._data;
+    const dataset: DataItem[] = this._data;
     this._chartArea = select(root.querySelector("svg"));
-    this.selectedIds = []
-    const legendTitle = this.params["legend-title"];
-    const legendShow = this.params["legend-visible"];
-    const legendGroups = this.params["legend-levels_number"];
-    const tooltipKey = this.params["tooltips-key"].trim();
-    const tooltipHTML = (d) => d[tooltipKey];
-    if (!this.tooltip) {
-      this.tooltip = new ToolTip();
-      root.append(this.tooltip);
-    }
-    if (this._apiError) {
-      this.legend?.remove();
-      this.legend = null;
-      this.tooltip?.remove();
-      this.tooltip = null;
-    }
-
-    // Styles
-    const width = parseFloat(this.css("--togostanza-canvas-width")) || 0;
-    const height = parseFloat(this.css("--togostanza-canvas-height")) || 0;
+    this.selectedIds = [];
 
     // Color scale
-    const cellColorKey = this.params["cell-color_key"].trim();
-    const cellColorMin = this.params["cell-color_min"];
-    const cellColorMid = this.params["cell-color_mid"];
-    const cellColorMax = this.params["cell-color_max"];
+    const cellColorKey: string = this.params["cell-color_key"].trim();
+    const cellColorMin: number = this.params["cell-color_min"];
+    const cellColorMid: number = this.params["cell-color_mid"];
+    const cellColorMax: number = this.params["cell-color_max"];
     let cellDomainMin = parseFloat(this.params["cell-value_min"]);
     let cellDomainMid = parseFloat(this.params["cell-value_mid"]);
     let cellDomainMax = parseFloat(this.params["cell-value_max"]);
-    const values = dataset.map((d) => parseFloat(d[cellColorKey]));
+    const values = dataset.map((d) => {
+      const value = d[cellColorKey];
+      return parseFloat(typeof value === "number" ? value.toString() : value);
+    });
 
-    if (isNaN(parseFloat(cellDomainMin))) {
+    if (isNaN(cellDomainMin)) {
       cellDomainMin = Math.min(...values);
     }
-    if (isNaN(parseFloat(cellDomainMax))) {
+    if (isNaN(cellDomainMax)) {
       cellDomainMax = Math.max(...values);
     }
-    if (isNaN(parseFloat(cellDomainMid))) {
+    if (isNaN(cellDomainMid)) {
       cellDomainMid = (cellDomainMax + cellDomainMin) / 2;
     }
 
-    const setColor = getGradationColor(
+    const setColor: ScaleLinear<string, number> = getGradationColor(
       this,
       [cellColorMin, cellColorMid, cellColorMax],
       [cellDomainMin, cellDomainMid, cellDomainMax]
     );
+
+    // Legend
+    const legendTitle = this.params["legend-title"];
+    const isLegendVisible = this.params["legend-visible"];
+    const legendGroups = this.params["legend-levels_number"];
+    const legendConfiguration = {
+      items: intervals(setColor).map((interval) => ({
+        id: interval.label,
+        color: interval.color,
+        value: interval.label,
+      })),
+      title: legendTitle,
+      options: {
+        shape: "square",
+      },
+    };
+
+    // Tooltip
+    const tooltipKey = this.params["tooltips-key"].trim();
+
+    // Styles
+    const width = parseFloat(this.css("--togostanza-canvas-width")) || 0;
+    const height = parseFloat(this.css("--togostanza-canvas-height")) || 0;
 
     // Axis
     const axisArea = {
@@ -103,6 +124,7 @@ export default class Heatmap extends MetaStanza {
       title: this.params["axis-x-title"] || xKey,
       titlePadding: this.params["axis-x-title_padding"] || 0,
       scale: "ordinal",
+      margins: {},
       gridInterval: 0,
       gridIntervalUnits: undefined,
       ticksInterval: undefined,
@@ -119,6 +141,7 @@ export default class Heatmap extends MetaStanza {
       title: this.params["axis-y-title"] || yKey,
       titlePadding: this.params["axis-y-title_padding"] || 0,
       scale: "ordinal",
+      margins: {},
       gridInterval: 0,
       gridIntervalUnits: undefined,
       ticksInterval: undefined,
@@ -142,14 +165,7 @@ export default class Heatmap extends MetaStanza {
       this.yAxisGen = null;
     }
 
-    if (!this._apiError) {
-      const errorMessageEl = root.querySelector(
-        ".metastanza-error-message-div"
-      );
-      if (errorMessageEl) {
-        errorMessageEl.remove();
-      }
-
+    const drawContent = () => {
       this._chartArea = select(root)
         .append("svg")
         .classed("svg", true)
@@ -187,10 +203,15 @@ export default class Heatmap extends MetaStanza {
         .classed("rect", true)
         .attr("x", (d) => this.xAxisGen.scale(d[xKey]))
         .attr("y", (d) => this.yAxisGen.scale(d[yKey]))
-        .attr("data-tooltip", (d) => tooltipHTML(d))
+        .attr("data-tooltip", (d) => d[tooltipKey])
         .attr("width", this.xAxisGen.scale.bandwidth())
         .attr("height", this.yAxisGen.scale.bandwidth())
-        .style("fill", (d) => setColor(d[cellColorKey]));
+        .style("fill", (d) => {
+          const value = d[cellColorKey];
+          const numericValue =
+            typeof value === "number" ? value : parseFloat(value);
+          return setColor(numericValue);
+        });
 
       if (this.params["event-outgoing_change_selected_nodes"]) {
         rectGroup.on("click", (e, d) => {
@@ -199,7 +220,8 @@ export default class Heatmap extends MetaStanza {
             {
               drawing: this._chartArea,
               rootElement: this.element,
-              targetId: d.__togostanza_id__,
+              dataUrl: this.params["data-url"],
+              targetId: d["__togostanza_id__"],
               selectedIds: this.selectedIds,
               ...this.selectedEventParams,
             },
@@ -209,33 +231,28 @@ export default class Heatmap extends MetaStanza {
 
       this.xAxisGen._g.raise();
       this.yAxisGen._g.raise();
+    };
 
-      this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
+    const legendOptions = {
+      isLegendVisible,
+      legendConfiguration,
+    };
+    // Draw content and handle api errors
+    handleApiError({
+      stanzaData: this,
+      drawContent,
+      hasLegend: true,
+      hasTooltip: true,
+      legendOptions
+    });
 
-      if (legendShow) {
-        if (!this.legend) {
-          this.legend = new Legend();
-          this.root.append(this.legend);
-        }
-        this.legend.setup({
-          items: intervals(setColor).map((interval) => ({
-            id: interval.label,
-            color: interval.color,
-            value: interval.label,
-          })),
-          title: legendTitle,
-          options: {
-            shape: "square",
-          },
-        });
-      } else {
-        this.legend?.remove();
-        this.legend = null;
-      }
-    }
-
-    //create legend objects
-    function intervals(color, steps = legendGroups >= 2 ? legendGroups : 2) {
+    // TODO: add color type. ScaleLinear<string, number>.
+    // check https://github.com/d3/d3-scale/issues/111, https://github.com/DefinitelyTyped/DefinitelyTyped/issues/38574
+    // fix ColorGenerator to typescript
+    function intervals(
+      color,
+      steps: number = legendGroups >= 2 ? legendGroups : 2
+    ): Interval[] {
       return [...Array(steps).keys()].map((i) => {
         const legendSteps = Math.round(
           cellDomainMax -
@@ -249,7 +266,7 @@ export default class Heatmap extends MetaStanza {
     }
   }
 
-  handleEvent(event) {
+  handleEvent(event: CustomEvent) {
     if (this.params["event-incoming_change_selected_nodes"]) {
       this.selectedIds = event.detail.selectedIds;
       updateSelectedElementClassNameForD3.apply(null, [
