@@ -11,7 +11,7 @@ import {
   downloadCSVMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
-import { scaleBand, scaleOrdinal, select } from "d3";
+import { scaleBand, scaleOrdinal, scaleLinear, select, bin } from "d3";
 
 export default class Barchart extends MetaStanza {
   xAxisGen: Axis;
@@ -51,7 +51,6 @@ export default class Barchart extends MetaStanza {
 
     const xKeyName = this.params["axis-x-key"];
     const yKeyName = this.params["axis-y-key"];
-    console.log(xKeyName, yKeyName)
     const xAxisTitle =
       typeof this.params["axis-x-title"] === "undefined"
         ? xKeyName
@@ -282,8 +281,71 @@ export default class Barchart extends MetaStanza {
 
   }
 
-  drawHistogram(binKey: string,) {
-    console.log(binKey)
+  drawHistogram(binKey: string) {
+
+    const values = structuredClone(this._data);
+    console.log(values);
+    const data = values.map((d) => +d[binKey]);
+    console.log(data);
+
+    const width = +this.css("--togostanza-canvas-width");
+    const height = +this.css("--togostanza-canvas-height");
+
+    let svg = select(this._main.querySelector("svg")),
+      margin = {top: 20, right: 20, bottom: 30, left: 40},
+      g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+    svg
+      .attr("width", width)
+      .attr("height", height);
+
+    // X軸とY軸のスケールを設定
+    const x = scaleLinear()
+      .domain([Math.min(...data), Math.max(...data)]) // データの範囲に合わせて調整
+      .rangeRound([0, width]);
+    const y = scaleLinear()
+      .range([height, 0]);
+
+      console.log(x.domain())
+
+    // ビンの設定
+    const bins = bin()
+      .domain(x.domain() as [number, number])
+      .thresholds(x.ticks(20)) // 20個のビンに分ける
+      (data);
+    console.log(bins)
+
+
+
+
+
+  // // Y軸のスケールをビンのデータに合わせて設定
+  // y.domain([0, d3.max(bins, d => d.length)]);
+
+  // // バーを描画
+  // const bar = g.selectAll(".bar")
+  //   .data(bins)
+  //   .enter().append("g")
+  //     .attr("class", "bar")
+  //     .attr("transform", d => `translate(${x(d.x0)},${y(d.length)})`);
+
+  // bar.append("rect")
+  //     .attr("x", 1)
+  //     .attr("width", x(bins[0].x1) - x(bins[0].x0) - 1)
+  //     .attr("height", d => height - y(d.length))
+  //     .attr("fill", "steelblue");
+
+  // // X軸を追加
+  // g.append("g")
+  //     .attr("class", "axis axis--x")
+  //     .attr("transform", `translate(0,${height})`)
+  //     .call(d3.axisBottom(x));
+
+  // // Y軸を追加
+  // g.append("g")
+  //     .attr("class", "axis axis--y")
+  //     .call(d3.axisLeft(y));
+
+
   }
 
   handleEvent(event) {
