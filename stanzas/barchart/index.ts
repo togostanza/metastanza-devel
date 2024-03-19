@@ -43,12 +43,13 @@ export default class Barchart extends MetaStanza {
 
   async renderNext() {
     // If "binKey" is specified, this component behaves as a histogram; if not, it behaves as a bar chart.
-    const binKey = this.params["data-bin_key"];
-    console.log(binKey);
-    if (binKey) {
-      this.drawHistogram(binKey);
-    } else {
-      this.drawBarChart();
+    switch (this.params["data-interpretation"]) {
+      case "categorical":
+        this.drawBarChart();
+        break;
+      case "distribution":
+        this.drawHistogram();
+        break;
     }
   }
 
@@ -289,7 +290,9 @@ export default class Barchart extends MetaStanza {
     }
   }
 
-  drawHistogram(binKey: string) {
+  drawHistogram() {
+    const binKey = this.params["axis-x-key"];
+    console.log(binKey);
     const values = structuredClone(this._data);
     console.log(values);
     const data = values.map((d) => +d[binKey]);
