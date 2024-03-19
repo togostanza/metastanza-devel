@@ -295,8 +295,11 @@ export default class Barchart extends MetaStanza {
     const data = values.map((d) => +d[binKey]);
     console.log(data);
 
-    const width = +this.css("--togostanza-canvas-width");
-    const height = +this.css("--togostanza-canvas-height");
+    const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+    const width =
+      +this.css("--togostanza-canvas-width") - margin.left - margin.right;
+    const height =
+      +this.css("--togostanza-canvas-height") - margin.top - margin.bottom;
 
     let svg = select(this._main.querySelector("svg"));
     if (!svg.empty()) {
@@ -305,12 +308,13 @@ export default class Barchart extends MetaStanza {
       this.yAxisGen = null;
     }
     svg = select(this._main).append("svg");
-    svg.attr("width", width).attr("height", height);
+    svg
+      .attr("width", +this.css("--togostanza-canvas-width"))
+      .attr("height", +this.css("--togostanza-canvas-height"));
 
-    const margin = { top: 20, right: 20, bottom: 30, left: 40 },
-      g = svg
-        .append("g")
-        .attr("transform", `translate(${margin.left},${margin.top})`);
+    const g = svg
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // X軸とY軸のスケールを設定
     const x = scaleLinear()
