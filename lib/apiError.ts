@@ -5,14 +5,14 @@ import Legend from "./Legend2.js";
  * Options for handling API errors in the visualization.
  * @interface
  * @property {StanzaData} stanzaData - The data of the current stanza.
- * @property {() => void} drawContent - A function to draw the content of the stanza.
+ * @property {() => Promise<void>} drawContent - A function to draw the content of the stanza.
  * @property {boolean} [hasLegend] - Indicates whether the legend should be displayed.
  * @property {boolean} [hasTooltip] - Indicates whether tooltips should be displayed.
  * @property {LegendOptions} [legendOptions] - Configuration options for the legend.
  */
 interface HandleApiErrorOptions {
   stanzaData: StanzaData;
-  drawContent: () => void;
+  drawContent: () => Promise<void>;
   hasLegend?: boolean;
   hasTooltip?: boolean;
   legendOptions?: LegendOptions;
@@ -59,7 +59,7 @@ interface LegendOptions {
  * Handles API errors by displaying an error message or rendering the content.
  * Also manages legend and tooltip based on the configuration.
  */
-export function handleApiError(options: HandleApiErrorOptions) {
+export async function handleApiError(options: HandleApiErrorOptions) {
   const { stanzaData, drawContent, hasLegend, hasTooltip, legendOptions } =
     options;
   const { _main: main, _apiError: apiError, root } = stanzaData;
@@ -67,7 +67,7 @@ export function handleApiError(options: HandleApiErrorOptions) {
 
   handleErrorMessage(apiError, main);
   if (!apiError) {
-    drawContent();
+    await drawContent();
   }
   if (hasLegend) {
     manageLegend(isLegendVisible, legendConfiguration, root, apiError);
