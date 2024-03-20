@@ -1,12 +1,13 @@
-import MetaStanza from "../../lib/MetaStanza";
-import { createApp } from "vue";
-import App from "./app.vue";
+import { camelCase } from "lodash";
 import {
-  downloadJSONMenuItem,
   downloadCSVMenuItem,
+  downloadJSONMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
-import { camelCase } from "lodash";
+import { createApp } from "vue";
+import MetaStanza from "../../lib/MetaStanza";
+import { displayApiError } from "../../lib/utils";
+import App from "./app.vue";
 
 export default class ColumnTree extends MetaStanza {
   menu() {
@@ -28,6 +29,18 @@ export default class ColumnTree extends MetaStanza {
     this._app?.unmount();
     this._app = createApp(App, { ...camelCaseParams, root });
     this._component = this._app.mount(root);
+
+    if (this._apiError) {
+      this._app.unmount();
+      displayApiError(this._main, this._error);
+    } else {
+      const errorMessageEl = this._main.querySelector(
+        ".metastanza-error-message-div"
+      );
+      if (errorMessageEl) {
+        errorMessageEl.remove();
+      }
+    }
   }
 
   handleEvent(event) {

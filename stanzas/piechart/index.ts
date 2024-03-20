@@ -10,6 +10,7 @@ import getStanzaColors from "../../lib/ColorGenerator";
 import Legend from "../../lib/Legend2";
 import MetaStanza from "../../lib/MetaStanza";
 import {
+  toggleSelectIds,
   emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
@@ -89,20 +90,25 @@ export default class Piechart extends MetaStanza {
       .attr("d", <any>arcGenerator)
       .attr("fill", (d) => d.data[colorSym]);
 
-    if (this.params["event-outgoing_change_selected_nodes"]) {
-      pieGroups.on("click", (_, d) => {
-        return emitSelectedEvent.apply(null, [
-          {
-            drawing: this._chartArea,
-            rootElement: this.element,
-            selectedIds: this.selectedIds,
-            targetId: d.data["__togostanza_id__"],
-            ...this.selectedEventParams,
-            dataUrl: this.params["data-url"],
-          },
-        ]);
+    pieGroups.on("click", (_, d) => {
+      toggleSelectIds({
+        selectedIds: this.selectedIds,
+        targetId: d.data["__togostanza_id__"],
       });
-    }
+      updateSelectedElementClassNameForD3({
+        drawing: this._chartArea,
+        selectedIds: this.selectedIds,
+        ...this.selectedEventParams,
+      });
+      if (this.params["event-outgoing_change_selected_nodes"]) {
+        emitSelectedEvent({
+          rootElement: this.element,
+          selectedIds: this.selectedIds,
+          targetId: d.data["__togostanza_id__"],
+          dataUrl: this.params["data-url"],
+        });
+      }
+    });
 
     if (showLegend) {
       if (!this.legend) {
@@ -143,6 +149,20 @@ export default class Piechart extends MetaStanza {
       this.legend.remove();
       this.legend = null;
     }
+
+    if (this._apiError) {
+      this.legend.remove();
+      this.legend = null;
+      this._chartArea.remove();
+      this._chartArea = null;
+    } else {
+      const errorMessageEl = this._main.querySelector(
+        ".metastanza-error-message-div"
+      );
+      if (errorMessageEl) {
+        errorMessageEl.remove();
+      }
+    }
   }
 
   handleEvent(event) {
@@ -153,13 +173,11 @@ export default class Piechart extends MetaStanza {
       dataUrl === this.params["data-url"]
     ) {
       this.selectedIds = selectedIds;
-      updateSelectedElementClassNameForD3.apply(null, [
-        {
-          drawing: this._chartArea,
-          selectedIds,
-          ...this.selectedEventParams,
-        },
-      ]);
+      updateSelectedElementClassNameForD3({
+        drawing: this._chartArea,
+        selectedIds,
+        ...this.selectedEventParams,
+      });
     }
   }
 }

@@ -21,6 +21,7 @@ import {
 } from "togostanza-utils";
 import MetaStanza from "../../lib/MetaStanza";
 import {
+  toggleSelectIds,
   emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
@@ -37,12 +38,11 @@ const ASCENDING = "ascending",
 
 export default class Tree extends MetaStanza {
   _chartArea;
+  selectedIds = [];
   selectedEventParams = {
-    stanza: this,
-    targetElementSelector: "g circle",
+    targetElementSelector: "g.labels g",
     selectedElementClassName: "-selected",
-    selectedElementSelector: ".-selected",
-    idPath: "id",
+    idPath: "data.id",
   };
   //Stanza download menu contents
   menu() {
@@ -427,26 +427,44 @@ export default class Tree extends MetaStanza {
 
         let timeout;
 
-        if (this.params["event-outgoing_change_selected_nodes"]) {
-          nodeCirclesEnter
-            .on("click", (e, d) => {
-              if (e.detail === 1) {
-                timeout = setTimeout(() => {
-                  return emitSelectedEvent.apply(null, [
-                    {
-                      targetId: d.id,
-                      ...this.selectedEventParams,
-                    },
-                  ]);
-                }, 500);
-              }
-            })
-            .on("dblclick", (e, d) => {
-              clearTimeout(timeout);
-              toggle(d);
-              update(d);
-            });
-        }
+        nodeCirclesEnter
+          .on("click", (e, d) => {
+            if (e.detail === 1) {
+              timeout = setTimeout(() => {
+                toggleSelectIds({
+                  selectedIds: this.selectedIds,
+                  targetId: d.data.id,
+                });
+                updateSelectedElementClassNameForD3({
+                  drawing: this._chartArea,
+                  selectedIds: this.selectedIds,
+                  ...this.selectedEventParams,
+                });
+                console.log(this.selectedIds);
+                if (this.params["event-outgoing_change_selected_nodes"]) {
+                  emitSelectedEvent({
+                    rootElement: this.element,
+                    targetId: d.data.id,
+                    selectedIds: this.selectedIds,
+                    dataUrl: this.params["data-url"],
+                  });
+                }
+              }, 500);
+            }
+          })
+          .on("dblclick", (e, d) => {
+            clearTimeout(timeout);
+            toggle(d);
+            update(d);
+
+            updateSelectedElementClassNameForD3.apply(this, [
+              {
+                drawing: this._chartArea,
+                selectedIds: this.selectedIds,
+                ...this.selectedEventParams,
+              },
+            ]);
+          });
 
         //Update circle color when opening and closing
         nodeCirclesUpdate
@@ -719,13 +737,19 @@ export default class Tree extends MetaStanza {
   }
 
   handleEvent(event) {
-    if (this.params["event-incoming_change_selected_nodes"]) {
-      updateSelectedElementClassNameForD3.apply(null, [
-        {
-          selectedIds: event.detail.selectedIds,
-          ...this.selectedEventParams,
-        },
-      ]);
+    const { selectedIds, dataUrl, targetId } = event.detail;
+
+    if (
+      this.params["event-incoming_change_selected_nodes"] &&
+      dataUrl === this.params["data-url"]
+    ) {
+      this.selectedIds = selectedIds;
+      updateSelectedElementClassNameForD3({
+        drawing: this._chartArea,
+        selectedIds,
+        targetId,
+        ...this.selectedEventParams,
+      });
     }
   }
 }
