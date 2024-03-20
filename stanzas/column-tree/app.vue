@@ -140,6 +140,7 @@ export default defineComponent({
       const children = getChildNodes([layer, parentId]);
       const indexesToRemove = state.columnData.length - layer;
       state.columnData.splice(layer, indexesToRemove, children);
+      console.log(children);
       return children;
     }
     function isNormalSearchHit(node) {

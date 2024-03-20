@@ -17,7 +17,7 @@
   "stanza:parameter": [
     {
       "stanza:key": "data-url",
-      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/main/samples/json/tree-data.json",
+      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/main/samples/json/tree.json",
       "stanza:description": "Data source URL",
       "stanza:required": true
     },
@@ -31,7 +31,7 @@
     },
     {
       "stanza:key": "node-label_key",
-      "stanza:example": "label",
+      "stanza:example": "name",
       "stanza:description": "Key for data attribute to display as label",
       "stanza:required": true
     },
@@ -39,6 +39,13 @@
       "stanza:key": "node-value_key",
       "stanza:example": "size",
       "stanza:description": "Key for data attribute to display as value"
+    },
+    {
+      "stanza:key": "node-group_key",
+      "stanza:type": "text",
+      "stanza:example": "parent",
+      "stanza:description": "Group key",
+      "stanza:required": true
     },
     {
       "stanza:key": "node-value_alignment",

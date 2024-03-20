@@ -25,13 +25,13 @@
 
         <span class="label" :class="`-${nodeValueAlignment}`">
           <strong class="title">
-            {{ node[keys.label] }}
+            {{ node.label }}
           </strong>
           <span
             class="value"
             :class="{ fallback: node[keys.value] === undefined }"
           >
-            {{ node[keys.value]?.toLocaleString() ?? valueObj.fallback }}
+            {{ node.value?.toLocaleString() ?? valueObj.fallback }}
           </span>
         </span>
         <font-awesome-icon

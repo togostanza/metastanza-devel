@@ -24,7 +24,11 @@ export default class ColumnTree extends MetaStanza {
     Object.entries(this.params).forEach(([key, value]) => {
       camelCaseParams[camelCase(key)] = value;
     });
-    camelCaseParams.data = this._data;
+    camelCaseParams.data = this.__data.asTree({
+      nodeLabelKey: this.params["node-label_key"].trim(),
+      nodeGroupKey: this.params["node-group_key"].trim(),
+      nodeValueKey: this.params["node-value_key"].trim(),
+    }).data;
 
     this._app?.unmount();
     this._app = createApp(App, { ...camelCaseParams, root });
