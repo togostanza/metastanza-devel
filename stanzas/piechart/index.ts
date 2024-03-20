@@ -91,30 +91,22 @@ export default class Piechart extends MetaStanza {
       .attr("fill", (d) => d.data[colorSym]);
 
     pieGroups.on("click", (_, d) => {
-      toggleSelectIds.apply(null, [
-        {
+      toggleSelectIds({
+        selectedIds: this.selectedIds,
+        targetId: d.data["__togostanza_id__"],
+      });
+      updateSelectedElementClassNameForD3({
+        drawing: this._chartArea,
+        selectedIds: this.selectedIds,
+        ...this.selectedEventParams,
+      });
+      if (this.params["event-outgoing_change_selected_nodes"]) {
+        emitSelectedEvent({
+          rootElement: this.element,
           selectedIds: this.selectedIds,
           targetId: d.data["__togostanza_id__"],
-        },
-      ]);
-      updateSelectedElementClassNameForD3.apply(null, [
-        {
-          drawing: this._chartArea,
-          selectedIds: this.selectedIds,
-          ...this.selectedEventParams,
-        },
-      ]);
-      if (this.params["event-outgoing_change_selected_nodes"]) {
-        emitSelectedEvent.apply(null, [
-          {
-            drawing: this._chartArea,
-            rootElement: this.element,
-            selectedIds: this.selectedIds,
-            targetId: d.data["__togostanza_id__"],
-            ...this.selectedEventParams,
-            dataUrl: this.params["data-url"],
-          },
-        ]);
+          dataUrl: this.params["data-url"],
+        });
       }
     });
 
@@ -181,13 +173,11 @@ export default class Piechart extends MetaStanza {
       dataUrl === this.params["data-url"]
     ) {
       this.selectedIds = selectedIds;
-      updateSelectedElementClassNameForD3.apply(null, [
-        {
-          drawing: this._chartArea,
-          selectedIds,
-          ...this.selectedEventParams,
-        },
-      ]);
+      updateSelectedElementClassNameForD3({
+        drawing: this._chartArea,
+        selectedIds,
+        ...this.selectedEventParams,
+      });
     }
   }
 }
