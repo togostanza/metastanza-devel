@@ -1,24 +1,25 @@
-import Stanza from "togostanza/stanza";
+import ToolTip from "@/lib/ToolTip";
+import prepareGraphData from "@/lib/prepareGraphData";
 import * as d3 from "d3";
 import { Data } from "togostanza-utils/data";
-import ToolTip from "@/lib/ToolTip";
+import MetaStanza from "../../lib/MetaStanza";
 import drawForceLayout from "./drawForceLayout";
-import prepareGraphData from "@/lib/prepareGraphData";
 
 import {
-  downloadSvgMenuItem,
-  downloadPngMenuItem,
-  downloadJSONMenuItem,
-  downloadCSVMenuItem,
-  downloadTSVMenuItem,
   appendCustomCss,
+  downloadCSVMenuItem,
+  downloadJSONMenuItem,
+  downloadPngMenuItem,
+  downloadSvgMenuItem,
+  downloadTSVMenuItem,
 } from "togostanza-utils";
 import {
+  toggleSelectIds,
   emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
 
-export default class ForceGraph extends Stanza {
+export default class ForceGraph extends MetaStanza {
   _graphArea;
   selectedEventParams = {
     targetElementSelector: ".node-group",
@@ -38,7 +39,7 @@ export default class ForceGraph extends Stanza {
     ];
   }
 
-  async render() {
+  async renderNext() {
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
@@ -174,17 +175,36 @@ export default class ForceGraph extends Stanza {
       this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
     }
     this._graphArea.selectAll("circle.node").on("click", (_, d) => {
-      emitSelectedEvent.apply(null, [
-        {
-          drawing: this._graphArea,
+      toggleSelectIds({
+        selectedIds: this.selectedIds,
+        targetId: d.id,
+      });
+      updateSelectedElementClassNameForD3({
+        drawing: this._graphArea,
+        selectedIds: this.selectedIds,
+        ...this.selectedEventParams,
+      });
+      if (this.params["event-outgoing_change_selected_nodes"]) {
+        emitSelectedEvent({
           rootElement: this.element,
           targetId: d.id,
           selectedIds: this.selectedIds,
-          ...this.selectedEventParams,
           dataUrl: this.params["data-url"],
-        },
-      ]);
+        });
+      }
     });
+
+    if (this._apiError) {
+      this._graphArea?.remove();
+      this._graphArea = null;
+    } else {
+      const errorMessageEl = this._main.querySelector(
+        ".metastanza-error-message-div"
+      );
+      if (errorMessageEl) {
+        errorMessageEl.remove();
+      }
+    }
   }
 
   handleEvent(event) {
@@ -195,13 +215,11 @@ export default class ForceGraph extends Stanza {
       dataUrl === this.params["data-url"]
     ) {
       this.selectedIds = selectedIds;
-      updateSelectedElementClassNameForD3.apply(null, [
-        {
-          drawing: this._graphArea,
-          selectedIds,
-          ...this.selectedEventParams,
-        },
-      ]);
+      updateSelectedElementClassNameForD3({
+        drawing: this._graphArea,
+        selectedIds,
+        ...this.selectedEventParams,
+      });
     }
   }
 }

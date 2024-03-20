@@ -1,13 +1,15 @@
 import MetaStanza from "../../lib/MetaStanza";
 import { select, json, geoMercator, geoAlbersUsa, geoPath } from "d3";
 import { feature } from "topojson-client";
+import { Feature, Geometry } from "geojson";
+import { Topology } from "topojson-specification";
 import {
+  toggleSelectIds,
   emitSelectedEvent,
   updateSelectedElementClassNameForD3,
-} from "@/lib/utils";
-import ToolTip from "@/lib/ToolTip";
-import Legend from "@/lib/Legend2";
-import { getGradationColor } from "@/lib/ColorGenerator";
+} from "../../lib/utils";
+import { handleApiError } from "../../lib/apiError";
+import { getGradationColor } from "../../lib/ColorGenerator";
 import {
   downloadSvgMenuItem,
   downloadPngMenuItem,
@@ -15,6 +17,16 @@ import {
   downloadCSVMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
+
+interface DataItem {
+  [key: string]: string | number;
+  __togostanza_id: string | number;
+}
+
+interface CustomFeature extends Feature<Geometry> {
+  rate?: string | number;
+  __togostanza_id__?: string | number;
+}
 
 const REGION = new Map([
   [
@@ -38,6 +50,8 @@ const REGION = new Map([
 ]);
 
 export default class regionGeographicMap extends MetaStanza {
+  _chartArea: d3.Selection<SVGGElement, unknown, SVGElement, undefined>;
+  selectedIds: Array<string | number> = [];
   selectedEventParams = {
     targetElementSelector: ".path",
     selectedElementClassName: "-selected",
@@ -59,58 +73,46 @@ export default class regionGeographicMap extends MetaStanza {
     const root = this._main;
     const dataset = this._data;
     this._chartArea = select(root.querySelector("svg"));
-    this.selectedIds = []
+    this.selectedIds = [];
 
     // Parameters
-    const region = this.params["data-region"];
-    const objectType = this.params["data-layer"].trim();
-    const userTopoJson = this.params["data-user_topojson"].trim();
+    const region: string = this.params["data-region"];
+    const objectType: string = this.params["data-layer"].trim();
+    const userTopoJson: string = this.params["data-user_topojson"].trim();
     if (userTopoJson) {
       REGION.set("user", { url: userTopoJson });
     } else {
       REGION.delete("user");
     }
 
-    const [property1, property2] = this.params["data-property"]
+    const [property1, property2]: [string, string] = this.params[
+      "data-property"
+    ]
       .trim()
       .split(/[.,-_/;。、 ]+/);
-    const switchProperty = (datum) =>
+    const switchProperty = (datum: CustomFeature) =>
       property2 ? datum[property1][property2] : datum[property1];
 
-    const legendVisible = this.params["legend-visible"];
-    const legendTitle = this.params["legend-title"];
-    const legendLevelsNumber = parseFloat(this.params["legend-levels_number"]);
-
-    const tooltipKey = this.params["tooltips-key"].trim();
-    if (!this.tooltip) {
-      this.tooltip = new ToolTip();
-      root.append(this.tooltip);
-    }
-    if (this._apiError) {
-      this.legend?.remove();
-      this.legend = null;
-      this.tooltip?.remove();
-      this.tooltip = null;
-    }
-
     // Color scale
-    const areaColorKey = this.params["area-color_key"].trim();
-    const areaColorValue = this.params["area-color_value"].trim();
-    const areaColorMin = this.params["area-color_min"];
-    const areaColorMid = this.params["area-color_mid"];
-    const areaColorMax = this.params["area-color_max"];
+    const areaColorKey: string = this.params["area-color_key"].trim();
+    const areaColorValue: string = this.params["area-color_value"].trim();
+    const areaColorMin: string = this.params["area-color_min"];
+    const areaColorMid: string = this.params["area-color_mid"];
+    const areaColorMax: string = this.params["area-color_max"];
     let areaDomainMin = parseFloat(this.params["area-value_min"]);
     let areaDomainMid = parseFloat(this.params["area-value_mid"]);
     let areaDomainMax = parseFloat(this.params["area-value_max"]);
-    const userDataValue = dataset.map((d) => parseFloat(d[areaColorValue]));
+    const userDataValue = dataset.map((d: DataItem) => {
+      d[areaColorValue];
+    });
 
-    if (isNaN(parseFloat(areaDomainMin))) {
+    if (isNaN(areaDomainMin)) {
       areaDomainMin = Math.min(...userDataValue);
     }
-    if (isNaN(parseFloat(areaDomainMax))) {
+    if (isNaN(areaDomainMax)) {
       areaDomainMax = Math.max(...userDataValue);
     }
-    if (isNaN(parseFloat(areaDomainMid))) {
+    if (isNaN(areaDomainMid)) {
       areaDomainMid = (areaDomainMax + areaDomainMin) / 2;
     }
 
@@ -120,6 +122,24 @@ export default class regionGeographicMap extends MetaStanza {
       [areaDomainMin, areaDomainMid, areaDomainMax]
     );
 
+    // Legend
+    const isLegendVisible = this.params["legend-visible"];
+    const legendTitle = this.params["legend-title"];
+    const legendLevelsNumber = parseFloat(this.params["legend-levels_number"]);
+    const legendConfiguration = {
+      items: intervals(setColor).map((interval) => ({
+        id: interval.label,
+        color: interval.color,
+        value: interval.label,
+      })),
+      title: legendTitle,
+      options: {
+        shape: "square",
+      },
+    };
+
+    const tooltipKey = this.params["tooltips-key"].trim();
+
     //Styles
     const width = parseFloat(this.css("--togostanza-canvas-width"));
     const height = parseFloat(this.css("--togostanza-canvas-height"));
@@ -127,55 +147,52 @@ export default class regionGeographicMap extends MetaStanza {
     const svgWidth = width - padding.LEFT - padding.RIGHT;
     const svgHeight = height - padding.TOP - padding.BOTTOM;
 
-    // Drawing svg
-    select(root).select("svg").remove();
-    this._chartArea = select(root)
-      .append("svg")
-      .attr("width", svgWidth)
-      .attr("height", svgHeight);
-    const g = this._chartArea.append("g").classed("g-path", true);
-
     // for data-layer error
     const existError = root.querySelector(".error");
     if (existError) {
       root.removeChild(existError);
     }
 
-    if (!this._apiError) {
-      // for api error
-      const errorMessageEl = root.querySelector(
-        ".metastanza-error-message-div"
-      );
-      if (errorMessageEl) {
-        errorMessageEl.remove();
-      }
+    if (!this._chartArea.empty()) {
+      this._chartArea.remove();
+    }
+
+    const drawContent = async () => {
+      // Drawing svg
+      this._chartArea = select(root)
+        .append("svg")
+        .attr("width", svgWidth)
+        .attr("height", svgHeight);
+      const g = this._chartArea.append("g").classed("g-path", true);
 
       // Setting  projection
       const projection = region === "us" ? geoAlbersUsa() : geoMercator();
       const path = geoPath().projection(projection);
 
-      let topoJsonType;
+      let topoJsonType: string[] = [];
       try {
         // Combine data
         const areaUrl = REGION.get(region).url;
-        const topoJson = await json(areaUrl);
+        const topoJson: Topology = await json(areaUrl);
         topoJsonType = Object.keys(topoJson.objects);
-        const geoJson = feature(
-          topoJson,
-          topoJson.objects[objectType]
-        ).features;
+        const geoJsonObject = feature(topoJson, topoJson.objects[objectType]);
 
-        const allData = geoJson.map((geoDatum) => {
-          const matchData = dataset.find(
-            (val) => switchProperty(geoDatum) === val[areaColorKey]
-          );
-          return Object.assign({}, geoDatum, {
-            [areaColorValue]: matchData ? matchData[areaColorValue] : undefined,
-            __togostanza_id__: matchData
-              ? matchData.__togostanza_id__
-              : undefined,
+        let allData = [];
+        if ("features" in geoJsonObject) {
+          allData = geoJsonObject.features.map((geoDatum) => {
+            const matchData = dataset.find(
+              (val: DataItem) => switchProperty(geoDatum) === val[areaColorKey]
+            );
+            return Object.assign({}, geoDatum, {
+              [areaColorValue]: matchData
+                ? matchData[areaColorValue]
+                : undefined,
+              __togostanza_id__: matchData
+                ? matchData.__togostanza_id__
+                : undefined,
+            });
           });
-        });
+        }
 
         // Drawing path
         const pathGroup = g
@@ -188,24 +205,29 @@ export default class regionGeographicMap extends MetaStanza {
           .attr("data-tooltip", (d) => d[tooltipKey])
           .attr("fill", (d) =>
             switchProperty(d) ? setColor(d[areaColorValue]) : "#555"
-          )
-          .on("mouseenter", function () {
-            select(this).raise();
-          });
+          );
 
-        if (this.params["event-outgoing_change_selected_nodes"]) {
-          pathGroup.on("click", (_, d) => {
-            return emitSelectedEvent.apply(null, [
-              {
-                drawing: this._chartArea,
-                rootElement: this.element,
-                targetId: d.__togostanza_id__,
-                selectedIds: this.selectedIds,
-                ...this.selectedEventParams,
-              },
-            ]);
+        // Add event listener
+        pathGroup.on("click", (e, d) => {
+          select(e.target).raise();
+          toggleSelectIds({
+            selectedIds: this.selectedIds,
+            targetId: d["__togostanza_id__"],
           });
-        }
+          updateSelectedElementClassNameForD3({
+            drawing: this._chartArea,
+            selectedIds: this.selectedIds,
+            ...this.selectedEventParams,
+          });
+          if (this.params["event-outgoing_change_selected_nodes"]) {
+            emitSelectedEvent({
+              rootElement: this.element,
+              dataUrl: this.params["data-url"],
+              targetId: d["__togostanza_id__"],
+              selectedIds: this.selectedIds,
+            });
+          }
+        });
 
         // Change scale and translate of group of paths
         const paths = root.querySelectorAll(".path");
@@ -213,7 +235,7 @@ export default class regionGeographicMap extends MetaStanza {
           ymin = Infinity,
           xmax = -Infinity,
           ymax = -Infinity;
-        paths.forEach((path) => {
+        paths.forEach((path: SVGGraphicsElement) => {
           const bbox = path.getBBox();
           xmin = Math.min(xmin, bbox.x);
           ymin = Math.min(ymin, bbox.y);
@@ -259,32 +281,20 @@ export default class regionGeographicMap extends MetaStanza {
 
         root.prepend(errorElement);
       }
+    };
 
-      // Setting tooltip
-      this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
-
-      // Setting legend
-      if (legendVisible) {
-        if (!this.legend) {
-          this.legend = new Legend();
-          this.root.append(this.legend);
-        }
-        this.legend.setup({
-          items: intervals(setColor).map((interval) => ({
-            id: interval.label,
-            color: interval.color,
-            value: interval.label,
-          })),
-          title: legendTitle,
-          options: {
-            shape: "square",
-          },
-        });
-      } else {
-        this.legend?.remove();
-        this.legend = null;
-      }
-    }
+    const legendOptions = {
+      isLegendVisible,
+      legendConfiguration,
+    };
+    // Draw content and handle api errors
+    handleApiError({
+      stanzaData: this,
+      drawContent,
+      hasLegend: true,
+      hasTooltip: true,
+      legendOptions,
+    });
 
     //Create legend objects
     function intervals(
@@ -306,16 +316,21 @@ export default class regionGeographicMap extends MetaStanza {
     }
   }
 
-  handleEvent(event) {
-    if (this.params["event-incoming_change_selected_nodes"]) {
-      this.selectedIds = event.detail.selectedIds;
-      updateSelectedElementClassNameForD3.apply(null, [
-        {
-          drawing: this._chartArea,
-          selectedIds: event.detail.selectedIds,
-          ...this.selectedEventParams,
-        },
-      ]);
+  // TODO: add color type. ScaleLinear<string, number>.
+  // check https://github.com/d3/d3-scale/issues/111, https://github.com/DefinitelyTyped/DefinitelyTyped/issues/38574
+  // fix ColorGenerator to typescript
+  handleEvent(event: CustomEvent) {
+    const { selectedIds, dataUrl } = event.detail;
+    if (
+      this.params["event-incoming_change_selected_nodes"] &&
+      dataUrl === this.params["data-url"]
+    ) {
+      this.selectedIds = selectedIds;
+      updateSelectedElementClassNameForD3({
+        drawing: this._chartArea,
+        selectedIds: event.detail.selectedIds,
+        ...this.selectedEventParams,
+      });
     }
   }
 }
