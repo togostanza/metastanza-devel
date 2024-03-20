@@ -34,7 +34,7 @@ export default class Sunburst extends MetaStanza {
   selectedEventParams = {
     targetElementSelector: "g path.selectable",
     selectedElementClassName: "-selected",
-    idPath: "data.data.__togostanza_id__",
+    idPath: "data.data.id",
   };
 
   constructor(...args) {
@@ -101,15 +101,17 @@ export default class Sunburst extends MetaStanza {
     const state = this.state;
     const dispatcher = this.element;
     const main = this._main;
-    const data = this._data;
+    const data = this.__data.asTree({
+      nodeLabelKey: this.params["node-label_key"].trim(),
+      nodeGroupKey: this.params["node-group_key"].trim(),
+      nodeValueKey: this.params["node-value_key"].trim(),
+    }).data;
 
     // get value of css vars
     const width = parseFloat(this.css("--togostanza-canvas-width"));
     const height = parseFloat(this.css("--togostanza-canvas-height"));
     const padding = this.MARGIN;
 
-    const valueKey = this.params["node-value_key"].trim();
-    const labelKey = this.params["node-label_key"].trim();
     const showNumbers = this.params["node-values_visible"];
     const borderWidth = this.params["node-levels_gap_width"] || 2;
     const nodesGapWidth = this.params["node-gap_width"] || 8;
@@ -122,41 +124,29 @@ export default class Sunburst extends MetaStanza {
 
     const color = scaleOrdinal(getStanzaColors(this));
 
-    data.forEach((node) => {
-      node.id = "" + node.id;
-      if (node?.children) {
-        node.children = node.children.map((child) => "" + child);
-      }
-      if (node?.parent) {
-        node.parent = "" + node.parent;
-      }
-    });
+    // data.forEach((node) => {
+    //   node.id = "" + node.id;
+    //   if (node?.children) {
+    //     node.children = node.children.map((child) => "" + child);
+    //   }
+    //   if (node?.parent) {
+    //     node.parent = "" + node.parent;
+    //   }
+    // });
 
     //Add root element if there are more than one elements without parent. D3 cannot process data with more than one root elements
-    const rootElemIndexes = [];
-    data.forEach((node, index) => {
-      if (!node.parent) {
-        rootElemIndexes.push(index);
-      }
-    });
-
-    if (rootElemIndexes.length > 1 || !data.find((item) => item.id === "-1")) {
-      const rootElem = {
-        id: "-1",
-        value: "",
-      };
-      data.push(rootElem);
-
-      rootElemIndexes.forEach((index) => {
-        data[index].parent = rootElem.id;
-      });
-    }
+    // const rootElemIndexes = [];
+    // data.forEach((node, index) => {
+    //   if (!node.parent) {
+    //     rootElemIndexes.push(index);
+    //   }
+    // });
 
     const dataset = data.filter(
       (item) =>
-        (item.children && !item[valueKey]) ||
-        (item[valueKey] && item[valueKey] > 0) ||
-        item.id === "-1"
+        (item.children && !item.value) ||
+        (item.value && item.value > 0) ||
+        item.id === -1
     );
 
     const stratifiedData = stratify()
@@ -173,7 +163,7 @@ export default class Sunburst extends MetaStanza {
       const root = hierarchy(data);
       switch (scalingMethod) {
         case "By value":
-          root.sum((d) => d.data[valueKey]);
+          root.sum((d) => d.data.value);
           break;
         case "Equal children":
           root.sum((d) => (d.children ? 0 : 1));
@@ -191,7 +181,7 @@ export default class Sunburst extends MetaStanza {
       root
         .sort((a, b) => b.value - a.value)
         // store real values for number labels in d.value2
-        .each((d) => (d.value2 = sum(d, (dd) => dd.data.data[valueKey])));
+        .each((d) => (d.value2 = sum(d, (dd) => dd.data.data.value)));
       return d3partition().size([2 * Math.PI, root.height + 1])(root);
     };
 
@@ -316,7 +306,7 @@ export default class Sunburst extends MetaStanza {
         while (d.depth > 1) {
           d = d.parent;
         }
-        if (d.data.data.id === "-1") {
+        if (d.data.data.id === -1) {
           return "none";
         }
 
@@ -336,7 +326,7 @@ export default class Sunburst extends MetaStanza {
           timeout = setTimeout(() => {
             toggleSelectIds({
               selectedIds: this.selectedIds,
-              targetId: d.data.data.__togostanza_id__,
+              targetId: d.data.data.id,
             });
             updateSelectedElementClassNameForD3({
               drawing: this._chartArea,
@@ -346,7 +336,7 @@ export default class Sunburst extends MetaStanza {
             if (this.params["event-outgoing_change_selected_nodes"]) {
               emitSelectedEvent({
                 rootElement: this.element,
-                targetId: d.data.data.__togostanza_id__,
+                targetId: d.data.data.id,
                 selectedIds: this.selectedIds,
                 dataUrl: this.params["data-url"],
               });
@@ -363,7 +353,7 @@ export default class Sunburst extends MetaStanza {
     path.append("title").text((d) => {
       return `${d
         .ancestors()
-        .map((d) => d.data.data[labelKey])
+        .map((d) => d.data.data.label)
         .reverse()
         .join("/")}\n${formatNumber(d.value2)}`;
     });
@@ -405,13 +395,12 @@ export default class Sunburst extends MetaStanza {
       .join("text")
       .attr(
         "fill-opacity",
-        (d) =>
-          +(labelVisible(d) && textFits(d, CHAR_SPACE, d.data.data[labelKey]))
+        (d) => +(labelVisible(d) && textFits(d, CHAR_SPACE, d.data.data.label))
       )
       .append("textPath")
       .attr("startOffset", "50%")
       .attr("href", (_, i) => `#hiddenLabelArc${i}`)
-      .text((d) => d.data.data[labelKey]);
+      .text((d) => d.data.data.label);
 
     //Number labels
     const numLabels = g
@@ -426,7 +415,7 @@ export default class Sunburst extends MetaStanza {
         (d) =>
           +(
             labelVisible(d) &&
-            textFits(d, CHAR_SPACE, d.data.data[labelKey]) &&
+            textFits(d, CHAR_SPACE, d.data.data.label) &&
             showNumbers
           )
       )
@@ -499,9 +488,7 @@ export default class Sunburst extends MetaStanza {
           b = b.parent;
         }
 
-        return b.data?.data?.[labelKey]
-          ? color(b.data.data.id)
-          : "rgba(0,0,0,0)";
+        return b.data?.data?.label ? color(b.data.data.id) : "rgba(0,0,0,0)";
       });
 
       textLabels
@@ -514,7 +501,7 @@ export default class Sunburst extends MetaStanza {
           (d) =>
             +(
               labelVisible(d.target) &&
-              textFits(d.target, CHAR_SPACE, d.data.data[labelKey])
+              textFits(d.target, CHAR_SPACE, d.data.data.label)
             )
         );
 
@@ -532,7 +519,7 @@ export default class Sunburst extends MetaStanza {
           (d) =>
             +(
               labelVisible(d.target) &&
-              textFits(d.target, CHAR_SPACE, d.data.data[labelKey]) &&
+              textFits(d.target, CHAR_SPACE, d.data.data.label) &&
               showNumbers
             )
         );
@@ -541,7 +528,7 @@ export default class Sunburst extends MetaStanza {
         .transition(t)
         .attrTween("d", (d) => () => middleArcNumberLine(d.current));
 
-      const isBlankRoot = p.data.id === "-1";
+      const isBlankRoot = p.data.data.id === -1;
       if (isBlankRoot) {
         parent.on("click", null).on("dblclick", null);
       } else {
@@ -551,7 +538,7 @@ export default class Sunburst extends MetaStanza {
               timeout = setTimeout(() => {
                 toggleSelectIds({
                   selectedIds: stanza.selectedIds,
-                  targetId: d.data.data.__togostanza_id__,
+                  targetId: d.data.data.id,
                 });
                 updateSelectedElementClassNameForD3({
                   drawing: stanza._chartArea,
@@ -561,7 +548,7 @@ export default class Sunburst extends MetaStanza {
                 if (stanza.params["event-outgoing_change_selected_nodes"]) {
                   emitSelectedEvent({
                     rootElement: stanza.element,
-                    targetId: d.data.data.__togostanza_id__,
+                    targetId: d.data.data.id,
                     selectedIds: stanza.selectedIds,
                     dataUrl: stanza.params["data-url"],
                   });
