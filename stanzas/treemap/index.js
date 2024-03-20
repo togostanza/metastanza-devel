@@ -22,6 +22,7 @@ import {
 import shadeColor from "./shadeColor";
 import treemapBinaryLog from "./treemapBinaryLog";
 import {
+  toggleSelectIds,
   emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
@@ -237,14 +238,29 @@ function draw(el, dataset, opts, stanza) {
       .on("click", (e, d) => {
         if (e.detail === 1) {
           timeout = setTimeout(() => {
-            return emitSelectedEvent({
-              drawing: stanza._chartArea,
-              rootElement: stanza.element,
-              targetId: d.data.data.__togostanza_id__,
-              selectedIds: stanza.selectedIds,
-              ...stanza.selectedEventParams,
-              dataUrl: stanza.params["data-url"],
-            });
+            toggleSelectIds.apply(null, [
+              {
+                selectedIds: stanza.selectedIds,
+                targetId: d.data.data.__togostanza_id__,
+              },
+            ]);
+            updateSelectedElementClassNameForD3.apply(null, [
+              {
+                drawing: stanza._chartArea,
+                selectedIds: stanza.selectedIds,
+                ...stanza.selectedEventParams,
+              },
+            ]);
+            if (this.params["event-outgoing_change_selected_nodes"]) {
+              emitSelectedEvent({
+                drawing: stanza._chartArea,
+                rootElement: stanza.element,
+                targetId: d.data.data.__togostanza_id__,
+                selectedIds: stanza.selectedIds,
+                ...stanza.selectedEventParams,
+                dataUrl: stanza.params["data-url"],
+              });
+            }
           }, 500);
         }
       })
