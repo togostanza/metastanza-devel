@@ -57,14 +57,12 @@ export default class TreeMapStanza extends MetaStanza {
     const logScale = this.params["node-log_scale"];
     const gapWidth = 2;
 
-    // TODO no __togostanza_id__ in data
-    const dataset = this.__data.asTree({
+    const data = this.__data.asTree({
       nodeLabelKey: this.params["node-label_key"].trim(),
       nodeGroupKey: this.params["node-group_key"].trim(),
       nodeValueKey: this.params["node-value_key"].trim(),
     }).data;
 
-    const data = dataset;
     // filter out all elements with n=0
     const filteredData = data.filter(
       (item) =>
