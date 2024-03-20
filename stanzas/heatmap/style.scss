@@ -18,6 +18,10 @@ rect {
   stroke: var(--togostanza-border-color);
   stroke-width: calc(var(--togostanza-border-width) * 1px);
 
+  &:hover {
+    cursor: pointer;
+  }
+
   &.-selected {
     stroke-width: 2px;
     stroke: var(--togostanza-theme-selected_border_color);

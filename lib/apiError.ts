@@ -59,7 +59,7 @@ interface LegendOptions {
  * Handles API errors by displaying an error message or rendering the content.
  * Also manages legend and tooltip based on the configuration.
  */
-export function handleApiError(options: HandleApiErrorOptions) {
+export async function handleApiError(options: HandleApiErrorOptions) {
   const { stanzaData, drawContent, hasLegend, hasTooltip, legendOptions } =
     options;
   const { _main: main, _apiError: apiError, root } = stanzaData;
@@ -67,7 +67,7 @@ export function handleApiError(options: HandleApiErrorOptions) {
 
   handleErrorMessage(apiError, main);
   if (!apiError) {
-    drawContent();
+    await drawContent();
   }
   if (hasLegend) {
     manageLegend(isLegendVisible, legendConfiguration, root, apiError);

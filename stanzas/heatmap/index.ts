@@ -2,6 +2,7 @@ import MetaStanza from "../../lib/MetaStanza";
 import { select } from "d3";
 import { ScaleLinear } from "d3-scale";
 import {
+  toggleSelectIds,
   emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
@@ -213,9 +214,23 @@ export default class Heatmap extends MetaStanza {
           return setColor(numericValue);
         });
 
-      if (this.params["event-outgoing_change_selected_nodes"]) {
-        rectGroup.on("click", (e, d) => {
-          select(e.target).raise();
+      // Add event listener
+      rectGroup.on("click", (e, d) => {
+        select(e.target).raise();
+        toggleSelectIds.apply(null, [
+          {
+            selectedIds: this.selectedIds,
+            targetId: d["__togostanza_id__"],
+          },
+        ]);
+        updateSelectedElementClassNameForD3.apply(null, [
+          {
+            drawing: this._chartArea,
+            selectedIds: this.selectedIds,
+            ...this.selectedEventParams,
+          },
+        ]);
+        if (this.params["event-outgoing_change_selected_nodes"]) {
           return emitSelectedEvent.apply(null, [
             {
               drawing: this._chartArea,
@@ -226,8 +241,8 @@ export default class Heatmap extends MetaStanza {
               ...this.selectedEventParams,
             },
           ]);
-        });
-      }
+        }
+      });
 
       this.xAxisGen._g.raise();
       this.yAxisGen._g.raise();
@@ -243,7 +258,7 @@ export default class Heatmap extends MetaStanza {
       drawContent,
       hasLegend: true,
       hasTooltip: true,
-      legendOptions
+      legendOptions,
     });
 
     // TODO: add color type. ScaleLinear<string, number>.
@@ -267,8 +282,12 @@ export default class Heatmap extends MetaStanza {
   }
 
   handleEvent(event: CustomEvent) {
-    if (this.params["event-incoming_change_selected_nodes"]) {
-      this.selectedIds = event.detail.selectedIds;
+    const { selectedIds, dataUrl } = event.detail;
+    if (
+      this.params["event-incoming_change_selected_nodes"] &&
+      dataUrl === this.params["data-url"]
+    ) {
+      this.selectedIds = selectedIds;
       updateSelectedElementClassNameForD3.apply(null, [
         {
           drawing: this._chartArea,
