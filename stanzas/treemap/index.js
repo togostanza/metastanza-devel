@@ -247,11 +247,9 @@ function draw(el, dataset, opts, stanza) {
             });
             if (stanza.params["event-outgoing_change_selected_nodes"]) {
               emitSelectedEvent({
-                drawing: stanza._chartArea,
                 rootElement: stanza.element,
                 targetId: d.data.data.__togostanza_id__,
                 selectedIds: stanza.selectedIds,
-                ...stanza.selectedEventParams,
                 dataUrl: stanza.params["data-url"],
               });
             }
