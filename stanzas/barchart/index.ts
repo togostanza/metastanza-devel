@@ -397,7 +397,10 @@ export default class Barchart extends MetaStanza {
       ticksIntervalUnits: params["axis-x-ticks_interval_units"],
       ticksLabelsFormat: params["axis-x-ticks_labels_format"],
     };
-    const maxY = Math.max(...data);
+    const maxY = bins.reduce(
+      (acc, bin) => (bin.length > acc ? bin.length : acc),
+      0
+    );
     const yDomain = [0, maxY * 1.02];
     const yParams: AxisParamsI = {
       placement: params["axis-y-placement"],
