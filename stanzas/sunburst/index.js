@@ -348,7 +348,6 @@ export default class Sunburst extends MetaStanza {
                 rootElement: this.element,
                 targetId: d.data.data.__togostanza_id__,
                 selectedIds: this.selectedIds,
-                ...this.selectedEventParams,
                 dataUrl: this.params["data-url"],
               });
             }
@@ -550,16 +549,23 @@ export default class Sunburst extends MetaStanza {
           .on("click", (e, d) => {
             if (e.detail === 1) {
               timeout = setTimeout(() => {
-                const selectedIds = stanza.selectedIds;
-                const targetId = d.data.data.__togostanza_id__;
-
-                return emitSelectedEvent({
+                toggleSelectIds({
+                  selectedIds: stanza.selectedIds,
+                  targetId: d.data.data.__togostanza_id__,
+                });
+                updateSelectedElementClassNameForD3({
                   drawing: stanza._chartArea,
-                  rootElement: stanza.element,
-                  targetId,
-                  selectedIds,
+                  selectedIds: stanza.selectedIds,
                   ...stanza.selectedEventParams,
                 });
+                if (stanza.params["event-outgoing_change_selected_nodes"]) {
+                  emitSelectedEvent({
+                    rootElement: stanza.element,
+                    targetId: d.data.data.__togostanza_id__,
+                    selectedIds: stanza.selectedIds,
+                    dataUrl: stanza.params["data-url"],
+                  });
+                }
               }, 500);
             }
           })
