@@ -124,14 +124,12 @@ export default class TreeMapStanza extends MetaStanza {
       dataUrl === this.params["data-url"]
     ) {
       this.selectedIds = selectedIds;
-      updateSelectedElementClassNameForD3.apply(null, [
-        {
-          drawing: this._chartArea,
-          selectedIds,
-          targetId: event.detail.targetId,
-          ...this.selectedEventParams,
-        },
-      ]);
+      updateSelectedElementClassNameForD3({
+        drawing: this._chartArea,
+        selectedIds,
+        targetId: event.detail.targetId,
+        ...this.selectedEventParams,
+      });
     }
   }
 }
@@ -238,20 +236,16 @@ function draw(el, dataset, opts, stanza) {
       .on("click", (e, d) => {
         if (e.detail === 1) {
           timeout = setTimeout(() => {
-            toggleSelectIds.apply(null, [
-              {
-                selectedIds: stanza.selectedIds,
-                targetId: d.data.data.__togostanza_id__,
-              },
-            ]);
-            updateSelectedElementClassNameForD3.apply(null, [
-              {
-                drawing: stanza._chartArea,
-                selectedIds: stanza.selectedIds,
-                ...stanza.selectedEventParams,
-              },
-            ]);
-            if (this.params["event-outgoing_change_selected_nodes"]) {
+            toggleSelectIds({
+              selectedIds: stanza.selectedIds,
+              targetId: d.data.data.__togostanza_id__,
+            });
+            updateSelectedElementClassNameForD3({
+              drawing: stanza._chartArea,
+              selectedIds: stanza.selectedIds,
+              ...stanza.selectedEventParams,
+            });
+            if (stanza.params["event-outgoing_change_selected_nodes"]) {
               emitSelectedEvent({
                 drawing: stanza._chartArea,
                 rootElement: stanza.element,
@@ -271,13 +265,11 @@ function draw(el, dataset, opts, stanza) {
         clearTimeout(timeout);
         d === root ? zoomout(root) : zoomin(d);
 
-        updateSelectedElementClassNameForD3.apply(stanza, [
-          {
-            drawing: stanza._chartArea,
-            selectedIds: stanza.selectedIds,
-            ...stanza.selectedEventParams,
-          },
-        ]);
+        updateSelectedElementClassNameForD3({
+          drawing: stanza._chartArea,
+          selectedIds: stanza.selectedIds,
+          ...stanza.selectedEventParams,
+        });
       });
 
     node
