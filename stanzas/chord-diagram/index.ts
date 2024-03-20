@@ -219,30 +219,22 @@ export default class ChordDiagram extends MetaStanza {
     this._chartArea
       .selectAll(this.selectedEventParams.targetElementSelector)
       .on("click", (_, d: Datum) => {
-        toggleSelectIds.apply(null, [
-          {
-            selectedIds: this.selectedIds,
-            targetId: d.id,
-          },
-        ]);
-        updateSelectedElementClassNameForD3.apply(null, [
-          {
-            drawing: this._chartArea,
-            selectedIds: this.selectedIds,
-            ...this.selectedEventParams,
-          },
-        ]);
+        toggleSelectIds({
+          selectedIds: this.selectedIds,
+          targetId: d.id,
+        });
+        updateSelectedElementClassNameForD3({
+          drawing: this._chartArea,
+          selectedIds: this.selectedIds,
+          ...this.selectedEventParams,
+        });
         if (this.params["event-outgoing_change_selected_nodes"]) {
-          emitSelectedEvent.apply(null, [
-            {
-              drawing: this._chartArea,
-              rootElement: this.element,
-              targetId: d.id,
-              selectedIds: this.selectedIds,
-              ...this.selectedEventParams,
-              dataUrl: this.params["data-url"],
-            },
-          ]);
+          emitSelectedEvent({
+            rootElement: this.element,
+            targetId: d.id,
+            selectedIds: this.selectedIds,
+            dataUrl: this.params["data-url"],
+          });
         }
       });
   }
@@ -254,13 +246,11 @@ export default class ChordDiagram extends MetaStanza {
       dataUrl === this.params["data-url"]
     ) {
       this.selectedIds = selectedIds;
-      updateSelectedElementClassNameForD3.apply(null, [
-        {
-          drawing: this._chartArea,
-          selectedIds,
-          ...this.selectedEventParams,
-        },
-      ]);
+      updateSelectedElementClassNameForD3({
+        drawing: this._chartArea,
+        selectedIds,
+        ...this.selectedEventParams,
+      });
     }
   }
 }

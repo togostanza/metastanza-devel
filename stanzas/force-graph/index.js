@@ -175,30 +175,22 @@ export default class ForceGraph extends MetaStanza {
       this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
     }
     this._graphArea.selectAll("circle.node").on("click", (_, d) => {
-      toggleSelectIds.apply(null, [
-        {
-          selectedIds: this.selectedIds,
-          targetId: d.id,
-        },
-      ]);
-      updateSelectedElementClassNameForD3.apply(null, [
-        {
-          drawing: this._graphArea,
-          selectedIds: this.selectedIds,
-          ...this.selectedEventParams,
-        },
-      ]);
+      toggleSelectIds({
+        selectedIds: this.selectedIds,
+        targetId: d.id,
+      });
+      updateSelectedElementClassNameForD3({
+        drawing: this._graphArea,
+        selectedIds: this.selectedIds,
+        ...this.selectedEventParams,
+      });
       if (this.params["event-outgoing_change_selected_nodes"]) {
-        emitSelectedEvent.apply(null, [
-          {
-            drawing: this._graphArea,
-            rootElement: this.element,
-            targetId: d.id,
-            selectedIds: this.selectedIds,
-            ...this.selectedEventParams,
-            dataUrl: this.params["data-url"],
-          },
-        ]);
+        emitSelectedEvent({
+          rootElement: this.element,
+          targetId: d.id,
+          selectedIds: this.selectedIds,
+          dataUrl: this.params["data-url"],
+        });
       }
     });
 
@@ -223,13 +215,11 @@ export default class ForceGraph extends MetaStanza {
       dataUrl === this.params["data-url"]
     ) {
       this.selectedIds = selectedIds;
-      updateSelectedElementClassNameForD3.apply(null, [
-        {
-          drawing: this._graphArea,
-          selectedIds,
-          ...this.selectedEventParams,
-        },
-      ]);
+      updateSelectedElementClassNameForD3({
+        drawing: this._graphArea,
+        selectedIds,
+        ...this.selectedEventParams,
+      });
     }
   }
 }
