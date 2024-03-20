@@ -217,30 +217,22 @@ export default class Heatmap extends MetaStanza {
       // Add event listener
       rectGroup.on("click", (e, d) => {
         select(e.target).raise();
-        toggleSelectIds.apply(null, [
-          {
-            selectedIds: this.selectedIds,
-            targetId: d["__togostanza_id__"],
-          },
-        ]);
-        updateSelectedElementClassNameForD3.apply(null, [
-          {
-            drawing: this._chartArea,
-            selectedIds: this.selectedIds,
-            ...this.selectedEventParams,
-          },
-        ]);
+        toggleSelectIds({
+          selectedIds: this.selectedIds,
+          targetId: d["__togostanza_id__"],
+        });
+        updateSelectedElementClassNameForD3({
+          drawing: this._chartArea,
+          selectedIds: this.selectedIds,
+          ...this.selectedEventParams,
+        });
         if (this.params["event-outgoing_change_selected_nodes"]) {
-          return emitSelectedEvent.apply(null, [
-            {
-              drawing: this._chartArea,
-              rootElement: this.element,
-              dataUrl: this.params["data-url"],
-              targetId: d["__togostanza_id__"],
-              selectedIds: this.selectedIds,
-              ...this.selectedEventParams,
-            },
-          ]);
+          emitSelectedEvent({
+            rootElement: this.element,
+            dataUrl: this.params["data-url"],
+            targetId: d["__togostanza_id__"],
+            selectedIds: this.selectedIds,
+          });
         }
       });
 
@@ -288,13 +280,11 @@ export default class Heatmap extends MetaStanza {
       dataUrl === this.params["data-url"]
     ) {
       this.selectedIds = selectedIds;
-      updateSelectedElementClassNameForD3.apply(null, [
-        {
-          drawing: this._chartArea,
-          selectedIds: event.detail.selectedIds,
-          ...this.selectedEventParams,
-        },
-      ]);
+      updateSelectedElementClassNameForD3({
+        drawing: this._chartArea,
+        selectedIds: event.detail.selectedIds,
+        ...this.selectedEventParams,
+      });
     }
   }
 }
