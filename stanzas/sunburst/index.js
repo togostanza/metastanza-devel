@@ -82,6 +82,8 @@ export default class Sunburst extends MetaStanza {
     const that = this;
     this.state = new Proxy(this.state, {
       set(target, key, value) {
+        console.log(key);
+        console.log(value);
         if (key === "currentId") {
           updateId(getNodeById(value), that);
         }
@@ -582,5 +584,7 @@ export default class Sunburst extends MetaStanza {
         errorMessageEl.remove();
       }
     }
+
+    state.currentId = root.data.data.id;
   }
 }
