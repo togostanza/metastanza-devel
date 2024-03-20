@@ -85,11 +85,11 @@ export default class Barchart extends MetaStanza {
     const y2Sym = Symbol("y2");
 
     const values = structuredClone(this._data);
-    console.log(values);
 
     const xAxisLabels = [
       ...new Set(values.map((d) => d[xKeyName])),
     ] as string[];
+    console.log(xAxisLabels);
 
     let params;
     try {
@@ -106,7 +106,6 @@ export default class Barchart extends MetaStanza {
       map.get(curr[groupKeyName]).push(curr);
       return map;
     }, new Map());
-    console.log(this._dataByGroup);
 
     this._dataByX = values.reduce((map, curr) => {
       if (!map.has(curr[xKeyName])) {
@@ -118,7 +117,6 @@ export default class Barchart extends MetaStanza {
     console.log(this._dataByX);
 
     const groupNames = this._dataByGroup.keys() as Iterable<string>;
-    console.log(groupKeyName);
 
     color.domain(groupNames);
 
@@ -129,6 +127,7 @@ export default class Barchart extends MetaStanza {
       d[y1Sym] = 0;
       d[y2Sym] = d[yKeyName];
     });
+    console.log(values);
 
     let y2s = [];
 
@@ -291,11 +290,33 @@ export default class Barchart extends MetaStanza {
   }
 
   drawHistogram() {
-    const binKey = this.params["axis-x-key"];
-    console.log(binKey);
+    const xKeyName = this.params["axis-x-key"];
+    const yKeyName = this.params["axis-y-key"];
+    const xAxisTitle =
+      typeof this.params["axis-x-title"] === "undefined"
+        ? xKeyName
+        : this.params["axis-x-title"];
+    const yAxisTitle =
+      typeof this.params["axis-y-title"] === "undefined"
+        ? yKeyName
+        : this.params["axis-y-title"];
+
+    const showLegend = this.params["legend-visible"];
+    const legendTitle = this.params["legend-title"];
+
     const values = structuredClone(this._data);
     console.log(values);
-    const data = values.map((d) => +d[binKey]);
+
+    let params;
+    try {
+      params = paramsModel.parse(this.params);
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+    console.log(params);
+
+    const data = values.map((d) => +d[xKeyName]);
     console.log(data);
 
     const margin = { top: 20, right: 20, bottom: 30, left: 40 };
@@ -353,11 +374,60 @@ export default class Barchart extends MetaStanza {
       .attr("height", (d) => height - y(d.length))
       .attr("fill", "steelblue");
 
+    const axisArea = {
+      x: 0,
+      y: 0,
+      width: +this.css("--togostanza-canvas-width"),
+      height: +this.css("--togostanza-canvas-height"),
+    };
+
     // X軸を追加
-    g.append("g")
-      .attr("class", "axis axis--x")
-      .attr("transform", `translate(0,${height})`)
-      .call(axisBottom(x));
+    const xParams: AxisParamsI = {
+      placement: params["axis-x-placement"],
+      domain: [Math.min(...data), Math.max(...data)],
+      drawArea: axisArea,
+      margins: this.MARGIN,
+      tickLabelsAngle: params["axis-x-ticks_label_angle"],
+      title: xAxisTitle,
+      titlePadding: params["axis-x-title_padding"],
+      scale: "linear",
+      gridInterval: params["axis-x-gridlines_interval"],
+      gridIntervalUnits: params["axis-x-gridlines_interval_units"],
+      ticksInterval: params["axis-x-ticks_interval"],
+      ticksIntervalUnits: params["axis-x-ticks_interval_units"],
+      ticksLabelsFormat: params["axis-x-ticks_labels_format"],
+    };
+    const maxY = Math.max(...data);
+    const yDomain = [0, maxY * 1.02];
+    const yParams: AxisParamsI = {
+      placement: params["axis-y-placement"],
+      domain: yDomain,
+      drawArea: axisArea,
+      margins: this.MARGIN,
+      tickLabelsAngle: params["axis-y-ticks_label_angle"],
+      title: yAxisTitle,
+      titlePadding: params["axis-y-title_padding"],
+      scale: "linear",
+      gridInterval: params["axis-y-gridlines_interval"],
+      gridIntervalUnits: params["axis-x-gridlines_interval_units"],
+      ticksInterval: params["axis-y-ticks_interval"],
+      ticksIntervalUnits: params["axis-y-ticks_interval_units"],
+      ticksLabelsFormat: params["axis-y-ticks_labels_format"],
+    };
+
+    if (!this.xAxisGen) {
+      this.xAxisGen = new Axis(svg.node());
+    }
+    if (!this.yAxisGen) {
+      this.yAxisGen = new Axis(svg.node());
+    }
+    this.xAxisGen.update(xParams);
+    this.yAxisGen.update(yParams);
+
+    // g.append("g")
+    //   .attr("class", "axis axis--x")
+    //   .attr("transform", `translate(0,${height})`)
+    //   .call(axisBottom(x));
 
     // Y軸を追加
     g.append("g").attr("class", "axis axis--y").call(axisLeft(y));
