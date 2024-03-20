@@ -15,11 +15,11 @@
     >
       <span class="inner">
         <input
-          :data-togostanza-id="node.__togostanza_id__"
+          :data-togostanza-id="node.id"
           class="selectable"
           :class="{ '-selected': checkedNodes.get(node.id) }"
           type="checkbox"
-          :checked="checkedNodes.get(node.__togostanza_id__)"
+          :checked="checkedNodes.get(node.id)"
           @input="handleCheckboxClick(node)"
         />
 
@@ -120,7 +120,7 @@ export default defineComponent({
           new CustomEvent("changeSelectedNodes", {
             detail: {
               selectedIds: [...this.checkedNodes.keys()],
-              targetId: node.__togostanza_id__,
+              targetId: node.id,
               dataUrl: this.params.data._object.dataUrl,
             },
           })

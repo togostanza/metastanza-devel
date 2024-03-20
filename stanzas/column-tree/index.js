@@ -54,12 +54,10 @@ export default class ColumnTree extends MetaStanza {
       dataUrl === this.params["data-url"]
     ) {
       const targetElements = this._data.filter((d) =>
-        selectedIds.includes(d.__togostanza_id__)
+        selectedIds.includes(d.id)
       );
 
-      const targetElement = targetElements.find(
-        (el) => el.__togostanza_id__ === targetId
-      );
+      const targetElement = targetElements.find((el) => el.id === targetId);
 
       const isSelected = selectedIds.includes(targetId);
 
@@ -68,7 +66,7 @@ export default class ColumnTree extends MetaStanza {
 
       if (isSelected && !nodeExists) {
         checkedNodes.set(targetId, {
-          __togostanza_id__: targetId,
+          id: targetId,
           ...targetElement,
         });
       } else if (!isSelected && nodeExists) {

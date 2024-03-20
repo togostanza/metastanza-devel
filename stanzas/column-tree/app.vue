@@ -121,14 +121,12 @@ export default defineComponent({
     });
 
     function updateCheckedNodes(node) {
-      const targetData = params.data._object.data.find(
-        (d) => d.__togostanza_id__ === node.__togostanza_id__
-      );
-      const { __togostanza_id__, ...obj } = targetData;
-      state.checkedNodes.has(__togostanza_id__)
-        ? state.checkedNodes.delete(__togostanza_id__)
-        : state.checkedNodes.set(__togostanza_id__, {
-            __togostanza_id__,
+      const targetData = params.data._object.data.find((d) => d.id === node.id);
+      const { id, ...obj } = targetData;
+      state.checkedNodes.has(id)
+        ? state.checkedNodes.delete(id)
+        : state.checkedNodes.set(id, {
+            id,
             ...obj,
           });
     }
@@ -140,7 +138,6 @@ export default defineComponent({
       const children = getChildNodes([layer, parentId]);
       const indexesToRemove = state.columnData.length - layer;
       state.columnData.splice(layer, indexesToRemove, children);
-      console.log(children);
       return children;
     }
     function isNormalSearchHit(node) {
