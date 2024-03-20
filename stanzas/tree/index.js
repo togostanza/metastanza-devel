@@ -21,6 +21,7 @@ import {
 } from "togostanza-utils";
 import MetaStanza from "../../lib/MetaStanza";
 import {
+  toggleSelectIds,
   emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
@@ -431,15 +432,23 @@ export default class Tree extends MetaStanza {
             .on("click", (e, d) => {
               if (e.detail === 1) {
                 timeout = setTimeout(() => {
-                  return emitSelectedEvent.apply(null, [
-                    {
+                  toggleSelectIds({
+                    selectedIds: this.selectedIds,
+                    targetId: d.data.data.__togostanza_id__,
+                  });
+                  updateSelectedElementClassNameForD3({
+                    drawing: this._chartArea,
+                    selectedIds: this.selectedIds,
+                    ...this.selectedEventParams,
+                  });
+                  if (this.params["event-outgoing_change_selected_nodes"]) {
+                    emitSelectedEvent({
                       rootElement: this.element,
-                      targetId: d.id,
+                      targetId: d.data.data.__togostanza_id__,
                       selectedIds: this.selectedIds,
-                      ...this.selectedEventParams,
                       dataUrl: this.params["data-url"],
-                    },
-                  ]);
+                    });
+                  }
                 }, 500);
               }
             })
@@ -746,14 +755,12 @@ export default class Tree extends MetaStanza {
       dataUrl === this.params["data-url"]
     ) {
       this.selectedIds = selectedIds;
-      updateSelectedElementClassNameForD3.apply(null, [
-        {
-          drawing: this._chartArea,
-          selectedIds,
-          targetId,
-          ...this.selectedEventParams,
-        },
-      ]);
+      updateSelectedElementClassNameForD3({
+        drawing: this._chartArea,
+        selectedIds,
+        targetId,
+        ...this.selectedEventParams,
+      });
     }
   }
 }
