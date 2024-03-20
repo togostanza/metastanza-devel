@@ -40,9 +40,9 @@ export default class Tree extends MetaStanza {
   _chartArea;
   selectedIds = [];
   selectedEventParams = {
-    targetElementSelector: "g.circles g",
+    targetElementSelector: "g.labels g",
     selectedElementClassName: "-selected",
-    idPath: "id",
+    idPath: "data.id",
   };
   //Stanza download menu contents
   menu() {
@@ -427,45 +427,44 @@ export default class Tree extends MetaStanza {
 
         let timeout;
 
-        if (this.params["event-outgoing_change_selected_nodes"]) {
-          nodeCirclesEnter
-            .on("click", (e, d) => {
-              if (e.detail === 1) {
-                timeout = setTimeout(() => {
-                  toggleSelectIds({
-                    selectedIds: this.selectedIds,
-                    targetId: d.data.data.__togostanza_id__,
-                  });
-                  updateSelectedElementClassNameForD3({
-                    drawing: this._chartArea,
-                    selectedIds: this.selectedIds,
-                    ...this.selectedEventParams,
-                  });
-                  if (this.params["event-outgoing_change_selected_nodes"]) {
-                    emitSelectedEvent({
-                      rootElement: this.element,
-                      targetId: d.data.data.__togostanza_id__,
-                      selectedIds: this.selectedIds,
-                      dataUrl: this.params["data-url"],
-                    });
-                  }
-                }, 500);
-              }
-            })
-            .on("dblclick", (e, d) => {
-              clearTimeout(timeout);
-              toggle(d);
-              update(d);
-
-              updateSelectedElementClassNameForD3.apply(this, [
-                {
+        nodeCirclesEnter
+          .on("click", (e, d) => {
+            if (e.detail === 1) {
+              timeout = setTimeout(() => {
+                toggleSelectIds({
+                  selectedIds: this.selectedIds,
+                  targetId: d.data.id,
+                });
+                updateSelectedElementClassNameForD3({
                   drawing: this._chartArea,
                   selectedIds: this.selectedIds,
                   ...this.selectedEventParams,
-                },
-              ]);
-            });
-        }
+                });
+                console.log(this.selectedIds);
+                if (this.params["event-outgoing_change_selected_nodes"]) {
+                  emitSelectedEvent({
+                    rootElement: this.element,
+                    targetId: d.data.id,
+                    selectedIds: this.selectedIds,
+                    dataUrl: this.params["data-url"],
+                  });
+                }
+              }, 500);
+            }
+          })
+          .on("dblclick", (e, d) => {
+            clearTimeout(timeout);
+            toggle(d);
+            update(d);
+
+            updateSelectedElementClassNameForD3.apply(this, [
+              {
+                drawing: this._chartArea,
+                selectedIds: this.selectedIds,
+                ...this.selectedEventParams,
+              },
+            ]);
+          });
 
         //Update circle color when opening and closing
         nodeCirclesUpdate
@@ -485,12 +484,7 @@ export default class Tree extends MetaStanza {
               ? nodeRadius(d.data.value)
               : parseFloat(aveRadius)
           )
-          .attr("fill", setColor)
-          .attr("data-id", (d) => {
-            console.log(d);
-            // TODO change to togostanza id later
-            return d.id;
-          });
+          .attr("fill", setColor);
 
         if (showToolTips) {
           this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
@@ -552,11 +546,6 @@ export default class Tree extends MetaStanza {
               case RADIAL:
                 return d.x < Math.PI === !d.children ? "start" : "end";
             }
-          })
-          .attr("data-id", (d) => {
-            console.log(d);
-            // TODO change to togostanza id later
-            return d.id;
           })
           .text((d) => d.data.label || "");
 
