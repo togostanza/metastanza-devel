@@ -21,6 +21,7 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 import {
+  toggleSelectIds,
   emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
@@ -61,14 +62,12 @@ export default class Sunburst extends MetaStanza {
       dataUrl === this.params["data-url"]
     ) {
       this.selectedIds = selectedIds;
-      updateSelectedElementClassNameForD3.apply(null, [
-        {
-          drawing: this._chartArea,
-          selectedIds: event.detail.selectedIds,
-          targetId: event.detail.targetId,
-          ...this.selectedEventParams,
-        },
-      ]);
+      updateSelectedElementClassNameForD3({
+        drawing: this._chartArea,
+        selectedIds: event.detail.selectedIds,
+        targetId: event.detail.targetId,
+        ...this.selectedEventParams,
+      });
     }
 
     // event.stopPropagation();
@@ -335,13 +334,24 @@ export default class Sunburst extends MetaStanza {
       .on("click", (e, d) => {
         if (e.detail === 1) {
           timeout = setTimeout(() => {
-            return emitSelectedEvent({
-              rootElement: this.element,
+            toggleSelectIds({
+              selectedIds: this.selectedIds,
               targetId: d.data.data.__togostanza_id__,
+            });
+            updateSelectedElementClassNameForD3({
+              drawing: this._chartArea,
               selectedIds: this.selectedIds,
               ...this.selectedEventParams,
-              dataUrl: this.params["data-url"],
             });
+            if (this.params["event-outgoing_change_selected_nodes"]) {
+              emitSelectedEvent({
+                rootElement: this.element,
+                targetId: d.data.data.__togostanza_id__,
+                selectedIds: this.selectedIds,
+                ...this.selectedEventParams,
+                dataUrl: this.params["data-url"],
+              });
+            }
           }, 500);
         }
       })
