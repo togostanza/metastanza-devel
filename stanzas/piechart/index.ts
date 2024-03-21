@@ -18,7 +18,7 @@ import {
 
 export default class Piechart extends MetaStanza {
   legend: Legend;
-  _chartArea: d3.Selection<SVGGElement, {}, SVGElement, any>;
+  _chartArea: d3.Selection<SVGGElement, unknown, SVGElement, undefined>;
   selectedIds: Array<string | number> = [];
   selectedEventParams = {
     targetElementSelector: ".pie-slice",
@@ -60,7 +60,7 @@ export default class Piechart extends MetaStanza {
       this._chartArea?.remove();
     }
 
-    let chartG;
+    let chartG: d3.Selection<SVGGElement, unknown, SVGElement, undefined>;
     const drawContent = () => {
       this._chartArea = select(this._main).select("svg");
       if (this._chartArea.empty()) {
