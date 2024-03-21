@@ -30,10 +30,11 @@ interface StanzaData {
 /**
  * Represents an item in the legend.
  */
-interface LegendItem {
-  id: number;
+export interface LegendItem {
+  id: string | number;
   color: string;
-  value: number;
+  value: string | number;
+  toggled?: boolean;
 }
 
 /**
@@ -42,7 +43,7 @@ interface LegendItem {
 interface LegendConfiguration {
   items: LegendItem[];
   title: string;
-  options: any;
+  options: Record<string, any>;
 }
 
 /**

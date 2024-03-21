@@ -9,7 +9,7 @@ import {
 import getStanzaColors from "../../lib/ColorGenerator";
 import Legend from "../../lib/Legend2";
 import MetaStanza from "../../lib/MetaStanza";
-import { handleApiError } from "../../lib/apiError";
+import { handleApiError, type LegendItem } from "../../lib/apiError";
 import {
   emitSelectedEvent,
   toggleSelectIds,
@@ -117,7 +117,7 @@ export default class Piechart extends MetaStanza {
       });
     };
 
-    const isLegendVisible = this.params["legend-visible"];
+    const isLegendVisible: boolean = this.params["legend-visible"];
 
     const legendConfiguration = {
       items: this._data.map((item: string, index: number) => {
@@ -126,7 +126,7 @@ export default class Piechart extends MetaStanza {
           value: item[categoryKey],
           color: item[colorSym],
           toggled: false,
-        };
+        } as LegendItem;
       }),
       title: legendTitle,
       options: {
