@@ -11,6 +11,7 @@ import loadData from "togostanza-utils/load-data";
 import getStanzaColors from "../../lib/ColorGenerator";
 import MetaStanza from "../../lib/MetaStanza";
 import ToolTip from "../../lib/ToolTip";
+import { handleApiError } from "../../lib/apiError";
 import prepareGraphData from "../../lib/prepareGraphData";
 import {
   MarginsI,
@@ -48,6 +49,10 @@ export default class ChordDiagram extends MetaStanza {
   }
 
   async renderNext() {
+    if (!this._chartArea?.empty()) {
+      this._chartArea?.remove();
+    }
+
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     const setFallbackVal = (param, defVal) => {
@@ -63,180 +68,174 @@ export default class ChordDiagram extends MetaStanza {
     const width = parseInt(css("--togostanza-canvas-width"));
     const height = parseInt(css("--togostanza-canvas-height"));
 
-    if (this._apiError) {
-      this._chartArea?.remove();
-      this._chartArea = null;
-    } else {
-      const errorMessageEl = this._main.querySelector(
-        ".metastanza-error-message-div"
+    const drawContent = async () => {
+      const values = await loadData(
+        this.params["data-url"],
+        this.params["data-type"],
+        this.root.querySelector("main")
       );
-      if (errorMessageEl) {
-        errorMessageEl.remove();
+
+      this._data = values;
+
+      const nodes = values["nodes"];
+      const edges = values["links"];
+
+      const togostanzaColors = getStanzaColors(this);
+
+      const color = function () {
+        return d3.scaleOrdinal().range(togostanzaColors);
+      };
+
+      const root = this.root.querySelector("main");
+
+      const existingSvg = root.getElementsByTagName("svg")[0];
+      if (existingSvg) {
+        existingSvg.remove();
       }
-    }
+      const svg = d3
+        .select(root)
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
 
-    const values = await loadData(
-      this.params["data-url"],
-      this.params["data-type"],
-      this.root.querySelector("main")
-    );
+      this._chartArea = svg;
 
-    this._data = values;
+      this.tooltip = new ToolTip();
+      root.append(this.tooltip);
 
-    const nodes = values["nodes"];
-    const edges = values["links"];
+      const nodesSortParams = {
+        sortBy: this.params["nodes-sort-key"],
+        sortOrder: this.params["nodes-sort-order"] || "ascending",
+      };
 
-    const togostanzaColors = getStanzaColors(this);
+      const nodeSizeParams = {
+        isChord: !this.params["node-size-fixed"],
+        dataKey: "",
+        minSize: 3,
+        maxSize: 3,
+        scale: "linear",
+      };
 
-    const color = function () {
-      return d3.scaleOrdinal().range(togostanzaColors);
-    };
+      const nodeColorParams = {
+        dataKey: this.params["node-color_key"] || "",
+      };
 
-    const root = this.root.querySelector("main");
+      const nodeLabelParams = {
+        margin: 3,
+        dataKey: this.params["node-label_key"],
+      };
 
-    const existingSvg = root.getElementsByTagName("svg")[0];
-    if (existingSvg) {
-      existingSvg.remove();
-    }
-    const svg = d3
-      .select(root)
-      .append("svg")
-      .attr("width", width)
-      .attr("height", height);
+      const edgeWidthParams = {
+        dataKey: this.params["edge-width-key"] || "",
+        minWidth: setFallbackVal("edge-width-min", 1),
+        maxWidth: this.params["edge-width-max"],
+        scale: "linear",
+        showArrows: this.params["edge-show_arrows"],
+      };
 
-    this._chartArea = svg;
+      const edgeColorParams = {
+        basedOn: "data key",
+        dataKey: Symbol(),
+      };
 
-    this.tooltip = new ToolTip();
-    root.append(this.tooltip);
+      const tooltipParams = {
+        dataKey: this.params["tooltips-key"],
+        show: nodes.some((d) => d[this.params["tooltips-key"]]),
+      };
 
-    const nodesSortParams = {
-      sortBy: this.params["nodes-sort-key"],
-      sortOrder: this.params["nodes-sort-order"] || "ascending",
-    };
+      const edgeParams = {
+        type: "curve",
+        curveStrength: 25,
+      };
 
-    const nodeSizeParams = {
-      isChord: !this.params["node-size-fixed"],
-      dataKey: "",
-      minSize: 3,
-      maxSize: 3,
-      scale: "linear",
-    };
+      const highlightAdjEdges = true;
 
-    const nodeColorParams = {
-      dataKey: this.params["node-color_key"] || "",
-    };
-
-    const nodeLabelParams = {
-      margin: 3,
-      dataKey: this.params["node-label_key"],
-    };
-
-    const edgeWidthParams = {
-      dataKey: this.params["edge-width-key"] || "",
-      minWidth: setFallbackVal("edge-width-min", 1),
-      maxWidth: this.params["edge-width-max"],
-      scale: "linear",
-      showArrows: this.params["edge-show_arrows"],
-    };
-
-    const edgeColorParams = {
-      basedOn: "data key",
-      dataKey: Symbol(),
-    };
-
-    const tooltipParams = {
-      dataKey: this.params["tooltips-key"],
-      show: nodes.some((d) => d[this.params["tooltips-key"]]),
-    };
-
-    const edgeParams = {
-      type: "curve",
-      curveStrength: 25,
-    };
-
-    const highlightAdjEdges = true;
-
-    const CSSMargins = getMarginsFromCSSString(
-      css("--togostanza-canvas-padding")
-    );
-
-    const longestLabelWidth = getLongestLabelWidth(
-      svg,
-      nodes.map((d) => d[nodeLabelParams.dataKey])
-    );
-
-    const MARGIN: MarginsI = {
-      LEFT: CSSMargins.LEFT + longestLabelWidth + nodeLabelParams.margin,
-      RIGHT: CSSMargins.RIGHT + longestLabelWidth + nodeLabelParams.margin,
-      TOP: CSSMargins.TOP + longestLabelWidth + nodeLabelParams.margin,
-      BOTTOM: CSSMargins.BOTTOM + longestLabelWidth + nodeLabelParams.margin,
-    };
-
-    const params = {
-      MARGIN,
-      width,
-      height,
-      svg,
-      color,
-      highlightAdjEdges,
-      nodesSortParams,
-      nodeSizeParams,
-      nodeColorParams,
-      edgeWidthParams,
-      edgeColorParams,
-      edgeParams,
-      nodeLabelParams,
-      tooltipParams,
-    };
-
-    let notEmptyNodes = nodes;
-    if (!notEmptyNodes) {
-      const names = Array.from(
-        new Set(edges.flatMap((d) => [d.source, d.target]))
+      const CSSMargins = getMarginsFromCSSString(
+        css("--togostanza-canvas-padding")
       );
-      notEmptyNodes = [];
-      names.forEach((name) => {
-        notEmptyNodes.push({
-          id: name,
-        });
-      });
-    }
 
-    const { prepNodes, prepEdges, symbols } = prepareGraphData(
-      notEmptyNodes,
-      edges,
-      params
-    );
+      const longestLabelWidth = getLongestLabelWidth(
+        svg,
+        nodes.map((d) => d[nodeLabelParams.dataKey])
+      );
 
-    if (nodeSizeParams.isChord) {
-      drawChordDiagram(svg, prepNodes, prepEdges, { ...params, symbols });
-    } else {
-      drawCircleLayout(svg, prepNodes, prepEdges, { ...params, symbols });
-    }
+      const MARGIN: MarginsI = {
+        LEFT: CSSMargins.LEFT + longestLabelWidth + nodeLabelParams.margin,
+        RIGHT: CSSMargins.RIGHT + longestLabelWidth + nodeLabelParams.margin,
+        TOP: CSSMargins.TOP + longestLabelWidth + nodeLabelParams.margin,
+        BOTTOM: CSSMargins.BOTTOM + longestLabelWidth + nodeLabelParams.margin,
+      };
 
-    this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
+      const params = {
+        MARGIN,
+        width,
+        height,
+        svg,
+        color,
+        highlightAdjEdges,
+        nodesSortParams,
+        nodeSizeParams,
+        nodeColorParams,
+        edgeWidthParams,
+        edgeColorParams,
+        edgeParams,
+        nodeLabelParams,
+        tooltipParams,
+      };
 
-    this._chartArea
-      .selectAll(this.selectedEventParams.targetElementSelector)
-      .on("click", (_, d: Datum) => {
-        toggleSelectIds({
-          selectedIds: this.selectedIds,
-          targetId: d.id,
-        });
-        updateSelectedElementClassNameForD3({
-          drawing: this._chartArea,
-          selectedIds: this.selectedIds,
-          ...this.selectedEventParams,
-        });
-        if (this.params["event-outgoing_change_selected_nodes"]) {
-          emitSelectedEvent({
-            rootElement: this.element,
-            targetId: d.id,
-            selectedIds: this.selectedIds,
-            dataUrl: this.params["data-url"],
+      let notEmptyNodes = nodes;
+      if (!notEmptyNodes) {
+        const names = Array.from(
+          new Set(edges.flatMap((d) => [d.source, d.target]))
+        );
+        notEmptyNodes = [];
+        names.forEach((name) => {
+          notEmptyNodes.push({
+            id: name,
           });
-        }
-      });
+        });
+      }
+
+      const { prepNodes, prepEdges, symbols } = prepareGraphData(
+        notEmptyNodes,
+        edges,
+        params
+      );
+      if (nodeSizeParams.isChord) {
+        drawChordDiagram(svg, prepNodes, prepEdges, { ...params, symbols });
+      } else {
+        drawCircleLayout(svg, prepNodes, prepEdges, { ...params, symbols });
+      }
+
+      this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
+
+      this._chartArea
+        .selectAll(this.selectedEventParams.targetElementSelector)
+        .on("click", (_, d: Datum) => {
+          toggleSelectIds({
+            selectedIds: this.selectedIds,
+            targetId: d.id,
+          });
+          updateSelectedElementClassNameForD3({
+            drawing: this._chartArea,
+            selectedIds: this.selectedIds,
+            ...this.selectedEventParams,
+          });
+          if (this.params["event-outgoing_change_selected_nodes"]) {
+            emitSelectedEvent({
+              rootElement: this.element,
+              targetId: d.id,
+              selectedIds: this.selectedIds,
+              dataUrl: this.params["data-url"],
+            });
+          }
+        });
+    };
+
+    handleApiError({
+      stanzaData: this,
+      drawContent,
+    });
   }
 
   handleEvent(event) {
