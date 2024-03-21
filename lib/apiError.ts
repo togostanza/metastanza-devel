@@ -62,7 +62,7 @@ export async function handleApiError(options: HandleApiErrorOptions) {
   const { stanzaData, drawContent, hasLegend, hasTooltip, legendOptions } =
     options;
   const { _main: main, _apiError: apiError, root } = stanzaData;
-  const { isLegendVisible, legendConfiguration } = legendOptions;
+  const { isLegendVisible, legendConfiguration } = legendOptions ?? {};
 
   handleErrorMessage(apiError, main);
   if (!apiError) {
