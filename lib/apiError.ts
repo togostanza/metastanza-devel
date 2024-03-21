@@ -43,7 +43,13 @@ export interface LegendItem {
 interface LegendConfiguration {
   items: LegendItem[];
   title: string;
-  options: Record<string, any>;
+  options: {
+    fadeoutNodes: NodeList;
+    shape: string;
+    fadeProp: string;
+    position: string;
+    showLeaders: boolean;
+  };
 }
 
 /**
