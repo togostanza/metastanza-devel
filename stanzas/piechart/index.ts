@@ -9,9 +9,10 @@ import {
 import getStanzaColors from "../../lib/ColorGenerator";
 import Legend from "../../lib/Legend2";
 import MetaStanza from "../../lib/MetaStanza";
+import { handleApiError } from "../../lib/apiError";
 import {
-  toggleSelectIds,
   emitSelectedEvent,
+  toggleSelectIds,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
 
@@ -41,7 +42,6 @@ export default class Piechart extends MetaStanza {
     const valueKey = this.params["data-value_key"];
     const categoryKey = this.params["data-category_key"];
     const colorKey = this.params["data-color_key"];
-    const showLegend = this.params["legend-visible"];
     const legendTitle = this.params["legend-title"];
 
     const categoryList = [
@@ -56,113 +56,95 @@ export default class Piechart extends MetaStanza {
       d[colorSym] = d[colorKey] ?? color(d[categoryKey]);
     });
 
-    this._chartArea = select(this._main).select("svg");
-    if (this._chartArea.empty()) {
-      this._chartArea = select(this._main).append("svg");
+    if (!this._chartArea?.empty()) {
+      this._chartArea?.remove();
     }
 
-    this._chartArea.attr("width", width).attr("height", height);
+    let chartG;
+    const drawContent = () => {
+      this._chartArea = select(this._main).select("svg");
+      if (this._chartArea.empty()) {
+        this._chartArea = select(this._main).append("svg");
+      }
 
-    const existingChart = this._chartArea.select("g.chart");
-    if (!existingChart.empty()) {
-      existingChart.remove();
-    }
-    const chartG = this._chartArea.append("g").classed("chart", true);
-    chartG.attr("transform", `translate(${width / 2},${height / 2})`);
+      this._chartArea.attr("width", width).attr("height", height);
 
-    const WIDTH = width - this.MARGIN.LEFT - this.MARGIN.RIGHT;
-    const HEIGHT = height - this.MARGIN.TOP - this.MARGIN.BOTTOM;
+      const existingChart = this._chartArea.select("g.chart");
+      if (!existingChart.empty()) {
+        existingChart.remove();
+      }
+      chartG = this._chartArea.append("g").classed("chart", true);
+      chartG.attr("transform", `translate(${width / 2},${height / 2})`);
 
-    const R = Math.min(WIDTH, HEIGHT) / 2;
+      const WIDTH = width - this.MARGIN.LEFT - this.MARGIN.RIGHT;
+      const HEIGHT = height - this.MARGIN.TOP - this.MARGIN.BOTTOM;
 
-    const arcGenerator = arc().innerRadius(0).outerRadius(R);
+      const R = Math.min(WIDTH, HEIGHT) / 2;
 
-    const pieConvertor = pie().value((d) => d[valueKey]);
+      const arcGenerator = arc().innerRadius(0).outerRadius(R);
 
-    const dataReady = pieConvertor(this._data);
+      const pieConvertor = pie().value((d) => d[valueKey]);
 
-    const chart = chartG.selectAll("path").data(dataReady);
+      const dataReady = pieConvertor(this._data);
 
-    const pieGroups = chart
-      .enter()
-      .append("path")
-      .classed("pie-slice", true)
-      .attr("d", <any>arcGenerator)
-      .attr("fill", (d) => d.data[colorSym]);
+      const chart = chartG.selectAll("path").data(dataReady);
 
-    pieGroups.on("click", (_, d) => {
-      toggleSelectIds({
-        selectedIds: this.selectedIds,
-        targetId: d.data["__togostanza_id__"],
-      });
-      updateSelectedElementClassNameForD3({
-        drawing: this._chartArea,
-        selectedIds: this.selectedIds,
-        ...this.selectedEventParams,
-      });
-      if (this.params["event-outgoing_change_selected_nodes"]) {
-        emitSelectedEvent({
-          rootElement: this.element,
+      const pieGroups = chart
+        .enter()
+        .append("path")
+        .classed("pie-slice", true)
+        .attr("d", <any>arcGenerator)
+        .attr("fill", (d) => d.data[colorSym]);
+
+      pieGroups.on("click", (_, d) => {
+        toggleSelectIds({
           selectedIds: this.selectedIds,
           targetId: d.data["__togostanza_id__"],
-          dataUrl: this.params["data-url"],
         });
-      }
-    });
+        updateSelectedElementClassNameForD3({
+          drawing: this._chartArea,
+          selectedIds: this.selectedIds,
+          ...this.selectedEventParams,
+        });
+        if (this.params["event-outgoing_change_selected_nodes"]) {
+          emitSelectedEvent({
+            rootElement: this.element,
+            selectedIds: this.selectedIds,
+            targetId: d.data["__togostanza_id__"],
+            dataUrl: this.params["data-url"],
+          });
+        }
+      });
+    };
 
-    if (showLegend) {
-      if (!this.legend) {
-        this.legend = new Legend();
-        this.root.append(this.legend);
-      }
+    const isLegendVisible = this.params["legend-visible"];
 
-      this.legend.items = this._data.map((item: string, index: number) => {
+    const legendConfiguration = {
+      items: this._data.map((item: string, index: number) => {
         return {
           id: "" + index,
           value: item[categoryKey],
           color: item[colorSym],
           toggled: false,
         };
-      });
-
-      this.legend.nodes = this._data.map((item, index) => {
-        return {
-          id: "" + index,
-          node: chartG
-            .selectAll(".pie-slice")
-            .filter(
-              (d: (typeof dataReady)[number]) =>
-                d.data[categoryKey] === item[categoryKey]
-            )
-            .nodes(),
-        };
-      });
-
-      this.legend.options = {
-        fadeoutNodes: chartG.selectAll(".pie-slice").nodes(),
+      }),
+      title: legendTitle,
+      options: {
+        fadeoutNodes: chartG?.selectAll(".pie-slice").nodes(),
         fadeProp: "opacity",
         showLeaders: false,
-      };
+      },
+    };
 
-      this.legend.title = legendTitle;
-    } else {
-      this.legend.remove();
-      this.legend = null;
-    }
-
-    if (this._apiError) {
-      this.legend.remove();
-      this.legend = null;
-      this._chartArea.remove();
-      this._chartArea = null;
-    } else {
-      const errorMessageEl = this._main.querySelector(
-        ".metastanza-error-message-div"
-      );
-      if (errorMessageEl) {
-        errorMessageEl.remove();
-      }
-    }
+    handleApiError({
+      stanzaData: this,
+      drawContent,
+      hasLegend: true,
+      legendOptions: {
+        isLegendVisible,
+        legendConfiguration,
+      },
+    });
   }
 
   handleEvent(event) {

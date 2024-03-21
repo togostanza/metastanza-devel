@@ -42,9 +42,7 @@ interface LegendItem {
 interface LegendConfiguration {
   items: LegendItem[];
   title: string;
-  options: {
-    shape: string;
-  };
+  options: any;
 }
 
 /**
