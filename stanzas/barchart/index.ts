@@ -304,6 +304,8 @@ export default class Barchart extends MetaStanza {
     const showLegend = this.params["legend-visible"];
     const legendTitle = this.params["legend-title"];
 
+    const numberOfBin = 20;
+
     const values = structuredClone(this._data);
     console.log(values);
 
@@ -336,9 +338,7 @@ export default class Barchart extends MetaStanza {
       .attr("width", +this.css("--togostanza-canvas-width"))
       .attr("height", +this.css("--togostanza-canvas-height"));
 
-    const g = svg
-      .append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
+    this._graphArea = svg.append("g").attr("class", "chart");
 
     // X軸とY軸のスケールを設定
     const x = scaleLinear()
@@ -349,7 +349,7 @@ export default class Barchart extends MetaStanza {
     // ビンの設定
     const bins = bin()
       .domain(x.domain() as [number, number])
-      .thresholds(x.ticks(20))(
+      .thresholds(x.ticks(numberOfBin))(
       // 20個のビンに分ける
       data
     );
@@ -357,22 +357,6 @@ export default class Barchart extends MetaStanza {
 
     // Y軸のスケールをビンのデータに合わせて設定
     y.domain([0, max(bins, (d) => d.length)]);
-
-    // バーを描画
-    const bar = g
-      .selectAll(".bar")
-      .data(bins)
-      .enter()
-      .append("g")
-      .attr("class", "bar")
-      .attr("transform", (d) => `translate(${x(d.x0)},${y(d.length)})`);
-
-    bar
-      .append("rect")
-      .attr("x", 1)
-      .attr("width", x(bins[0].x1) - x(bins[0].x0) - 1)
-      .attr("height", (d) => height - y(d.length))
-      .attr("fill", "steelblue");
 
     const axisArea = {
       x: 0,
@@ -382,6 +366,7 @@ export default class Barchart extends MetaStanza {
     };
 
     // X軸を追加
+    console.log(this.MARGIN);
     const xParams: AxisParamsI = {
       placement: params["axis-x-placement"],
       domain: [Math.min(...data), Math.max(...data)],
@@ -424,8 +409,17 @@ export default class Barchart extends MetaStanza {
     if (!this.yAxisGen) {
       this.yAxisGen = new Axis(svg.node());
     }
+
     this.xAxisGen.update(xParams);
     this.yAxisGen.update(yParams);
+
+    this._graphArea.attr(
+      "transform",
+      `translate(${this.xAxisGen.axisArea.x},${this.xAxisGen.axisArea.y})`
+    );
+    // const g = svg
+    //   .append("g")
+    //   .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // g.append("g")
     //   .attr("class", "axis axis--x")
@@ -433,7 +427,26 @@ export default class Barchart extends MetaStanza {
     //   .call(axisBottom(x));
 
     // Y軸を追加
-    g.append("g").attr("class", "axis axis--y").call(axisLeft(y));
+    // g.append("g").attr("class", "axis axis--y").call(axisLeft(y));
+
+    // バーを描画
+    const bar = this._graphArea
+      .selectAll(".bar")
+      .data(bins)
+      .enter()
+      .append("g")
+      .attr("class", "bar")
+      .attr(
+        "transform",
+        (d) => `translate(${this.xAxisGen.axisGen.scale()(d[0])},0)`
+      );
+
+    bar
+      .append("rect")
+      .attr("x", 1)
+      .attr("width", x(bins[0].x1) - x(bins[0].x0) - 1)
+      .attr("height", (d) => height - y(d.length))
+      .attr("fill", "steelblue");
   }
 
   handleEvent(event) {
