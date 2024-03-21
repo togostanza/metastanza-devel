@@ -49,10 +49,6 @@ export default class ChordDiagram extends MetaStanza {
   }
 
   async renderNext() {
-    if (!this._chartArea?.empty()) {
-      this._chartArea?.remove();
-    }
-
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     const setFallbackVal = (param, defVal) => {
@@ -67,6 +63,10 @@ export default class ChordDiagram extends MetaStanza {
 
     const width = parseInt(css("--togostanza-canvas-width"));
     const height = parseInt(css("--togostanza-canvas-height"));
+
+    if (!this._chartArea?.empty()) {
+      this._chartArea?.remove();
+    }
 
     const drawContent = async () => {
       const values = await loadData(
@@ -99,9 +99,6 @@ export default class ChordDiagram extends MetaStanza {
         .attr("height", height);
 
       this._chartArea = svg;
-
-      this.tooltip = new ToolTip();
-      root.append(this.tooltip);
 
       const nodesSortParams = {
         sortBy: this.params["nodes-sort-key"],
@@ -207,8 +204,6 @@ export default class ChordDiagram extends MetaStanza {
         drawCircleLayout(svg, prepNodes, prepEdges, { ...params, symbols });
       }
 
-      this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
-
       this._chartArea
         .selectAll(this.selectedEventParams.targetElementSelector)
         .on("click", (_, d: Datum) => {
@@ -234,6 +229,7 @@ export default class ChordDiagram extends MetaStanza {
 
     handleApiError({
       stanzaData: this,
+      hasTooltip: true,
       drawContent,
     });
   }
