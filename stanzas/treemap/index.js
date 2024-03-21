@@ -20,6 +20,7 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils"; // from "@/lib/metastanza_utils.js"; //
 import shadeColor from "./shadeColor";
+import { handleApiError } from "../../lib/apiError";
 import treemapBinaryLog from "./treemapBinaryLog";
 import {
   toggleSelectIds,
@@ -47,6 +48,10 @@ export default class TreeMapStanza extends MetaStanza {
   }
 
   async renderNext() {
+    if (!this._chartArea?.empty()) {
+      this._chartArea?.remove();
+    }
+
     const width = parseInt(this.css("--togostanza-canvas-width"));
     const height = parseInt(this.css("--togostanza-canvas-height"));
     const MARGIN = this.MARGIN;
@@ -57,41 +62,38 @@ export default class TreeMapStanza extends MetaStanza {
     const logScale = this.params["node-log_scale"];
     const gapWidth = 2;
 
-    const data = this.__data.asTree({
-      nodeLabelKey: this.params["node-label_key"].trim(),
-      nodeGroupKey: this.params["node-group_key"].trim(),
-      nodeValueKey: this.params["node-value_key"].trim(),
-    }).data;
+    const drawContent = async () => {
+      const data = this.__data.asTree({
+        nodeLabelKey: this.params["node-label_key"].trim(),
+        nodeGroupKey: this.params["node-group_key"].trim(),
+        nodeValueKey: this.params["node-value_key"].trim(),
+      }).data;
 
-    // filter out all elements with n=0
-    const filteredData = data.filter(
-      (item) =>
-        (item.children?.length > 0 && !item.value) ||
-        (item.value && item.value > 0)
-    );
-
-    const treeMapElement = this._main;
-    const colorScale = scaleOrdinal(getStanzaColors(this));
-
-    const opts = {
-      WIDTH,
-      HEIGHT,
-      colorScale,
-      logScale,
-      gapWidth,
-    };
-    draw(treeMapElement, filteredData, opts, this);
-    if (this._apiError) {
-      this._chartArea?.remove();
-      this._chartArea = null;
-    } else {
-      const errorMessageEl = this._main.querySelector(
-        ".metastanza-error-message-div"
+      // filter out all elements with n=0
+      const filteredData = data.filter(
+        (item) =>
+          (item.children?.length > 0 && !item.value) ||
+          (item.value && item.value > 0)
       );
-      if (errorMessageEl) {
-        errorMessageEl.remove();
-      }
-    }
+
+      const treeMapElement = this._main;
+      const colorScale = scaleOrdinal(getStanzaColors(this));
+
+      const opts = {
+        WIDTH,
+        HEIGHT,
+        colorScale,
+        logScale,
+        gapWidth,
+      };
+      draw(treeMapElement, filteredData, opts, this);
+    };
+
+    handleApiError({
+      stanzaData: this,
+      hasTooltip: true,
+      drawContent,
+    });
   }
 
   handleEvent(event) {
