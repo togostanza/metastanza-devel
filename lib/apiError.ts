@@ -44,11 +44,11 @@ interface LegendConfiguration {
   items: LegendItem[];
   title: string;
   options: {
-    fadeoutNodes: NodeList;
-    shape: string;
-    fadeProp: string;
-    position: string;
-    showLeaders: boolean;
+    fadeoutNodes?: NodeList;
+    shape?: string;
+    fadeProp?: string;
+    position?: string;
+    showLeaders?: boolean;
   };
 }
 
