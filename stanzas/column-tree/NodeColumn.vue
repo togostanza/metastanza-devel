@@ -15,23 +15,23 @@
     >
       <span class="inner">
         <input
-          :data-togostanza-id="node.__togostanza_id__"
+          :data-togostanza-id="node.id"
           class="selectable"
           :class="{ '-selected': checkedNodes.get(node.id) }"
           type="checkbox"
-          :checked="checkedNodes.get(node.__togostanza_id__)"
+          :checked="checkedNodes.get(node.id)"
           @input="handleCheckboxClick(node)"
         />
 
         <span class="label" :class="`-${nodeValueAlignment}`">
           <strong class="title">
-            {{ node[keys.label] }}
+            {{ node.label }}
           </strong>
           <span
             class="value"
             :class="{ fallback: node[keys.value] === undefined }"
           >
-            {{ node[keys.value]?.toLocaleString() ?? valueObj.fallback }}
+            {{ node.value?.toLocaleString() ?? valueObj.fallback }}
           </span>
         </span>
         <font-awesome-icon
@@ -120,7 +120,7 @@ export default defineComponent({
           new CustomEvent("changeSelectedNodes", {
             detail: {
               selectedIds: [...this.checkedNodes.keys()],
-              targetId: node.__togostanza_id__,
+              targetId: node.id,
               dataUrl: this.params.data._object.dataUrl,
             },
           })
