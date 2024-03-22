@@ -1,11 +1,11 @@
-import MetaStanza from "../../lib/MetaStanza";
 import {
-  downloadSvgMenuItem,
-  downloadPngMenuItem,
-  downloadJSONMenuItem,
   downloadCSVMenuItem,
+  downloadJSONMenuItem,
+  downloadPngMenuItem,
+  downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
+import MetaStanza from "../../lib/MetaStanza";
 
 export default class Scorecard extends MetaStanza {
   menu() {

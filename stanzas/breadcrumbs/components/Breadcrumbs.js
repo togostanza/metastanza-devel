@@ -1,7 +1,7 @@
+import { applyConstructor } from "@/lib/utils";
 import { LitElement, html } from "lit";
 import { map } from "lit/directives/map.js";
-import { applyConstructor } from "@/lib/utils";
-import { ref, createRef } from "lit/directives/ref.js";
+import { createRef, ref } from "lit/directives/ref.js";
 
 export class Breadcrumbs extends LitElement {
   static get properties() {

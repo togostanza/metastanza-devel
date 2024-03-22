@@ -21,8 +21,8 @@ import {
 } from "togostanza-utils";
 import MetaStanza from "../../lib/MetaStanza";
 import {
-  toggleSelectIds,
   emitSelectedEvent,
+  toggleSelectIds,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
 

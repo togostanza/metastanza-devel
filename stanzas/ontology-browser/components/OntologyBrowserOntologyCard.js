@@ -1,5 +1,5 @@
-import { LitElement, html, css, nothing } from "lit";
-import { ref, createRef } from "lit/directives/ref.js";
+import { LitElement, css, html, nothing } from "lit";
+import { createRef, ref } from "lit/directives/ref.js";
 
 export class OntologyCard extends LitElement {
   static get styles() {

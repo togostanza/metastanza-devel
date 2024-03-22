@@ -1,10 +1,9 @@
-import ToolTip from "@/lib/ToolTip";
 import prepareGraphData from "@/lib/prepareGraphData";
 import * as d3 from "d3";
 import { Data } from "togostanza-utils/data";
 import MetaStanza from "../../lib/MetaStanza";
-import drawForceLayout from "./drawForceLayout";
 import { handleApiError } from "../../lib/apiError";
+import drawForceLayout from "./drawForceLayout";
 
 import {
   appendCustomCss,
@@ -15,8 +14,8 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 import {
-  toggleSelectIds,
   emitSelectedEvent,
+  toggleSelectIds,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
 

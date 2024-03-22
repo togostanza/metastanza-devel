@@ -1,7 +1,7 @@
-import { LitElement, html, nothing, svg } from "lit";
-import { ref, createRef } from "lit/directives/ref.js";
-import roundPathCorners from "../rounding.js";
 import * as FAIcons from "@fortawesome/free-solid-svg-icons";
+import { LitElement, html, nothing, svg } from "lit";
+import { createRef, ref } from "lit/directives/ref.js";
+import roundPathCorners from "../rounding.js";
 
 class Node extends LitElement {
   static get properties() {

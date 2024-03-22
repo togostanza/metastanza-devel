@@ -4,8 +4,8 @@ import App from "./app.vue";
 
 import {
   appendCustomCss,
-  downloadJSONMenuItem,
   downloadCSVMenuItem,
+  downloadJSONMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
 

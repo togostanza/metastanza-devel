@@ -1,28 +1,28 @@
-import MetaStanza from "../../lib/MetaStanza";
 import {
-  select,
-  scaleOrdinal,
-  stratify,
+  arc as d3arc,
+  partition as d3partition,
+  path as d3path,
   format,
   hierarchy,
-  sum,
-  max,
   interpolate,
-  partition as d3partition,
-  arc as d3arc,
-  path as d3path,
+  max,
+  scaleOrdinal,
+  select,
+  stratify,
+  sum,
 } from "d3";
-import getStanzaColors from "../../lib/ColorGenerator";
 import {
-  downloadSvgMenuItem,
-  downloadPngMenuItem,
-  downloadJSONMenuItem,
   downloadCSVMenuItem,
+  downloadJSONMenuItem,
+  downloadPngMenuItem,
+  downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
+import getStanzaColors from "../../lib/ColorGenerator";
+import MetaStanza from "../../lib/MetaStanza";
 import {
-  toggleSelectIds,
   emitSelectedEvent,
+  toggleSelectIds,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
 
