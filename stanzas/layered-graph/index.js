@@ -18,6 +18,7 @@ import {
 import loadData from "togostanza-utils/load-data";
 import MetaStanza from "../../lib/MetaStanza";
 import {
+  toggleSelectIds,
   emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
@@ -720,21 +721,26 @@ export default class ForceGraph extends MetaStanza {
       this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
     }
 
-    if (this.params["event-outgoing_change_selected_nodes"]) {
-      const nodeGroups = this._graphArea.selectAll("circle.node");
-      nodeGroups.on("click", (_, d) => {
-        emitSelectedEvent.apply(null, [
-          {
-            drawing: this._graphArea,
-            rootElement: this.element,
-            targetId: d.id,
-            selectedIds: this.selectedIds,
-            ...this.selectedEventParams,
-            dataUrl: this.params["data-url"],
-          },
-        ]);
+    const nodeGroups = this._graphArea.selectAll("circle.node");
+    nodeGroups.on("click", (_, d) => {
+      toggleSelectIds({
+        selectedIds: this.selectedIds,
+        targetId: d.id,
       });
-    }
+      updateSelectedElementClassNameForD3({
+        drawing: this._graphArea,
+        selectedIds: this.selectedIds,
+        ...this.selectedEventParams,
+      });
+      if (this.params["event-outgoing_change_selected_nodes"]) {
+        emitSelectedEvent({
+          rootElement: this.element,
+          targetId: d.id,
+          selectedIds: this.selectedIds,
+          dataUrl: this.params["data-url"],
+        });
+      }
+    });
 
     if (this._apiError) {
       this._graphArea?.remove();
@@ -757,13 +763,11 @@ export default class ForceGraph extends MetaStanza {
       dataUrl === this.params["data-url"]
     ) {
       this.selectedIds = selectedIds;
-      updateSelectedElementClassNameForD3.apply(null, [
-        {
-          drawing: this._graphArea,
-          selectedIds,
-          ...this.selectedEventParams,
-        },
-      ]);
+      updateSelectedElementClassNameForD3({
+        drawing: this._graphArea,
+        selectedIds,
+        ...this.selectedEventParams,
+      });
     }
   }
 }

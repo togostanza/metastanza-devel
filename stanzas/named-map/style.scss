@@ -8,6 +8,11 @@ svg {
   vector-effect: non-scaling-stroke;
   stroke-width: calc(var(--togostanza-border-width) * 1px);
   stroke: var(--togostanza-border-color);
+
+  &:hover {
+    cursor: pointer;
+  }
+
   &.-selected {
     stroke-width: 2px;
     stroke: var(--togostanza-theme-selected_border_color);

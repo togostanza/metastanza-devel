@@ -16,6 +16,7 @@ import {
   MarginsI,
   emitSelectedEvent,
   getMarginsFromCSSString,
+  toggleSelectIds,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
 import { drawChordDiagram } from "./drawChordDiagram";
@@ -215,22 +216,27 @@ export default class ChordDiagram extends MetaStanza {
 
     this.tooltip.setup(root.querySelectorAll("[data-tooltip]"));
 
-    if (this.params["event-outgoing_change_selected_nodes"]) {
-      this._chartArea
-        .selectAll(this.selectedEventParams.targetElementSelector)
-        .on("click", (_, d: Datum) => {
-          emitSelectedEvent.apply(null, [
-            {
-              drawing: this._chartArea,
-              rootElement: this.element,
-              targetId: d.id,
-              selectedIds: this.selectedIds,
-              ...this.selectedEventParams,
-              dataUrl: this.params["data-url"],
-            },
-          ]);
+    this._chartArea
+      .selectAll(this.selectedEventParams.targetElementSelector)
+      .on("click", (_, d: Datum) => {
+        toggleSelectIds({
+          selectedIds: this.selectedIds,
+          targetId: d.id,
         });
-    }
+        updateSelectedElementClassNameForD3({
+          drawing: this._chartArea,
+          selectedIds: this.selectedIds,
+          ...this.selectedEventParams,
+        });
+        if (this.params["event-outgoing_change_selected_nodes"]) {
+          emitSelectedEvent({
+            rootElement: this.element,
+            targetId: d.id,
+            selectedIds: this.selectedIds,
+            dataUrl: this.params["data-url"],
+          });
+        }
+      });
   }
 
   handleEvent(event) {
@@ -240,13 +246,11 @@ export default class ChordDiagram extends MetaStanza {
       dataUrl === this.params["data-url"]
     ) {
       this.selectedIds = selectedIds;
-      updateSelectedElementClassNameForD3.apply(null, [
-        {
-          drawing: this._chartArea,
-          selectedIds,
-          ...this.selectedEventParams,
-        },
-      ]);
+      updateSelectedElementClassNameForD3({
+        drawing: this._chartArea,
+        selectedIds,
+        ...this.selectedEventParams,
+      });
     }
   }
 }

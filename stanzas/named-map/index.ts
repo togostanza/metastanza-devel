@@ -4,6 +4,7 @@ import { feature } from "topojson-client";
 import { Feature, Geometry } from "geojson";
 import { Topology } from "topojson-specification";
 import {
+  toggleSelectIds,
   emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
@@ -204,25 +205,29 @@ export default class regionGeographicMap extends MetaStanza {
           .attr("data-tooltip", (d) => d[tooltipKey])
           .attr("fill", (d) =>
             switchProperty(d) ? setColor(d[areaColorValue]) : "#555"
-          )
-          .on("mouseenter", function () {
-            select(this).raise();
-          });
+          );
 
-        if (this.params["event-outgoing_change_selected_nodes"]) {
-          pathGroup.on("click", (_, d) => {
-            return emitSelectedEvent.apply(null, [
-              {
-                drawing: this._chartArea,
-                rootElement: this.element,
-                dataUrl: this.params["data-url"],
-                targetId: d["__togostanza_id__"],
-                selectedIds: this.selectedIds,
-                ...this.selectedEventParams,
-              },
-            ]);
+        // Add event listener
+        pathGroup.on("click", (e, d) => {
+          select(e.target).raise();
+          toggleSelectIds({
+            selectedIds: this.selectedIds,
+            targetId: d["__togostanza_id__"],
           });
-        }
+          updateSelectedElementClassNameForD3({
+            drawing: this._chartArea,
+            selectedIds: this.selectedIds,
+            ...this.selectedEventParams,
+          });
+          if (this.params["event-outgoing_change_selected_nodes"]) {
+            emitSelectedEvent({
+              rootElement: this.element,
+              dataUrl: this.params["data-url"],
+              targetId: d["__togostanza_id__"],
+              selectedIds: this.selectedIds,
+            });
+          }
+        });
 
         // Change scale and translate of group of paths
         const paths = root.querySelectorAll(".path");
@@ -315,15 +320,17 @@ export default class regionGeographicMap extends MetaStanza {
   // check https://github.com/d3/d3-scale/issues/111, https://github.com/DefinitelyTyped/DefinitelyTyped/issues/38574
   // fix ColorGenerator to typescript
   handleEvent(event: CustomEvent) {
-    if (this.params["event-incoming_change_selected_nodes"]) {
-      this.selectedIds = event.detail.selectedIds;
-      updateSelectedElementClassNameForD3.apply(null, [
-        {
-          drawing: this._chartArea,
-          selectedIds: event.detail.selectedIds,
-          ...this.selectedEventParams,
-        },
-      ]);
+    const { selectedIds, dataUrl } = event.detail;
+    if (
+      this.params["event-incoming_change_selected_nodes"] &&
+      dataUrl === this.params["data-url"]
+    ) {
+      this.selectedIds = selectedIds;
+      updateSelectedElementClassNameForD3({
+        drawing: this._chartArea,
+        selectedIds: event.detail.selectedIds,
+        ...this.selectedEventParams,
+      });
     }
   }
 }
