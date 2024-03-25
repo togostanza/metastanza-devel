@@ -9,8 +9,13 @@ svg {
     stroke-width: calc(var(--togostanza-border-width) * 1px);
   }
   circle {
-    &.with-children {
-      cursor: pointer;
+    cursor: pointer;
+  }
+  g.labels g {
+    &.-selected {
+      text {
+        fill: var(--togostanza-theme-selected_border_color);
+      }
     }
   }
 }

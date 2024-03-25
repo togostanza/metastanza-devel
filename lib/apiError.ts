@@ -1,5 +1,6 @@
 import ToolTip from "./ToolTip.js";
 import Legend from "./Legend2.js";
+import type { BaseType } from "d3";
 
 /**
  * Options for handling API errors in the visualization.
@@ -30,10 +31,11 @@ interface StanzaData {
 /**
  * Represents an item in the legend.
  */
-interface LegendItem {
-  id: number;
+export interface LegendItem {
+  id: string | number;
   color: string;
-  value: number;
+  value: string | number;
+  toggled?: boolean;
 }
 
 /**
@@ -43,7 +45,11 @@ interface LegendConfiguration {
   items: LegendItem[];
   title: string;
   options: {
-    shape: string;
+    fadeoutNodes?: NodeList | BaseType[];
+    shape?: string;
+    fadeProp?: string;
+    position?: string;
+    showLeaders?: boolean;
   };
 }
 

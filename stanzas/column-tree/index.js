@@ -24,7 +24,11 @@ export default class ColumnTree extends MetaStanza {
     Object.entries(this.params).forEach(([key, value]) => {
       camelCaseParams[camelCase(key)] = value;
     });
-    camelCaseParams.data = this._data;
+    camelCaseParams.data = this.__data.asTree({
+      nodeLabelKey: this.params["node-label_key"].trim(),
+      nodeGroupKey: this.params["node-group_key"].trim(),
+      nodeValueKey: this.params["node-value_key"].trim(),
+    }).data;
 
     this._app?.unmount();
     this._app = createApp(App, { ...camelCaseParams, root });
@@ -50,12 +54,10 @@ export default class ColumnTree extends MetaStanza {
       dataUrl === this.params["data-url"]
     ) {
       const targetElements = this._data.filter((d) =>
-        selectedIds.includes(d.__togostanza_id__)
+        selectedIds.includes(d.id)
       );
 
-      const targetElement = targetElements.find(
-        (el) => el.__togostanza_id__ === targetId
-      );
+      const targetElement = targetElements.find((el) => el.id === targetId);
 
       const isSelected = selectedIds.includes(targetId);
 
@@ -64,7 +66,7 @@ export default class ColumnTree extends MetaStanza {
 
       if (isSelected && !nodeExists) {
         checkedNodes.set(targetId, {
-          __togostanza_id__: targetId,
+          id: targetId,
           ...targetElement,
         });
       } else if (!isSelected && nodeExists) {
