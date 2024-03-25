@@ -69,7 +69,7 @@ export async function handleApiError(options: HandleApiErrorOptions) {
   const { stanzaData, drawContent, hasLegend, hasTooltip, legendOptions } =
     options;
   const { _main: main, _apiError: apiError, root } = stanzaData;
-  const { isLegendVisible, legendConfiguration } = legendOptions;
+  const { isLegendVisible, legendConfiguration } = legendOptions ?? {};
 
   handleErrorMessage(apiError, main);
   if (!apiError) {
@@ -132,10 +132,11 @@ function manageLegend(
  */
 function manageTooltip(main: HTMLElement) {
   const tooltipElement = main.querySelector("togostanza--tooltip");
-  tooltipElement?.remove();
   if (!tooltipElement) {
     const tooltip = new ToolTip();
     main.append(tooltip);
     tooltip.setup(main.querySelectorAll("[data-tooltip]"));
+  } else {
+    tooltipElement.remove();
   }
 }

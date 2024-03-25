@@ -4,6 +4,7 @@ import * as d3 from "d3";
 import { Data } from "togostanza-utils/data";
 import MetaStanza from "../../lib/MetaStanza";
 import drawForceLayout from "./drawForceLayout";
+import { handleApiError } from "../../lib/apiError";
 
 import {
   appendCustomCss,
@@ -40,6 +41,10 @@ export default class ForceGraph extends MetaStanza {
   }
 
   async renderNext() {
+    if (!this._graphArea?.empty()) {
+      this._graphArea?.remove();
+    }
+
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
@@ -61,150 +66,142 @@ export default class ForceGraph extends MetaStanza {
     const width = parseInt(css("--togostanza-canvas-width"));
     const height = parseInt(css("--togostanza-canvas-height"));
 
-    const data = await Data.load(this.params["data-url"], {
-      type: this.params["data-type"],
-      mainElement: this.root.querySelector("main"),
-    });
+    const drawContent = async () => {
+      const data = await Data.load(this.params["data-url"], {
+        type: this.params["data-type"],
+        mainElement: this.root.querySelector("main"),
+      });
 
-    this._data = data.data;
-    const graph = data.asGraph({
-      edgesKey: "links", // TODO parameterize
-    });
+      this._data = data.data;
+      const graph = data.asGraph({
+        edgesKey: "links", // TODO parameterize
+      });
 
-    const { nodes, edges } = graph;
+      const { nodes, edges } = graph;
 
-    const nodeSizeParams = {
-      dataKey: this.params["node-size_key"] || "",
-      minSize: setFallbackVal("node-size_min", 0),
-      maxSize: this.params["node-size_max"],
-      scale: this.params["node-size_scale"] || "linear",
-    };
+      const nodeSizeParams = {
+        dataKey: this.params["node-size_key"] || "",
+        minSize: setFallbackVal("node-size_min", 0),
+        maxSize: this.params["node-size_max"],
+        scale: this.params["node-size_scale"] || "linear",
+      };
 
-    const nodeColorParams = {
-      dataKey: this.params["node-color_key"] || "",
-    };
+      const nodeColorParams = {
+        dataKey: this.params["node-color_key"] || "",
+      };
 
-    const edgeWidthParams = {
-      dataKey: this.params["edge-width_key"] || "",
-      minWidth: setFallbackVal("edge-width_min", 1),
-      maxWidth: this.params["edge-width_max"],
-      scale: this.params["edge-width_scale"] || "linear",
-      showArrows: this.params["edge-arrows_visible"],
-    };
+      const edgeWidthParams = {
+        dataKey: this.params["edge-width_key"] || "",
+        minWidth: setFallbackVal("edge-width_min", 1),
+        maxWidth: this.params["edge-width_max"],
+        scale: this.params["edge-width_scale"] || "linear",
+        showArrows: this.params["edge-arrows_visible"],
+      };
 
-    const edgeColorParams = {
-      basedOn: "data key",
-      dataKey: Symbol(),
-    };
+      const edgeColorParams = {
+        basedOn: "data key",
+        dataKey: Symbol(),
+      };
 
-    const nodeLabelParams = {
-      margin: 3,
-      dataKey: this.params["node-label_key"],
-    };
+      const nodeLabelParams = {
+        margin: 3,
+        dataKey: this.params["node-label_key"],
+      };
 
-    const highlightAdjEdges = true;
+      const highlightAdjEdges = true;
 
-    const MARGIN = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
+      const MARGIN = getMarginsFromCSSString(
+        css("--togostanza-canvas-padding")
+      );
 
-    const tooltipParams = {
-      dataKey: this.params["node-tooltip_key"],
-      show: nodes.some((d) => d[this.params["node-tooltip_key"]]),
-    };
+      const tooltipParams = {
+        dataKey: this.params["node-tooltip_key"],
+        show: nodes.some((d) => d[this.params["node-tooltip_key"]]),
+      };
 
-    // Setting color scale
-    const togostanzaColors = [];
+      // Setting color scale
+      const togostanzaColors = [];
 
-    let i = 0;
+      let i = 0;
 
-    let togoColor = css(`--togostanza-theme-series_${i}_color`)
-      .trim()
-      .toUpperCase();
-
-    while (togoColor) {
-      togostanzaColors.push(togoColor);
-      i++;
-      togoColor = css(`--togostanza-theme-series_${i}_color`)
+      let togoColor = css(`--togostanza-theme-series_${i}_color`)
         .trim()
         .toUpperCase();
-    }
 
-    const color = function () {
-      return d3.scaleOrdinal().range(togostanzaColors);
-    };
-
-    const existingSvg = root.getElementsByTagName("svg")[0];
-    if (existingSvg) {
-      existingSvg.remove();
-    }
-    this._graphArea = d3
-      .select(el)
-      .append("svg")
-      .attr("width", width)
-      .attr("height", height);
-
-    this.tooltip = new ToolTip();
-    root.append(this.tooltip);
-
-    const params = {
-      MARGIN,
-      width,
-      height,
-      svg: this._graphArea,
-      color,
-      highlightAdjEdges,
-      nodeSizeParams,
-      nodeColorParams,
-      edgeWidthParams,
-      edgeColorParams,
-      nodeLabelParams,
-      tooltipParams,
-    };
-
-    const { prepNodes, prepEdges, symbols } = prepareGraphData(
-      nodes,
-      edges,
-      params
-    );
-
-    drawForceLayout(this._graphArea, prepNodes, prepEdges, {
-      ...params,
-      symbols,
-    });
-
-    if (tooltipParams.show) {
-      this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
-    }
-    this._graphArea.selectAll("circle.node").on("click", (_, d) => {
-      toggleSelectIds({
-        selectedIds: this.selectedIds,
-        targetId: d.id,
-      });
-      updateSelectedElementClassNameForD3({
-        drawing: this._graphArea,
-        selectedIds: this.selectedIds,
-        ...this.selectedEventParams,
-      });
-      if (this.params["event-outgoing_change_selected_nodes"]) {
-        emitSelectedEvent({
-          rootElement: this.element,
-          targetId: d.id,
-          selectedIds: this.selectedIds,
-          dataUrl: this.params["data-url"],
-        });
+      while (togoColor) {
+        togostanzaColors.push(togoColor);
+        i++;
+        togoColor = css(`--togostanza-theme-series_${i}_color`)
+          .trim()
+          .toUpperCase();
       }
-    });
 
-    if (this._apiError) {
-      this._graphArea?.remove();
-      this._graphArea = null;
-    } else {
-      const errorMessageEl = this._main.querySelector(
-        ".metastanza-error-message-div"
+      const color = function () {
+        return d3.scaleOrdinal().range(togostanzaColors);
+      };
+
+      const existingSvg = root.getElementsByTagName("svg")[0];
+      if (existingSvg) {
+        existingSvg.remove();
+      }
+      this._graphArea = d3
+        .select(el)
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+      const params = {
+        MARGIN,
+        width,
+        height,
+        svg: this._graphArea,
+        color,
+        highlightAdjEdges,
+        nodeSizeParams,
+        nodeColorParams,
+        edgeWidthParams,
+        edgeColorParams,
+        nodeLabelParams,
+        tooltipParams,
+      };
+
+      const { prepNodes, prepEdges, symbols } = prepareGraphData(
+        nodes,
+        edges,
+        params
       );
-      if (errorMessageEl) {
-        errorMessageEl.remove();
-      }
-    }
+
+      drawForceLayout(this._graphArea, prepNodes, prepEdges, {
+        ...params,
+        symbols,
+      });
+
+      this._graphArea.selectAll("circle.node").on("click", (_, d) => {
+        toggleSelectIds({
+          selectedIds: this.selectedIds,
+          targetId: d.id,
+        });
+        updateSelectedElementClassNameForD3({
+          drawing: this._graphArea,
+          selectedIds: this.selectedIds,
+          ...this.selectedEventParams,
+        });
+        if (this.params["event-outgoing_change_selected_nodes"]) {
+          emitSelectedEvent({
+            rootElement: this.element,
+            targetId: d.id,
+            selectedIds: this.selectedIds,
+            dataUrl: this.params["data-url"],
+          });
+        }
+      });
+    };
+
+    handleApiError({
+      stanzaData: this,
+      hasTooltip: true,
+      drawContent,
+    });
   }
 
   handleEvent(event) {
