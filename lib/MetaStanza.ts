@@ -1,7 +1,7 @@
-import Stanza from "togostanza/stanza";
 import { appendCustomCss } from "togostanza-utils";
-import { getMarginsFromCSSString, MarginsI } from "./utils";
 import { Data } from "togostanza-utils/data";
+import Stanza from "togostanza/stanza";
+import { getMarginsFromCSSString, MarginsI } from "./utils";
 
 export default abstract class extends Stanza {
   _data: any;

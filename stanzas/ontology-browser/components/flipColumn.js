@@ -1,5 +1,5 @@
-import { directive, AsyncDirective } from "lit/async-directive.js";
 import { noChange, nothing } from "lit";
+import { AsyncDirective, directive } from "lit/async-directive.js";
 
 const disconnectedRects = new Map();
 class Flip extends AsyncDirective {

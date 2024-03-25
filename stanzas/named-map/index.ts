@@ -1,22 +1,22 @@
-import MetaStanza from "../../lib/MetaStanza";
-import { select, json, geoMercator, geoAlbersUsa, geoPath } from "d3";
-import { feature } from "topojson-client";
+import { geoAlbersUsa, geoMercator, geoPath, json, select } from "d3";
 import { Feature, Geometry } from "geojson";
-import { Topology } from "topojson-specification";
 import {
-  toggleSelectIds,
-  emitSelectedEvent,
-  updateSelectedElementClassNameForD3,
-} from "../../lib/utils";
-import { handleApiError } from "../../lib/apiError";
-import { getGradationColor } from "../../lib/ColorGenerator";
-import {
-  downloadSvgMenuItem,
-  downloadPngMenuItem,
-  downloadJSONMenuItem,
   downloadCSVMenuItem,
+  downloadJSONMenuItem,
+  downloadPngMenuItem,
+  downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
+import { feature } from "topojson-client";
+import { Topology } from "topojson-specification";
+import { handleApiError } from "../../lib/apiError";
+import { getGradationColor } from "../../lib/ColorGenerator";
+import MetaStanza from "../../lib/MetaStanza";
+import {
+  emitSelectedEvent,
+  toggleSelectIds,
+  updateSelectedElementClassNameForD3,
+} from "../../lib/utils";
 
 interface DataItem {
   [key: string]: string | number;

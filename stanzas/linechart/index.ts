@@ -1,14 +1,12 @@
 import { extent, line, scaleOrdinal, select, symbol, symbolCircle } from "d3";
-import MetaStanza from "../../lib/MetaStanza";
 import {
-  downloadSvgMenuItem,
-  downloadPngMenuItem,
-  downloadJSONMenuItem,
   downloadCSVMenuItem,
+  downloadJSONMenuItem,
+  downloadPngMenuItem,
+  downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
-import Legend from "../../lib/Legend2";
-import ToolTip from "../../lib/ToolTip";
+import { z } from "zod";
 import {
   Axis,
   AxisScaleE,
@@ -16,7 +14,9 @@ import {
   type AxisParamsI,
 } from "../../lib/AxisMixin";
 import getStanzaColors from "../../lib/ColorGenerator";
-import { z } from "zod";
+import Legend from "../../lib/Legend2";
+import MetaStanza from "../../lib/MetaStanza";
+import ToolTip from "../../lib/ToolTip";
 import { MarginsI } from "../../lib/utils";
 
 type TSymbols = {

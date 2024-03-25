@@ -4,7 +4,6 @@ import prepareGraphData, {
   get3DEdges,
   getGroupPlanes,
 } from "@/lib/prepareGraphData";
-import ToolTip from "@/lib/ToolTip";
 import * as d3 from "d3";
 import { _3d } from "d3-3d";
 import {

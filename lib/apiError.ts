@@ -1,6 +1,6 @@
-import ToolTip from "./ToolTip.js";
-import Legend from "./Legend2.js";
 import type { BaseType } from "d3";
+import Legend from "./Legend2.js";
+import ToolTip from "./ToolTip.js";
 
 /**
  * Options for handling API errors in the visualization.

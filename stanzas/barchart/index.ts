@@ -1,17 +1,17 @@
-import ToolTip from "../../lib/ToolTip";
-import Legend from "../../lib/Legend2";
 import { Axis, type AxisParamsI, paramsModel } from "../../lib/AxisMixin";
+import Legend from "../../lib/Legend2";
 import MetaStanza from "../../lib/MetaStanza";
+import ToolTip from "../../lib/ToolTip";
 
-import getStanzaColors from "../../lib/ColorGenerator";
+import { scaleBand, scaleOrdinal, select } from "d3";
 import {
-  downloadSvgMenuItem,
-  downloadPngMenuItem,
-  downloadJSONMenuItem,
   downloadCSVMenuItem,
+  downloadJSONMenuItem,
+  downloadPngMenuItem,
+  downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
-import { scaleBand, scaleOrdinal, select } from "d3";
+import getStanzaColors from "../../lib/ColorGenerator";
 
 export default class Barchart extends MetaStanza {
   xAxisGen: Axis;

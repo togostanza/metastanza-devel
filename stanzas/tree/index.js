@@ -1,5 +1,4 @@
 import { getCirculateColor } from "@/lib/ColorGenerator";
-import ToolTip from "@/lib/ToolTip";
 import {
   cluster,
   linkHorizontal,

@@ -1,12 +1,12 @@
-import Stanza from "togostanza/stanza";
 import {
-  downloadSvgMenuItem,
-  downloadPngMenuItem,
-  downloadJSONMenuItem,
-  downloadCSVMenuItem,
-  downloadTSVMenuItem,
   appendCustomCss,
+  downloadCSVMenuItem,
+  downloadJSONMenuItem,
+  downloadPngMenuItem,
+  downloadSvgMenuItem,
+  downloadTSVMenuItem,
 } from "togostanza-utils";
+import Stanza from "togostanza/stanza";
 
 export default class VennStanza extends Stanza {
   receiveData;
