@@ -78,6 +78,9 @@ export async function handleApiError(options: HandleApiErrorOptions) {
   if (hasLegend) {
     manageLegend(isLegendVisible, legendConfiguration, root, apiError);
   }
+  /* TODO hasTooltip should be determined by the data fetched from the data-url.
+  (e.g. const showToolTips = dataset.some((item) => item.description);)
+  The function now can only accept hardcode boolean value */
   if (hasTooltip) {
     manageTooltip(main);
   }

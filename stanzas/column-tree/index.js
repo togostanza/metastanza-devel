@@ -6,7 +6,7 @@ import {
 } from "togostanza-utils";
 import { createApp } from "vue";
 import MetaStanza from "../../lib/MetaStanza";
-import { displayApiError } from "../../lib/utils";
+import { handleApiError } from "../../lib/apiError";
 import App from "./app.vue";
 
 export default class ColumnTree extends MetaStanza {
@@ -31,20 +31,15 @@ export default class ColumnTree extends MetaStanza {
     }).data;
 
     this._app?.unmount();
-    this._app = createApp(App, { ...camelCaseParams, root });
-    this._component = this._app.mount(root);
+    const drawContent = async () => {
+      this._app = createApp(App, { ...camelCaseParams, root });
+      this._component = this._app.mount(root);
+    };
 
-    if (this._apiError) {
-      this._app.unmount();
-      displayApiError(this._main, this._error);
-    } else {
-      const errorMessageEl = this._main.querySelector(
-        ".metastanza-error-message-div"
-      );
-      if (errorMessageEl) {
-        errorMessageEl.remove();
-      }
-    }
+    handleApiError({
+      stanzaData: this,
+      drawContent,
+    });
   }
 
   handleEvent(event) {
