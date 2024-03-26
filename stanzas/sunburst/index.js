@@ -410,7 +410,9 @@ export default class Sunburst extends MetaStanza {
 
       parent.datum(p.parent ? p : root);
 
-      parent.attr("cursor", (d) => (d === root ? "auto" : "pointer"));
+      parent.attr("cursor", (d) => {
+        return d === root ? "auto" : "pointer";
+      });
 
       root.each(
         (d) =>
@@ -451,14 +453,22 @@ export default class Sunburst extends MetaStanza {
 
         .attrTween("d", (d) => () => arc(d.current));
 
-      parent.transition(t).attr("fill", () => {
-        let b = p;
-        while (b.depth > 1) {
-          b = b.parent;
-        }
+      parent
+        .transition(t)
+        .attr("fill", () => {
+          let b = p;
+          while (b.depth > 1) {
+            b = b.parent;
+          }
 
-        return b.data?.data?.label ? color(b.data.data.id) : "rgba(0,0,0,0)";
-      });
+          return b.data?.data?.label ? color(b.data.data.id) : "rgba(0,0,0,0)";
+        })
+        .end()
+        .then(() => {
+          parent.classed("-selected", (d) =>
+            stanza.selectedIds.includes(d.data.data.id)
+          );
+        });
 
       textLabels
         .filter(function (d) {
