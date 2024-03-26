@@ -104,8 +104,6 @@ export default class Tree extends MetaStanza {
           break;
       }
 
-      const showToolTips = dataset.some((item) => item.description);
-
       //Sorting by user keywords
       const orderSym = Symbol("order");
       dataset.forEach((datum, index) => {
