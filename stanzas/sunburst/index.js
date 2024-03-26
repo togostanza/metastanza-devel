@@ -317,39 +317,6 @@ export default class Sunburst extends MetaStanza {
       )
       .attr("d", (d) => arc(d.current));
 
-    let timeout;
-
-    path
-      .style("cursor", "pointer")
-      .on("click", (e, d) => {
-        if (e.detail === 1) {
-          timeout = setTimeout(() => {
-            toggleSelectIds({
-              selectedIds: this.selectedIds,
-              targetId: d.data.data.id,
-            });
-            updateSelectedElementClassNameForD3({
-              drawing: this._chartArea,
-              selectedIds: this.selectedIds,
-              ...this.selectedEventParams,
-            });
-            if (this.params["event-outgoing_change_selected_nodes"]) {
-              emitSelectedEvent({
-                rootElement: this.element,
-                targetId: d.data.data.id,
-                selectedIds: this.selectedIds,
-                dataUrl: this.params["data-url"],
-              });
-            }
-          }, 500);
-        }
-      })
-      .filter((d) => d.children)
-      .on("dblclick", (e, d) => {
-        clearTimeout(timeout);
-        clicked(e, d);
-      });
-
     path.append("title").text((d) => {
       return `${d
         .ancestors()
@@ -423,6 +390,8 @@ export default class Sunburst extends MetaStanza {
       .attr("startOffset", "50%")
       .attr("href", (_, i) => `#hiddenNumberArc${i}`)
       .text((d) => formatNumber(d.value2));
+
+    let timeout;
 
     function clicked(_e, p) {
       state.currentId = p.data.data.id;
@@ -527,6 +496,52 @@ export default class Sunburst extends MetaStanza {
       numArcs
         .transition(t)
         .attrTween("d", (d) => () => middleArcNumberLine(d.current));
+
+      // remove the click events for invisible nodes
+      path
+        .filter(function (d) {
+          return !(
+            +this.getAttribute("fill-opacity") || +labelVisible(d.target)
+          );
+        })
+        .style("cursor", "default")
+        .on("click", null)
+        .on("dblclick", null);
+
+      // add the click events to visible nodes
+      path
+        .filter(function (d) {
+          return +this.getAttribute("fill-opacity") || +labelVisible(d.target);
+        })
+        .style("cursor", "pointer")
+        .on("click", (e, d) => {
+          if (e.detail === 1) {
+            timeout = setTimeout(() => {
+              toggleSelectIds({
+                selectedIds: stanza.selectedIds,
+                targetId: d.data.data.id,
+              });
+              updateSelectedElementClassNameForD3({
+                drawing: stanza._chartArea,
+                selectedIds: stanza.selectedIds,
+                ...stanza.selectedEventParams,
+              });
+              if (stanza.params["event-outgoing_change_selected_nodes"]) {
+                emitSelectedEvent({
+                  rootElement: stanza.element,
+                  targetId: d.data.data.id,
+                  selectedIds: stanza.selectedIds,
+                  dataUrl: stanza.params["data-url"],
+                });
+              }
+            }, 500);
+          }
+        })
+        .filter((d) => d.children)
+        .on("dblclick", (e, d) => {
+          clearTimeout(timeout);
+          clicked(e, d);
+        });
 
       const isBlankRoot = p.data.data.id === -1;
       if (isBlankRoot) {
