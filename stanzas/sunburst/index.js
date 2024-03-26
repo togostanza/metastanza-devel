@@ -462,7 +462,7 @@ export default class Sunburst extends MetaStanza {
 
       textLabels
         .filter(function (d) {
-          return +this.getAttribute("fill-opacity") || +labelVisible(d.target);
+          return isNotZeroOpacity(this) || +labelVisible(d.target);
         })
         .transition(t)
         .attr(
@@ -480,7 +480,7 @@ export default class Sunburst extends MetaStanza {
 
       numLabels
         .filter(function (d) {
-          return +this.getAttribute("fill-opacity") || labelVisible(d.target);
+          return isNotZeroOpacity(this) || labelVisible(d.target);
         })
         .transition(t)
         .attr(
@@ -500,9 +500,7 @@ export default class Sunburst extends MetaStanza {
       // remove the click events for invisible nodes
       path
         .filter(function (d) {
-          return !(
-            +this.getAttribute("fill-opacity") || +labelVisible(d.target)
-          );
+          return !(isNotZeroOpacity(this) || +labelVisible(d.target));
         })
         .style("cursor", "default")
         .on("click", null)
@@ -511,7 +509,7 @@ export default class Sunburst extends MetaStanza {
       // add the click events to visible nodes
       path
         .filter(function (d) {
-          return +this.getAttribute("fill-opacity") || +labelVisible(d.target);
+          return isNotZeroOpacity(this) || +labelVisible(d.target);
         })
         .style("cursor", "pointer")
         .on("click", (e, d) => {
@@ -600,4 +598,8 @@ export default class Sunburst extends MetaStanza {
 
     state.currentId = root.data.data.id;
   }
+}
+
+function isNotZeroOpacity(htmlElement) {
+  return htmlElement.getAttribute("fill-opacity") !== "0";
 }
