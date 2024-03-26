@@ -495,85 +495,86 @@ export default class Sunburst extends MetaStanza {
 
       numArcs
         .transition(t)
-        .attrTween("d", (d) => () => middleArcNumberLine(d.current));
-
-      // remove the click events for invisible nodes
-      path
-        .filter(function (d) {
-          return !(isNotZeroOpacity(this) || +labelVisible(d.target));
-        })
-        .style("cursor", "default")
-        .on("click", null)
-        .on("dblclick", null);
-
-      // add the click events to visible nodes
-      path
-        .filter(function (d) {
-          return isNotZeroOpacity(this) || +labelVisible(d.target);
-        })
-        .style("cursor", "pointer")
-        .on("click", (e, d) => {
-          if (e.detail === 1) {
-            timeout = setTimeout(() => {
-              toggleSelectIds({
-                selectedIds: stanza.selectedIds,
-                targetId: d.data.data.id,
-              });
-              updateSelectedElementClassNameForD3({
-                drawing: stanza._chartArea,
-                selectedIds: stanza.selectedIds,
-                ...stanza.selectedEventParams,
-              });
-              if (stanza.params["event-outgoing_change_selected_nodes"]) {
-                emitSelectedEvent({
-                  rootElement: stanza.element,
-                  targetId: d.data.data.id,
-                  selectedIds: stanza.selectedIds,
-                  dataUrl: stanza.params["data-url"],
-                });
-              }
-            }, 500);
-          }
-        })
-        .filter((d) => d.children)
-        .on("dblclick", (e, d) => {
-          clearTimeout(timeout);
-          clicked(e, d);
-        });
-
-      const isBlankRoot = p.data.data.id === -1;
-      if (isBlankRoot) {
-        parent.on("click", null).on("dblclick", null);
-      } else {
-        parent
-          .on("click", (e, d) => {
-            if (e.detail === 1) {
-              timeout = setTimeout(() => {
-                toggleSelectIds({
-                  selectedIds: stanza.selectedIds,
-                  targetId: d.data.data.id,
-                });
-                updateSelectedElementClassNameForD3({
-                  drawing: stanza._chartArea,
-                  selectedIds: stanza.selectedIds,
-                  ...stanza.selectedEventParams,
-                });
-                if (stanza.params["event-outgoing_change_selected_nodes"]) {
-                  emitSelectedEvent({
-                    rootElement: stanza.element,
-                    targetId: d.data.data.id,
+        .attrTween("d", (d) => () => middleArcNumberLine(d.current))
+        .end()
+        .then(() => {
+          // add the click events to visible nodes
+          path
+            .filter(function () {
+              return isNotZeroOpacity(this);
+            })
+            .style("cursor", "pointer")
+            .on("click", (e, d) => {
+              if (e.detail === 1) {
+                timeout = setTimeout(() => {
+                  toggleSelectIds({
                     selectedIds: stanza.selectedIds,
-                    dataUrl: stanza.params["data-url"],
+                    targetId: d.data.data.id,
                   });
+                  updateSelectedElementClassNameForD3({
+                    drawing: stanza._chartArea,
+                    selectedIds: stanza.selectedIds,
+                    ...stanza.selectedEventParams,
+                  });
+                  if (stanza.params["event-outgoing_change_selected_nodes"]) {
+                    emitSelectedEvent({
+                      rootElement: stanza.element,
+                      targetId: d.data.data.id,
+                      selectedIds: stanza.selectedIds,
+                      dataUrl: stanza.params["data-url"],
+                    });
+                  }
+                }, 500);
+              }
+            })
+            .filter((d) => d.children)
+            .on("dblclick", (e, d) => {
+              clearTimeout(timeout);
+              clicked(e, d);
+            });
+
+          // remove the click events for invisible nodes
+          path
+            .filter(function () {
+              return !isNotZeroOpacity(this);
+            })
+            .style("cursor", "default")
+            .on("click", null)
+            .on("dblclick", null);
+          const isBlankRoot = p.data.data.id === -1;
+          if (isBlankRoot) {
+            parent.on("click", null).on("dblclick", null);
+          } else {
+            parent
+              .on("click", (e, d) => {
+                if (e.detail === 1) {
+                  timeout = setTimeout(() => {
+                    toggleSelectIds({
+                      selectedIds: stanza.selectedIds,
+                      targetId: d.data.data.id,
+                    });
+                    updateSelectedElementClassNameForD3({
+                      drawing: stanza._chartArea,
+                      selectedIds: stanza.selectedIds,
+                      ...stanza.selectedEventParams,
+                    });
+                    if (stanza.params["event-outgoing_change_selected_nodes"]) {
+                      emitSelectedEvent({
+                        rootElement: stanza.element,
+                        targetId: d.data.data.id,
+                        selectedIds: stanza.selectedIds,
+                        dataUrl: stanza.params["data-url"],
+                      });
+                    }
+                  }, 500);
                 }
-              }, 500);
-            }
-          })
-          .on("dblclick", (e, d) => {
-            clearTimeout(timeout);
-            clicked(e, d.parent);
-          });
-      }
+              })
+              .on("dblclick", (e, d) => {
+                clearTimeout(timeout);
+                clicked(e, d.parent);
+              });
+          }
+        });
     }
 
     function arcVisible(d) {
