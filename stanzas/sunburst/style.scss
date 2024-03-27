@@ -30,6 +30,9 @@ g path.selectable {
 }
 
 g circle {
+  &.selectable {
+    cursor: pointer;
+  }
   &.-selected {
     stroke-width: 2px;
     stroke: var(--togostanza-theme-selected_border_color);

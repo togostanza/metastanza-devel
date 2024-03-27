@@ -357,8 +357,7 @@ export default class Sunburst extends MetaStanza {
       .datum(root)
       .attr("r", radius - borderWidth / 2)
       .attr("fill", "none")
-      .attr("pointer-events", "all")
-      .classed("selectable", true);
+      .attr("pointer-events", "all");
 
     //Text labels
     const textLabels = g
@@ -460,18 +459,19 @@ export default class Sunburst extends MetaStanza {
 
         .attrTween("d", (d) => () => arc(d.current));
 
+      let b = p;
+      // assign root to the variable b
+      while (b.depth > 1) {
+        b = b.parent;
+      }
       parent
         .transition(t)
         .attr("fill", () => {
-          let b = p;
-          while (b.depth > 1) {
-            b = b.parent;
-          }
-
           return b.data?.data?.label ? color(b.data.data.id) : "rgba(0,0,0,0)";
         })
         .end()
         .then(() => {
+          parent.classed("selectable", () => b.data?.data?.label);
           parent.classed("-selected", (d) =>
             stanza.selectedIds.includes(d.data.data.id)
           );
