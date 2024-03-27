@@ -23,6 +23,16 @@ g .hidden-arc {
 }
 
 g path.selectable {
+  &.-selected:not([fill-opacity="0"]) {
+    stroke-width: 2px;
+    stroke: var(--togostanza-theme-selected_border_color);
+  }
+}
+
+g circle {
+  &.selectable {
+    cursor: pointer;
+  }
   &.-selected {
     stroke-width: 2px;
     stroke: var(--togostanza-theme-selected_border_color);

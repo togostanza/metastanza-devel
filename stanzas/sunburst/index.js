@@ -64,8 +64,14 @@ export default class Sunburst extends MetaStanza {
       this.selectedIds = selectedIds;
       updateSelectedElementClassNameForD3({
         drawing: this._chartArea,
+        selectedIds: this.selectedIds,
+        targetElementSelector: "g circle.selectable",
+        selectedElementClassName: "-selected",
+        idPath: "data.data.id",
+      });
+      updateSelectedElementClassNameForD3({
+        drawing: this._chartArea,
         selectedIds: event.detail.selectedIds,
-        targetId: event.detail.targetId,
         ...this.selectedEventParams,
       });
     }
@@ -317,39 +323,6 @@ export default class Sunburst extends MetaStanza {
       )
       .attr("d", (d) => arc(d.current));
 
-    let timeout;
-
-    path
-      .style("cursor", "pointer")
-      .on("click", (e, d) => {
-        if (e.detail === 1) {
-          timeout = setTimeout(() => {
-            toggleSelectIds({
-              selectedIds: this.selectedIds,
-              targetId: d.data.data.id,
-            });
-            updateSelectedElementClassNameForD3({
-              drawing: this._chartArea,
-              selectedIds: this.selectedIds,
-              ...this.selectedEventParams,
-            });
-            if (this.params["event-outgoing_change_selected_nodes"]) {
-              emitSelectedEvent({
-                rootElement: this.element,
-                targetId: d.data.data.id,
-                selectedIds: this.selectedIds,
-                dataUrl: this.params["data-url"],
-              });
-            }
-          }, 500);
-        }
-      })
-      .filter((d) => d.children)
-      .on("dblclick", (e, d) => {
-        clearTimeout(timeout);
-        clicked(e, d);
-      });
-
     path.append("title").text((d) => {
       return `${d
         .ancestors()
@@ -424,6 +397,8 @@ export default class Sunburst extends MetaStanza {
       .attr("href", (_, i) => `#hiddenNumberArc${i}`)
       .text((d) => formatNumber(d.value2));
 
+    let timeout;
+
     function clicked(_e, p) {
       state.currentId = p.data.data.id;
 
@@ -441,7 +416,9 @@ export default class Sunburst extends MetaStanza {
 
       parent.datum(p.parent ? p : root);
 
-      parent.attr("cursor", (d) => (d === root ? "auto" : "pointer"));
+      parent.attr("cursor", (d) => {
+        return d === root ? "auto" : "pointer";
+      });
 
       root.each(
         (d) =>
@@ -479,21 +456,29 @@ export default class Sunburst extends MetaStanza {
         .attr("cursor", (d) =>
           d.children && arcVisible(d.target) ? "pointer" : "auto"
         )
-
         .attrTween("d", (d) => () => arc(d.current));
 
-      parent.transition(t).attr("fill", () => {
-        let b = p;
-        while (b.depth > 1) {
-          b = b.parent;
-        }
-
-        return b.data?.data?.label ? color(b.data.data.id) : "rgba(0,0,0,0)";
-      });
+      let b = p;
+      // assign root to the variable b
+      while (b.depth > 1) {
+        b = b.parent;
+      }
+      parent
+        .transition(t)
+        .attr("fill", () => {
+          return b.data?.data?.label ? color(b.data.data.id) : "rgba(0,0,0,0)";
+        })
+        .end()
+        .then(() => {
+          parent.classed("selectable", () => b.data?.data?.label);
+          parent.classed("-selected", (d) =>
+            stanza.selectedIds.includes(d.data.data.id)
+          );
+        });
 
       textLabels
         .filter(function (d) {
-          return +this.getAttribute("fill-opacity") || +labelVisible(d.target);
+          return isNotZeroOpacity(this) || +labelVisible(d.target);
         })
         .transition(t)
         .attr(
@@ -511,7 +496,7 @@ export default class Sunburst extends MetaStanza {
 
       numLabels
         .filter(function (d) {
-          return +this.getAttribute("fill-opacity") || labelVisible(d.target);
+          return isNotZeroOpacity(this) || labelVisible(d.target);
         })
         .transition(t)
         .attr(
@@ -526,41 +511,93 @@ export default class Sunburst extends MetaStanza {
 
       numArcs
         .transition(t)
-        .attrTween("d", (d) => () => middleArcNumberLine(d.current));
-
-      const isBlankRoot = p.data.data.id === -1;
-      if (isBlankRoot) {
-        parent.on("click", null).on("dblclick", null);
-      } else {
-        parent
-          .on("click", (e, d) => {
-            if (e.detail === 1) {
-              timeout = setTimeout(() => {
-                toggleSelectIds({
-                  selectedIds: stanza.selectedIds,
-                  targetId: d.data.data.id,
-                });
-                updateSelectedElementClassNameForD3({
-                  drawing: stanza._chartArea,
-                  selectedIds: stanza.selectedIds,
-                  ...stanza.selectedEventParams,
-                });
-                if (stanza.params["event-outgoing_change_selected_nodes"]) {
-                  emitSelectedEvent({
-                    rootElement: stanza.element,
-                    targetId: d.data.data.id,
+        .attrTween("d", (d) => () => middleArcNumberLine(d.current))
+        .end()
+        .then(() => {
+          // add the click events to visible nodes
+          path
+            .filter(function () {
+              return isNotZeroOpacity(this);
+            })
+            .style("cursor", "pointer")
+            .on("click", (e, d) => {
+              if (e.detail === 1) {
+                timeout = setTimeout(() => {
+                  toggleSelectIds({
                     selectedIds: stanza.selectedIds,
-                    dataUrl: stanza.params["data-url"],
+                    targetId: d.data.data.id,
                   });
+                  updateSelectedElementClassNameForD3({
+                    drawing: stanza._chartArea,
+                    selectedIds: stanza.selectedIds,
+                    ...stanza.selectedEventParams,
+                  });
+                  if (stanza.params["event-outgoing_change_selected_nodes"]) {
+                    emitSelectedEvent({
+                      rootElement: stanza.element,
+                      targetId: d.data.data.id,
+                      selectedIds: stanza.selectedIds,
+                      dataUrl: stanza.params["data-url"],
+                    });
+                  }
+                }, 500);
+              }
+            })
+            .filter((d) => d.children)
+            .on("dblclick", (e, d) => {
+              clearTimeout(timeout);
+              clicked(e, d);
+            });
+
+          // remove the click events for invisible nodes
+          path
+            .filter(function () {
+              return !isNotZeroOpacity(this);
+            })
+            .style("cursor", "default")
+            .on("click", null)
+            .on("dblclick", null);
+          const isBlankRoot = p.data.data.id === -1;
+          if (isBlankRoot) {
+            parent.on("click", null).on("dblclick", null);
+          } else {
+            parent
+              .on("click", (e, d) => {
+                if (e.detail === 1) {
+                  timeout = setTimeout(() => {
+                    toggleSelectIds({
+                      selectedIds: stanza.selectedIds,
+                      targetId: d.data.data.id,
+                    });
+                    updateSelectedElementClassNameForD3({
+                      drawing: stanza._chartArea,
+                      selectedIds: stanza.selectedIds,
+                      targetElementSelector: "g circle.selectable",
+                      selectedElementClassName: "-selected",
+                      idPath: "data.data.id",
+                    });
+                    updateSelectedElementClassNameForD3({
+                      drawing: stanza._chartArea,
+                      selectedIds: stanza.selectedIds,
+                      ...stanza.selectedEventParams,
+                    });
+                    if (stanza.params["event-outgoing_change_selected_nodes"]) {
+                      emitSelectedEvent({
+                        rootElement: stanza.element,
+                        targetId: d.data.data.id,
+                        selectedIds: stanza.selectedIds,
+                        dataUrl: stanza.params["data-url"],
+                      });
+                    }
+                  }, 500);
                 }
-              }, 500);
-            }
-          })
-          .on("dblclick", (e, d) => {
-            clearTimeout(timeout);
-            clicked(e, d.parent);
-          });
-      }
+              })
+              .on("dblclick", (e, d) => {
+                clearTimeout(timeout);
+                clicked(e, d.parent);
+              });
+          }
+        });
     }
 
     function arcVisible(d) {
@@ -585,4 +622,8 @@ export default class Sunburst extends MetaStanza {
 
     state.currentId = root.data.data.id;
   }
+}
+
+function isNotZeroOpacity(htmlElement) {
+  return htmlElement.getAttribute("fill-opacity") !== "0";
 }
