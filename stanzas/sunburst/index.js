@@ -456,7 +456,6 @@ export default class Sunburst extends MetaStanza {
         .attr("cursor", (d) =>
           d.children && arcVisible(d.target) ? "pointer" : "auto"
         )
-
         .attrTween("d", (d) => () => arc(d.current));
 
       let b = p;
@@ -576,6 +575,11 @@ export default class Sunburst extends MetaStanza {
                       targetElementSelector: "g circle.selectable",
                       selectedElementClassName: "-selected",
                       idPath: "data.data.id",
+                    });
+                    updateSelectedElementClassNameForD3({
+                      drawing: stanza._chartArea,
+                      selectedIds: stanza.selectedIds,
+                      ...stanza.selectedEventParams,
                     });
                     if (stanza.params["event-outgoing_change_selected_nodes"]) {
                       emitSelectedEvent({
