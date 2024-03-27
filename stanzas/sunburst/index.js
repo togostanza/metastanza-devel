@@ -351,7 +351,8 @@ export default class Sunburst extends MetaStanza {
       .datum(root)
       .attr("r", radius - borderWidth / 2)
       .attr("fill", "none")
-      .attr("pointer-events", "all");
+      .attr("pointer-events", "all")
+      .classed("selectable", true);
 
     //Text labels
     const textLabels = g
@@ -566,7 +567,9 @@ export default class Sunburst extends MetaStanza {
                     updateSelectedElementClassNameForD3({
                       drawing: stanza._chartArea,
                       selectedIds: stanza.selectedIds,
-                      ...stanza.selectedEventParams,
+                      targetElementSelector: "g circle.selectable",
+                      selectedElementClassName: "-selected",
+                      idPath: "data.data.id",
                     });
                     if (stanza.params["event-outgoing_change_selected_nodes"]) {
                       emitSelectedEvent({
