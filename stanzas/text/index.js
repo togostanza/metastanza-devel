@@ -1,8 +1,8 @@
-import MetaStanza from "../../lib/MetaStanza";
-import { Parser, HtmlRenderer } from "commonmark";
+import { HtmlRenderer, Parser } from "commonmark";
 import hljs from "highlight.js";
-import "katex/dist/katex.mjs";
 import renderMathInElement from "katex/dist/contrib/auto-render.mjs";
+import "katex/dist/katex.mjs";
+import MetaStanza from "../../lib/MetaStanza";
 
 export default class Text extends MetaStanza {
   constructor() {

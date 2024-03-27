@@ -1,6 +1,6 @@
-import { LitElement, html, css } from "lit";
-import { ref, createRef } from "lit/directives/ref.js";
+import { LitElement, css, html } from "lit";
 import { map } from "lit/directives/map.js";
+import { createRef, ref } from "lit/directives/ref.js";
 
 class OntologyPath extends LitElement {
   constructor() {

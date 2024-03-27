@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, css, html } from "lit";
 
 class OntologyError extends LitElement {
   static get styles() {

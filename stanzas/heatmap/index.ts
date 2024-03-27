@@ -1,21 +1,21 @@
-import MetaStanza from "../../lib/MetaStanza";
 import { select } from "d3";
 import { ScaleLinear } from "d3-scale";
 import {
-  toggleSelectIds,
-  emitSelectedEvent,
-  updateSelectedElementClassNameForD3,
-} from "../../lib/utils";
-import { handleApiError } from "../../lib/apiError";
-import { getGradationColor } from "../../lib/ColorGenerator";
-import { Axis } from "../../lib/AxisMixin";
-import {
-  downloadSvgMenuItem,
-  downloadPngMenuItem,
-  downloadJSONMenuItem,
   downloadCSVMenuItem,
+  downloadJSONMenuItem,
+  downloadPngMenuItem,
+  downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
+import { handleApiError } from "../../lib/apiError";
+import { Axis } from "../../lib/AxisMixin";
+import { getGradationColor } from "../../lib/ColorGenerator";
+import MetaStanza from "../../lib/MetaStanza";
+import {
+  emitSelectedEvent,
+  toggleSelectIds,
+  updateSelectedElementClassNameForD3,
+} from "../../lib/utils";
 
 interface DataItem {
   [key: string]: string | number;
