@@ -362,7 +362,7 @@ export default class Sunburst extends MetaStanza {
     const textArcs = g
       .append("g")
       .selectAll("path")
-      .data(root.descendants().slice(1))
+      .data(root.descendants())
       .join("path")
       .attr("class", "hidden-arc")
       .attr("id", (_, i) => `hiddenLabelArc${i}`)
@@ -372,7 +372,7 @@ export default class Sunburst extends MetaStanza {
     const numArcs = g
       .append("g")
       .selectAll("path")
-      .data(root.descendants().slice(1))
+      .data(root.descendants())
       .join("path")
       .attr("class", "hidden-arc")
       .attr("id", (_, i) => `hiddenNumberArc${i}`)
@@ -391,7 +391,7 @@ export default class Sunburst extends MetaStanza {
       .append("g")
       .attr("class", "labels")
       .selectAll("text")
-      .data(root.descendants().slice(1))
+      .data(root.descendants())
       .join("text")
       .attr(
         "fill-opacity",
@@ -407,7 +407,7 @@ export default class Sunburst extends MetaStanza {
       .append("g")
       .attr("class", "numbers")
       .selectAll("text")
-      .data(root.descendants().slice(1))
+      .data(root.descendants())
       .join("text")
       //Show only if label is supposed to be shown, label text fits into node and showNumbers =true
       .attr(
