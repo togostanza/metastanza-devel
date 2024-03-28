@@ -185,12 +185,18 @@ function draw(el, dataset, opts, stanza) {
         })
     );
 
+  const SVG_PADDING = 5; // TODO check if this should be one of the parameters
   select(el).select("svg").remove();
   stanza._chartArea = select(el)
     .append("svg")
-    .attr("width", WIDTH)
-    .attr("height", HEIGHT)
-    .attr("viewBox", [0, 0, WIDTH, HEIGHT]);
+    .attr("width", WIDTH + SVG_PADDING * 2)
+    .attr("height", HEIGHT + SVG_PADDING * 2)
+    .attr("viewBox", [
+      -SVG_PADDING,
+      -SVG_PADDING,
+      WIDTH + SVG_PADDING * 2,
+      HEIGHT + SVG_PADDING * 2,
+    ]);
 
   let group = stanza._chartArea.append("g").call(render, treemap(nested), null);
 
