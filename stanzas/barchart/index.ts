@@ -321,11 +321,11 @@ export default class Barchart extends MetaStanza {
     const data = values.map((d) => +d[xKeyName]);
     console.log(data);
 
-    const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+    // const margin = { top: 20, right: 20, bottom: 30, left: 40 };
     const width =
-      +this.css("--togostanza-canvas-width") - margin.left - margin.right;
+      +this.css("--togostanza-canvas-width") - this.MARGIN.LEFT - this.MARGIN.RIGHT;
     const height =
-      +this.css("--togostanza-canvas-height") - margin.top - margin.bottom;
+      +this.css("--togostanza-canvas-height") - this.MARGIN.TOP - this.MARGIN.BOTTOM;
 
     let svg = select(this._main.querySelector("svg"));
     if (!svg.empty()) {
@@ -382,6 +382,7 @@ export default class Barchart extends MetaStanza {
       ticksIntervalUnits: params["axis-x-ticks_interval_units"],
       ticksLabelsFormat: params["axis-x-ticks_labels_format"],
     };
+    console.log(xParams)
     const maxY = bins.reduce(
       (acc, bin) => (bin.length > acc ? bin.length : acc),
       0
@@ -430,6 +431,8 @@ export default class Barchart extends MetaStanza {
     // g.append("g").attr("class", "axis axis--y").call(axisLeft(y));
 
     // バーを描画
+    console.log(this.xAxisGen.axisGen)
+    console.log(this.xAxisGen.axisGen.scale())
     const bar = this._graphArea
       .selectAll(".bar")
       .data(bins)
@@ -438,7 +441,10 @@ export default class Barchart extends MetaStanza {
       .attr("class", "bar")
       .attr(
         "transform",
-        (d) => `translate(${this.xAxisGen.axisGen.scale()(d[0])},0)`
+        (d) => {
+          console.log(d)
+          console.log( this.xAxisGen.axisGen.scale()(d.x0) )
+          return `translate(${this.xAxisGen.axisGen.scale()(d.x0)},0)`}
       );
 
     bar
@@ -524,6 +530,7 @@ function drawStackedBars(
     .append("g")
     .classed("bar-group", true)
     .attr("transform", (d) => {
+      console.log(d);
       return `translate(${this.xAxisGen.axisGen.scale()(d[0])},0)`;
     });
 
