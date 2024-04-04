@@ -459,7 +459,7 @@ export default class Barchart extends MetaStanza {
     
     if (this.params["event-outgoing_change_selected_nodes"]) {
       bar.on("click", (_, d) => {
-        const ids = d["__values__"].map(value => value["__togostanza_id__"]);
+        const ids = d["__values__"].map(value => value["__togostanza_id__"] + ""); // TODO: キャストをどうにかしたい
         emitSelectedEventByHistogram.apply(this, [ids]);
       });
     }
