@@ -447,12 +447,15 @@ export default class Barchart extends MetaStanza {
           return `translate(${this.xAxisGen.axisGen.scale()(d.x0)},0)`}
       );
 
+      const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
+      const fill = css("--togostanza-theme-series_0_color");
+
     bar
       .append("rect")
       .attr("y", (d) => y(d.length))
       .attr("width", x(bins[0].x1) - x(bins[0].x0) - 1)
       .attr("height", (d) => height - y(d.length))
-      .attr("fill", "steelblue");
+      .attr("fill", fill);
   }
 
   handleEvent(event) {
