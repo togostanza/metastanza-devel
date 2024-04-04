@@ -342,7 +342,7 @@ export default class Barchart extends MetaStanza {
 
     // X軸とY軸のスケールを設定
     const x = scaleLinear()
-      .domain([Math.min(...data), Math.max(...data)]) // データの範囲に合わせて調整
+      .domain([Math.min(...data), Math.max(...data) + 1]) // データの範囲に合わせて調整
       .rangeRound([0, width]);
     const y = scaleLinear().range([height, 0]);
 
@@ -353,6 +353,10 @@ export default class Barchart extends MetaStanza {
       // 20個のビンに分ける
       data
     );
+    bins.forEach((bin) => {
+      // 各ビンにデータ元のデータを追加
+      bin["__values__"] = values.filter(value => value[xKeyName] >= bin.x0 && value[xKeyName] < bin.x1)
+    });
     console.log(bins);
 
     // Y軸のスケールをビンのデータに合わせて設定
@@ -369,7 +373,7 @@ export default class Barchart extends MetaStanza {
     console.log(this.MARGIN);
     const xParams: AxisParamsI = {
       placement: params["axis-x-placement"],
-      domain: [Math.min(...data), Math.max(...data)],
+      domain: x.domain() as [number, number],
       drawArea: axisArea,
       margins: this.MARGIN,
       tickLabelsAngle: params["axis-x-ticks_label_angle"],
@@ -440,10 +444,7 @@ export default class Barchart extends MetaStanza {
       .attr("class", "bar")
       .attr(
         "transform",
-        (d) => {
-          console.log(d)
-          console.log( this.xAxisGen.axisGen.scale()(d.x0) )
-          return `translate(${this.xAxisGen.axisGen.scale()(d.x0)},0)`}
+        (d) => `translate(${this.xAxisGen.axisGen.scale()(d.x0)},0)`
       );
 
       const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
@@ -457,10 +458,12 @@ export default class Barchart extends MetaStanza {
       .attr("fill", fill);
     
     if (this.params["event-outgoing_change_selected_nodes"]) {
-      bar.on("click", (_, d) =>
-      console.log(d)
-        // emitSelectedEvent.apply(this, [d[1][0]["__togostanza_id__"]])
-      );
+      bar.on("click", (_, d) => {
+        d["__values__"].forEach((value) => {
+          console.log(value["__togostanza_id__"])
+          emitSelectedEvent.apply(this, [value["__togostanza_id__"]])
+        })
+      });
     }
   }
 
