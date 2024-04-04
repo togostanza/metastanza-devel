@@ -349,7 +349,7 @@ export default class Barchart extends MetaStanza {
     // ビンの設定
     const bins = bin()
       .domain(x.domain() as [number, number])
-      .thresholds(x.ticks(numberOfBin))(
+      .thresholds(x.ticks(this.params["data-bin-count"]))(
       // 20個のビンに分ける
       data
     );
@@ -431,8 +431,7 @@ export default class Barchart extends MetaStanza {
     // g.append("g").attr("class", "axis axis--y").call(axisLeft(y));
 
     // バーを描画
-    console.log(this.xAxisGen.axisGen)
-    console.log(this.xAxisGen.axisGen.scale())
+    console.log(bins)
     const bar = this._graphArea
       .selectAll(".bar")
       .data(bins)
@@ -456,6 +455,13 @@ export default class Barchart extends MetaStanza {
       .attr("width", x(bins[0].x1) - x(bins[0].x0) - 1)
       .attr("height", (d) => height - y(d.length))
       .attr("fill", fill);
+    
+    if (this.params["event-outgoing_change_selected_nodes"]) {
+      bar.on("click", (_, d) =>
+      console.log(d)
+        // emitSelectedEvent.apply(this, [d[1][0]["__togostanza_id__"]])
+      );
+    }
   }
 
   handleEvent(event) {

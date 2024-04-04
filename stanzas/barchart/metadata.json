@@ -45,6 +45,13 @@
       "stanza:description": "\"categorical\" is interpreted as a so-called bar chart, and \"distribution\" as a histogram."
     },
     {
+      "stanza:key": "data-bin-count",
+      "stanza:type": "number",
+      "stanza:example": 20,
+      "stanza:default": 20,
+      "stanza:description": "Specifies the number of histograms. Valid when \"distribution\" is selected for \"data-interpretation\"."
+    },
+    {
       "stanza:key": "axis-x-key",
       "stanza:type": "text",
       "stanza:example": "count",
