@@ -244,7 +244,7 @@ export default class Barchart extends MetaStanza {
     }
     if (this.params["event-outgoing_change_selected_nodes"]) {
       barGroup.on("click", (_, d) =>
-        emitSelectedEvent.apply(this, [d[1][0]["__togostanza_id__"]])
+        emitSelectedEventByBarChart.apply(this, [d[1][0]["__togostanza_id__"]])
       );
     }
 
@@ -459,10 +459,8 @@ export default class Barchart extends MetaStanza {
     
     if (this.params["event-outgoing_change_selected_nodes"]) {
       bar.on("click", (_, d) => {
-        d["__values__"].forEach((value) => {
-          console.log(value["__togostanza_id__"])
-          emitSelectedEvent.apply(this, [value["__togostanza_id__"]])
-        })
+        const ids = d["__values__"].map(value => value["__togostanza_id__"]);
+        emitSelectedEventByHistogram.apply(this, [ids]);
       });
     }
   }
@@ -605,7 +603,7 @@ function addErrorBars(
 }
 
 // emit selected event
-function emitSelectedEvent(this: Barchart, id: any) {
+function emitSelectedEventByBarChart(this: Barchart, id: any) {
   // collect selected bars
   const barGroups = this._graphArea.selectAll("g.bar-group");
   const filteredBars = barGroups.filter(".-selected");
@@ -625,6 +623,14 @@ function emitSelectedEvent(this: Barchart, id: any) {
     })
   );
   changeSelectedStyle.apply(this, [ids]);
+}
+function emitSelectedEventByHistogram(this: Barchart, ids: any[]) {
+  // dispatch event
+  this.element.dispatchEvent(
+    new CustomEvent("changeSelectedNodes", {
+      detail: ids,
+    })
+  );
 }
 
 function changeSelectedStyle(this: Barchart, ids: string[]) {
