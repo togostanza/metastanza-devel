@@ -449,7 +449,7 @@ export default class Barchart extends MetaStanza {
 
     bar
       .append("rect")
-      .attr("x", 1)
+      .attr("y", (d) => y(d.length))
       .attr("width", x(bins[0].x1) - x(bins[0].x0) - 1)
       .attr("height", (d) => height - y(d.length))
       .attr("fill", "steelblue");
@@ -493,9 +493,7 @@ function drawGroupedBars(
     .enter()
     .append("g")
     .classed("bar-group", true)
-    .attr("transform", (d) => {
-      return `translate(${this.xAxisGen.axisGen.scale()(d[0])},0)`;
-    });
+    .attr("transform", (d) => `translate(${this.xAxisGen.axisGen.scale()(d[0])},0)`);
 
   barGroup
     .selectAll("rect")
