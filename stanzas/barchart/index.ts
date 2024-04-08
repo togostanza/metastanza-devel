@@ -435,7 +435,6 @@ export default class Barchart extends MetaStanza {
     // g.append("g").attr("class", "axis axis--y").call(axisLeft(y));
 
     // バーを描画
-    console.log(bins)
     const bar = this._graphArea
       .selectAll(".bar")
       .data(bins)
@@ -631,13 +630,34 @@ function emitSelectedEventByHistogram(this: Barchart, ids: any[]) {
       detail: ids,
     })
   );
+  changeSelectedStyle.apply(this, [ids]);
 }
 
 function changeSelectedStyle(this: Barchart, ids: string[]) {
   console.log(ids);
-  const barGroups = this._graphArea.selectAll("g.bar-group");
-  barGroups.classed(
-    "-selected",
-    (d) => ids.indexOf(d[1][0].__togostanza_id__) !== -1
-  );
+  switch (this.params["data-interpretation"]) {
+    case "categorical": {
+      const barGroups = this._graphArea.selectAll("g.bar-group");
+      barGroups.classed(
+        "-selected",
+        (d) => ids.indexOf(d[1][0].__togostanza_id__) !== -1
+      );
+    }
+      break;
+    case "distribution": {
+      const bars = this._graphArea.selectAll("g.bar");
+      console.log(bars);
+      bars.classed(
+        "-selected",
+        (d) => {
+          // ids.indexOf(d["__values__"][0].__togostanza_id__) !== -1
+          console.log(d)
+          return false;
+        }
+      );
+    }
+      break;
+  }
+
+
 }
