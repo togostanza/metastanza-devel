@@ -649,7 +649,7 @@ export default defineComponent({
       const isShift = event.shiftKey;
       const isCmd = event.metaKey || event.ctrlKey;
       const filteredRowIds = filteredRows.value.map((row) => {
-        return row.find((obj) => obj.column.id === "__togostanza_id__").value;
+        return +row.find((obj) => obj.column.id === "__togostanza_id__").value;
       });
 
       // get index and ID
@@ -690,7 +690,7 @@ export default defineComponent({
         })
       );
       state.lastSelectedRow = rowId;
-      state.selectedRows = [...selectedRows];
+      state.selectedRows = [...selectedRows.map(row => row.toString())];
     };
 
     const handleMouseDown = (event) => {
@@ -717,7 +717,7 @@ export default defineComponent({
     };
 
     const updateSelectedRows = (rows) => {
-      state.selectedRows = [...rows];
+      state.selectedRows = [...rows.map(row => row.toString())];
     };
 
     return {

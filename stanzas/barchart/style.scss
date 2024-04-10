@@ -20,7 +20,7 @@ svg {
     stroke: var(--togostanza-axis-zero_line_color);
   }
 
-  .bar-group {
+  .bar-group, .bar {
     > rect {
       stroke-width: 0.5px;
       stroke: var(--togostanza-border-color);

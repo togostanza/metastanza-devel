@@ -323,9 +323,13 @@ export default class Barchart extends MetaStanza {
 
     // const margin = { top: 20, right: 20, bottom: 30, left: 40 };
     const width =
-      +this.css("--togostanza-canvas-width") - this.MARGIN.LEFT - this.MARGIN.RIGHT;
+      +this.css("--togostanza-canvas-width") -
+      this.MARGIN.LEFT -
+      this.MARGIN.RIGHT;
     const height =
-      +this.css("--togostanza-canvas-height") - this.MARGIN.TOP - this.MARGIN.BOTTOM;
+      +this.css("--togostanza-canvas-height") -
+      this.MARGIN.TOP -
+      this.MARGIN.BOTTOM;
 
     let svg = select(this._main.querySelector("svg"));
     if (!svg.empty()) {
@@ -355,7 +359,9 @@ export default class Barchart extends MetaStanza {
     );
     bins.forEach((bin) => {
       // 各ビンにデータ元のデータを追加
-      bin["__values__"] = values.filter(value => value[xKeyName] >= bin.x0 && value[xKeyName] < bin.x1)
+      bin["__values__"] = values.filter(
+        (value) => value[xKeyName] >= bin.x0 && value[xKeyName] < bin.x1
+      );
     });
     console.log(bins);
 
@@ -386,7 +392,7 @@ export default class Barchart extends MetaStanza {
       ticksIntervalUnits: params["axis-x-ticks_interval_units"],
       ticksLabelsFormat: params["axis-x-ticks_labels_format"],
     };
-    console.log(xParams)
+    console.log(xParams);
     const maxY = bins.reduce(
       (acc, bin) => (bin.length > acc ? bin.length : acc),
       0
@@ -446,8 +452,8 @@ export default class Barchart extends MetaStanza {
         (d) => `translate(${this.xAxisGen.axisGen.scale()(d.x0)},0)`
       );
 
-      const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
-      const fill = css("--togostanza-theme-series_0_color");
+    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
+    const fill = css("--togostanza-theme-series_0_color");
 
     bar
       .append("rect")
@@ -455,10 +461,10 @@ export default class Barchart extends MetaStanza {
       .attr("width", x(bins[0].x1) - x(bins[0].x0) - 1)
       .attr("height", (d) => height - y(d.length))
       .attr("fill", fill);
-    
+
     if (this.params["event-outgoing_change_selected_nodes"]) {
       bar.on("click", (_, d) => {
-        const ids = d["__values__"].map(value => value["__togostanza_id__"] + ""); // TODO: キャストをどうにかしたい
+        const ids = d["__values__"].map((value) => value["__togostanza_id__"]);
         emitSelectedEventByHistogram.apply(this, [ids]);
       });
     }
@@ -502,7 +508,10 @@ function drawGroupedBars(
     .enter()
     .append("g")
     .classed("bar-group", true)
-    .attr("transform", (d) => `translate(${this.xAxisGen.axisGen.scale()(d[0])},0)`);
+    .attr(
+      "transform",
+      (d) => `translate(${this.xAxisGen.axisGen.scale()(d[0])},0)`
+    );
 
   barGroup
     .selectAll("rect")
@@ -634,30 +643,25 @@ function emitSelectedEventByHistogram(this: Barchart, ids: any[]) {
 }
 
 function changeSelectedStyle(this: Barchart, ids: string[]) {
-  console.log(ids);
   switch (this.params["data-interpretation"]) {
-    case "categorical": {
-      const barGroups = this._graphArea.selectAll("g.bar-group");
-      barGroups.classed(
-        "-selected",
-        (d) => ids.indexOf(d[1][0].__togostanza_id__) !== -1
-      );
-    }
+    case "categorical":
+      {
+        const barGroups = this._graphArea.selectAll("g.bar-group");
+        barGroups.classed(
+          "-selected",
+          (d) => ids.indexOf(d[1][0].__togostanza_id__) !== -1
+        );
+      }
       break;
-    case "distribution": {
-      const bars = this._graphArea.selectAll("g.bar");
-      console.log(bars);
-      bars.classed(
-        "-selected",
-        (d) => {
-          // ids.indexOf(d["__values__"][0].__togostanza_id__) !== -1
-          console.log(d)
-          return false;
-        }
-      );
-    }
+    case "distribution":
+      {
+        const bars = this._graphArea.selectAll("g.bar");
+        bars.classed("-selected", (d) =>
+          d["__values__"].some((value) =>
+            ids.includes(value["__togostanza_id__"])
+          )
+        );
+      }
       break;
   }
-
-
 }
