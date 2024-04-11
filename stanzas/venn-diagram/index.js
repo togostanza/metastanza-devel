@@ -1,16 +1,16 @@
-import Stanza from "togostanza/stanza";
-import loadData from "togostanza-utils/load-data";
+import Legend from "@/lib/Legend";
+import ToolTip from "@/lib/ToolTip";
 import Color from "color";
 import {
-  downloadSvgMenuItem,
-  downloadPngMenuItem,
-  downloadJSONMenuItem,
-  downloadCSVMenuItem,
-  downloadTSVMenuItem,
   appendCustomCss,
+  downloadCSVMenuItem,
+  downloadJSONMenuItem,
+  downloadPngMenuItem,
+  downloadSvgMenuItem,
+  downloadTSVMenuItem,
 } from "togostanza-utils";
-import ToolTip from "@/lib/ToolTip";
-import Legend from "@/lib/Legend";
+import loadData from "togostanza-utils/load-data";
+import Stanza from "togostanza/stanza";
 
 const LINE_HEIGHT = 1;
 

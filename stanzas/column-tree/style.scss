@@ -23,9 +23,9 @@
   .value {
     flex-grow: 1;
     font-weight: normal;
-    opacity: .8;
+    opacity: 0.8;
     &.fallback {
-      opacity: .5;
+      opacity: 0.5;
       font-style: italic;
     }
   }
@@ -140,7 +140,7 @@
             }
           }
         }
-        &.-highlighted, &:hover {
+        &.-highlighted {
           > .inner {
             background-color: var(--togostanza-node-selected_background_color);
             color: var(--togostanza-node-selected_text_color);

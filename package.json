@@ -21,6 +21,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.0-1",
     "@rollup/plugin-replace": "^5.0.1",
     "@types/d3": "^7.4.0",
+    "@types/topojson-specification": "^1.0.5",
     "@vue/compiler-sfc": "^3.2.11",
     "@vueform/slider": "^1.0.3",
     "axios": "^1.1.3",

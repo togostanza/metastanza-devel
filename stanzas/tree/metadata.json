@@ -126,6 +126,20 @@
       "stanza:example": true,
       "stanza:description": "Emit a change event of selected nodes",
       "stanza:required": false
+    },
+    {
+      "stanza:key": "event-incoming_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Receive a change event of selected nodes",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "event-outgoing_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Emit a change event of selected nodes",
+      "stanza:required": false
     }
   ],
   "stanza:menu-placement": "bottom-right",
@@ -193,7 +207,7 @@
     {
       "stanza:key": "--togostanza-theme-selected_border_color",
       "stanza:type": "color",
-      "stanza:default": "#FFEE00",
+      "stanza:default": "#FF0000",
       "stanza:description": "Color applied to the selected item"
     },
     {

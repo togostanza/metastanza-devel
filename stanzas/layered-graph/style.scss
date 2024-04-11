@@ -36,6 +36,11 @@ g.node-g {
       stroke-width: calc(var(--togostanza-border-width) * 2.5px);
     }
   }
+  &.-selected {
+    text {
+      fill: var(--togostanza-theme-selected_border_color);
+    }
+  }
   &.half-active {
     > .node-label {
       stroke-opacity: 0.5;

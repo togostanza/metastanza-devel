@@ -21,7 +21,8 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 import {
-  emitSelectedEventForD3,
+  toggleSelectIds,
+  emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
 
@@ -29,11 +30,11 @@ let path;
 
 export default class Sunburst extends MetaStanza {
   _chartArea;
+  selectedIds = [];
   selectedEventParams = {
     targetElementSelector: "g path.selectable",
     selectedElementClassName: "-selected",
-    selectedElementSelector: ".-selected",
-    idPath: "data.data.__togostanza_id__",
+    idPath: "data.data.id",
   };
 
   constructor(...args) {
@@ -54,14 +55,25 @@ export default class Sunburst extends MetaStanza {
   }
 
   handleEvent(event) {
-    if (this.params["event-incoming_change_selected_nodes"]) {
-      updateSelectedElementClassNameForD3.apply(null, [
-        {
-          drawing: this._chartArea,
-          selectedIds: event.detail,
-          ...this.selectedEventParams,
-        },
-      ]);
+    const { selectedIds, dataUrl } = event.detail;
+
+    if (
+      this.params["event-incoming_change_selected_nodes"] &&
+      dataUrl === this.params["data-url"]
+    ) {
+      this.selectedIds = selectedIds;
+      updateSelectedElementClassNameForD3({
+        drawing: this._chartArea,
+        selectedIds: this.selectedIds,
+        targetElementSelector: "g circle.selectable",
+        selectedElementClassName: "-selected",
+        idPath: "data.data.id",
+      });
+      updateSelectedElementClassNameForD3({
+        drawing: this._chartArea,
+        selectedIds: event.detail.selectedIds,
+        ...this.selectedEventParams,
+      });
     }
 
     // event.stopPropagation();
@@ -72,10 +84,12 @@ export default class Sunburst extends MetaStanza {
   }
 
   async renderNext() {
+    /* eslint-disable @typescript-eslint/no-this-alias */
+    const that = this;
     this.state = new Proxy(this.state, {
       set(target, key, value) {
         if (key === "currentId") {
-          updateId(getNodeById(value));
+          updateId(getNodeById(value), that);
         }
         return Reflect.set;
       },
@@ -93,15 +107,17 @@ export default class Sunburst extends MetaStanza {
     const state = this.state;
     const dispatcher = this.element;
     const main = this._main;
-    const data = this._data;
+    const data = this.__data.asTree({
+      nodeLabelKey: this.params["node-label_key"].trim(),
+      nodeGroupKey: this.params["node-group_key"].trim(),
+      nodeValueKey: this.params["node-value_key"].trim(),
+    }).data;
 
     // get value of css vars
     const width = parseFloat(this.css("--togostanza-canvas-width"));
     const height = parseFloat(this.css("--togostanza-canvas-height"));
     const padding = this.MARGIN;
 
-    const valueKey = this.params["node-value_key"].trim();
-    const labelKey = this.params["node-label_key"].trim();
     const showNumbers = this.params["node-values_visible"];
     const borderWidth = this.params["node-levels_gap_width"] || 2;
     const nodesGapWidth = this.params["node-gap_width"] || 8;
@@ -114,41 +130,29 @@ export default class Sunburst extends MetaStanza {
 
     const color = scaleOrdinal(getStanzaColors(this));
 
-    data.forEach((node) => {
-      node.id = "" + node.id;
-      if (node?.children) {
-        node.children = node.children.map((child) => "" + child);
-      }
-      if (node?.parent) {
-        node.parent = "" + node.parent;
-      }
-    });
+    // data.forEach((node) => {
+    //   node.id = "" + node.id;
+    //   if (node?.children) {
+    //     node.children = node.children.map((child) => "" + child);
+    //   }
+    //   if (node?.parent) {
+    //     node.parent = "" + node.parent;
+    //   }
+    // });
 
     //Add root element if there are more than one elements without parent. D3 cannot process data with more than one root elements
-    const rootElemIndexes = [];
-    data.forEach((node, index) => {
-      if (!node.parent) {
-        rootElemIndexes.push(index);
-      }
-    });
-
-    if (rootElemIndexes.length > 1 || !data.find((item) => item.id === "-1")) {
-      const rootElem = {
-        id: "-1",
-        value: "",
-      };
-      data.push(rootElem);
-
-      rootElemIndexes.forEach((index) => {
-        data[index].parent = rootElem.id;
-      });
-    }
+    // const rootElemIndexes = [];
+    // data.forEach((node, index) => {
+    //   if (!node.parent) {
+    //     rootElemIndexes.push(index);
+    //   }
+    // });
 
     const dataset = data.filter(
       (item) =>
-        (item.children && !item[valueKey]) ||
-        (item[valueKey] && item[valueKey] > 0) ||
-        item.id === "-1"
+        (item.children && !item.value) ||
+        (item.value && item.value > 0) ||
+        item.id === -1
     );
 
     const stratifiedData = stratify()
@@ -165,7 +169,7 @@ export default class Sunburst extends MetaStanza {
       const root = hierarchy(data);
       switch (scalingMethod) {
         case "By value":
-          root.sum((d) => d.data[valueKey]);
+          root.sum((d) => d.data.value);
           break;
         case "Equal children":
           root.sum((d) => (d.children ? 0 : 1));
@@ -183,7 +187,7 @@ export default class Sunburst extends MetaStanza {
       root
         .sort((a, b) => b.value - a.value)
         // store real values for number labels in d.value2
-        .each((d) => (d.value2 = sum(d, (dd) => dd.data.data[valueKey])));
+        .each((d) => (d.value2 = sum(d, (dd) => dd.data.data.value)));
       return d3partition().size([2 * Math.PI, root.height + 1])(root);
     };
 
@@ -308,7 +312,7 @@ export default class Sunburst extends MetaStanza {
         while (d.depth > 1) {
           d = d.parent;
         }
-        if (d.data.data.id === "-1") {
+        if (d.data.data.id === -1) {
           return "none";
         }
 
@@ -319,32 +323,10 @@ export default class Sunburst extends MetaStanza {
       )
       .attr("d", (d) => arc(d.current));
 
-    let timeout;
-
-    path
-      .filter((d) => d.children)
-      .style("cursor", "pointer")
-      .on("click", (e, d) => {
-        if (e.detail === 1) {
-          timeout = setTimeout(() => {
-            return emitSelectedEventForD3({
-              drawing: this._chartArea,
-              rootElement: this.element,
-              targetId: d.data.data.__togostanza_id__,
-              ...this.selectedEventParams,
-            });
-          }, 500);
-        }
-      })
-      .on("dblclick", (e, d) => {
-        clearTimeout(timeout);
-        clicked(e, d);
-      });
-
     path.append("title").text((d) => {
       return `${d
         .ancestors()
-        .map((d) => d.data.data[labelKey])
+        .map((d) => d.data.data.label)
         .reverse()
         .join("/")}\n${formatNumber(d.value2)}`;
     });
@@ -353,7 +335,7 @@ export default class Sunburst extends MetaStanza {
     const textArcs = g
       .append("g")
       .selectAll("path")
-      .data(root.descendants().slice(1))
+      .data(root.descendants())
       .join("path")
       .attr("class", "hidden-arc")
       .attr("id", (_, i) => `hiddenLabelArc${i}`)
@@ -363,7 +345,7 @@ export default class Sunburst extends MetaStanza {
     const numArcs = g
       .append("g")
       .selectAll("path")
-      .data(root.descendants().slice(1))
+      .data(root.descendants())
       .join("path")
       .attr("class", "hidden-arc")
       .attr("id", (_, i) => `hiddenNumberArc${i}`)
@@ -375,47 +357,30 @@ export default class Sunburst extends MetaStanza {
       .datum(root)
       .attr("r", radius - borderWidth / 2)
       .attr("fill", "none")
-      .attr("pointer-events", "all")
-      .on("click", (e, d) => {
-        if (e.detail === 1) {
-          timeout = setTimeout(() => {
-            return emitSelectedEventForD3({
-              drawing: this._chartArea,
-              rootElement: this.element,
-              targetId: d.data.__togostanza_id__,
-              ...this.selectedEventParams,
-            });
-          }, 500);
-        }
-      })
-      .on("dblclick", (e, d) => {
-        clearTimeout(timeout);
-        clicked(e, d);
-      });
+      .attr("pointer-events", "all");
 
     //Text labels
     const textLabels = g
       .append("g")
       .attr("class", "labels")
       .selectAll("text")
-      .data(root.descendants().slice(1))
+      .data(root.descendants())
       .join("text")
       .attr(
         "fill-opacity",
-        (d) =>
-          +(labelVisible(d) && textFits(d, CHAR_SPACE, d.data.data[labelKey]))
+        (d) => +(labelVisible(d) && textFits(d, CHAR_SPACE, d.data.data.label))
       )
       .append("textPath")
       .attr("startOffset", "50%")
       .attr("href", (_, i) => `#hiddenLabelArc${i}`)
-      .text((d) => d.data.data[labelKey]);
+      .text((d) => d.data.data.label);
 
     //Number labels
     const numLabels = g
       .append("g")
       .attr("class", "numbers")
       .selectAll("text")
-      .data(root.descendants().slice(1))
+      .data(root.descendants())
       .join("text")
       //Show only if label is supposed to be shown, label text fits into node and showNumbers =true
       .attr(
@@ -423,7 +388,7 @@ export default class Sunburst extends MetaStanza {
         (d) =>
           +(
             labelVisible(d) &&
-            textFits(d, CHAR_SPACE, d.data.data[labelKey]) &&
+            textFits(d, CHAR_SPACE, d.data.data.label) &&
             showNumbers
           )
       )
@@ -431,6 +396,8 @@ export default class Sunburst extends MetaStanza {
       .attr("startOffset", "50%")
       .attr("href", (_, i) => `#hiddenNumberArc${i}`)
       .text((d) => formatNumber(d.value2));
+
+    let timeout;
 
     function clicked(_e, p) {
       state.currentId = p.data.data.id;
@@ -442,14 +409,16 @@ export default class Sunburst extends MetaStanza {
       return root.descendants().find((d) => d.data.data.id === id);
     }
 
-    function updateId(p) {
+    function updateId(p, stanza) {
       if (!arcVisible(p.current) && p.current.y1 > 1) {
         return;
       }
 
-      parent.datum(p.parent || root);
+      parent.datum(p.parent ? p : root);
 
-      parent.attr("cursor", (d) => (d === root ? "auto" : "pointer"));
+      parent.attr("cursor", (d) => {
+        return d === root ? "auto" : "pointer";
+      });
 
       root.each(
         (d) =>
@@ -487,23 +456,29 @@ export default class Sunburst extends MetaStanza {
         .attr("cursor", (d) =>
           d.children && arcVisible(d.target) ? "pointer" : "auto"
         )
-
         .attrTween("d", (d) => () => arc(d.current));
 
-      parent.transition(t).attr("fill", () => {
-        let b = p;
-        while (b.depth > 1) {
-          b = b.parent;
-        }
-
-        return b.data?.data?.[labelKey]
-          ? color(b.data.data.id)
-          : "rgba(0,0,0,0)";
-      });
+      let b = p;
+      // assign root to the variable b
+      while (b.depth > 1) {
+        b = b.parent;
+      }
+      parent
+        .transition(t)
+        .attr("fill", () => {
+          return b.data?.data?.label ? color(b.data.data.id) : "rgba(0,0,0,0)";
+        })
+        .end()
+        .then(() => {
+          parent.classed("selectable", () => b.data?.data?.label);
+          parent.classed("-selected", (d) =>
+            stanza.selectedIds.includes(d.data.data.id)
+          );
+        });
 
       textLabels
         .filter(function (d) {
-          return +this.getAttribute("fill-opacity") || +labelVisible(d.target);
+          return isNotZeroOpacity(this) || +labelVisible(d.target);
         })
         .transition(t)
         .attr(
@@ -511,7 +486,7 @@ export default class Sunburst extends MetaStanza {
           (d) =>
             +(
               labelVisible(d.target) &&
-              textFits(d.target, CHAR_SPACE, d.data.data[labelKey])
+              textFits(d.target, CHAR_SPACE, d.data.data.label)
             )
         );
 
@@ -521,7 +496,7 @@ export default class Sunburst extends MetaStanza {
 
       numLabels
         .filter(function (d) {
-          return +this.getAttribute("fill-opacity") || labelVisible(d.target);
+          return isNotZeroOpacity(this) || labelVisible(d.target);
         })
         .transition(t)
         .attr(
@@ -529,14 +504,100 @@ export default class Sunburst extends MetaStanza {
           (d) =>
             +(
               labelVisible(d.target) &&
-              textFits(d.target, CHAR_SPACE, d.data.data[labelKey]) &&
+              textFits(d.target, CHAR_SPACE, d.data.data.label) &&
               showNumbers
             )
         );
 
       numArcs
         .transition(t)
-        .attrTween("d", (d) => () => middleArcNumberLine(d.current));
+        .attrTween("d", (d) => () => middleArcNumberLine(d.current))
+        .end()
+        .then(() => {
+          // add the click events to visible nodes
+          path
+            .filter(function () {
+              return isNotZeroOpacity(this);
+            })
+            .style("cursor", "pointer")
+            .on("click", (e, d) => {
+              if (e.detail === 1) {
+                timeout = setTimeout(() => {
+                  toggleSelectIds({
+                    selectedIds: stanza.selectedIds,
+                    targetId: d.data.data.id,
+                  });
+                  updateSelectedElementClassNameForD3({
+                    drawing: stanza._chartArea,
+                    selectedIds: stanza.selectedIds,
+                    ...stanza.selectedEventParams,
+                  });
+                  if (stanza.params["event-outgoing_change_selected_nodes"]) {
+                    emitSelectedEvent({
+                      rootElement: stanza.element,
+                      targetId: d.data.data.id,
+                      selectedIds: stanza.selectedIds,
+                      dataUrl: stanza.params["data-url"],
+                    });
+                  }
+                }, 500);
+              }
+            })
+            .filter((d) => d.children)
+            .on("dblclick", (e, d) => {
+              clearTimeout(timeout);
+              clicked(e, d);
+            });
+
+          // remove the click events for invisible nodes
+          path
+            .filter(function () {
+              return !isNotZeroOpacity(this);
+            })
+            .style("cursor", "default")
+            .on("click", null)
+            .on("dblclick", null);
+          const isBlankRoot = p.data.data.id === -1;
+          if (isBlankRoot) {
+            parent.on("click", null).on("dblclick", null);
+          } else {
+            parent
+              .on("click", (e, d) => {
+                if (e.detail === 1) {
+                  timeout = setTimeout(() => {
+                    toggleSelectIds({
+                      selectedIds: stanza.selectedIds,
+                      targetId: d.data.data.id,
+                    });
+                    updateSelectedElementClassNameForD3({
+                      drawing: stanza._chartArea,
+                      selectedIds: stanza.selectedIds,
+                      targetElementSelector: "g circle.selectable",
+                      selectedElementClassName: "-selected",
+                      idPath: "data.data.id",
+                    });
+                    updateSelectedElementClassNameForD3({
+                      drawing: stanza._chartArea,
+                      selectedIds: stanza.selectedIds,
+                      ...stanza.selectedEventParams,
+                    });
+                    if (stanza.params["event-outgoing_change_selected_nodes"]) {
+                      emitSelectedEvent({
+                        rootElement: stanza.element,
+                        targetId: d.data.data.id,
+                        selectedIds: stanza.selectedIds,
+                        dataUrl: stanza.params["data-url"],
+                      });
+                    }
+                  }, 500);
+                }
+              })
+              .on("dblclick", (e, d) => {
+                clearTimeout(timeout);
+                clicked(e, d.parent);
+              });
+          }
+        });
     }
 
     function arcVisible(d) {
@@ -546,5 +607,23 @@ export default class Sunburst extends MetaStanza {
     function labelVisible(d) {
       return d.y1 <= depthLim + 1 && d.y0 >= 0;
     }
+
+    if (this._apiError) {
+      this._chartArea?.remove();
+      this._chartArea = null;
+    } else {
+      const errorMessageEl = this._main.querySelector(
+        ".metastanza-error-message-div"
+      );
+      if (errorMessageEl) {
+        errorMessageEl.remove();
+      }
+    }
+
+    state.currentId = root.data.data.id;
   }
+}
+
+function isNotZeroOpacity(htmlElement) {
+  return htmlElement.getAttribute("fill-opacity") !== "0";
 }

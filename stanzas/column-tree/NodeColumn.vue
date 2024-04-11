@@ -15,7 +15,7 @@
     >
       <span class="inner">
         <input
-          :data-togostanza-id="node.__togostanza_id__"
+          :data-togostanza-id="node.id"
           class="selectable"
           :class="{ '-selected': checkedNodes.get(node.id) }"
           type="checkbox"
@@ -25,13 +25,13 @@
 
         <span class="label" :class="`-${nodeValueAlignment}`">
           <strong class="title">
-            {{ node[keys.label] }}
+            {{ node.label }}
           </strong>
           <span
             class="value"
             :class="{ fallback: node[keys.value] === undefined }"
           >
-            {{ node[keys.value]?.toLocaleString() ?? valueObj.fallback }}
+            {{ node.value?.toLocaleString() ?? valueObj.fallback }}
           </span>
         </span>
         <font-awesome-icon
@@ -87,6 +87,10 @@ export default defineComponent({
       type: String,
       default: "horizontal",
     },
+    params: {
+      type: Object,
+      required: true,
+    },
   },
   emits: ["setParent", "setCheckedNode"],
   setup(props, context) {
@@ -111,32 +115,17 @@ export default defineComponent({
     function handleCheckboxClick(node) {
       setCheckedNode(node);
 
-      const drawing = document.querySelector("togostanza-column-tree");
-
-      // get filter nodes
-      const targetElements = Array.from(
-        drawing.shadowRoot.querySelectorAll("input.selectable")
-      );
-      const selectedElements = targetElements.filter((el) => {
-        return el.classList.contains("-selected");
-      });
-      const selectedIds = selectedElements.map(
-        (el) => +el.dataset.togostanzaId
-      );
-
-      const targetId = node.__togostanza_id__;
-
-      if (!selectedIds.includes(targetId)) {
-        selectedIds.push(targetId);
-      } else {
-        selectedIds.splice(selectedIds.indexOf(targetId), 1);
+      if (this.params.data._object.eventOutgoingChangeSelectedNodes) {
+        document.querySelector("togostanza-column-tree").dispatchEvent(
+          new CustomEvent("changeSelectedNodes", {
+            detail: {
+              selectedIds: [...this.checkedNodes.keys()],
+              targetId: node.id,
+              dataUrl: this.params.data._object.dataUrl,
+            },
+          })
+        );
       }
-
-      drawing.dispatchEvent(
-        new CustomEvent("changeSelectedNodes", {
-          detail: selectedIds,
-        })
-      );
     }
 
     return {

@@ -1,14 +1,13 @@
-import ToolTip from "../../lib/ToolTip";
-import Legend from "../../lib/Legend2";
 import { Axis, type AxisParamsI, paramsModel } from "../../lib/AxisMixin";
+import Legend from "../../lib/Legend2";
 import MetaStanza from "../../lib/MetaStanza";
+import ToolTip from "../../lib/ToolTip";
 
-import getStanzaColors from "../../lib/ColorGenerator";
 import {
-  downloadSvgMenuItem,
-  downloadPngMenuItem,
-  downloadJSONMenuItem,
   downloadCSVMenuItem,
+  downloadJSONMenuItem,
+  downloadPngMenuItem,
+  downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
 import {
@@ -21,6 +20,7 @@ import {
   axisBottom,
   axisLeft,
 } from "d3";
+import getStanzaColors from "../../lib/ColorGenerator";
 
 export default class Barchart extends MetaStanza {
   xAxisGen: Axis;
@@ -244,7 +244,10 @@ export default class Barchart extends MetaStanza {
     }
     if (this.params["event-outgoing_change_selected_nodes"]) {
       barGroup.on("click", (_, d) =>
-        emitSelectedEventByBarChart.apply(this, [d[1][0]["__togostanza_id__"]])
+        emitSelectedEventByBarChart.apply(this, [
+          d[1][0]["__togostanza_id__"],
+          this.params["data-url"],
+        ])
       );
     }
 
@@ -471,8 +474,12 @@ export default class Barchart extends MetaStanza {
   }
 
   handleEvent(event) {
-    if (this.params["event-incoming_change_selected_nodes"]) {
-      changeSelectedStyle.apply(this, [event.detail]);
+    const { dataUrl } = event.detail;
+    if (
+      this.params["event-incoming_change_selected_nodes"] &&
+      dataUrl === this.params["data-url"]
+    ) {
+      changeSelectedStyle.apply(this, [event.detail.selectedIds]);
     }
   }
 }
@@ -611,7 +618,7 @@ function addErrorBars(
 }
 
 // emit selected event
-function emitSelectedEventByBarChart(this: Barchart, id: any) {
+function emitSelectedEventByBarChart(this: Barchart, id: any, dataUrl: string) {
   // collect selected bars
   const barGroups = this._graphArea.selectAll("g.bar-group");
   const filteredBars = barGroups.filter(".-selected");
@@ -627,7 +634,11 @@ function emitSelectedEventByBarChart(this: Barchart, id: any) {
   // dispatch event
   this.element.dispatchEvent(
     new CustomEvent("changeSelectedNodes", {
-      detail: ids,
+      detail: {
+        selectedIds: ids,
+        targetId: id,
+        dataUrl,
+      },
     })
   );
   changeSelectedStyle.apply(this, [ids]);
