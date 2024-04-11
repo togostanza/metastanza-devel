@@ -65,7 +65,6 @@ export default class TreeMapStanza extends MetaStanza {
     const drawContent = async () => {
       const data = this.__data.asTree({
         nodeLabelKey: this.params["node-label_key"].trim(),
-        nodeGroupKey: undefined,
         nodeValueKey: this.params["node-value_key"].trim(),
       }).data;
 
