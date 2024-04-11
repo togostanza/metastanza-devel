@@ -11,7 +11,9 @@
   "stanza:license": "MIT",
   "stanza:author": "DBCLS",
   "stanza:address": "https://github.com/togostanza/metastanza",
-  "stanza:contributor": ["PENQE"],
+  "stanza:contributor": [
+    "PENQE"
+  ],
   "stanza:created": "2021-08-13",
   "stanza:updated": "2021-08-13",
   "stanza:parameter": [
@@ -24,7 +26,12 @@
     {
       "stanza:key": "data-type",
       "stanza:type": "single-choice",
-      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
+      "stanza:choice": [
+        "json",
+        "tsv",
+        "csv",
+        "sparql-results-json"
+      ],
       "stanza:example": "json",
       "stanza:description": "Data type",
       "stanza:required": true
@@ -41,16 +48,12 @@
       "stanza:description": "Key for data attribute to display as value"
     },
     {
-      "stanza:key": "node-group_key",
-      "stanza:type": "text",
-      "stanza:example": "parent",
-      "stanza:description": "Group key",
-      "stanza:required": true
-    },
-    {
       "stanza:key": "node-value_alignment",
       "stanza:type": "single-choice",
-      "stanza:choice": ["vertical", "horizontal"],
+      "stanza:choice": [
+        "vertical",
+        "horizontal"
+      ],
       "stanza:example": "horizontal",
       "stanza:description": "Set alignment of node content"
     },
