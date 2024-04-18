@@ -327,7 +327,6 @@ export default defineComponent({
   ],
 
   setup(params) {
-
     const wrapper = ref(null);
 
     onMounted(() => {
@@ -335,12 +334,14 @@ export default defineComponent({
       const value = style.getPropertyValue(
         "--togostanza-pagination-placement-vertical"
       );
-      wrapper.value.style.flexDirection = {top: "column-reverse", bottom: "column"}[value];
+      wrapper.value.style.flexDirection = {
+        top: "column-reverse",
+        bottom: "column",
+      }[value];
     });
-    
+
     const sliderPagination = ref();
     const pageSizeOption = params.pageSizeOption.split(",").map(Number);
-
 
     const state = reactive({
       responseJSON: null, // for download. may consume extra memory
@@ -632,7 +633,7 @@ export default defineComponent({
       handleAxisSelectorButton,
       handleAxisSelected,
       showAxisSelector: params.showAxisSelector,
-      wrapper
+      wrapper,
     };
   },
 });
