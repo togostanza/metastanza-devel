@@ -96,6 +96,7 @@ export default class TreeMapStanza extends MetaStanza {
   }
 
   handleEvent(event) {
+    console.log(event.detail);
     const { selectedIds, dataUrl } = event.detail;
 
     if (

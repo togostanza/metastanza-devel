@@ -36,7 +36,7 @@ export default class PaginationTable extends Stanza {
   }
 
   handleEvent(event) {
-    console.log(this.params["event-incoming_change_selected_nodes"])
+    console.log(event, this.params["event-incoming_change_selected_nodes"]);
     if (this.params["event-incoming_change_selected_nodes"]) {
       this._component.updateSelectedRows(event.detail);
     }

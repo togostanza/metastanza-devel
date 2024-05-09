@@ -21,6 +21,7 @@ import {
   axisLeft,
 } from "d3";
 import getStanzaColors from "../../lib/ColorGenerator";
+import { toggleSelectIds, emitSelectedEvent } from "../../lib/utils";
 
 export default class Barchart extends MetaStanza {
   xAxisGen: Axis;
@@ -474,6 +475,9 @@ export default class Barchart extends MetaStanza {
   }
 
   handleEvent(event) {
+    console.trace(event.detail);
+    console.log(this.params["event-incoming_change_selected_nodes"]);
+    console.log(event.detail === this.params["data-url"]);
     const { dataUrl } = event.detail;
     if (
       this.params["event-incoming_change_selected_nodes"] &&
@@ -654,6 +658,7 @@ function emitSelectedEventByHistogram(this: Barchart, ids: any[]) {
 }
 
 function changeSelectedStyle(this: Barchart, ids: string[]) {
+  console.log(ids, this.params["data-interpretation"]);
   switch (this.params["data-interpretation"]) {
     case "categorical":
       {
@@ -667,6 +672,7 @@ function changeSelectedStyle(this: Barchart, ids: string[]) {
     case "distribution":
       {
         const bars = this._graphArea.selectAll("g.bar");
+        console.log(bars);
         bars.classed("-selected", (d) =>
           d["__values__"].some((value) =>
             ids.includes(value["__togostanza_id__"])
