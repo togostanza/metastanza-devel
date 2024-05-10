@@ -475,15 +475,12 @@ export default class Barchart extends MetaStanza {
   }
 
   handleEvent(event) {
-    console.trace(event.detail);
-    console.log(this.params["event-incoming_change_selected_nodes"]);
-    console.log(event.detail === this.params["data-url"]);
-    const { dataUrl } = event.detail;
+    const { selectedIds, dataUrl } = event.detail;
     if (
       this.params["event-incoming_change_selected_nodes"] &&
       dataUrl === this.params["data-url"]
     ) {
-      changeSelectedStyle.apply(this, [event.detail.selectedIds]);
+      changeSelectedStyle.apply(this, [selectedIds]);
     }
   }
 }
