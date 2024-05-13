@@ -720,7 +720,7 @@ export default defineComponent({
     };
 
     const updateSelectedRows = (emitSelectedEventParams) => {
-      const {selectedIds} = emitSelectedEventParams
+      const {selectedIds} = emitSelectedEventParams;
       state.selectedRows = [...selectedIds.map(id => id.toString())];
     };
 

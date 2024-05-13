@@ -469,7 +469,7 @@ export default class Barchart extends MetaStanza {
     if (this.params["event-outgoing_change_selected_nodes"]) {
       bar.on("click", (_, d) => {
         const ids = d["__values__"].map((value) => value["__togostanza_id__"]);
-        emitSelectedEventByHistogram.apply(this, [ids]);
+        emitSelectedEventByHistogram.apply(this, [ids, this.params["data-url"]], );
       });
     }
   }
@@ -644,18 +644,21 @@ function emitSelectedEventByBarChart(this: Barchart, id: any, dataUrl: string) {
   );
   changeSelectedStyle.apply(this, [ids]);
 }
-function emitSelectedEventByHistogram(this: Barchart, ids: any[]) {
+function emitSelectedEventByHistogram(this: Barchart, ids: any[], dataUrl: string) {
   // dispatch event
   this.element.dispatchEvent(
     new CustomEvent("changeSelectedNodes", {
-      detail: ids,
+      detail: {
+        selectedIds: ids,
+        targetId: ids[0],
+        dataUrl,
+      },
     })
   );
   changeSelectedStyle.apply(this, [ids]);
 }
 
 function changeSelectedStyle(this: Barchart, ids: string[]) {
-  console.log(ids, this.params["data-interpretation"]);
   switch (this.params["data-interpretation"]) {
     case "categorical":
       {
@@ -669,7 +672,6 @@ function changeSelectedStyle(this: Barchart, ids: string[]) {
     case "distribution":
       {
         const bars = this._graphArea.selectAll("g.bar");
-        console.log(bars);
         bars.classed("-selected", (d) =>
           d["__values__"].some((value) =>
             ids.includes(value["__togostanza_id__"])
