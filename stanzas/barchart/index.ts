@@ -633,28 +633,22 @@ function emitSelectedEventByBarChart(this: Barchart, id: any, dataUrl: string) {
     ids.splice(indexInSelectedBars, 1);
   }
   // dispatch event
-  this.element.dispatchEvent(
-    new CustomEvent("changeSelectedNodes", {
-      detail: {
-        selectedIds: ids,
-        targetId: id,
-        dataUrl,
-      },
-    })
-  );
+  emitSelectedEvent({
+    rootElement: this.element,
+    targetId: id,
+    selectedIds: ids,
+    dataUrl,
+  })
   changeSelectedStyle.apply(this, [ids]);
 }
 function emitSelectedEventByHistogram(this: Barchart, ids: any[], dataUrl: string) {
   // dispatch event
-  this.element.dispatchEvent(
-    new CustomEvent("changeSelectedNodes", {
-      detail: {
-        selectedIds: ids,
-        targetId: ids[0],
-        dataUrl,
-      },
-    })
-  );
+  emitSelectedEvent({
+    rootElement: this.element,
+    targetId: ids[0],
+    selectedIds: ids,
+    dataUrl,
+  })
   changeSelectedStyle.apply(this, [ids]);
 }
 
