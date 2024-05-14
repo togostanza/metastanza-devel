@@ -20,6 +20,7 @@ import {
   axisBottom,
   axisLeft,
   BaseType,
+  Selection,
 } from "d3";
 import getStanzaColors from "../../lib/ColorGenerator";
 import { emitSelectedEvent } from "../../lib/utils";
@@ -47,22 +48,30 @@ export default class Barchart extends MetaStanza {
   }
 
   async renderNext() {
+    let svg = select(this._main.querySelector("svg"));
+    if (!svg.empty()) {
+      svg.remove();
+      this.xAxisGen = null;
+      this.yAxisGen = null;
+    }
+    svg = select(this._main).append("svg");
+    svg
+      .attr("width", +this.css("--togostanza-canvas-width"))
+      .attr("height", +this.css("--togostanza-canvas-height"));
+
     // If "binKey" is specified, this component behaves as a histogram; if not, it behaves as a bar chart.
     switch (this.params["data-interpretation"]) {
       case "categorical":
-        this.drawBarChart();
+        this.drawBarChart(svg);
         break;
       case "distribution":
-        this.drawHistogram();
+        this.drawHistogram(svg);
         break;
     }
   }
 
-  drawBarChart() {
+  drawBarChart(svg: Selection<SVGSVGElement, unknown, null, undefined>) {
     const color = scaleOrdinal().range(getStanzaColors(this));
-
-    const width = +this.css("--togostanza-canvas-width");
-    const height = +this.css("--togostanza-canvas-height");
 
     const xKeyName = this.params["axis-x-key"];
     const yKeyName = this.params["axis-y-key"];
@@ -151,21 +160,14 @@ export default class Barchart extends MetaStanza {
 
     const yDomain = [0, maxY * 1.02];
 
-    let svg = select(this._main.querySelector("svg"));
-
-    if (!svg.empty()) {
-      svg.remove();
-      this.xAxisGen = null;
-      this.yAxisGen = null;
-    }
-    svg = select(this._main).append("svg");
-    svg
-      .attr("width", +this.css("--togostanza-canvas-width"))
-      .attr("height", +this.css("--togostanza-canvas-height"));
-
     this._graphArea = svg.append("g").attr("class", "chart");
 
-    const axisArea = { x: 0, y: 0, width, height };
+    const axisArea = {
+      x: 0,
+      y: 0,
+      width: +this.css("--togostanza-canvas-width"),
+      height: +this.css("--togostanza-canvas-height"),
+    };
 
     const xParams = getXAxis.apply(this, [
       [
@@ -284,7 +286,7 @@ export default class Barchart extends MetaStanza {
     }
   }
 
-  drawHistogram() {
+  drawHistogram(svg: Selection<SVGSVGElement, unknown, null, undefined>) {
     const xKeyName = this.params["axis-x-key"];
     const yKeyName = this.params["axis-y-key"];
     const yAxisTitle =
@@ -318,17 +320,6 @@ export default class Barchart extends MetaStanza {
       +this.css("--togostanza-canvas-height") -
       this.MARGIN.TOP -
       this.MARGIN.BOTTOM;
-
-    let svg = select(this._main.querySelector("svg"));
-    if (!svg.empty()) {
-      svg.remove();
-      this.xAxisGen = null;
-      this.yAxisGen = null;
-    }
-    svg = select(this._main).append("svg");
-    svg
-      .attr("width", +this.css("--togostanza-canvas-width"))
-      .attr("height", +this.css("--togostanza-canvas-height"));
 
     this._graphArea = svg.append("g").attr("class", "chart");
 
