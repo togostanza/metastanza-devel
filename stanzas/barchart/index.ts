@@ -24,6 +24,7 @@ import {
 } from "d3";
 import getStanzaColors from "../../lib/ColorGenerator";
 import { emitSelectedEvent } from "../../lib/utils";
+import { AxisDomain } from "d3-axis";
 
 export default class Barchart extends MetaStanza {
   xAxisGen: Axis;
@@ -129,7 +130,6 @@ export default class Barchart extends MetaStanza {
       d[y1Sym] = 0;
       d[y2Sym] = d[yKeyName];
     });
-    console.log(values);
 
     let y2s = [];
 
@@ -278,7 +278,6 @@ export default class Barchart extends MetaStanza {
     }
 
     const data = values.map((d) => +d[xKeyName]);
-    console.log(data);
 
     const width =
       +this.css("--togostanza-canvas-width") -
@@ -586,8 +585,7 @@ function changeSelectedStyle(this: Barchart, ids: string[]) {
       break;
   }
 }
-
-function getXAxis(this: Barchart, domain, scale) {
+function getXAxis(this: Barchart, domain: AxisDomain[], scale: "linear" | "time" | "log10" | "ordinal") { // Update the type of 'scale'
   const xKeyName = this.params["axis-x-key"];
   const xAxisTitle =
   typeof this.params["axis-x-title"] === "undefined"
@@ -617,7 +615,7 @@ function getXAxis(this: Barchart, domain, scale) {
   return xParams;
 }
 
-function getYAxis(this: Barchart, yDomain) {
+function getYAxis(this: Barchart, domain: AxisDomain[]) {
   const yKeyName = this.params["axis-y-key"];
   const yAxisTitle =
     typeof this.params["axis-y-title"] === "undefined"
@@ -626,7 +624,7 @@ function getYAxis(this: Barchart, yDomain) {
 
   const yParams: AxisParamsI = {
     placement: this.params["axis-y-placement"],
-    domain: yDomain,
+    domain,
     drawArea: {
       x: 0,
       y: 0,
