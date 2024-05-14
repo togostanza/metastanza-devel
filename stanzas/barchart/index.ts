@@ -66,10 +66,6 @@ export default class Barchart extends MetaStanza {
 
     const xKeyName = this.params["axis-x-key"];
     const yKeyName = this.params["axis-y-key"];
-    const xAxisTitle =
-      typeof this.params["axis-x-title"] === "undefined"
-        ? xKeyName
-        : this.params["axis-x-title"];
     const yAxisTitle =
       typeof this.params["axis-y-title"] === "undefined"
         ? yKeyName
@@ -90,11 +86,6 @@ export default class Barchart extends MetaStanza {
     const y2Sym = Symbol("y2");
 
     const values = structuredClone(this._data);
-
-    const xAxisLabels = [
-      ...new Set(values.map((d) => d[xKeyName])),
-    ] as string[];
-    console.log(xAxisLabels);
 
     let params;
     try {
@@ -168,27 +159,20 @@ export default class Barchart extends MetaStanza {
       this.yAxisGen = null;
     }
     svg = select(this._main).append("svg");
-    svg.attr("width", width).attr("height", height);
+    svg
+      .attr("width", +this.css("--togostanza-canvas-width"))
+      .attr("height", +this.css("--togostanza-canvas-height"));
 
     this._graphArea = svg.append("g").attr("class", "chart");
 
     const axisArea = { x: 0, y: 0, width, height };
 
-    const xParams: AxisParamsI = {
-      placement: params["axis-x-placement"],
-      domain: xAxisLabels,
-      drawArea: axisArea,
-      margins: this.MARGIN,
-      tickLabelsAngle: params["axis-x-ticks_label_angle"],
-      title: xAxisTitle,
-      titlePadding: params["axis-x-title_padding"],
-      scale: "ordinal",
-      gridInterval: params["axis-x-gridlines_interval"],
-      gridIntervalUnits: params["axis-x-gridlines_interval_units"],
-      ticksInterval: params["axis-x-ticks_interval"],
-      ticksIntervalUnits: params["axis-x-ticks_interval_units"],
-      ticksLabelsFormat: params["axis-x-ticks_labels_format"],
-    };
+    const xParams = getXAxis.apply(this, [
+      [
+        ...new Set(structuredClone(this._data).map((d) => d[xKeyName])),
+      ] as string[],
+      "ordinal"
+    ]);
 
     const yParams: AxisParamsI = {
       placement: params["axis-y-placement"],
@@ -303,10 +287,6 @@ export default class Barchart extends MetaStanza {
   drawHistogram() {
     const xKeyName = this.params["axis-x-key"];
     const yKeyName = this.params["axis-y-key"];
-    const xAxisTitle =
-      typeof this.params["axis-x-title"] === "undefined"
-        ? xKeyName
-        : this.params["axis-x-title"];
     const yAxisTitle =
       typeof this.params["axis-y-title"] === "undefined"
         ? yKeyName
@@ -330,7 +310,6 @@ export default class Barchart extends MetaStanza {
     const data = values.map((d) => +d[xKeyName]);
     console.log(data);
 
-    // const margin = { top: 20, right: 20, bottom: 30, left: 40 };
     const width =
       +this.css("--togostanza-canvas-width") -
       this.MARGIN.LEFT -
@@ -372,7 +351,6 @@ export default class Barchart extends MetaStanza {
         (value) => value[xKeyName] >= bin.x0 && value[xKeyName] < bin.x1
       );
     });
-    console.log(bins);
 
     // Y軸のスケールをビンのデータに合わせて設定
     y.domain([0, max(bins, (d) => d.length)]);
@@ -385,23 +363,11 @@ export default class Barchart extends MetaStanza {
     };
 
     // X軸を追加
-    console.log(this.MARGIN);
-    const xParams: AxisParamsI = {
-      placement: params["axis-x-placement"],
-      domain: x.domain() as [number, number],
-      drawArea: axisArea,
-      margins: this.MARGIN,
-      tickLabelsAngle: params["axis-x-ticks_label_angle"],
-      title: xAxisTitle,
-      titlePadding: params["axis-x-title_padding"],
-      scale: "linear",
-      gridInterval: params["axis-x-gridlines_interval"],
-      gridIntervalUnits: params["axis-x-gridlines_interval_units"],
-      ticksInterval: params["axis-x-ticks_interval"],
-      ticksIntervalUnits: params["axis-x-ticks_interval_units"],
-      ticksLabelsFormat: params["axis-x-ticks_labels_format"],
-    };
-    console.log(xParams);
+    const xParams = getXAxis.apply(this, [
+      x.domain() as [number, number],
+      "linear"
+    ]);
+
     const maxY = bins.reduce(
       (acc, bin) => (bin.length > acc ? bin.length : acc),
       0
@@ -680,4 +646,34 @@ function changeSelectedStyle(this: Barchart, ids: string[]) {
       }
       break;
   }
+}
+
+function getXAxis(this: Barchart, domain, scale) {
+  const xKeyName = this.params["axis-x-key"];
+  const xAxisTitle =
+  typeof this.params["axis-x-title"] === "undefined"
+    ? xKeyName
+    : this.params["axis-x-title"];
+
+  const xParams: AxisParamsI = {
+    placement: this.params["axis-x-placement"],
+    domain,
+    drawArea: {
+      x: 0,
+      y: 0,
+      width: +this.css("--togostanza-canvas-width"),
+      height: +this.css("--togostanza-canvas-height"),
+    },
+    margins: this.MARGIN,
+    tickLabelsAngle: this.params["axis-x-ticks_label_angle"],
+    title: xAxisTitle,
+    titlePadding: this.params["axis-x-title_padding"],
+    scale,
+    gridInterval: this.params["axis-x-gridlines_interval"],
+    gridIntervalUnits: this.params["axis-x-gridlines_interval_units"],
+    ticksInterval: this.params["axis-x-ticks_interval"],
+    ticksIntervalUnits: this.params["axis-x-ticks_interval_units"],
+    ticksLabelsFormat: this.params["axis-x-ticks_labels_format"],
+  };
+  return xParams;
 }
