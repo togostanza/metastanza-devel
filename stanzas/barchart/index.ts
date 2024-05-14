@@ -75,10 +75,6 @@ export default class Barchart extends MetaStanza {
 
     const xKeyName = this.params["axis-x-key"];
     const yKeyName = this.params["axis-y-key"];
-    const yAxisTitle =
-      typeof this.params["axis-y-title"] === "undefined"
-        ? yKeyName
-        : this.params["axis-y-title"];
     const groupKeyName = this.params["grouping-key"];
     const grouingArrangement = this.params["grouping-arrangement"];
 
@@ -156,18 +152,7 @@ export default class Barchart extends MetaStanza {
       }
     }
 
-    const maxY = Math.max(...y2s);
-
-    const yDomain = [0, maxY * 1.02];
-
     this._graphArea = svg.append("g").attr("class", "chart");
-
-    const axisArea = {
-      x: 0,
-      y: 0,
-      width: +this.css("--togostanza-canvas-width"),
-      height: +this.css("--togostanza-canvas-height"),
-    };
 
     const xParams = getXAxis.apply(this, [
       [
@@ -176,21 +161,10 @@ export default class Barchart extends MetaStanza {
       "ordinal"
     ]);
 
-    const yParams: AxisParamsI = {
-      placement: params["axis-y-placement"],
-      domain: yDomain,
-      drawArea: axisArea,
-      margins: this.MARGIN,
-      tickLabelsAngle: params["axis-y-ticks_label_angle"],
-      title: yAxisTitle,
-      titlePadding: params["axis-y-title_padding"],
-      scale: "linear",
-      gridInterval: params["axis-y-gridlines_interval"],
-      gridIntervalUnits: params["axis-x-gridlines_interval_units"],
-      ticksInterval: params["axis-y-ticks_interval"],
-      ticksIntervalUnits: params["axis-y-ticks_interval_units"],
-      ticksLabelsFormat: params["axis-y-ticks_labels_format"],
-    };
+    const maxY = Math.max(...y2s);
+    const yDomain = [0, maxY * 1.02];
+
+    const yParams = getYAxis.apply(this, [yDomain])
 
     if (!this.xAxisGen) {
       this.xAxisGen = new Axis(svg.node());
@@ -288,11 +262,6 @@ export default class Barchart extends MetaStanza {
 
   drawHistogram(svg: Selection<SVGSVGElement, unknown, null, undefined>) {
     const xKeyName = this.params["axis-x-key"];
-    const yKeyName = this.params["axis-y-key"];
-    const yAxisTitle =
-      typeof this.params["axis-y-title"] === "undefined"
-        ? yKeyName
-        : this.params["axis-y-title"];
 
     const showLegend = this.params["legend-visible"];
     const legendTitle = this.params["legend-title"];
@@ -307,7 +276,6 @@ export default class Barchart extends MetaStanza {
       console.log(error);
       return;
     }
-    console.log(params);
 
     const data = values.map((d) => +d[xKeyName]);
     console.log(data);
@@ -346,13 +314,6 @@ export default class Barchart extends MetaStanza {
     // Y軸のスケールをビンのデータに合わせて設定
     y.domain([0, max(bins, (d) => d.length)]);
 
-    const axisArea = {
-      x: 0,
-      y: 0,
-      width: +this.css("--togostanza-canvas-width"),
-      height: +this.css("--togostanza-canvas-height"),
-    };
-
     // X軸を追加
     const xParams = getXAxis.apply(this, [
       x.domain() as [number, number],
@@ -364,21 +325,8 @@ export default class Barchart extends MetaStanza {
       0
     );
     const yDomain = [0, maxY * 1.02];
-    const yParams: AxisParamsI = {
-      placement: params["axis-y-placement"],
-      domain: yDomain,
-      drawArea: axisArea,
-      margins: this.MARGIN,
-      tickLabelsAngle: params["axis-y-ticks_label_angle"],
-      title: yAxisTitle,
-      titlePadding: params["axis-y-title_padding"],
-      scale: "linear",
-      gridInterval: params["axis-y-gridlines_interval"],
-      gridIntervalUnits: params["axis-x-gridlines_interval_units"],
-      ticksInterval: params["axis-y-ticks_interval"],
-      ticksIntervalUnits: params["axis-y-ticks_interval_units"],
-      ticksLabelsFormat: params["axis-y-ticks_labels_format"],
-    };
+
+    const yParams = getYAxis.apply(this, [yDomain])
 
     if (!this.xAxisGen) {
       this.xAxisGen = new Axis(svg.node());
@@ -667,4 +615,34 @@ function getXAxis(this: Barchart, domain, scale) {
     ticksLabelsFormat: this.params["axis-x-ticks_labels_format"],
   };
   return xParams;
+}
+
+function getYAxis(this: Barchart, yDomain) {
+  const yKeyName = this.params["axis-y-key"];
+  const yAxisTitle =
+    typeof this.params["axis-y-title"] === "undefined"
+      ? yKeyName
+      : this.params["axis-y-title"];
+
+  const yParams: AxisParamsI = {
+    placement: this.params["axis-y-placement"],
+    domain: yDomain,
+    drawArea: {
+      x: 0,
+      y: 0,
+      width: +this.css("--togostanza-canvas-width"),
+      height: +this.css("--togostanza-canvas-height"),
+    },
+    margins: this.MARGIN,
+    tickLabelsAngle: this.params["axis-y-ticks_label_angle"],
+    title: yAxisTitle,
+    titlePadding: this.params["axis-y-title_padding"],
+    scale: "linear",
+    gridInterval: this.params["axis-y-gridlines_interval"],
+    gridIntervalUnits: this.params["axis-x-gridlines_interval_units"],
+    ticksInterval: this.params["axis-y-ticks_interval"],
+    ticksIntervalUnits: this.params["axis-y-ticks_interval_units"],
+    ticksLabelsFormat: this.params["axis-y-ticks_labels_format"],
+  };
+  return yParams;
 }
