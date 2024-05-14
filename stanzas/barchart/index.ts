@@ -19,15 +19,19 @@ import {
   max,
   axisBottom,
   axisLeft,
+  BaseType,
 } from "d3";
 import getStanzaColors from "../../lib/ColorGenerator";
-import { toggleSelectIds, emitSelectedEvent } from "../../lib/utils";
+import { emitSelectedEvent } from "../../lib/utils";
 
 export default class Barchart extends MetaStanza {
   xAxisGen: Axis;
   yAxisGen: Axis;
-  _graphArea: d3.Selection<SVGGElement, {}, SVGElement, any>;
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  _graphArea: d3.Selection<SVGGElement, {}, SVGElement, unknown>;
+  // eslint-disable-next-line @typescript-eslint/ban-types
   _dataByGroup: Map<string | number, {}[]>;
+  // eslint-disable-next-line @typescript-eslint/ban-types
   _dataByX: Map<string | number, {}[]>;
   legend: Legend;
   tooltips: ToolTip;
@@ -100,7 +104,8 @@ export default class Barchart extends MetaStanza {
       return;
     }
 
-    this._dataByGroup = values.reduce((map: Map<any, {}[]>, curr) => {
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    this._dataByGroup = values.reduce((map: Map<unknown, {}[]>, curr: { [x: string]: unknown; }) => {
       if (!map.has(curr[groupKeyName])) {
         return map.set(curr[groupKeyName], [curr]);
       }
@@ -218,8 +223,10 @@ export default class Barchart extends MetaStanza {
 
     let barGroup: d3.Selection<
       SVGGElement,
+      // eslint-disable-next-line @typescript-eslint/ban-types
       [string | number, {}[]],
       SVGGElement,
+      // eslint-disable-next-line @typescript-eslint/ban-types
       {}
     >;
     let groupScale;
@@ -307,8 +314,6 @@ export default class Barchart extends MetaStanza {
 
     const showLegend = this.params["legend-visible"];
     const legendTitle = this.params["legend-title"];
-
-    const numberOfBin = 20;
 
     const values = structuredClone(this._data);
     console.log(values);
@@ -580,7 +585,8 @@ function drawStackedBars(
 
 function addErrorBars(
   this: Barchart,
-  rect: d3.Selection<SVGGElement, {}, any, any>,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  rect: d3.Selection<SVGGElement, {}, BaseType, unknown>,
   errorKeyName: string,
   groupKeyName: string,
   groupScale: d3.ScaleBand<string>
@@ -619,7 +625,7 @@ function addErrorBars(
 }
 
 // emit selected event
-function emitSelectedEventByBarChart(this: Barchart, id: any, dataUrl: string) {
+function emitSelectedEventByBarChart(this: Barchart, id: unknown, dataUrl: string) {
   // collect selected bars
   const barGroups = this._graphArea.selectAll("g.bar-group");
   const filteredBars = barGroups.filter(".-selected");
@@ -641,7 +647,7 @@ function emitSelectedEventByBarChart(this: Barchart, id: any, dataUrl: string) {
   })
   changeSelectedStyle.apply(this, [ids]);
 }
-function emitSelectedEventByHistogram(this: Barchart, ids: any[], dataUrl: string) {
+function emitSelectedEventByHistogram(this: Barchart, ids: unknown[], dataUrl: string) {
   // dispatch event
   emitSelectedEvent({
     rootElement: this.element,
