@@ -26,7 +26,8 @@ svg {
 
     g {
       rect.selectable:not(.breadcrumb) {
-        &.-selected {
+        transition: var(--togostanza-fadeout-transition);
+        &:hover, &.-selected {
           opacity: 1;
         }
       }
