@@ -19,19 +19,15 @@ svg {
     }
 
     &:has(rect.selectable.-selected) {
-      g {
-        rect.selectable {
-          opacity: var(--togostanza-fadeout-opacity);
-        }
+      rect.selectable {
+        opacity: var(--togostanza-fadeout-opacity);
       }
     }
 
-    g {
-      rect.selectable:not(.breadcrumb) {
-        transition: var(--togostanza-fadeout-transition);
-        &:hover, &.-selected {
-          opacity: 1;
-        }
+    rect.selectable:not(.breadcrumb) {
+      transition: var(--togostanza-fadeout-transition);
+      &:hover, &.-selected {
+        opacity: 1;
       }
     }
   }
