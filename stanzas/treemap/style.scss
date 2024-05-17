@@ -18,16 +18,16 @@ svg {
       }
     }
 
-    &:has(rect.selectable.-selected) {
-      rect.selectable {
-        opacity: var(--togostanza-fadeout-opacity);
-      }
-    }
-
     rect.selectable:not(.breadcrumb) {
       transition: var(--togostanza-fadeout-transition);
       &:hover, &.-selected {
-        opacity: 1;
+        opacity: 1 !important;
+      }
+    }
+
+    &:has(rect.selectable.-selected) {
+      rect.selectable {
+        opacity: var(--togostanza-fadeout-opacity);
       }
     }
   }
