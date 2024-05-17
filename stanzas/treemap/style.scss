@@ -19,8 +19,10 @@ svg {
     }
 
     &:has(rect.selectable.-selected) {
-      rect.selectable {
-        opacity: var(--togostanza-fadeout-opacity);
+      g {
+        rect.selectable {
+          opacity: var(--togostanza-fadeout-opacity);
+        }
       }
     }
 

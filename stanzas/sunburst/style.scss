@@ -13,28 +13,32 @@ textPath {
   font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
 }
 
-g .hidden-arc {
-  fill: none;
-  stroke: none;
-}
-
 .no-fill {
   fill: none;
 }
 
-g path.selectable {
-  &.-selected:not([fill-opacity="0"]) {
-    stroke-width: 2px;
-    stroke: var(--togostanza-theme-selected_border_color);
+g {
+  .hidden-arc {
+    fill: none;
+    stroke: none;
   }
-}
 
-g circle {
-  &.selectable {
-    cursor: pointer;
+  &:has(.selectable.-selected) {
+    .selectable {
+      opacity: var(--togostanza-fadeout-opacity);
+    }
   }
-  &.-selected {
-    stroke-width: 2px;
-    stroke: var(--togostanza-theme-selected_border_color);
+
+  .selectable {
+    transition: var(--togostanza-fadeout-transition);
+    &:hover, &.-selected:not([fill-opacity="0"]) {
+      opacity: 1 !important;
+    }
+  }
+
+  circle {
+    &.selectable {
+      cursor: pointer;
+    }
   }
 }
