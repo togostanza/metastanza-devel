@@ -1,6 +1,6 @@
 :host {
   --togostanza-fadeout-opacity: 0.2;
-  --togostanza-fadeout-transition: opacity 0.2s ease-in;
+  --togostanza-fadeout-transition: opacity 0.2s ease-in, background-color 0.2s ease-in;
 
   display: block;
   background-color: var(--togostanza-theme-background_color);
