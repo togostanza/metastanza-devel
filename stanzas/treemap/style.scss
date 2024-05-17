@@ -10,7 +10,7 @@ svg {
     > rect.container {
       fill: var(--togostanza-theme-background_color);
     }
-    
+
     text {
       font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
       > tspan.number-label {
@@ -20,10 +20,10 @@ svg {
 
     &:has(rect.selectable.-selected) {
       rect.selectable {
-        opacity: 0.3;
+        opacity: var(--togostanza-fadeout-opacity);
       }
     }
-  
+
     g {
       rect.selectable:not(.breadcrumb) {
         &.-selected {
