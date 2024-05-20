@@ -204,8 +204,8 @@
             <tr
               v-for="(row, row_index) in rowsInCurrentPage"
               :key="row.id"
-              :class="{ selected: isSelectedRow(row) }"
-              @click="handleRowClick($event, row_index, row)"
+              :class="{ selected: isSelectedRow(row), selectable: eventOutgoing_change_selected_nodes }"
+              @click="eventOutgoing_change_selected_nodes ? handleRowClick($event, row_index, row) : null"
             >
               <template v-for="(cell, i) in row">
                 <td
@@ -749,6 +749,7 @@ export default defineComponent({
       handleMouseUp,
       isSelectedRow,
       updateSelectedRows,
+      eventOutgoing_change_selected_nodes: params.eventOutgoing_change_selected_nodes,
     };
   },
 });

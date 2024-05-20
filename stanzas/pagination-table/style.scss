@@ -374,7 +374,14 @@
                 border-bottom: none;
               }
             }
-            &.selected {
+            &.selectable:hover {
+              > td,
+              > td.fixed {
+                cursor: pointer;
+                transition: var(--togostanza-fadeout-transition);
+              }
+            }
+            &.selected, &.selectable:hover {
               > td,
               > td.fixed {
                 background-color: var(
