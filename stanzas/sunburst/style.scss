@@ -23,16 +23,16 @@ g {
     stroke: none;
   }
 
-  &:has(.selectable.-selected) {
-    .selectable {
-      opacity: var(--togostanza-fadeout-opacity);
-    }
-  }
-
   .selectable {
     transition: var(--togostanza-fadeout-transition);
     &:hover, &.-selected:not([fill-opacity="0"]) {
       opacity: 1 !important;
+    }
+  }
+
+  &:has(.selectable.-selected) {
+    .selectable {
+      opacity: var(--togostanza-fadeout-opacity);
     }
   }
 
