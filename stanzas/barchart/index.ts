@@ -117,8 +117,7 @@ export default class Barchart extends MetaStanza {
       map.get(curr[xKeyName]).push(curr);
       return map;
     }, new Map());
-    console.log(this._dataByX);
-
+    
     const groupNames = this._dataByGroup.keys() as Iterable<string>;
 
     color.domain(groupNames);
@@ -267,8 +266,7 @@ export default class Barchart extends MetaStanza {
     const legendTitle = this.params["legend-title"];
 
     const values = structuredClone(this._data);
-    console.log(values);
-
+    
     let params;
     try {
       params = paramsModel.parse(this.params);
@@ -463,7 +461,6 @@ function drawStackedBars(
     .append("g")
     .classed("bar-group", true)
     .attr("transform", (d) => {
-      console.log(d);
       return `translate(${this.xAxisGen.axisGen.scale()(d[0])},0)`;
     });
 
