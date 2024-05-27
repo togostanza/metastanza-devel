@@ -438,7 +438,6 @@ function emitSelectedEvent(this: Barchart, id: any, dataUrl: string) {
 }
 
 function changeSelectedStyle(this: Barchart, ids: string[]) {
-  console.log(ids);
   const barGroups = this._graphArea.selectAll("g.bar-group");
   barGroups.classed(
     "-selected",
