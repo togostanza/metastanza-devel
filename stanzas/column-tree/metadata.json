@@ -147,33 +147,9 @@
       "stanza:description": "Border color for single column"
     },
     {
-      "stanza:key": "--togostanza-node-selected_background_color",
+      "stanza:key": "--togostanza-theme-selected_background_color",
       "stanza:type": "color",
-      "stanza:default": "#6590e6",
-      "stanza:description": "Background color for selected items"
-    },
-    {
-      "stanza:key": "--togostanza-node-selected_text_color",
-      "stanza:type": "color",
-      "stanza:default": "#FFFFFF",
-      "stanza:description": "Text color for selected items"
-    },
-    {
-      "stanza:key": "--togostanza-node-hover_background_color",
-      "stanza:type": "color",
-      "stanza:default": "#C7EEFF",
-      "stanza:description": "Hover color for background when hovering over items"
-    },
-    {
-      "stanza:key": "--togostanza-node-hover_text_color",
-      "stanza:type": "color",
-      "stanza:default": "#221727",
-      "stanza:description": "Hover color for text when hovering over items"
-    },
-    {
-      "stanza:key": "--togostanza-theme-selected_border_color",
-      "stanza:type": "color",
-      "stanza:default": "#FFEE00",
+      "stanza:default": "#00DDFF44",
       "stanza:description": "Color applied to the selected item"
     }
   ],
