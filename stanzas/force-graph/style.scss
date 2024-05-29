@@ -2,15 +2,15 @@
 @use "@/common.scss";
 
 svg > defs > marker > path {
-  fill: var(--togostanza-edge-default_color);
+  fill: var(--togostanza-edge-color);
 }
 
 .label,
 .node,
 .link,
-.active,
-.fadeout,
-.half-active {
+.-active,
+.-fadeout,
+.-half-active {
   transition: all 0.1s ease-in-out;
   transition-property: opacity, stroke-width, stroke-opacity;
 }
@@ -23,52 +23,40 @@ svg > defs > marker > path {
   fill: var(--togostanza-theme-series_0_color);
   stroke: var(--togostanza-border-color);
   stroke-width: var(--togostanza-border-width);
+  opacity: var(--togostanza-fadeout-opacity);
   cursor: pointer;
-}
 
-.node-group {
   &.-selected {
-    text {
-      fill: var(--togostanza-theme-selected_border_color);
-    }
+    opacity: 1 !important;
+  }
+
+  &.-active {
+    opacity: 1;
+    stroke-width: calc(var(--togostanza-border-width) * 2.5px);
+    stroke-opacity: 1;
+  }
+
+  &.-half-active {
+    opacity: calc(var(--togostanza-fadeout-opacity) + 0.3);
+    stroke-width: calc(var(--togostanza-border-width) * 1.6px);
+  }
+
+  &.-fadeout {
+    opacity: var(--togostanza-fadeout-opacity);
   }
 }
 
 .link {
-  stroke-opacity: var(--togostanza-edge-opacity);
-  stroke-linecap: round;
-  fill: none;
-  stroke: var(--togostanza-edge-default_color);
-}
-
-.active {
-  > .node {
-    stroke-width: calc(var(--togostanza-border-width) * 2.5px);
-    stroke-opacity: 1;
+  stroke: var(--togostanza-edge-color);
+  opacity: calc(
+    var(--togostanza-edge-opacity) * var(--togostanza-fadeout-opacity)
+  );
+  &.-active {
+    opacity: var(--togostanza-edge-opacity);
   }
-  > .link {
-    stroke-opacity: 1;
-  }
-  > .label {
-    opacity: 1;
-  }
-}
-
-.fadeout {
-  opacity: 0.05;
-  > .link {
-    stroke-opacity: 0.05;
-  }
-}
-
-.half-active {
-  opacity: 0.8;
-  > .node {
-    stroke-width: calc(var(--togostanza-border-width) * 1.6px);
-    stroke-opacity: 0.8;
-  }
-
-  > .label {
-    opacity: 0.6;
+  &.-fadeout {
+    opacity: calc(
+      var(--togostanza-fadeout-opacity) * var(--togostanza-edge-opacity)
+    );
   }
 }
