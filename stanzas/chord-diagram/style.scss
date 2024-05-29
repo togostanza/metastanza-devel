@@ -1,19 +1,6 @@
 // Load the repository-wide global style here. The actual file is located at ../common.scss for details.
 @use "@/common.scss";
 
-svg {
-  background-color: var(--togostanza-background-color);
-
-  :has(.-selected) {
-    .node {
-      opacity: var(--togostanza-fadeout-opacity);
-    }
-    .link {
-      opacity: var(--togostanza-fadeout-opacity);
-    }
-  }
-}
-
 .label,
 .node,
 .node-group,
@@ -101,5 +88,18 @@ svg {
   fill-opacity: var(--togostanza-fadeout-opacity);
   > path {
     mix-blend-mode: multiply;
+  }
+}
+
+svg {
+  background-color: var(--togostanza-background-color);
+
+  :has(.-selected) {
+    .node {
+      opacity: var(--togostanza-fadeout-opacity);
+    }
+    .link {
+      opacity: var(--togostanza-fadeout-opacity);
+    }
   }
 }
