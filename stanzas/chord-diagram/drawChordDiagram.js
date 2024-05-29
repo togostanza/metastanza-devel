@@ -139,18 +139,18 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
       ])
       .flat();
 
-    d3.select(this).classed("active", true);
-    arcsG.classed("fadeout", (p) => {
-      return d.index !== p.index;
+    d3.select(this).classed("-active", true);
+    arcsG.classed("-fadeout", (p) => {
+      return d.index !== p.index && !connectedNodesIds.includes(p.id);
     });
-    arcsG.classed("half-active", (p) => {
+    arcsG.classed("-half-active", (p) => {
       return d.index !== p.index && connectedNodesIds.includes(p.id);
     });
     ribbons.classed(
-      "fadeout",
+      "-fadeout",
       (p) => p.source.index !== d.index && p.target.index !== d.index
     );
-    ribbons.classed("active", (p) => {
+    ribbons.classed("-active", (p) => {
       return p.source.index === d.index || p.target.index === d.index;
     });
     // ribbons.each(function (p) {
@@ -161,11 +161,11 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
     // });
   }
   function onHighlightOff() {
-    arcsG.classed("active", false);
-    arcsG.classed("fadeout", false);
-    arcsG.classed("half-active", false);
+    arcsG.classed("-active", false);
+    arcsG.classed("-fadeout", false);
+    arcsG.classed("-half-active", false);
 
-    ribbons.classed("active", false);
-    ribbons.classed("fadeout", false);
+    ribbons.classed("-active", false);
+    ribbons.classed("-fadeout", false);
   }
 }

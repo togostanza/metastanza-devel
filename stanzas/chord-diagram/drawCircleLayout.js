@@ -113,7 +113,7 @@ export default function (
     .data(nodes)
     .enter()
     .append("g")
-    .attr("class", "node-group")
+    .attr("class", "node")
     .attr(
       "transform",
       (d) =>
@@ -124,7 +124,6 @@ export default function (
 
   const nodeCircles = nodeGroups
     .append("circle")
-    .attr("class", "node")
     .style("fill", (d) => d[symbols.nodeColorSym])
     .attr("r", (d) => {
       return d[symbols.nodeSizeSym]; //OK
@@ -168,36 +167,43 @@ export default function (
   if (highlightAdjEdges) {
     nodeGroups.on("mouseover", function (e, d) {
       // highlight current node
-      d3.select(this).classed("active", true);
+      d3.select(this).classed("-active", true);
       // fade out all other nodes, highlight a little connected ones
+      const node = nodes.find((n) => n.id === d.id);
+
+      const connectedEdges = node[symbols.edgeSym];
+
+      const connectedNodesIds = connectedEdges
+        .map((edge) => [
+          edge[symbols.sourceNodeSym].id,
+          edge[symbols.targetNodeSym].id,
+        ])
+        .flat();
+
       nodeGroups
-        .classed("fadeout", (p) => d !== p)
-        .classed("half-active", (p) => {
-          return (
-            p !== d &&
-            d[symbols.edgeSym].some(
-              (edge) =>
-                edge[symbols.sourceNodeSym] === p ||
-                edge[symbols.targetNodeSym] === p
-            )
-          );
+        .classed(
+          "-fadeout",
+          (p) => d !== p && !connectedNodesIds.includes(p.id)
+        )
+        .classed("-half-active", (p) => {
+          return p !== d && connectedNodesIds.includes(p.id);
         });
 
       // fadeout not connected edges, highlight connected ones
       links
-        .classed("fadeout", (p) => !d[symbols.edgeSym].includes(p))
-        .classed("active", (p) => d[symbols.edgeSym].includes(p));
+        .classed("-fadeout", (p) => !d[symbols.edgeSym].includes(p))
+        .classed("-active", (p) => d[symbols.edgeSym].includes(p));
     });
 
     nodeGroups.on("mouseleave", function () {
       links
-        .classed("active", false)
-        .classed("fadeout", false)
-        .classed("half-active", false);
+        .classed("-active", false)
+        .classed("-fadeout", false)
+        .classed("-half-active", false);
       nodeGroups
-        .classed("active", false)
-        .classed("fadeout", false)
-        .classed("half-active", false);
+        .classed("-active", false)
+        .classed("-fadeout", false)
+        .classed("-half-active", false);
     });
   }
 }
