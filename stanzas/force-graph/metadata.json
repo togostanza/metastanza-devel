@@ -190,7 +190,6 @@
       "stanza:default": "#bdbdbd",
       "stanza:description": "Egdes default color"
     },
-    
     {
       "stanza:key": "--togostanza-edge-opacity",
       "stanza:type": "number",

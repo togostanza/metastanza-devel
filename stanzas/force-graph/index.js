@@ -22,7 +22,7 @@ import {
 export default class ForceGraph extends MetaStanza {
   _graphArea;
   selectedEventParams = {
-    targetElementSelector: ".node-group",
+    targetElementSelector: ".node",
     selectedElementClassName: "-selected",
     selectedElementSelector: ".-selected",
     idPath: "id",
@@ -175,25 +175,27 @@ export default class ForceGraph extends MetaStanza {
         symbols,
       });
 
-      this._graphArea.selectAll("circle.node").on("click", (_, d) => {
-        toggleSelectIds({
-          selectedIds: this.selectedIds,
-          targetId: d.id,
-        });
-        updateSelectedElementClassNameForD3({
-          drawing: this._graphArea,
-          selectedIds: this.selectedIds,
-          ...this.selectedEventParams,
-        });
-        if (this.params["event-outgoing_change_selected_nodes"]) {
-          emitSelectedEvent({
-            rootElement: this.element,
-            targetId: d.id,
+      if (this.params["event-outgoing_change_selected_nodes"]) {
+        this._graphArea.selectAll(".node").on("click", (_, d) => {
+          toggleSelectIds({
             selectedIds: this.selectedIds,
-            dataUrl: this.params["data-url"],
+            targetId: d.id,
           });
-        }
-      });
+          updateSelectedElementClassNameForD3({
+            drawing: this._graphArea,
+            selectedIds: this.selectedIds,
+            ...this.selectedEventParams,
+          });
+          if (this.params["event-outgoing_change_selected_nodes"]) {
+            emitSelectedEvent({
+              rootElement: this.element,
+              targetId: d.id,
+              selectedIds: this.selectedIds,
+              dataUrl: this.params["data-url"],
+            });
+          }
+        });
+      }
     };
 
     handleApiError({

@@ -1,10 +1,6 @@
 // Load the repository-wide global style here. The actual file is located at ../common.scss for details.
 @use "@/common.scss";
 
-svg > defs > marker > path {
-  fill: var(--togostanza-edge-color);
-}
-
 .label,
 .node,
 .link,
@@ -23,7 +19,6 @@ svg > defs > marker > path {
   fill: var(--togostanza-theme-series_0_color);
   stroke: var(--togostanza-border-color);
   stroke-width: var(--togostanza-border-width);
-  opacity: var(--togostanza-fadeout-opacity);
   cursor: pointer;
 
   &.-selected {
@@ -48,15 +43,26 @@ svg > defs > marker > path {
 
 .link {
   stroke: var(--togostanza-edge-color);
-  opacity: calc(
-    var(--togostanza-edge-opacity) * var(--togostanza-fadeout-opacity)
-  );
-  &.-active {
-    opacity: var(--togostanza-edge-opacity);
-  }
+  opacity: var(--togostanza-edge-opacity);
+
   &.-fadeout {
     opacity: calc(
       var(--togostanza-fadeout-opacity) * var(--togostanza-edge-opacity)
     );
+  }
+}
+
+svg {
+  & > defs > marker > path {
+    fill: var(--togostanza-edge-color);
+  }
+
+  &:has(.-selected) {
+    .node {
+      opacity: var(--togostanza-fadeout-opacity);
+    }
+    .link {
+      opacity: var(--togostanza-fadeout-opacity);
+    }
   }
 }
