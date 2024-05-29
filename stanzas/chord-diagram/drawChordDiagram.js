@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-
+import { addHighlightOnHover } from "../../lib/graphHighlight";
 export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
   const names = nodes.map((node) => node[params.nodeLabelParams.dataKey]);
 
@@ -68,6 +68,8 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
     .classed("chord", true)
     .style("fill", (d) => chords.groups[d.source.index].color);
 
+  console.log("ribbons", ribbons);
+
   const arcsG = rootGroup
     .append("g")
     .classed("arcs", true)
@@ -125,47 +127,6 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
   }
 
   if (params.highlightAdjEdges) {
-    arcsG.on("mouseenter", onHighlight);
-    arcsG.on("mouseleave", onHighlightOff);
-  }
-
-  function onHighlight(e, d) {
-    const node = nodes[d.index];
-    const connectedEdges = node[symbols.edgeSym];
-    const connectedNodesIds = connectedEdges
-      .map((edge) => [
-        edge[symbols.sourceNodeSym].id,
-        edge[symbols.targetNodeSym].id,
-      ])
-      .flat();
-
-    d3.select(this).classed("active", true);
-    arcsG.classed("fadeout", (p) => {
-      return d.index !== p.index;
-    });
-    arcsG.classed("half-active", (p) => {
-      return d.index !== p.index && connectedNodesIds.includes(p.id);
-    });
-    ribbons.classed(
-      "fadeout",
-      (p) => p.source.index !== d.index && p.target.index !== d.index
-    );
-    ribbons.classed("active", (p) => {
-      return p.source.index === d.index || p.target.index === d.index;
-    });
-    // ribbons.each(function (p) {
-    //     const isActive = p.source.index === d.index || p.target.index === d.index
-    //     if (isActive) {
-    //     }
-    //   nodes[p.source.index]
-    // });
-  }
-  function onHighlightOff() {
-    arcsG.classed("active", false);
-    arcsG.classed("fadeout", false);
-    arcsG.classed("half-active", false);
-
-    ribbons.classed("active", false);
-    ribbons.classed("fadeout", false);
+    addHighlightOnHover(symbols, nodes, arcsG, ribbons);
   }
 }
