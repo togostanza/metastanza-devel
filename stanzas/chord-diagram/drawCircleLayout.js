@@ -160,11 +160,52 @@ export default function (
     }
   }
 
+  // comment
+
   if (tooltipParams.show) {
     nodeCircles.attr("data-tooltip", (d) => d[tooltipParams.dataKey]);
   }
 
   if (highlightAdjEdges) {
-    addHighlightOnHover(symbols, nodes, nodeGroups, links);
+    nodeGroups.on("mouseover", function (e, d) {
+      // highlight current node
+      d3.select(this).classed("-active", true);
+      // fade out all other nodes, highlight a little connected ones
+      const node = nodes.find((n) => n.id === d.id);
+
+      const connectedEdges = node[symbols.edgeSym];
+
+      const connectedNodesIds = connectedEdges
+        .map((edge) => [
+          edge[symbols.sourceNodeSym].id,
+          edge[symbols.targetNodeSym].id,
+        ])
+        .flat();
+
+      nodeGroups
+        .classed(
+          "-fadeout",
+          (p) => d !== p && !connectedNodesIds.includes(p.id)
+        )
+        .classed("-half-active", (p) => {
+          return p !== d && connectedNodesIds.includes(p.id);
+        });
+
+      // fadeout not connected edges, highlight connected ones
+      links
+        .classed("-fadeout", (p) => !d[symbols.edgeSym].includes(p))
+        .classed("-active", (p) => d[symbols.edgeSym].includes(p));
+    });
+
+    nodeGroups.on("mouseleave", function () {
+      links
+        .classed("-active", false)
+        .classed("-fadeout", false)
+        .classed("-half-active", false);
+      nodeGroups
+        .classed("-active", false)
+        .classed("-fadeout", false)
+        .classed("-half-active", false);
+    });
   }
 }
