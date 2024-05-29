@@ -3,6 +3,15 @@
 
 svg {
   background-color: var(--togostanza-background-color);
+
+  :has(.-selected) {
+    .node {
+      opacity: var(--togostanza-fadeout-opacity);
+    }
+    .link {
+      opacity: var(--togostanza-fadeout-opacity);
+    }
+  }
 }
 
 .label,
@@ -26,7 +35,7 @@ svg {
 .node {
   stroke: var(--togostanza-border-color);
   stroke-width: var(--togostanza-border-width);
-  opacity: var(--togostanza-fadeout-opacity);
+
   cursor: pointer;
 
   &.-selected {
@@ -53,15 +62,12 @@ svg {
   stroke-linecap: round;
   fill: none;
   stroke: var(--togostanza-edge-color);
-  stroke-opacity: calc(
-    var(--togostanza-edge-opacity) * var(--togostanza-fadeout-opacity)
-  );
+  stroke-opacity: var(--togostanza-edge-opacity);
+
   &.chord {
     stroke-width: 0.5px;
     stroke-opacity: 0;
-    fill-opacity: calc(
-      var(--togostanza-edge-opacity) * var(--togostanza-fadeout-opacity)
-    );
+    fill-opacity: calc(var(--togostanza-edge-opacity));
 
     &.-active {
       fill-opacity: var(--togostanza-edge-opacity);
