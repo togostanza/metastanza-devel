@@ -5,6 +5,8 @@ import MetaStanza from "../../lib/MetaStanza";
 import { handleApiError } from "../../lib/apiError";
 import drawForceLayout from "./drawForceLayout";
 
+import { getMarginsFromCSSString } from "@/lib/utils";
+
 import {
   appendCustomCss,
   downloadCSVMenuItem,
@@ -220,40 +222,4 @@ export default class ForceGraph extends MetaStanza {
       });
     }
   }
-}
-
-function getMarginsFromCSSString(str) {
-  const splitted = str.trim().split(/\W+/);
-
-  const res = {
-    TOP: 0,
-    RIGHT: 0,
-    BOTTOM: 0,
-    LEFT: 0,
-  };
-
-  switch (splitted.length) {
-    case 1:
-      res.TOP = res.RIGHT = res.BOTTOM = res.LEFT = parseInt(splitted[0]);
-      break;
-    case 2:
-      res.TOP = res.BOTTOM = parseInt(splitted[0]);
-      res.LEFT = res.RIGHT = parseInt(splitted[1]);
-      break;
-    case 3:
-      res.TOP = parseInt(splitted[0]);
-      res.LEFT = res.RIGHT = parseInt(splitted[1]);
-      res.BOTTOM = parseInt(splitted[2]);
-      break;
-    case 4:
-      res.TOP = parseInt(splitted[0]);
-      res.RIGHT = parseInt(splitted[1]);
-      res.BOTTOM = parseInt(splitted[2]);
-      res.LEFT = parseInt(splitted[3]);
-      break;
-    default:
-      break;
-  }
-
-  return res;
 }
