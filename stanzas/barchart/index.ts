@@ -16,9 +16,9 @@ import getStanzaColors from "../../lib/ColorGenerator";
 export default class Barchart extends MetaStanza {
   xAxisGen: Axis;
   yAxisGen: Axis;
-  _graphArea: d3.Selection<SVGGElement, {}, SVGElement, any>;
-  _dataByGroup: Map<string | number, {}[]>;
-  _dataByX: Map<string | number, {}[]>;
+  _graphArea: d3.Selection<SVGGElement, unknown, SVGElement, unknown>;
+  _dataByGroup: Map<string | number, object[]>;
+  _dataByX: Map<string | number, object[]>;
   legend: Legend;
   tooltips: ToolTip;
 
@@ -77,7 +77,7 @@ export default class Barchart extends MetaStanza {
       return;
     }
 
-    this._dataByGroup = values.reduce((map: Map<any, {}[]>, curr) => {
+    this._dataByGroup = values.reduce((map: Map<string, object[]>, curr) => {
       if (!map.has(curr[groupKeyName])) {
         return map.set(curr[groupKeyName], [curr]);
       }
@@ -193,9 +193,9 @@ export default class Barchart extends MetaStanza {
 
     let barGroup: d3.Selection<
       SVGGElement,
-      [string | number, {}[]],
+      [string | number, object[]],
       SVGGElement,
-      {}
+      unknown
     >;
     let groupScale;
 
@@ -372,7 +372,7 @@ function drawStackedBars(
 
 function addErrorBars(
   this: Barchart,
-  rect: d3.Selection<SVGGElement, {}, any, any>,
+  rect: d3.Selection<SVGGElement, object, SVGGElement, unknown>,
   errorKeyName: string,
   groupKeyName: string,
   groupScale: d3.ScaleBand<string>
