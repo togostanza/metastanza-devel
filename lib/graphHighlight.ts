@@ -18,39 +18,49 @@ type Symbols = {
 export function addHighlightOnHover(
   symbols: Symbols,
   nodes: Node[],
-  nodeGroups: d3.Selection<SVGGElement, Node, SVGGElement, unknown>,
-  links: d3.Selection<SVGPathElement, Edge, SVGGElement, unknown>
+  nodesSelection: d3.Selection<SVGGElement, Node, SVGGElement, unknown>,
+  linksSelection: d3.Selection<SVGPathElement, Edge, SVGGElement, unknown>
 ) {
-  nodeGroups.on("mouseover", function (e, d) {
+  nodesSelection.on("mouseover", function (e, d) {
     select(this).classed("-active", true);
     const node = nodes.find((n) => n.id === d.id);
     const connectedEdges = node[symbols.edgeSym];
 
-    const connectedNodesIds = connectedEdges
-      .map((edge) => [
-        edge[symbols.sourceNodeSym].id,
-        edge[symbols.targetNodeSym].id,
-      ])
-      .flat();
+    const connectedNodesIds = new Set(
+      connectedEdges
+        .map((edge) => [
+          edge[symbols.sourceNodeSym].id,
+          edge[symbols.targetNodeSym].id,
+        ])
+        .flat()
+    );
 
-    console.log({ connectedNodesIds, d, symbols });
-
-    nodeGroups
-      .classed("-fadeout", (p) => d !== p && !connectedNodesIds.includes(p.id))
+    nodesSelection
+      .classed("-fadeout", (p) => d !== p && !connectedNodesIds.has(p.id))
       .classed("-half-active", (p) => {
-        return p !== d && connectedNodesIds.includes(p.id);
+        return p !== d && connectedNodesIds.has(p.id);
       });
-    links
-      .classed("-fadeout", (p) => !d[symbols.edgeSym].includes(p))
-      .classed("-active", (p) => d[symbols.edgeSym].includes(p));
+    linksSelection
+      .classed(
+        "-fadeout",
+        (p) =>
+          p[symbols.sourceNodeSym].id !== d.id &&
+          p[symbols.targetNodeSym].id !== d.id
+      )
+      .classed("-active", (p) => {
+        return (
+          p[symbols.sourceNodeSym].id === d.id ||
+          p[symbols.targetNodeSym].id === d.id
+        );
+      });
   });
 
-  nodeGroups.on("mouseleave", function () {
-    links
+  nodesSelection.on("mouseleave", function () {
+    linksSelection
       .classed("-active", false)
       .classed("-fadeout", false)
       .classed("-half-active", false);
-    nodeGroups
+    nodesSelection
       .classed("-active", false)
       .classed("-fadeout", false)
       .classed("-half-active", false);

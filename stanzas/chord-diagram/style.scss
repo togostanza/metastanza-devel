@@ -57,17 +57,22 @@ svg {
     var(--togostanza-edge-opacity) * var(--togostanza-fadeout-opacity)
   );
   &.chord {
-    stroke: none;
+    stroke-width: 0.5px;
+    stroke-opacity: 0;
     fill-opacity: calc(
       var(--togostanza-edge-opacity) * var(--togostanza-fadeout-opacity)
     );
 
     &.-active {
       fill-opacity: var(--togostanza-edge-opacity);
+      stroke: var(--togostanza-edge-color);
+      stroke-width: 0.5px;
+      stroke-opacity: var(--togostanza-edge-opacity);
     }
 
     &.-fadeout {
       fill-opacity: var(--togostanza-fadeout-opacity);
+      stroke-opacity: 0;
     }
   }
 
