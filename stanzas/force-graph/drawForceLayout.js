@@ -211,14 +211,12 @@ export default function (
       .text((d) => d[nodeLabelParams.dataKey]);
   }
 
-  let isDragging = false;
-
   function drag(simulation) {
     function dragstarted(event) {
       if (!event.active) {
         simulation.alphaTarget(0.3).restart();
       }
-      isDragging = true;
+
       event.subject.fx = event.subject.x;
       event.subject.fy = event.subject.y;
     }
@@ -229,7 +227,6 @@ export default function (
     }
 
     function dragended(event) {
-      isDragging = false;
       if (!event.active) {
         simulation.alphaTarget(0);
       }

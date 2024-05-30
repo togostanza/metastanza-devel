@@ -102,8 +102,6 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
     .classed("chord", true)
     .style("fill", (d) => chords.groups[d.source.index][symbols.nodeColorSym]);
 
-  console.log("ribbons", ribbons);
-
   const arcsG = rootGroup
     .append("g")
     .classed("arcs", true)
