@@ -102,13 +102,16 @@ export default class Barchart extends MetaStanza {
     }
 
     // eslint-disable-next-line @typescript-eslint/ban-types
-    this._dataByGroup = values.reduce((map: Map<unknown, {}[]>, curr: { [x: string]: unknown; }) => {
-      if (!map.has(curr[groupKeyName])) {
-        return map.set(curr[groupKeyName], [curr]);
-      }
-      map.get(curr[groupKeyName]).push(curr);
-      return map;
-    }, new Map());
+    this._dataByGroup = values.reduce(
+      (map: Map<unknown, {}[]>, curr: { [x: string]: unknown }) => {
+        if (!map.has(curr[groupKeyName])) {
+          return map.set(curr[groupKeyName], [curr]);
+        }
+        map.get(curr[groupKeyName]).push(curr);
+        return map;
+      },
+      new Map()
+    );
 
     this._dataByX = values.reduce((map, curr) => {
       if (!map.has(curr[xKeyName])) {
@@ -117,7 +120,7 @@ export default class Barchart extends MetaStanza {
       map.get(curr[xKeyName]).push(curr);
       return map;
     }, new Map());
-    
+
     const groupNames = this._dataByGroup.keys() as Iterable<string>;
 
     color.domain(groupNames);
@@ -157,13 +160,13 @@ export default class Barchart extends MetaStanza {
       [
         ...new Set(structuredClone(this._data).map((d) => d[xKeyName])),
       ] as string[],
-      "ordinal"
+      "ordinal",
     ]);
 
     const maxY = Math.max(...y2s);
     const yDomain = [0, maxY * 1.02];
 
-    const yParams = getYAxis.apply(this, [yDomain])
+    const yParams = getYAxis.apply(this, [yDomain]);
 
     if (!this.xAxisGen) {
       this.xAxisGen = new Axis(svg.node());
@@ -266,7 +269,7 @@ export default class Barchart extends MetaStanza {
     const legendTitle = this.params["legend-title"];
 
     const values = structuredClone(this._data);
-    
+
     let params;
     try {
       params = paramsModel.parse(this.params);
@@ -314,7 +317,7 @@ export default class Barchart extends MetaStanza {
     // X軸を追加
     const xParams = getXAxis.apply(this, [
       x.domain() as [number, number],
-      "linear"
+      "linear",
     ]);
 
     const maxY = bins.reduce(
@@ -323,7 +326,7 @@ export default class Barchart extends MetaStanza {
     );
     const yDomain = [0, maxY * 1.02];
 
-    const yParams = getYAxis.apply(this, [yDomain])
+    const yParams = getYAxis.apply(this, [yDomain]);
 
     if (!this.xAxisGen) {
       this.xAxisGen = new Axis(svg.node());
@@ -376,7 +379,10 @@ export default class Barchart extends MetaStanza {
     if (this.params["event-outgoing_change_selected_nodes"]) {
       bar.on("click", (_, d) => {
         const ids = d["__values__"].map((value) => value["__togostanza_id__"]);
-        emitSelectedEventByHistogram.apply(this, [ids, this.params["data-url"]], );
+        emitSelectedEventByHistogram.apply(this, [
+          ids,
+          this.params["data-url"],
+        ]);
       });
     }
   }
@@ -526,7 +532,11 @@ function addErrorBars(
 }
 
 // emit selected event
-function emitSelectedEventByBarChart(this: Barchart, id: unknown, dataUrl: string) {
+function emitSelectedEventByBarChart(
+  this: Barchart,
+  id: unknown,
+  dataUrl: string
+) {
   // collect selected bars
   const barGroups = this._graphArea.selectAll("g.bar-group");
   const filteredBars = barGroups.filter(".-selected");
@@ -545,17 +555,21 @@ function emitSelectedEventByBarChart(this: Barchart, id: unknown, dataUrl: strin
     targetId: id,
     selectedIds: ids,
     dataUrl,
-  })
+  });
   changeSelectedStyle.apply(this, [ids]);
 }
-function emitSelectedEventByHistogram(this: Barchart, ids: unknown[], dataUrl: string) {
+function emitSelectedEventByHistogram(
+  this: Barchart,
+  ids: unknown[],
+  dataUrl: string
+) {
   // dispatch event
   emitSelectedEvent({
     rootElement: this.element,
     targetId: ids[0],
     selectedIds: ids,
     dataUrl,
-  })
+  });
   changeSelectedStyle.apply(this, [ids]);
 }
 
@@ -582,12 +596,17 @@ function changeSelectedStyle(this: Barchart, ids: string[]) {
       break;
   }
 }
-function getXAxis(this: Barchart, domain: AxisDomain[], scale: "linear" | "time" | "log10" | "ordinal") { // Update the type of 'scale'
+function getXAxis(
+  this: Barchart,
+  domain: AxisDomain[],
+  scale: "linear" | "time" | "log10" | "ordinal"
+) {
+  // Update the type of 'scale'
   const xKeyName = this.params["axis-x-key"];
   const xAxisTitle =
-  typeof this.params["axis-x-title"] === "undefined"
-    ? xKeyName
-    : this.params["axis-x-title"];
+    typeof this.params["axis-x-title"] === "undefined"
+      ? xKeyName
+      : this.params["axis-x-title"];
 
   const xParams: AxisParamsI = {
     placement: this.params["axis-x-placement"],
