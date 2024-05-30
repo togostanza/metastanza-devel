@@ -185,7 +185,7 @@
       "stanza:description": "Color applied to the selected item"
     },
     {
-      "stanza:key": "--togostanza-edge-default_color",
+      "stanza:key": "--togostanza-edge-color",
       "stanza:type": "color",
       "stanza:default": "#bdbdbd",
       "stanza:description": "Egdes default color"

@@ -5,6 +5,8 @@ import MetaStanza from "../../lib/MetaStanza";
 import { handleApiError } from "../../lib/apiError";
 import drawForceLayout from "./drawForceLayout";
 
+import { getMarginsFromCSSString } from "@/lib/utils";
+
 import {
   appendCustomCss,
   downloadCSVMenuItem,
@@ -22,7 +24,7 @@ import {
 export default class ForceGraph extends MetaStanza {
   _graphArea;
   selectedEventParams = {
-    targetElementSelector: ".node-group",
+    targetElementSelector: ".node",
     selectedElementClassName: "-selected",
     selectedElementSelector: ".-selected",
     idPath: "id",
@@ -175,25 +177,27 @@ export default class ForceGraph extends MetaStanza {
         symbols,
       });
 
-      this._graphArea.selectAll("circle.node").on("click", (_, d) => {
-        toggleSelectIds({
-          selectedIds: this.selectedIds,
-          targetId: d.id,
-        });
-        updateSelectedElementClassNameForD3({
-          drawing: this._graphArea,
-          selectedIds: this.selectedIds,
-          ...this.selectedEventParams,
-        });
-        if (this.params["event-outgoing_change_selected_nodes"]) {
-          emitSelectedEvent({
-            rootElement: this.element,
-            targetId: d.id,
+      if (this.params["event-outgoing_change_selected_nodes"]) {
+        this._graphArea.selectAll(".node").on("click", (_, d) => {
+          toggleSelectIds({
             selectedIds: this.selectedIds,
-            dataUrl: this.params["data-url"],
+            targetId: d.id,
           });
-        }
-      });
+          updateSelectedElementClassNameForD3({
+            drawing: this._graphArea,
+            selectedIds: this.selectedIds,
+            ...this.selectedEventParams,
+          });
+          if (this.params["event-outgoing_change_selected_nodes"]) {
+            emitSelectedEvent({
+              rootElement: this.element,
+              targetId: d.id,
+              selectedIds: this.selectedIds,
+              dataUrl: this.params["data-url"],
+            });
+          }
+        });
+      }
     };
 
     handleApiError({
@@ -218,40 +222,4 @@ export default class ForceGraph extends MetaStanza {
       });
     }
   }
-}
-
-function getMarginsFromCSSString(str) {
-  const splitted = str.trim().split(/\W+/);
-
-  const res = {
-    TOP: 0,
-    RIGHT: 0,
-    BOTTOM: 0,
-    LEFT: 0,
-  };
-
-  switch (splitted.length) {
-    case 1:
-      res.TOP = res.RIGHT = res.BOTTOM = res.LEFT = parseInt(splitted[0]);
-      break;
-    case 2:
-      res.TOP = res.BOTTOM = parseInt(splitted[0]);
-      res.LEFT = res.RIGHT = parseInt(splitted[1]);
-      break;
-    case 3:
-      res.TOP = parseInt(splitted[0]);
-      res.LEFT = res.RIGHT = parseInt(splitted[1]);
-      res.BOTTOM = parseInt(splitted[2]);
-      break;
-    case 4:
-      res.TOP = parseInt(splitted[0]);
-      res.RIGHT = parseInt(splitted[1]);
-      res.BOTTOM = parseInt(splitted[2]);
-      res.LEFT = parseInt(splitted[3]);
-      break;
-    default:
-      break;
-  }
-
-  return res;
 }
