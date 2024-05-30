@@ -649,7 +649,7 @@ export default defineComponent({
       const isShift = event.shiftKey;
       const isCmd = event.metaKey || event.ctrlKey;
       const filteredRowIds = filteredRows.value.map((row) => {
-        return row.find((obj) => obj.column.id === "__togostanza_id__").value;
+        return +row.find((obj) => obj.column.id === "__togostanza_id__").value;
       });
 
       // get index and ID
@@ -658,7 +658,7 @@ export default defineComponent({
         rowIndex;
       const rowId = filteredRowIds[actualRowIndex];
       // selected rows
-      let selectedRows = [...state.selectedRows];
+      let selectedIds = [...state.selectedRows];
       // update selected rows
       if (isShift && state.lastSelectedRow !== null) {
         const lastSelectedRowIndex = filteredRowIds.indexOf(
@@ -667,30 +667,33 @@ export default defineComponent({
         const start = Math.min(lastSelectedRowIndex, actualRowIndex);
         const end = Math.max(lastSelectedRowIndex, actualRowIndex);
         for (let i = start; i <= end; i++) {
-          if (!selectedRows.includes(filteredRowIds[i])) {
-            selectedRows.push(filteredRowIds[i]);
+          if (!selectedIds.includes(filteredRowIds[i])) {
+            selectedIds.push(filteredRowIds[i]);
           }
         }
       } else if (isCmd) {
-        if (selectedRows.includes(rowId)) {
-          selectedRows.splice(selectedRows.indexOf(rowId), 1);
+        if (selectedIds.includes(rowId)) {
+          selectedIds.splice(selectedIds.indexOf(rowId), 1);
         } else {
-          selectedRows.push(rowId);
+          selectedIds.push(rowId);
         }
       } else {
-        selectedRows = [rowId];
+        selectedIds = [rowId];
       }
 
       // dispatch event
-
       const stanza = rootElement.value.parentNode.parentNode.parentNode.host;
       stanza.dispatchEvent(
         new CustomEvent("changeSelectedNodes", {
-          detail: selectedRows,
+          detail: {
+            selectedIds,
+            targetId: rowId,
+            dataUrl: params.dataUrl
+          },
         })
       );
       state.lastSelectedRow = rowId;
-      state.selectedRows = [...selectedRows];
+      state.selectedRows = [...selectedIds.map(row => row.toString())];
     };
 
     const handleMouseDown = (event) => {
@@ -716,8 +719,9 @@ export default defineComponent({
       return state.selectedRows.includes(rowID);
     };
 
-    const updateSelectedRows = (rows) => {
-      state.selectedRows = [...rows];
+    const updateSelectedRows = (emitSelectedEventParams) => {
+      const {selectedIds} = emitSelectedEventParams;
+      state.selectedRows = [...selectedIds.map(id => id.toString())];
     };
 
     return {

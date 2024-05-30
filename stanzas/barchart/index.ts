@@ -3,7 +3,6 @@ import Legend from "../../lib/Legend2";
 import MetaStanza from "../../lib/MetaStanza";
 import ToolTip from "../../lib/ToolTip";
 
-import { scaleBand, scaleOrdinal, select } from "d3";
 import {
   downloadCSVMenuItem,
   downloadJSONMenuItem,
@@ -11,14 +10,31 @@ import {
   downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
+import {
+  scaleBand,
+  scaleOrdinal,
+  scaleLinear,
+  select,
+  bin,
+  max,
+  axisBottom,
+  axisLeft,
+  BaseType,
+  Selection,
+} from "d3";
 import getStanzaColors from "../../lib/ColorGenerator";
+import { emitSelectedEvent } from "../../lib/utils";
+import { AxisDomain } from "d3-axis";
 
 export default class Barchart extends MetaStanza {
   xAxisGen: Axis;
   yAxisGen: Axis;
-  _graphArea: d3.Selection<SVGGElement, unknown, SVGElement, unknown>;
-  _dataByGroup: Map<string | number, object[]>;
-  _dataByX: Map<string | number, object[]>;
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  _graphArea: d3.Selection<SVGGElement, {}, SVGElement, unknown>;
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  _dataByGroup: Map<string | number, {}[]>;
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  _dataByX: Map<string | number, {}[]>;
   legend: Legend;
   tooltips: ToolTip;
 
@@ -33,21 +49,33 @@ export default class Barchart extends MetaStanza {
   }
 
   async renderNext() {
-    const color = scaleOrdinal().range(getStanzaColors(this));
+    let svg = select(this._main.querySelector("svg"));
+    if (!svg.empty()) {
+      svg.remove();
+      this.xAxisGen = null;
+      this.yAxisGen = null;
+    }
+    svg = select(this._main).append("svg");
+    svg
+      .attr("width", +this.css("--togostanza-canvas-width"))
+      .attr("height", +this.css("--togostanza-canvas-height"));
 
-    const width = +this.css("--togostanza-canvas-width");
-    const height = +this.css("--togostanza-canvas-height");
+    // If "binKey" is specified, this component behaves as a histogram; if not, it behaves as a bar chart.
+    switch (this.params["data-interpretation"]) {
+      case "categorical":
+        this.drawBarChart(svg);
+        break;
+      case "distribution":
+        this.drawHistogram(svg);
+        break;
+    }
+  }
+
+  drawBarChart(svg: Selection<SVGSVGElement, unknown, null, undefined>) {
+    const color = scaleOrdinal().range(getStanzaColors(this));
 
     const xKeyName = this.params["axis-x-key"];
     const yKeyName = this.params["axis-y-key"];
-    const xAxisTitle =
-      typeof this.params["axis-x-title"] === "undefined"
-        ? xKeyName
-        : this.params["axis-x-title"];
-    const yAxisTitle =
-      typeof this.params["axis-y-title"] === "undefined"
-        ? yKeyName
-        : this.params["axis-y-title"];
     const groupKeyName = this.params["grouping-key"];
     const grouingArrangement = this.params["grouping-arrangement"];
 
@@ -65,10 +93,6 @@ export default class Barchart extends MetaStanza {
 
     const values = structuredClone(this._data);
 
-    const xAxisLabels = [
-      ...new Set(values.map((d) => d[xKeyName])),
-    ] as string[];
-
     let params;
     try {
       params = paramsModel.parse(this.params);
@@ -77,13 +101,18 @@ export default class Barchart extends MetaStanza {
       return;
     }
 
-    this._dataByGroup = values.reduce((map: Map<string, object[]>, curr) => {
-      if (!map.has(curr[groupKeyName])) {
-        return map.set(curr[groupKeyName], [curr]);
-      }
-      map.get(curr[groupKeyName]).push(curr);
-      return map;
-    }, new Map());
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    this._dataByGroup = values.reduce(
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      (map: Map<unknown, {}[]>, curr: { [x: string]: unknown }) => {
+        if (!map.has(curr[groupKeyName])) {
+          return map.set(curr[groupKeyName], [curr]);
+        }
+        map.get(curr[groupKeyName]).push(curr);
+        return map;
+      },
+      new Map()
+    );
 
     this._dataByX = values.reduce((map, curr) => {
       if (!map.has(curr[xKeyName])) {
@@ -126,55 +155,19 @@ export default class Barchart extends MetaStanza {
       }
     }
 
-    const maxY = Math.max(...y2s);
-
-    const yDomain = [0, maxY * 1.02];
-
-    let svg = select(this._main.querySelector("svg"));
-
-    if (!svg.empty()) {
-      svg.remove();
-      this.xAxisGen = null;
-      this.yAxisGen = null;
-    }
-    svg = select(this._main).append("svg");
-    svg.attr("width", width).attr("height", height);
-
     this._graphArea = svg.append("g").attr("class", "chart");
 
-    const axisArea = { x: 0, y: 0, width, height };
+    const xParams = getXAxis.apply(this, [
+      [
+        ...new Set(structuredClone(this._data).map((d) => d[xKeyName])),
+      ] as string[],
+      "ordinal",
+    ]);
 
-    const xParams: AxisParamsI = {
-      placement: params["axis-x-placement"],
-      domain: xAxisLabels,
-      drawArea: axisArea,
-      margins: this.MARGIN,
-      tickLabelsAngle: params["axis-x-ticks_label_angle"],
-      title: xAxisTitle,
-      titlePadding: params["axis-x-title_padding"],
-      scale: "ordinal",
-      gridInterval: params["axis-x-gridlines_interval"],
-      gridIntervalUnits: params["axis-x-gridlines_interval_units"],
-      ticksInterval: params["axis-x-ticks_interval"],
-      ticksIntervalUnits: params["axis-x-ticks_interval_units"],
-      ticksLabelsFormat: params["axis-x-ticks_labels_format"],
-    };
+    const maxY = Math.max(...y2s);
+    const yDomain = [0, maxY * 1.02];
 
-    const yParams: AxisParamsI = {
-      placement: params["axis-y-placement"],
-      domain: yDomain,
-      drawArea: axisArea,
-      margins: this.MARGIN,
-      tickLabelsAngle: params["axis-y-ticks_label_angle"],
-      title: yAxisTitle,
-      titlePadding: params["axis-y-title_padding"],
-      scale: "linear",
-      gridInterval: params["axis-y-gridlines_interval"],
-      gridIntervalUnits: params["axis-x-gridlines_interval_units"],
-      ticksInterval: params["axis-y-ticks_interval"],
-      ticksIntervalUnits: params["axis-y-ticks_interval_units"],
-      ticksLabelsFormat: params["axis-y-ticks_labels_format"],
-    };
+    const yParams = getYAxis.apply(this, [yDomain]);
 
     if (!this.xAxisGen) {
       this.xAxisGen = new Axis(svg.node());
@@ -193,9 +186,11 @@ export default class Barchart extends MetaStanza {
 
     let barGroup: d3.Selection<
       SVGGElement,
-      [string | number, object[]],
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      [string | number, {}[]],
       SVGGElement,
-      unknown
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      {}
     >;
     let groupScale;
 
@@ -220,7 +215,7 @@ export default class Barchart extends MetaStanza {
     }
     if (this.params["event-outgoing_change_selected_nodes"]) {
       barGroup.on("click", (_, d) =>
-        emitSelectedEvent.apply(this, [
+        emitSelectedEventByBarChart.apply(this, [
           d[1][0]["__togostanza_id__"],
           this.params["data-url"],
         ])
@@ -268,13 +263,138 @@ export default class Barchart extends MetaStanza {
     }
   }
 
+  drawHistogram(svg: Selection<SVGSVGElement, unknown, null, undefined>) {
+    const xKeyName = this.params["axis-x-key"];
+
+    const showLegend = this.params["legend-visible"];
+    const legendTitle = this.params["legend-title"];
+
+    const values = structuredClone(this._data);
+
+    let params;
+    try {
+      params = paramsModel.parse(this.params);
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+
+    const data = values.map((d) => +d[xKeyName]);
+
+    const width =
+      +this.css("--togostanza-canvas-width") -
+      this.MARGIN.LEFT -
+      this.MARGIN.RIGHT;
+    const height =
+      +this.css("--togostanza-canvas-height") -
+      this.MARGIN.TOP -
+      this.MARGIN.BOTTOM;
+
+    this._graphArea = svg.append("g").attr("class", "chart");
+
+    // X軸とY軸のスケールを設定
+    const x = scaleLinear()
+      .domain([Math.min(...data), Math.max(...data) + 1]) // データの範囲に合わせて調整
+      .rangeRound([0, width]);
+    const y = scaleLinear().range([height, 0]);
+
+    // ビンの設定
+    const bins = bin()
+      .domain(x.domain() as [number, number])
+      .thresholds(x.ticks(this.params["data-bin-count"]))(
+      // 20個のビンに分ける
+      data
+    );
+    bins.forEach((bin) => {
+      // 各ビンにデータ元のデータを追加
+      bin["__values__"] = values.filter(
+        (value) => value[xKeyName] >= bin.x0 && value[xKeyName] < bin.x1
+      );
+    });
+
+    // Y軸のスケールをビンのデータに合わせて設定
+    y.domain([0, max(bins, (d) => d.length)]);
+
+    // X軸を追加
+    const xParams = getXAxis.apply(this, [
+      x.domain() as [number, number],
+      "linear",
+    ]);
+
+    const maxY = bins.reduce(
+      (acc, bin) => (bin.length > acc ? bin.length : acc),
+      0
+    );
+    const yDomain = [0, maxY * 1.02];
+
+    const yParams = getYAxis.apply(this, [yDomain]);
+
+    if (!this.xAxisGen) {
+      this.xAxisGen = new Axis(svg.node());
+    }
+    if (!this.yAxisGen) {
+      this.yAxisGen = new Axis(svg.node());
+    }
+
+    this.xAxisGen.update(xParams);
+    this.yAxisGen.update(yParams);
+
+    this._graphArea.attr(
+      "transform",
+      `translate(${this.xAxisGen.axisArea.x},${this.xAxisGen.axisArea.y})`
+    );
+    // const g = svg
+    //   .append("g")
+    //   .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // g.append("g")
+    //   .attr("class", "axis axis--x")
+    //   .attr("transform", `translate(0,${height})`)
+    //   .call(axisBottom(x));
+
+    // Y軸を追加
+    // g.append("g").attr("class", "axis axis--y").call(axisLeft(y));
+
+    // バーを描画
+    const bar = this._graphArea
+      .selectAll(".bar")
+      .data(bins)
+      .enter()
+      .append("g")
+      .attr("class", "bar")
+      .attr(
+        "transform",
+        (d) => `translate(${this.xAxisGen.axisGen.scale()(d.x0)},0)`
+      );
+
+    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
+    const fill = css("--togostanza-theme-series_0_color");
+
+    bar
+      .append("rect")
+      .attr("y", (d) => y(d.length))
+      .attr("width", x(bins[0].x1) - x(bins[0].x0) - 1)
+      .attr("height", (d) => height - y(d.length))
+      .attr("fill", fill);
+
+    if (this.params["event-outgoing_change_selected_nodes"]) {
+      bar.on("click", (_, d) => {
+        const ids = d["__values__"].map((value) => value["__togostanza_id__"]);
+        emitSelectedEventByHistogram.apply(this, [
+          ids,
+          this.params["data-url"],
+        ]);
+      });
+    }
+  }
+
   handleEvent(event) {
-    const { dataUrl } = event.detail;
+    const { selectedIds, dataUrl } = event.detail;
     if (
       this.params["event-incoming_change_selected_nodes"] &&
       dataUrl === this.params["data-url"]
     ) {
-      changeSelectedStyle.apply(this, [event.detail.selectedIds]);
+      changeSelectedStyle.apply(this, [selectedIds]);
     }
   }
 }
@@ -310,9 +430,10 @@ function drawGroupedBars(
     .enter()
     .append("g")
     .classed("bar-group", true)
-    .attr("transform", (d) => {
-      return `translate(${this.xAxisGen.axisGen.scale()(d[0])},0)`;
-    });
+    .attr(
+      "transform",
+      (d) => `translate(${this.xAxisGen.axisGen.scale()(d[0])},0)`
+    );
 
   barGroup
     .selectAll("rect")
@@ -372,7 +493,8 @@ function drawStackedBars(
 
 function addErrorBars(
   this: Barchart,
-  rect: d3.Selection<SVGGElement, object, SVGGElement, unknown>,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  rect: d3.Selection<SVGGElement, {}, BaseType, unknown>,
   errorKeyName: string,
   groupKeyName: string,
   groupScale: d3.ScaleBand<string>
@@ -411,7 +533,11 @@ function addErrorBars(
 }
 
 // emit selected event
-function emitSelectedEvent(this: Barchart, id: any, dataUrl: string) {
+function emitSelectedEventByBarChart(
+  this: Barchart,
+  id: unknown,
+  dataUrl: string
+) {
   // collect selected bars
   const barGroups = this._graphArea.selectAll("g.bar-group");
   const filteredBars = barGroups.filter(".-selected");
@@ -425,22 +551,113 @@ function emitSelectedEvent(this: Barchart, id: any, dataUrl: string) {
     ids.splice(indexInSelectedBars, 1);
   }
   // dispatch event
-  this.element.dispatchEvent(
-    new CustomEvent("changeSelectedNodes", {
-      detail: {
-        selectedIds: ids,
-        targetId: id,
-        dataUrl,
-      },
-    })
-  );
+  emitSelectedEvent({
+    rootElement: this.element,
+    targetId: id,
+    selectedIds: ids,
+    dataUrl,
+  });
+  changeSelectedStyle.apply(this, [ids]);
+}
+function emitSelectedEventByHistogram(
+  this: Barchart,
+  ids: unknown[],
+  dataUrl: string
+) {
+  // dispatch event
+  emitSelectedEvent({
+    rootElement: this.element,
+    targetId: ids[0],
+    selectedIds: ids,
+    dataUrl,
+  });
   changeSelectedStyle.apply(this, [ids]);
 }
 
 function changeSelectedStyle(this: Barchart, ids: string[]) {
-  const barGroups = this._graphArea.selectAll("g.bar-group");
-  barGroups.classed(
-    "-selected",
-    (d) => ids.indexOf(d[1][0].__togostanza_id__) !== -1
-  );
+  switch (this.params["data-interpretation"]) {
+    case "categorical":
+      {
+        const barGroups = this._graphArea.selectAll("g.bar-group");
+        barGroups.classed(
+          "-selected",
+          (d) => ids.indexOf(d[1][0].__togostanza_id__) !== -1
+        );
+      }
+      break;
+    case "distribution":
+      {
+        const bars = this._graphArea.selectAll("g.bar");
+        bars.classed("-selected", (d) =>
+          d["__values__"].some((value) =>
+            ids.includes(value["__togostanza_id__"])
+          )
+        );
+      }
+      break;
+  }
+}
+function getXAxis(
+  this: Barchart,
+  domain: AxisDomain[],
+  scale: "linear" | "time" | "log10" | "ordinal"
+) {
+  // Update the type of 'scale'
+  const xKeyName = this.params["axis-x-key"];
+  const xAxisTitle =
+    typeof this.params["axis-x-title"] === "undefined"
+      ? xKeyName
+      : this.params["axis-x-title"];
+
+  const xParams: AxisParamsI = {
+    placement: this.params["axis-x-placement"],
+    domain,
+    drawArea: {
+      x: 0,
+      y: 0,
+      width: +this.css("--togostanza-canvas-width"),
+      height: +this.css("--togostanza-canvas-height"),
+    },
+    margins: this.MARGIN,
+    tickLabelsAngle: this.params["axis-x-ticks_label_angle"],
+    title: xAxisTitle,
+    titlePadding: this.params["axis-x-title_padding"],
+    scale,
+    gridInterval: this.params["axis-x-gridlines_interval"],
+    gridIntervalUnits: this.params["axis-x-gridlines_interval_units"],
+    ticksInterval: this.params["axis-x-ticks_interval"],
+    ticksIntervalUnits: this.params["axis-x-ticks_interval_units"],
+    ticksLabelsFormat: this.params["axis-x-ticks_labels_format"],
+  };
+  return xParams;
+}
+
+function getYAxis(this: Barchart, domain: AxisDomain[]) {
+  const yKeyName = this.params["axis-y-key"];
+  const yAxisTitle =
+    typeof this.params["axis-y-title"] === "undefined"
+      ? yKeyName
+      : this.params["axis-y-title"];
+
+  const yParams: AxisParamsI = {
+    placement: this.params["axis-y-placement"],
+    domain,
+    drawArea: {
+      x: 0,
+      y: 0,
+      width: +this.css("--togostanza-canvas-width"),
+      height: +this.css("--togostanza-canvas-height"),
+    },
+    margins: this.MARGIN,
+    tickLabelsAngle: this.params["axis-y-ticks_label_angle"],
+    title: yAxisTitle,
+    titlePadding: this.params["axis-y-title_padding"],
+    scale: "linear",
+    gridInterval: this.params["axis-y-gridlines_interval"],
+    gridIntervalUnits: this.params["axis-x-gridlines_interval_units"],
+    ticksInterval: this.params["axis-y-ticks_interval"],
+    ticksIntervalUnits: this.params["axis-y-ticks_interval_units"],
+    ticksLabelsFormat: this.params["axis-y-ticks_labels_format"],
+  };
+  return yParams;
 }

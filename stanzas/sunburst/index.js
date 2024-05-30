@@ -109,7 +109,6 @@ export default class Sunburst extends MetaStanza {
     const main = this._main;
     const data = this.__data.asTree({
       nodeLabelKey: this.params["node-label_key"].trim(),
-      nodeGroupKey: this.params["node-group_key"].trim(),
       nodeValueKey: this.params["node-value_key"].trim(),
     }).data;
 
