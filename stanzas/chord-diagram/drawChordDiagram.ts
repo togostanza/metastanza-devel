@@ -1,10 +1,20 @@
 import * as d3 from "d3";
+import { addHighlightOnHover } from "../../lib/graphHighlight";
+
+interface ExtendedChords extends d3.Chords {
+  groups: (d3.ChordGroup & {
+    color: string;
+    tooltip: string;
+    label: string;
+    id: string;
+  })[];
+}
 
 export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
   const names = nodes.map((node) => node[params.nodeLabelParams.dataKey]);
 
   const matrix = (() => {
-    const index = new Map(names.map((name, i) => [name, i]));
+    const index = new Map<string, string>(names.map((name, i) => [name, i]));
     const matrix = Array.from(index, () => new Array(names.length).fill(0));
     for (const edge of edges) {
       matrix[index.get(edge.source)][index.get(edge.target)] +=
@@ -39,15 +49,39 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
     .sortSubgroups(d3.descending)
     .sortChords(d3.descending);
 
-  const chords = chord(matrix);
+  const chords = chord(matrix) as ExtendedChords;
 
   const edgeColorScale = params.color();
 
+  chords.forEach((chord) => {
+    chord[symbols.sourceNodeSym] = nodes[chord.source.index];
+    chord[symbols.targetNodeSym] = nodes[chord.target.index];
+  });
+
+  // Nodes (arcs)
+
   chords.groups.forEach((node) => {
-    node.color = edgeColorScale("" + node.index);
+    // edgeSym,
+    // edgeWidthSym,
+    // sourceNodeSym,
+    // targetNodeSym,
+    // nodeSizeSym,
+    // nodeColorSym,
+    // groupSym,
+    // edgeColorSym,
+    // nodeLabelSym,
+    // idSym,
+    // nodeBorderColorSym,
+    // isPairEdge,
+
+    node.id = nodes[node.index][params.nodeLabelParams.dataKey];
+
+    node[symbols.nodeColorSym] = edgeColorScale("" + node.index);
+    node[symbols.edgeSym] = edges.filter(
+      (edge) => edge.source === node.id || edge.target === node.id
+    );
     node.tooltip = nodes[node.index][params.tooltipParams.dataKey];
     node.label = nodes[node.index][params.nodeLabelParams.dataKey];
-    node.id = nodes[node.index][params.nodeLabelParams.dataKey];
   });
 
   const rootGroup = svg
@@ -66,7 +100,9 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
     .attr("d", ribbon)
     .classed("link", true)
     .classed("chord", true)
-    .style("fill", (d) => chords.groups[d.source.index].color);
+    .style("fill", (d) => chords.groups[d.source.index][symbols.nodeColorSym]);
+
+  console.log("ribbons", ribbons);
 
   const arcsG = rootGroup
     .append("g")
@@ -79,7 +115,7 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
   const arcs = arcsG
     .append("path")
     .attr("d", arc)
-    .attr("fill", (d) => d.color);
+    .attr("fill", (d) => d[symbols.nodeColorSym]);
 
   arcsG.call((g) =>
     g
@@ -125,47 +161,6 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
   }
 
   if (params.highlightAdjEdges) {
-    arcsG.on("mouseenter", onHighlight);
-    arcsG.on("mouseleave", onHighlightOff);
-  }
-
-  function onHighlight(e, d) {
-    const node = nodes[d.index];
-    const connectedEdges = node[symbols.edgeSym];
-    const connectedNodesIds = connectedEdges
-      .map((edge) => [
-        edge[symbols.sourceNodeSym].id,
-        edge[symbols.targetNodeSym].id,
-      ])
-      .flat();
-
-    d3.select(this).classed("active", true);
-    arcsG.classed("fadeout", (p) => {
-      return d.index !== p.index;
-    });
-    arcsG.classed("half-active", (p) => {
-      return d.index !== p.index && connectedNodesIds.includes(p.id);
-    });
-    ribbons.classed(
-      "fadeout",
-      (p) => p.source.index !== d.index && p.target.index !== d.index
-    );
-    ribbons.classed("active", (p) => {
-      return p.source.index === d.index || p.target.index === d.index;
-    });
-    // ribbons.each(function (p) {
-    //     const isActive = p.source.index === d.index || p.target.index === d.index
-    //     if (isActive) {
-    //     }
-    //   nodes[p.source.index]
-    // });
-  }
-  function onHighlightOff() {
-    arcsG.classed("active", false);
-    arcsG.classed("fadeout", false);
-    arcsG.classed("half-active", false);
-
-    ribbons.classed("active", false);
-    ribbons.classed("fadeout", false);
+    addHighlightOnHover(symbols, nodes, arcsG, ribbons);
   }
 }
