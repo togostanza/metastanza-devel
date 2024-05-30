@@ -59,21 +59,7 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
   });
 
   // Nodes (arcs)
-
   chords.groups.forEach((node) => {
-    // edgeSym,
-    // edgeWidthSym,
-    // sourceNodeSym,
-    // targetNodeSym,
-    // nodeSizeSym,
-    // nodeColorSym,
-    // groupSym,
-    // edgeColorSym,
-    // nodeLabelSym,
-    // idSym,
-    // nodeBorderColorSym,
-    // isPairEdge,
-
     node.id = nodes[node.index][params.nodeLabelParams.dataKey];
 
     node[symbols.nodeColorSym] = edgeColorScale("" + node.index);
