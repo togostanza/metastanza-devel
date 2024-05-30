@@ -4,6 +4,7 @@ import prepareGraphData, {
   get3DEdges,
   getGroupPlanes,
 } from "@/lib/prepareGraphData";
+import { getMarginsFromCSSString } from "@/lib/utils";
 import * as d3 from "d3";
 import { _3d } from "d3-3d";
 import {
@@ -15,8 +16,8 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 import loadData from "togostanza-utils/load-data";
-import { handleApiError } from "../../lib/apiError";
 import MetaStanza from "../../lib/MetaStanza";
+import { handleApiError } from "../../lib/apiError";
 import {
   emitSelectedEvent,
   toggleSelectIds,
@@ -531,40 +532,40 @@ export default class ForceGraph extends MetaStanza {
             (group) => group !== d.groupId
           );
 
-          planes.classed("fadeout", true);
-          planes.classed("active", false);
-          planes.classed("half-active", false);
+          planes.classed("-fadeout", true);
+          planes.classed("-active", false);
+          planes.classed("-half-active", false);
 
           planes
             .filter((p) => {
               return connectedGroups.includes(p.groupId);
             })
-            .classed("fadeout", false)
-            .classed("half-active", true);
+            .classed("-fadeout", false)
+            .classed("-half-active", true);
 
-          d3.select(this).classed("active", true).classed("fadeout", false);
+          d3.select(this).classed("-active", true).classed("-fadeout", false);
 
           // highlight nodes belonging to this group
-          points.classed("fadeout", true);
-          points.classed("active", false);
-          points.classed("half-active", false);
+          points.classed("-fadeout", true);
+          points.classed("-active", false);
+          points.classed("-half-active", false);
 
           points
             .filter((p) => {
               return nodesIdsInGroup.includes(p.id);
             })
-            .classed("fadeout", false)
-            .classed("active", true);
+            .classed("-fadeout", false)
+            .classed("-active", true);
 
           points
             .filter((p) => {
               return connectedNodes.includes("" + p.id);
             })
-            .classed("fadeout", false)
-            .classed("half-active", true);
+            .classed("-fadeout", false)
+            .classed("-half-active", true);
 
           // highlight edges that belongs to this group
-          links.classed("fadeout", true);
+          links.classed("-fadeout", true);
 
           links
             .filter((p) => {
@@ -575,10 +576,10 @@ export default class ForceGraph extends MetaStanza {
                   nodesIdsInGroup.includes(p.edge[symbols.targetNodeSym].id))
               );
             })
-            .classed("fadeout", false)
-            .classed("half-active", true)
-            .classed("dashed", true)
-            .attr("stroke-dasharray", (d) =>
+            .classed("-fadeout", false)
+            .classed("-half-active", true)
+            .classed("-dashed", true)
+            .attr("-stroke-dasharray", (d) =>
               Math.max(d.edge[symbols.edgeWidthSym] * 2, 2)
             );
 
@@ -588,25 +589,25 @@ export default class ForceGraph extends MetaStanza {
                 nodesIdsInGroup.includes(p.edge[symbols.sourceNodeSym].id) &&
                 nodesIdsInGroup.includes(p.edge[symbols.targetNodeSym].id)
             )
-            .classed("fadeout", false)
-            .classed("active", true);
+            .classed("-fadeout", false)
+            .classed("-active", true);
         });
 
         planes.on("mouseleave", () => {
           if (isDragging) {
             return;
           }
-          links.classed("fadeout", false);
-          links.classed("active", false);
-          links.classed("half-active", false);
-          links.classed("dashed", false);
+          links.classed("-fadeout", false);
+          links.classed("-active", false);
+          links.classed("-half-active", false);
+          links.classed("-dashed", false);
           links.attr("stroke-dasharray", null);
-          planes.classed("active", false);
-          planes.classed("fadeout", false);
-          planes.classed("half-active", false);
-          points.classed("fadeout", false);
-          points.classed("active", false);
-          points.classed("half-active", false);
+          planes.classed("-active", false);
+          planes.classed("-fadeout", false);
+          planes.classed("-half-active", false);
+          points.classed("-fadeout", false);
+          points.classed("-active", false);
+          points.classed("-half-active", false);
         });
       }
 
@@ -656,23 +657,23 @@ export default class ForceGraph extends MetaStanza {
           });
 
           // fade out all other nodes, highlight a little connected ones
-          points.classed("fadeout", true);
+          points.classed("-fadeout", true);
 
           points
             .filter((p) => p !== d && directlyConnectedNodes.includes(p.id))
-            .classed("half-active", true)
-            .classed("fadeout", false);
+            .classed("-half-active", true)
+            .classed("-fadeout", false);
 
           // highlight current node
-          d3.select(this).classed("active", true).classed("fadeout", false);
+          d3.select(this).classed("-active", true).classed("-fadeout", false);
 
           // fadeout not connected edges, highlight connected ones
 
           links
-            .classed("fadeout", true)
-            .classed("active", false)
-            .classed("half-active", false)
-            .classed("dashed", false);
+            .classed("-fadeout", true)
+            .classed("-active", false)
+            .classed("-half-active", false)
+            .classed("-dashed", false);
 
           links
             .filter(({ edge }) =>
@@ -680,8 +681,8 @@ export default class ForceGraph extends MetaStanza {
                 (e) => e[symbols.idSym] === edge[symbols.idSym]
               )
             )
-            .classed("fadeout", false)
-            .classed("half-active", true)
+            .classed("-fadeout", false)
+            .classed("-half-active", true)
             .attr("stroke-dasharray", (d) =>
               Math.max(d.edge[symbols.edgeWidthSym] * 2, 2)
             );
@@ -692,8 +693,8 @@ export default class ForceGraph extends MetaStanza {
                 (e) => e[symbols.idSym] === edge[symbols.idSym]
               )
             )
-            .classed("fadeout", false)
-            .classed("active", true);
+            .classed("-fadeout", false)
+            .classed("-active", true);
         });
 
         points.on("mouseleave", function () {
@@ -701,13 +702,13 @@ export default class ForceGraph extends MetaStanza {
             return;
           }
           links
-            .classed("active", false)
-            .classed("fadeout", false)
-            .classed("half-active", false);
+            .classed("-active", false)
+            .classed("-fadeout", false)
+            .classed("-half-active", false);
           points
-            .classed("active", false)
-            .classed("fadeout", false)
-            .classed("half-active", false);
+            .classed("-active", false)
+            .classed("-fadeout", false)
+            .classed("-half-active", false);
         });
       }
 
@@ -720,7 +721,7 @@ export default class ForceGraph extends MetaStanza {
         });
       }
 
-      const nodeGroups = this._graphArea.selectAll("circle.node");
+      const nodeGroups = this._graphArea.selectAll(".node-g");
       nodeGroups.on("click", (_, d) => {
         toggleSelectIds({
           selectedIds: this.selectedIds,
@@ -764,40 +765,4 @@ export default class ForceGraph extends MetaStanza {
       });
     }
   }
-}
-
-function getMarginsFromCSSString(str) {
-  const splitted = str.trim().split(/\W+/);
-
-  const res = {
-    TOP: 0,
-    RIGHT: 0,
-    BOTTOM: 0,
-    LEFT: 0,
-  };
-
-  switch (splitted.length) {
-    case 1:
-      res.TOP = res.RIGHT = res.BOTTOM = res.LEFT = parseInt(splitted[0]);
-      break;
-    case 2:
-      res.TOP = res.BOTTOM = parseInt(splitted[0]);
-      res.LEFT = res.RIGHT = parseInt(splitted[1]);
-      break;
-    case 3:
-      res.TOP = parseInt(splitted[0]);
-      res.LEFT = res.RIGHT = parseInt(splitted[1]);
-      res.BOTTOM = parseInt(splitted[2]);
-      break;
-    case 4:
-      res.TOP = parseInt(splitted[0]);
-      res.RIGHT = parseInt(splitted[1]);
-      res.BOTTOM = parseInt(splitted[2]);
-      res.LEFT = parseInt(splitted[3]);
-      break;
-    default:
-      break;
-  }
-
-  return res;
 }

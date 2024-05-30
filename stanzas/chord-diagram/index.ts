@@ -27,6 +27,8 @@ interface Datum {
   id: string;
 }
 
+//log
+
 export default class ChordDiagram extends MetaStanza {
   tooltip: ToolTip;
   _chartArea: d3.Selection<SVGGElement, any, SVGElement, any>;

@@ -103,6 +103,7 @@ export default class Barchart extends MetaStanza {
 
     // eslint-disable-next-line @typescript-eslint/ban-types
     this._dataByGroup = values.reduce(
+      // eslint-disable-next-line @typescript-eslint/ban-types
       (map: Map<unknown, {}[]>, curr: { [x: string]: unknown }) => {
         if (!map.has(curr[groupKeyName])) {
           return map.set(curr[groupKeyName], [curr]);
