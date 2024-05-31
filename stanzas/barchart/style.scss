@@ -20,7 +20,8 @@ svg {
     stroke: var(--togostanza-axis-zero_line_color);
   }
 
-  .bar-group, .bar {
+  .bar-group,
+  .bar {
     > rect {
       stroke-width: 0.5px;
       stroke: var(--togostanza-border-color);
@@ -33,7 +34,8 @@ svg {
         opacity: var(--togostanza-fadeout-opacity);
       }
     }
-    &.-selected, &:hover {
+    &.-selected,
+    &:hover {
       > rect {
         opacity: 1 !important;
       }
@@ -56,6 +58,13 @@ svg {
 
   &:has(.bar-group.-selected) {
     .bar-group {
+      > rect {
+        opacity: var(--togostanza-fadeout-opacity);
+      }
+    }
+  }
+  &:has(.bar.-selected) {
+    .bar {
       > rect {
         opacity: var(--togostanza-fadeout-opacity);
       }

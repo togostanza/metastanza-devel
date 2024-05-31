@@ -24,7 +24,11 @@ import {
   extent,
 } from "d3";
 import getStanzaColors from "../../lib/ColorGenerator";
-import { emitSelectedEvent } from "../../lib/utils";
+import {
+  emitSelectedEvent,
+  toggleSelectedIdsMultiple,
+  updateSelectedElementClassNameForD3,
+} from "../../lib/utils";
 import { AxisDomain } from "d3-axis";
 
 export default class Barchart extends MetaStanza {
@@ -38,6 +42,7 @@ export default class Barchart extends MetaStanza {
   _dataByX: Map<string | number, {}[]>;
   legend: Legend;
   tooltips: ToolTip;
+  selectedIds: Array<string | number> = [];
 
   menu() {
     return [
@@ -309,7 +314,7 @@ export default class Barchart extends MetaStanza {
 
     // Y軸のスケールをビンのデータに合わせて設定
     const yParams = getYAxis.apply(this, [
-      [0, Math.max(...bins.map((d) => d.length))],
+      [0, Math.max(...bins.map((d) => d.length)) * 1.02],
     ]);
 
     this.yAxisGen.update(yParams);
@@ -346,10 +351,14 @@ export default class Barchart extends MetaStanza {
 
     if (this.params["event-outgoing_change_selected_nodes"]) {
       bar.on("click", (_, d) => {
-        console.log("clicked d", d);
         const ids = d["__values__"].map((value) => value["__togostanza_id__"]);
+        toggleSelectedIdsMultiple({
+          selectedIds: this.selectedIds,
+          targetIds: ids,
+        });
+
         emitSelectedEventByHistogram.apply(this, [
-          ids,
+          this.selectedIds,
           this.params["data-url"],
         ]);
       });
@@ -362,6 +371,7 @@ export default class Barchart extends MetaStanza {
       this.params["event-incoming_change_selected_nodes"] &&
       dataUrl === this.params["data-url"]
     ) {
+      this.selectedIds = selectedIds;
       changeSelectedStyle.apply(this, [selectedIds]);
     }
   }
@@ -539,10 +549,11 @@ function emitSelectedEventByHistogram(
     selectedIds: ids,
     dataUrl,
   });
+
   changeSelectedStyle.apply(this, [ids]);
 }
 
-function changeSelectedStyle(this: Barchart, ids: string[]) {
+function changeSelectedStyle(this: Barchart, ids: (string | number)[]) {
   switch (this.params["data-interpretation"]) {
     case "categorical":
       {
