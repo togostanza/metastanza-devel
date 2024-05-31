@@ -2,7 +2,7 @@ import { Axis, type AxisParamsI, paramsModel } from "../../lib/AxisMixin";
 import Legend from "../../lib/Legend2";
 import MetaStanza from "../../lib/MetaStanza";
 import ToolTip from "../../lib/ToolTip";
-
+import * as z from "zod";
 import {
   downloadCSVMenuItem,
   downloadJSONMenuItem,
@@ -21,6 +21,7 @@ import {
   axisLeft,
   BaseType,
   Selection,
+  extent,
 } from "d3";
 import getStanzaColors from "../../lib/ColorGenerator";
 import { emitSelectedEvent } from "../../lib/utils";
@@ -157,7 +158,7 @@ export default class Barchart extends MetaStanza {
 
     this._graphArea = svg.append("g").attr("class", "chart");
 
-    const xParams = getXAxis.apply(this, [
+    const xParams: AxisParamsI = getXAxisParams.apply(this, [
       [
         ...new Set(structuredClone(this._data).map((d) => d[xKeyName])),
       ] as string[],
@@ -167,7 +168,7 @@ export default class Barchart extends MetaStanza {
     const maxY = Math.max(...y2s);
     const yDomain = [0, maxY * 1.02];
 
-    const yParams = getYAxis.apply(this, [yDomain]);
+    const yParams: AxisParamsI = getYAxis.apply(this, [yDomain]);
 
     if (!this.xAxisGen) {
       this.xAxisGen = new Axis(svg.node());
@@ -266,25 +267,16 @@ export default class Barchart extends MetaStanza {
   drawHistogram(svg: Selection<SVGSVGElement, unknown, null, undefined>) {
     const xKeyName = this.params["axis-x-key"];
 
-    const showLegend = this.params["legend-visible"];
-    const legendTitle = this.params["legend-title"];
+    const values: Record<string, number>[] = structuredClone(this._data);
 
-    const values = structuredClone(this._data);
-
-    let params;
     try {
-      params = paramsModel.parse(this.params);
+      paramsModel.parse(this.params);
     } catch (error) {
       console.log(error);
       return;
     }
 
     const data = values.map((d) => +d[xKeyName]);
-
-    const width =
-      +this.css("--togostanza-canvas-width") -
-      this.MARGIN.LEFT -
-      this.MARGIN.RIGHT;
     const height =
       +this.css("--togostanza-canvas-height") -
       this.MARGIN.TOP -
@@ -292,42 +284,15 @@ export default class Barchart extends MetaStanza {
 
     this._graphArea = svg.append("g").attr("class", "chart");
 
-    // X軸とY軸のスケールを設定
-    const x = scaleLinear()
-      .domain([Math.min(...data), Math.max(...data) + 1]) // データの範囲に合わせて調整
-      .rangeRound([0, width]);
-    const y = scaleLinear().range([height, 0]);
-
     // ビンの設定
-    const bins = bin()
-      .domain(x.domain() as [number, number])
-      .thresholds(x.ticks(this.params["data-bin-count"]))(
-      // 20個のビンに分ける
-      data
-    );
+    const bins = bin().thresholds(+this.params["data-bin-count"] || 10)(data);
+
     bins.forEach((bin) => {
       // 各ビンにデータ元のデータを追加
       bin["__values__"] = values.filter(
         (value) => value[xKeyName] >= bin.x0 && value[xKeyName] < bin.x1
       );
     });
-
-    // Y軸のスケールをビンのデータに合わせて設定
-    y.domain([0, max(bins, (d) => d.length)]);
-
-    // X軸を追加
-    const xParams = getXAxis.apply(this, [
-      x.domain() as [number, number],
-      "linear",
-    ]);
-
-    const maxY = bins.reduce(
-      (acc, bin) => (bin.length > acc ? bin.length : acc),
-      0
-    );
-    const yDomain = [0, maxY * 1.02];
-
-    const yParams = getYAxis.apply(this, [yDomain]);
 
     if (!this.xAxisGen) {
       this.xAxisGen = new Axis(svg.node());
@@ -336,24 +301,23 @@ export default class Barchart extends MetaStanza {
       this.yAxisGen = new Axis(svg.node());
     }
 
+    // X軸のスケールをビンのデータに合わせて設定
+    const xAxisDomain = [bins[0].x0, bins.at(-1).x1];
+    const xParams = getXAxisParams.apply(this, [xAxisDomain, "linear"]);
+
     this.xAxisGen.update(xParams);
+
+    // Y軸のスケールをビンのデータに合わせて設定
+    const yParams = getYAxis.apply(this, [
+      [0, Math.max(...bins.map((d) => d.length))],
+    ]);
+
     this.yAxisGen.update(yParams);
 
     this._graphArea.attr(
       "transform",
       `translate(${this.xAxisGen.axisArea.x},${this.xAxisGen.axisArea.y})`
     );
-    // const g = svg
-    //   .append("g")
-    //   .attr("transform", `translate(${margin.left},${margin.top})`);
-
-    // g.append("g")
-    //   .attr("class", "axis axis--x")
-    //   .attr("transform", `translate(0,${height})`)
-    //   .call(axisBottom(x));
-
-    // Y軸を追加
-    // g.append("g").attr("class", "axis axis--y").call(axisLeft(y));
 
     // バーを描画
     const bar = this._graphArea
@@ -364,7 +328,7 @@ export default class Barchart extends MetaStanza {
       .attr("class", "bar")
       .attr(
         "transform",
-        (d) => `translate(${this.xAxisGen.axisGen.scale()(d.x0)},0)`
+        (d) => `translate(${this.xAxisGen.axisGen.scale()(d.x0) + 1},0)`
       );
 
     const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
@@ -372,13 +336,17 @@ export default class Barchart extends MetaStanza {
 
     bar
       .append("rect")
-      .attr("y", (d) => y(d.length))
-      .attr("width", x(bins[0].x1) - x(bins[0].x0) - 1)
-      .attr("height", (d) => height - y(d.length))
+      .attr("y", (d) => this.yAxisGen.scale(d.length))
+      .attr(
+        "width",
+        this.xAxisGen.scale(bins[0].x1) - this.xAxisGen.scale(bins[0].x0) - 2
+      )
+      .attr("height", (d) => height - this.yAxisGen.scale(d.length))
       .attr("fill", fill);
 
     if (this.params["event-outgoing_change_selected_nodes"]) {
       bar.on("click", (_, d) => {
+        console.log("clicked d", d);
         const ids = d["__values__"].map((value) => value["__togostanza_id__"]);
         emitSelectedEventByHistogram.apply(this, [
           ids,
@@ -597,12 +565,19 @@ function changeSelectedStyle(this: Barchart, ids: string[]) {
       break;
   }
 }
-function getXAxis(
+
+/**
+ *
+ * @param this - Barchart instance
+ * @param domain - [min, max] of the x-axis
+ * @param scale
+ * @returns params object for Axis's update method
+ */
+function getXAxisParams(
   this: Barchart,
   domain: AxisDomain[],
   scale: "linear" | "time" | "log10" | "ordinal"
 ) {
-  // Update the type of 'scale'
   const xKeyName = this.params["axis-x-key"];
   const xAxisTitle =
     typeof this.params["axis-x-title"] === "undefined"
@@ -629,9 +604,16 @@ function getXAxis(
     ticksIntervalUnits: this.params["axis-x-ticks_interval_units"],
     ticksLabelsFormat: this.params["axis-x-ticks_labels_format"],
   };
+
   return xParams;
 }
 
+/**
+ *
+ * @param this - Barchart instance
+ * @param domain - [min, max] of the y-axis
+ * @returns params object for Axis's update method
+ */
 function getYAxis(this: Barchart, domain: AxisDomain[]) {
   const yKeyName = this.params["axis-y-key"];
   const yAxisTitle =
