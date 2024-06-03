@@ -1,19 +1,24 @@
-import Stanza from "togostanza/stanza";
-import { select, scaleOrdinal, scaleSqrt, extent, format } from "d3";
-import loadData from "togostanza-utils/load-data";
-import ToolTip from "../../lib/ToolTip";
-import Legend from "../../lib/Legend2";
-import getStanzaColors from "../../lib/ColorGenerator";
+import { extent, format, scaleOrdinal, scaleSqrt, select } from "d3";
 import {
-  downloadSvgMenuItem,
-  downloadPngMenuItem,
-  downloadJSONMenuItem,
   downloadCSVMenuItem,
+  downloadJSONMenuItem,
+  downloadPngMenuItem,
+  downloadSvgMenuItem,
   downloadTSVMenuItem,
-  appendCustomCss,
 } from "togostanza-utils";
-import { getMarginsFromCSSString } from "../../lib/utils";
 import { Axis } from "../../lib/AxisMixin";
+import getStanzaColors from "../../lib/ColorGenerator";
+import Legend from "../../lib/Legend2";
+import MetaStanza from "../../lib/MetaStanza";
+import ToolTip from "../../lib/ToolTip";
+import {
+  emitSelectedEvent,
+  getMarginsFromCSSString,
+  toggleSelectIds,
+  updateSelectedElementClassNameForD3,
+} from "../../lib/utils";
+
+const POINT_ID_KEY = "__togostanza_id__";
 
 type MarginsT = {
   LEFT: number;
@@ -22,12 +27,19 @@ type MarginsT = {
   BOTTOM: number;
 };
 
-export default class ScatterPlot extends Stanza {
-  _data: any[];
+export default class ScatterPlot extends MetaStanza {
   xAxis: Axis;
   yAxis: Axis;
   legend: Legend;
   tooltips: ToolTip;
+  selectedIds: Array<string | number> = [];
+  _graphArea: d3.Selection<SVGGElement, unknown, HTMLElement, unknown>;
+  selectedEventParams = {
+    targetElementSelector: ".chart-node",
+    selectedElementClassName: "-selected",
+    selectedElementSelector: ".-selected",
+    idPath: POINT_ID_KEY,
+  };
 
   menu() {
     return [
@@ -39,22 +51,26 @@ export default class ScatterPlot extends Stanza {
     ];
   }
 
-  async render() {
-    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
-    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
+  async renderNext() {
+    let svg = select(this._main.querySelector("svg"));
+    if (!svg.empty()) {
+      svg.remove();
+      this.xAxis = null;
+      this.yAxis = null;
+    }
+    svg = select(this._main).append("svg");
+
+    svg
+      .attr("width", +this.css("--togostanza-canvas-width"))
+      .attr("height", +this.css("--togostanza-canvas-height"));
+
     const stanzaColors = getStanzaColors(this);
     const color = scaleOrdinal().range(stanzaColors as string[]);
-
-    this._data = await loadData(
-      this.params["data-url"],
-      this.params["data-type"],
-      this.root.querySelector("main")
-    );
 
     const data = structuredClone(this._data);
 
     const MARGINS: MarginsT = getMarginsFromCSSString(
-      css("--togostanza-canvas-padding")
+      this.css("--togostanza-canvas-padding")
     );
 
     const xKey = this.params["axis-x-key"];
@@ -80,8 +96,8 @@ export default class ScatterPlot extends Stanza {
     const legendTitle = this.params["legend-title"];
     const tooltipKey = this.params["tooltips-key"];
 
-    const width = parseInt(css("--togostanza-canvas-width"));
-    const height = parseInt(css("--togostanza-canvas-height"));
+    const width = parseInt(this.css("--togostanza-canvas-width"));
+    const height = parseInt(this.css("--togostanza-canvas-height"));
 
     const colorSym = Symbol("color");
     const sizeSym = Symbol("size");
@@ -108,22 +124,12 @@ export default class ScatterPlot extends Stanza {
 
     const main = root.querySelector("main");
 
-    let svg = main.querySelector("svg");
-
-    if (!svg) {
-      svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      main.append(svg);
-    }
-
-    svg.setAttribute("width", width.toString());
-    svg.setAttribute("height", height.toString());
-
     if (!this.xAxis) {
-      this.xAxis = new Axis(svg);
+      this.xAxis = new Axis(svg.node());
     }
 
     if (!this.yAxis) {
-      this.yAxis = new Axis(svg);
+      this.yAxis = new Axis(svg.node());
     }
 
     const existingLegend = this.root.querySelector("togostanza--legend2");
@@ -197,6 +203,8 @@ export default class ScatterPlot extends Stanza {
       ticksLabelsFormat: yTicksLabelsFormat,
     });
 
+    console.log("data", data);
+
     data.forEach((datum, i) => {
       const size = parseFloat(datum[sizeKey]);
       datum[sizeSym] = isNaN(size) ? sizeMin : sizeScale(size);
@@ -224,18 +232,22 @@ export default class ScatterPlot extends Stanza {
 
     const showTooltips = data.some((d) => d[tooltipSym]);
 
-    let chartContent = select(svg).select(".chart-content");
+    this._graphArea = select<SVGGElement, object>(svg.node()).select(
+      ".chart-content"
+    );
 
-    if (chartContent.empty()) {
-      chartContent = select(svg).append("g").classed("chart-content", true);
+    if (this._graphArea.empty()) {
+      this._graphArea = select(svg.node())
+        .append("g")
+        .classed("chart-content", true);
     }
 
-    const circlesUpdate = chartContent
+    const circlesUpdate = this._graphArea
       .attr(
         "transform",
         `translate(${this.xAxis.axisArea.x}, ${this.xAxis.axisArea.y})`
       )
-      .selectAll("circle")
+      .selectAll("circle.chart-node")
       .data(data, (d) => d[idSym]);
 
     const enteredCircles = circlesUpdate
@@ -252,6 +264,30 @@ export default class ScatterPlot extends Stanza {
       this.tooltips.setup(enteredCircles.nodes());
     }
 
+    if (this.params["event-outgoing_change_selected_nodes"]) {
+      this._graphArea
+        .selectAll(this.selectedEventParams.targetElementSelector)
+        .on("click", (_, d) => {
+          toggleSelectIds({
+            selectedIds: this.selectedIds,
+            targetId: d[POINT_ID_KEY],
+          });
+
+          updateSelectedElementClassNameForD3({
+            drawing: this._graphArea,
+            selectedIds: this.selectedIds,
+            ...this.selectedEventParams,
+          });
+
+          emitSelectedEvent({
+            rootElement: this.element,
+            targetId: d[POINT_ID_KEY],
+            selectedIds: this.selectedIds,
+            dataUrl: this.params["data-url"],
+          });
+        });
+    }
+
     enteredCircles.on("mouseenter", function () {
       const node = select(this);
       enteredCircles.classed("-fadeout", true);
@@ -262,5 +298,20 @@ export default class ScatterPlot extends Stanza {
     });
 
     circlesUpdate.exit().remove();
+  }
+
+  handleEvent(event) {
+    const { selectedIds, dataUrl } = event.detail;
+    if (
+      this.params["event-incoming_change_selected_nodes"] &&
+      dataUrl === this.params["data-url"]
+    ) {
+      this.selectedIds = selectedIds;
+      updateSelectedElementClassNameForD3({
+        drawing: this._graphArea,
+        selectedIds,
+        ...this.selectedEventParams,
+      });
+    }
   }
 }
