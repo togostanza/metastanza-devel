@@ -38,6 +38,9 @@ svg {
   :has(.-selected) {
     .chart-node {
       opacity: var(--togostanza-fadeout-opacity);
+      &:hover {
+        opacity: 1;
+      }
     }
   }
 }
