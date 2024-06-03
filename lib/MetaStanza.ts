@@ -33,6 +33,7 @@ export default abstract class extends Stanza {
       });
       this._data = this.__data.data;
       this._apiError = false;
+      this._error = undefined;
     } catch (error) {
       this._apiError = true;
       this._error = error;
