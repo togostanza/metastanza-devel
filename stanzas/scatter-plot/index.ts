@@ -53,11 +53,30 @@ export default class ScatterPlot extends MetaStanza {
 
   async renderNext() {
     let svg = select(this._main.querySelector("svg"));
+
+    const existingLegend = this.root.querySelector("togostanza--legend2");
+
+    if (existingLegend) {
+      existingLegend.remove();
+    }
+
+    if (
+      !this._error &&
+      this._main.querySelector(".metastanza-error-message-div")
+    ) {
+      this._main.querySelector(".metastanza-error-message-div").remove();
+    }
+
     if (!svg.empty()) {
       svg.remove();
       this.xAxis = null;
       this.yAxis = null;
     }
+
+    if (this._error) {
+      return null;
+    }
+
     svg = select(this._main).append("svg");
 
     svg
@@ -132,12 +151,6 @@ export default class ScatterPlot extends MetaStanza {
       this.yAxis = new Axis(svg.node());
     }
 
-    const existingLegend = this.root.querySelector("togostanza--legend2");
-
-    if (existingLegend) {
-      existingLegend.remove();
-    }
-
     function getNodeSizesForLegend(amount = 7) {
       const sizeMin = sizeScale(nodeSizes[0]);
       const sizeMax = sizeScale(nodeSizes[1]);
@@ -203,8 +216,6 @@ export default class ScatterPlot extends MetaStanza {
       ticksLabelsFormat: yTicksLabelsFormat,
     });
 
-    console.log("data", data);
-
     data.forEach((datum, i) => {
       const size = parseFloat(datum[sizeKey]);
       datum[sizeSym] = isNaN(size) ? sizeMin : sizeScale(size);
@@ -216,7 +227,7 @@ export default class ScatterPlot extends MetaStanza {
       datum[tooltipSym] = datum[tooltipKey];
     });
 
-    if (showLegend) {
+    if (showLegend && !this._error) {
       this.legend = new Legend();
       root.append(this.legend);
 
