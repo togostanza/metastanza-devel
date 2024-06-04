@@ -91,7 +91,7 @@ export async function handleApiError(options: HandleApiErrorOptions) {
  * @param apiError - Indicates if there is an API error.
  * @param main - The main HTML element to display the error message.
  */
-function handleErrorMessage(apiError: boolean, main: HTMLElement) {
+export function handleErrorMessage(apiError: boolean, main: HTMLElement) {
   const errorMessageEl = main.querySelector(".metastanza-error-message-div");
 
   if (apiError) {

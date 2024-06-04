@@ -237,6 +237,20 @@
       "stanza:example": "pref",
       "stanza:description": "Tooltips data key. If the key not existing, tooltips are not showing.",
       "stanza:required": false
+    },
+    {
+      "stanza:key": "event-incoming_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Receive a change event of selected nodes",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "event-outgoing_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Emit a change event of selected nodes",
+      "stanza:required": false
     }
   ],
   "stanza:menu-placement": "bottom-right",

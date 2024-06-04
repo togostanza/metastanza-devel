@@ -21,6 +21,10 @@ svg {
   }
 
   .chart-node {
+    &.-selected {
+      opacity: 1 !important;
+    }
+
     cursor: pointer;
     stroke: var(--togostanza-border-color);
     stroke-width: var(--togostanza-border-width);
@@ -28,6 +32,15 @@ svg {
     &.-fadeout {
       opacity: var(--togostanza-fadeout-opacity);
       transition: var(--togostanza-fadeout-transition);
+    }
+  }
+
+  :has(.-selected) {
+    .chart-node {
+      opacity: var(--togostanza-fadeout-opacity);
+      &:hover {
+        opacity: 1;
+      }
     }
   }
 }
