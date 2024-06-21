@@ -214,6 +214,15 @@ export default class Heatmap extends MetaStanza {
           return setColor(numericValue);
         });
 
+        rectGroup.on("mouseenter", function () {
+          const node = select(this);
+          rectGroup.classed("-fadeout", true);
+          node.classed("-fadeout", false);
+        });
+        rectGroup.on("mouseleave", function () {
+          rectGroup.classed("-fadeout", false);
+        });
+
       // Add event listener
       rectGroup.on("click", (e, d) => {
         select(e.target).raise();
