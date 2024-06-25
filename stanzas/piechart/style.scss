@@ -9,18 +9,26 @@ svg {
     stroke: var(--togostanza-border-color);
     stroke-width: 0.5px;
 
+    &:hover {
+      cursor: pointer;
+    }
+
     &.-fadeout {
       opacity: var(--togostanza-fadeout-opacity);
       transition: var(--togostanza-fadeout-transition);
     }
 
-    &:hover {
-      cursor: pointer;
-    }
-
     &.-selected {
-      stroke-width: 2px;
-      stroke: var(--togostanza-theme-selected_border_color);
+      opacity: 1 !important;
+    }
+  }
+
+  :has(.-selected) {
+    path {
+      opacity: var(--togostanza-fadeout-opacity);
+      &:hover {
+        opacity: 1;
+      }
     }
   }
 }
