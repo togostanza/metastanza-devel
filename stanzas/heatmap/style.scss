@@ -1,34 +1,45 @@
 // Load the repository-wide global style here. The actual file is located at ../common.scss for details.
 @use "@/common.scss";
 
-.domain,
-.tick {
-  color: #333;
-}
-.text {
-  font-family: var(--togostanza-fonts-font_family);
-  font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
-}
-.x-axis-label .tick .text,
-.y-axis-label .tick .text {
-  font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
-}
-
-rect {
-  stroke: var(--togostanza-border-color);
-  stroke-width: calc(var(--togostanza-border-width) * 1px);
-
-  &:hover {
-    cursor: pointer;
+svg {
+  .domain,
+  .tick {
+    color: #333;
+  }
+  .text {
+    font-family: var(--togostanza-fonts-font_family);
+    font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+  }
+  .x-axis-label .tick .text,
+  .y-axis-label .tick .text {
+    font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
   }
 
-  &.-fadeout {
-    opacity: var(--togostanza-fadeout-opacity);
-    transition: var(--togostanza-fadeout-transition);
+  rect {
+    stroke: var(--togostanza-border-color);
+    stroke-width: calc(var(--togostanza-border-width) * 1px);
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    &.-selected {
+      opacity: 1 !important;
+    }
+
+    &.-fadeout {
+      opacity: var(--togostanza-fadeout-opacity);
+      transition: var(--togostanza-fadeout-transition);
+    }
   }
 
-  &.-selected {
-    opacity: 1;
+  :has(.-selected) {
+    rect {
+      opacity: var(--togostanza-fadeout-opacity);
+      &:hover {
+        opacity: 1;
+      }
+    }
   }
 }
 

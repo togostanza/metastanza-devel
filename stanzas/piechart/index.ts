@@ -96,6 +96,16 @@ export default class Piechart extends MetaStanza {
         .attr("d", <any>arcGenerator)
         .attr("fill", (d) => d.data[colorSym]);
 
+
+        pieGroups.on("mouseenter", function () {
+          const node = select(this);
+          pieGroups.classed("-fadeout", true);
+          node.classed("-fadeout", false);
+        });
+        pieGroups.on("mouseleave", function () {
+          pieGroups.classed("-fadeout", false);
+        });
+
       pieGroups.on("click", (_, d) => {
         toggleSelectIds({
           selectedIds: this.selectedIds,
