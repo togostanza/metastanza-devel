@@ -1,0 +1,17 @@
+{
+  "@context": {
+    "stanza": "http://togostanza.org/resource/stanza#"
+  },
+  "@id": "dumbell",
+  "stanza:label": "dumbell",
+  "stanza:definition": "dumbell table MetaStanza",
+  "stanza:license": "MIT",
+  "stanza:author": "DBCLS",
+  "stanza:address": "https://github.com/togostanza/metastanza",
+  "stanza:contributor": ["PENQE", "Enishi Tech"],
+  "stanza:created": "2021-03-18",
+  "stanza:updated": "2022-10-25",
+  "stanza:parameter": [],
+  "stanza:menu-placement": "bottom-right",
+  "stanza:style": []
+}
