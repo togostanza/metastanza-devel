@@ -27,6 +27,7 @@
       "stanza:example": "ordinal",
       "stanza:description": "Axis scale"
     },
+
     {
       "stanza:key": "axis-x-placement",
       "stanza:type": "single-choice",
@@ -88,6 +89,18 @@
       "stanza:choice": ["linear", "log10"],
       "stanza:example": "linear",
       "stanza:description": "Axis scale"
+    },
+    {
+      "stanza:key": "axis-y-range_max",
+      "stanza:type": "number",
+      "stanza:example": null,
+      "stanza:description": "Axis range max value"
+    },
+    {
+      "stanza:key": "axis-y-range_min",
+      "stanza:type": "number",
+      "stanza:example": null,
+      "stanza:description": "Axis range min value"
     },
     {
       "stanza:key": "axis-y-placement",

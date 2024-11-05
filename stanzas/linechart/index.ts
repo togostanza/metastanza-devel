@@ -72,6 +72,8 @@ export default class Linechart extends MetaStanza {
     const xScaleType = this.params["axis-x-scale"];
     const yKeyName = this.params["axis-y-key"];
     const yScaleType = this.params["axis-y-scale"];
+    const yMin = this.params["axis-y-range_min"] as number | undefined;
+    const yMax = this.params["axis-y-range_max"] as number | undefined;
     const xAxisTitle =
       typeof this.params["axis-x-title"] === "undefined"
         ? xKeyName
@@ -184,6 +186,13 @@ export default class Linechart extends MetaStanza {
 
     const yDomain = extent(values.map((d) => d[yKeyName]));
 
+    if (yMin !== undefined) {
+      yDomain[0] = yMin;
+    }
+    if (yMax !== undefined) {
+      yDomain[1] = yMax;
+    }
+
     const xParams: AxisParamsI = {
       placement: params["axis-x-placement"],
       domain: xDomain,
@@ -226,6 +235,8 @@ export default class Linechart extends MetaStanza {
     this.xAxisGen.update(xParams);
     this.yAxisGen.update(yParams);
 
+    this.yAxisGen.axisArea;
+
     values.forEach((val) => {
       val[xSym] = this.xAxisGen.scale(val[xKeyName]);
       val[ySym] = this.yAxisGen.scale(val[yKeyName]);
@@ -237,6 +248,17 @@ export default class Linechart extends MetaStanza {
       "transform",
       `translate(${this.xAxisGen.axisArea.x},${this.xAxisGen.axisArea.y})`
     );
+
+    const clipPath = svg.append("defs").append("clipPath").attr("id", "mask");
+    clipPath
+      .append("rect")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", this.yAxisGen.axisArea.width)
+      .attr("height", this.yAxisGen.axisArea.height)
+      .attr("fill", "white");
+
+    this.graphArea.attr("clip-path", "url(#mask)");
 
     const lines = drawChart(this.graphArea, this.dataByGroup, symbols);
 
