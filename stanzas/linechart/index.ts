@@ -250,6 +250,7 @@ export default class Linechart extends MetaStanza {
     );
 
     const clipPath = svg.append("defs").append("clipPath").attr("id", "mask");
+
     clipPath
       .append("rect")
       .attr("x", 0)
@@ -258,11 +259,23 @@ export default class Linechart extends MetaStanza {
       .attr("height", this.yAxisGen.axisArea.height)
       .attr("fill", "white");
 
-    this.graphArea.attr("clip-path", "url(#mask)");
+    // this.graphArea.attr("clip-path", "url(#mask)");
 
     const lines = drawChart(this.graphArea, this.dataByGroup, symbols);
 
-    drawPoints(lines, pointSize, symbols);
+    const dataPointSymbols = drawPoints(lines, pointSize, symbols);
+
+    dataPointSymbols
+      .filter(
+        (d) =>
+          !isXYValueInRange(
+            this.yAxisGen.axisArea.width,
+            this.yAxisGen.axisArea.height,
+            d[xSym],
+            d[ySym]
+          )
+      )
+      .remove();
 
     if (showLegend) {
       addLegend.call(this, legendTitle, lines);
@@ -317,7 +330,8 @@ function drawChart(g: TGSelection, dataMap: TDataByGroup, symbols: TSymbols) {
     .append("path")
     .classed("chart-line", true)
     .attr("stroke", (d) => d[1].color)
-    .attr("d", (d) => lineGen(d[1].values));
+    .attr("d", (d) => lineGen(d[1].values))
+    .attr("clip-path", "url(#mask)");
 
   return enter;
 }
@@ -355,6 +369,10 @@ function drawPoints(
     .attr("data-tooltip", (d) => d[symbols.tooltipSym]);
 
   return enterSymbols;
+}
+
+function isXYValueInRange(width: number, height: number, x: number, y: number) {
+  return x >= 0 && x <= width && y >= 0 && y <= height;
 }
 
 function parseType(
