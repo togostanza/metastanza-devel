@@ -53,11 +53,6 @@ export default class ForceGraph extends Stanza {
     });
 
     this._data = data.data;
-    const graph = data.asGraph({
-      edgesKey: "links", // TODO parameterize
-    });
-
-    const { nodes, edges } = graph;
 
     const nodeSizeParams = {
       dataKey: this.params["node-size_key"] || "",
@@ -86,11 +81,30 @@ export default class ForceGraph extends Stanza {
     const nodeLabelParams = {
       margin: 3,
       dataKey: this.params["node-label_key"],
+      urlKey: this.params["node-url_key"],
     };
 
     const highlightAdjEdges = true;
 
     const MARGIN = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
+
+    const graph = data.asGraph({
+      nodesKey: this.params["data-nodes_key"],
+      edgesKey: this.params["data-edges_key"],
+      nodeIdKey: this.params["node-id_key"],
+    });
+
+    const { nodes, edges } = graph;
+
+    // add any other arbitrary data that was in the json:
+    for (const node of nodes) {
+      Object.assign(
+        node,
+        this._data[this.params["data-nodes_key"]]?.find(
+          (d) => d[this.params["node-id_key"]] === node.id
+        )
+      );
+    }
 
     const tooltipParams = {
       dataKey: this.params["node-tooltip_key"],

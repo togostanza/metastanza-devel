@@ -200,14 +200,25 @@ export default function (
   }
 
   if (nodeLabelParams.dataKey !== "" && nodes[0][nodeLabelParams.dataKey]) {
-    nodeGroups
-      .append("text")
-      .attr("x", 0)
-      .attr("dy", (d) => nodeLabelParams.margin + d[symbols.nodeSizeSym])
-      .attr("class", "label")
-      .attr("alignment-baseline", "hanging")
-      .attr("text-anchor", "middle")
-      .text((d) => d[nodeLabelParams.dataKey]);
+    nodeGroups.each(function (d) {
+      let selectionToAppend = d3.select(this);
+
+      if (d[symbols.nodeUrlSym]) {
+        selectionToAppend = selectionToAppend
+          .append("a")
+          .attr("href", d[symbols.nodeUrlSym])
+          .attr("target", "_blank");
+      }
+
+      selectionToAppend
+        .append("text")
+        .attr("x", 0)
+        .attr("dy", (d) => nodeLabelParams.margin + d[symbols.nodeSizeSym])
+        .attr("class", "label")
+        .attr("alignment-baseline", "hanging")
+        .attr("text-anchor", "middle")
+        .text(d[symbols.nodeLabelSym]);
+    });
   }
 
   let isDragging = false;

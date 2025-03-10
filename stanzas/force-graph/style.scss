@@ -26,6 +26,10 @@ svg > defs > marker > path {
   cursor: pointer;
 }
 
+.node-group > a {
+  text-decoration: underline;
+}
+
 .link {
   stroke-opacity: var(--togostanza-edge-opacity);
   stroke-linecap: round;
