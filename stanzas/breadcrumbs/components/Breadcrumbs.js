@@ -4,6 +4,18 @@ import { applyConstructor } from "@/lib/utils";
 import { ref, createRef } from "lit/directives/ref.js";
 
 export class Breadcrumbs extends LitElement {
+  data = [];
+  loading = false;
+  pathToShow = [];
+  nodesMap = new Map();
+  currentMenuItems = [];
+  hoverNodeId = "";
+  rootNodeId = null;
+  pathToCopy = "/";
+  observedStyle = null;
+  observer = null;
+  invisibleNode = createRef();
+
   static get properties() {
     return {
       currentId: { type: String, reflect: true },
@@ -12,22 +24,7 @@ export class Breadcrumbs extends LitElement {
   }
   constructor(element) {
     super();
-
     element.append(this);
-
-    this.data = [];
-    this.loading = false;
-    this.pathToShow = [];
-    this.nodesMap = new Map();
-    this.currentMenuItems = [];
-    this.hoverNodeId = "";
-
-    this.rootNodeId = null;
-    this.pathToCopy = "/";
-    this.observedStyle = null;
-    this.observer = null;
-
-    this.invisibleNode = createRef();
   }
 
   updateParams(params, data) {
@@ -187,6 +184,7 @@ export class Breadcrumbs extends LitElement {
       ${map(this.pathToShow, (node) => {
         return html`
           <breadcrumbs-node
+            @node-hover=${this._handleNodeHover}
             @click=${() => {
               this.currentId = "" + node[this.nodeKey];
               this.dispatchEvent(
@@ -197,13 +195,13 @@ export class Breadcrumbs extends LitElement {
                 })
               );
             }}
-            @node-hover=${this._handleNodeHover}
             @menu-item-clicked=${({ detail }) =>
               (this.currentId = "" + detail.id)}
             data-id="${node[this.nodeKey]}"
             .node="${{
               label: node[this.nodeLabelKey],
               id: node[this.nodeKey],
+              url: node[this.nodeUrlKey],
             }}"
             .menuItems=${this._getByParent(node.parent)
               .filter((d) => d[this.nodeKey] !== node[this.nodeKey])
