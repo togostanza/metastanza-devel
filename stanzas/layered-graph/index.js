@@ -1,23 +1,22 @@
-import Stanza from "togostanza/stanza";
-import * as d3 from "d3";
-import { _3d } from "d3-3d";
-import loadData from "togostanza-utils/load-data";
-import ToolTip from "@/lib/ToolTip";
 import getStanzaColors from "@/lib/ColorGenerator";
-import { LayeredGraphDataModel } from "@/lib/GraphDataSchema";
-import { curvedLink, straightLink } from "./curvedLink";
 import prepareGraphData, {
   get3DEdges,
   getGroupPlanes,
 } from "@/lib/prepareGraphData";
+import ToolTip from "@/lib/ToolTip";
+import * as d3 from "d3";
+import { _3d } from "d3-3d";
 import {
-  downloadSvgMenuItem,
-  downloadPngMenuItem,
-  downloadJSONMenuItem,
-  downloadCSVMenuItem,
-  downloadTSVMenuItem,
   appendCustomCss,
+  downloadCSVMenuItem,
+  downloadJSONMenuItem,
+  downloadPngMenuItem,
+  downloadSvgMenuItem,
+  downloadTSVMenuItem,
 } from "togostanza-utils";
+import { Data } from "togostanza-utils/data";
+import Stanza from "togostanza/stanza";
+import { curvedLink, straightLink } from "./curvedLink";
 
 export default class ForceGraph extends Stanza {
   menu() {
@@ -49,18 +48,28 @@ export default class ForceGraph extends Stanza {
       template: "stanza.html.hbs",
     });
 
-    const values = LayeredGraphDataModel.parse(
-      await loadData(
-        this.params["data-url"],
-        this.params["data-type"],
-        this.root.querySelector("main")
-      )
-    );
+    const data = await Data.load(this.params["data-url"], {
+      type: this.params["data-type"],
+      mainElement: this.root.querySelector("main"),
+    });
 
-    this._data = values;
+    this._data = data.data;
 
-    const nodes = values.nodes;
-    const edges = values.links;
+    const { nodes, edges } = data.asGraph({
+      nodesKey: this.params["data-nodes_key"] || "nodes",
+      edgesKey: this.params["data-edges_key"] || "links",
+      nodeIdKey: this.params["node-id_key"] || "id",
+    });
+
+    // add any other arbitrary data that was in the json:
+    for (const node of nodes) {
+      Object.assign(
+        node,
+        this._data[this.params["data-nodes_key"]]?.find(
+          (d) => d[this.params["node-id_key"]] === node.id
+        )
+      );
+    }
 
     const HEIGHT = height - MARGIN.TOP - MARGIN.BOTTOM;
     const WIDTH = width - MARGIN.LEFT - MARGIN.RIGHT;
@@ -119,6 +128,7 @@ export default class ForceGraph extends Stanza {
     const nodeLabelParams = {
       margin: 3,
       dataKey: this.params["node-label_key"],
+      urlKey: this.params["node-url_key"],
     };
 
     const edgeWidthParams = {
@@ -164,6 +174,7 @@ export default class ForceGraph extends Stanza {
       edges,
       params
     );
+
     const sortedGroupHash = new Map(
       [...groupHash.entries()].sort(([a], [b]) => Number(a) - Number(b))
     );
@@ -333,21 +344,26 @@ export default class ForceGraph extends Stanza {
         );
 
       function addNode(nodeGroup) {
-        nodeGroup
-          .append("circle")
-          .classed("node", true)
-          .attr("cx", 0)
-          .attr("cy", 0)
-          .attr("r", (d) => d[symbols.nodeSizeSym])
-          .style("fill", (d) => d[symbols.nodeColorSym]);
-
-        nodeGroup
-          .append("text")
-          .classed("node-label", true)
-          .text((d) => d[symbols.nodeLabelSym] || "")
-          .attr("alignment-baseline", "hanging")
-          .attr("text-anchor", "middle")
-          .attr("y", (d) => d[symbols.nodeSizeSym] + 2);
+        nodeGroup.html(function (d) {
+          let label = "";
+          if (d[symbols.nodeUrlSym]) {
+            label = `<a href="${
+              d[symbols.nodeUrlSym]
+            }" target="_blank"><text class="node-label" alignment-baseline="hanging" text-anchor="middle" y="${
+              d[symbols.nodeSizeSym] + 2
+            }">${d[symbols.nodeLabelSym]}</text></a>`;
+          } else {
+            label = `<text class="node-label" alignment-baseline="hanging" text-anchor="middle" y="${
+              d[symbols.nodeSizeSym] + 2
+            }">${d[symbols.nodeLabelSym]}</text>`;
+          }
+          return `
+          <circle class="node" cx="0" cy="0" r="${
+            d[symbols.nodeSizeSym]
+          }" style="fill: ${d[symbols.nodeColorSym]}"></circle>
+          ${label}
+          `;
+        });
       }
 
       points.sort(point3d.sort);
