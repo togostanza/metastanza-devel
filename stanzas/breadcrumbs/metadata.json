@@ -10,23 +10,38 @@
   "stanza:license": "MIT",
   "stanza:author": "DBCLS",
   "stanza:address": "https://github.com/togostanza/metastanza",
-  "stanza:contributor": ["PENQE", "Enishi Tech"],
+  "stanza:contributor": [
+    "PENQE",
+    "Enishi Tech"
+  ],
   "stanza:created": "2022-04-07",
   "stanza:updated": "2022-04-07",
   "stanza:parameter": [
     {
       "stanza:key": "data-url",
-      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/main/samples/json/tree-data.json",
+      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/refs/heads/feature/add-urls/samples/json/tree-data.json",
       "stanza:description": "Data source URL",
       "stanza:required": true
     },
     {
       "stanza:key": "data-type",
       "stanza:type": "single-choice",
-      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
+      "stanza:choice": [
+        "json",
+        "tsv",
+        "csv",
+        "sparql-results-json"
+      ],
       "stanza:example": "json",
       "stanza:description": "Data type",
       "stanza:required": true
+    },
+    {
+      "stanza:key": "node-url_key",
+      "stanza:type": "string",
+      "stanza:description": "Key of node URL",
+      "stanza:example": "url",
+      "stanza:required": false
     },
     {
       "stanza:key": "node-key",
@@ -121,7 +136,6 @@
       "stanza:description": "Background color"
     }
   ],
-
   "stanza:incomingEvent": [
     {
       "stanza:key": "selectedDatumChanged",
