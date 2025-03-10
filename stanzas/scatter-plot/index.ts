@@ -22,6 +22,15 @@ type MarginsT = {
   BOTTOM: number;
 };
 
+
+const colorSym = Symbol("color");
+const sizeSym = Symbol("size");
+const idSym = Symbol("id");
+const xSym = Symbol("x");
+const ySym = Symbol("y");
+const tooltipSym = Symbol("tooltip");
+const nodeUrlSym = Symbol("nodeUrl");
+
 export default class ScatterPlot extends Stanza {
   _data: any[];
   xAxis: Axis;
@@ -79,16 +88,12 @@ export default class ScatterPlot extends Stanza {
     const showLegend = this.params["legend-visible"];
     const legendTitle = this.params["legend-title"];
     const tooltipKey = this.params["tooltips-key"];
+    const nodeUrlKey = this.params["node-url_key"]
 
     const width = parseInt(css("--togostanza-canvas-width"));
     const height = parseInt(css("--togostanza-canvas-height"));
 
-    const colorSym = Symbol("color");
-    const sizeSym = Symbol("size");
-    const idSym = Symbol("id");
-    const xSym = Symbol("x");
-    const ySym = Symbol("y");
-    const tooltipSym = Symbol("tooltip");
+
 
     const nodeSizes = extent<number, number>(
       data,
@@ -206,6 +211,7 @@ export default class ScatterPlot extends Stanza {
       datum[ySym] = this.yAxis.scale(parseFloat(datum[yKey]));
       datum[colorSym] = stanzaColors[0];
       datum[tooltipSym] = datum[tooltipKey];
+      datum[nodeUrlSym] = datum[nodeUrlKey];
     });
 
     if (showLegend) {
@@ -240,6 +246,10 @@ export default class ScatterPlot extends Stanza {
 
     const enteredCircles = circlesUpdate
       .enter()
+      .append("a")
+      .attr("href", (d) => d[nodeUrlSym])
+      .attr("target", "_blank")
+      .attr("rel", "noopener noreferrer")
       .append("circle")
       .attr("class", "chart-node")
       .attr("data-tooltip", (d) => d[tooltipSym])
