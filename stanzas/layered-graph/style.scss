@@ -27,6 +27,11 @@ g.node-g {
     stroke: var(--togostanza-border-color);
     cursor: pointer;
   }
+
+  & > a > .node-label {
+    text-decoration: underline;
+  }
+
   &.active {
     > .node-label {
       opacity: 1;

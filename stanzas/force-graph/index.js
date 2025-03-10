@@ -89,9 +89,9 @@ export default class ForceGraph extends Stanza {
     const MARGIN = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
 
     const graph = data.asGraph({
-      nodesKey: this.params["data-nodes_key"],
-      edgesKey: this.params["data-edges_key"],
-      nodeIdKey: this.params["node-id_key"],
+      nodesKey: this.params["data-nodes_key"] || "nodes",
+      edgesKey: this.params["data-edges_key"] || "links",
+      nodeIdKey: this.params["node-id_key"] || "id",
     });
 
     const { nodes, edges } = graph;
