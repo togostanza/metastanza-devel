@@ -204,9 +204,10 @@ class Node extends LitElement {
     </g>`
         : nothing
     }
-    <text class="node-label" transform="translate(${this.textMargin.left},${
-      this.height / 2
-    })">${this.node.label}</text>
+    ${svg`<text class="node-label" transform="translate(${
+      this.textMargin.left
+    },${this.height / 2})">${this.node.label}</text>`}
+
   </g>`;
 
     return html`
@@ -218,7 +219,9 @@ class Node extends LitElement {
         height="${this.height}"
         ${ref(this.svg)}
       >
-        ${nodeG}
+        ${this.node.url
+          ? svg`<a href="${this.node.url}" target="_blank">${nodeG}</a>`
+          : nodeG}
       </svg>
 
       ${this.showMenu && this.showDropdown && this.menuItems.length > 0
