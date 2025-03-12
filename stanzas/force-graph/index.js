@@ -46,10 +46,6 @@ export default class ForceGraph extends MetaStanza {
       this._graphArea?.remove();
     }
 
-    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
-
-    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
-
     const setFallbackVal = (param, defVal) => {
       return isNaN(parseFloat(this.params[param]))
         ? defVal
@@ -64,8 +60,8 @@ export default class ForceGraph extends MetaStanza {
     const el = this.root.getElementById("force-graph");
 
     //data
-    const width = parseInt(css("--togostanza-canvas-width"));
-    const height = parseInt(css("--togostanza-canvas-height"));
+    const width = parseInt(this.css("--togostanza-canvas-width"));
+    const height = parseInt(this.css("--togostanza-canvas-height"));
 
     const drawContent = async () => {
       const data = await Data.load(this.params["data-url"], {
@@ -125,7 +121,7 @@ export default class ForceGraph extends MetaStanza {
       const highlightAdjEdges = true;
 
       const MARGIN = getMarginsFromCSSString(
-        css("--togostanza-canvas-padding")
+        this.css("--togostanza-canvas-padding")
       );
 
       const tooltipParams = {
@@ -138,14 +134,14 @@ export default class ForceGraph extends MetaStanza {
 
       let i = 0;
 
-      let togoColor = css(`--togostanza-theme-series_${i}_color`)
+      let togoColor = this.css(`--togostanza-theme-series_${i}_color`)
         .trim()
         .toUpperCase();
 
       while (togoColor) {
         togostanzaColors.push(togoColor);
         i++;
-        togoColor = css(`--togostanza-theme-series_${i}_color`)
+        togoColor = this.css(`--togostanza-theme-series_${i}_color`)
           .trim()
           .toUpperCase();
       }

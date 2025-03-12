@@ -1,5 +1,4 @@
 import getStanzaColors from "@/lib/ColorGenerator";
-import { LayeredGraphDataModel } from "@/lib/GraphDataSchema";
 import prepareGraphData, {
   get3DEdges,
   getGroupPlanes,
@@ -8,14 +7,12 @@ import { getMarginsFromCSSString } from "@/lib/utils";
 import * as d3 from "d3";
 import { _3d } from "d3-3d";
 import {
-  appendCustomCss,
   downloadCSVMenuItem,
   downloadJSONMenuItem,
   downloadPngMenuItem,
   downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
-import loadData from "togostanza-utils/load-data";
 import MetaStanza from "../../lib/MetaStanza";
 import { handleApiError } from "../../lib/apiError";
 import {
@@ -24,6 +21,17 @@ import {
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
 import { curvedLink, straightLink } from "./curvedLink";
+
+const markerBoxWidth = 8;
+const markerBoxHeight = 4;
+const refX = markerBoxWidth;
+const refY = markerBoxHeight / 2;
+
+const arrowPoints = [
+  [0, 0],
+  [0, markerBoxHeight],
+  [markerBoxWidth, markerBoxHeight / 2],
+];
 
 export default class ForceGraph extends MetaStanza {
   _graphArea;
@@ -50,19 +58,20 @@ export default class ForceGraph extends MetaStanza {
       this._graphArea?.remove();
     }
 
-    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
-
-    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
-
     const setFallbackNumVal = (value, defVal) => {
       return isNaN(parseFloat(value)) ? defVal : parseFloat(value);
     };
 
     //data
 
-    const width = setFallbackNumVal(css("--togostanza-canvas-width"), 200);
-    const height = setFallbackNumVal(css("--togostanza-canvas-height"), 200);
-    const MARGIN = getMarginsFromCSSString(css("--togostanza-canvas-padding"));
+    const width = setFallbackNumVal(this.css("--togostanza-canvas-width"), 200);
+    const height = setFallbackNumVal(
+      this.css("--togostanza-canvas-height"),
+      200
+    );
+    const MARGIN = getMarginsFromCSSString(
+      this.css("--togostanza-canvas-padding")
+    );
 
     this.renderTemplate({
       template: "stanza.html.hbs",
@@ -70,19 +79,22 @@ export default class ForceGraph extends MetaStanza {
 
     const el = this.root.getElementById("layered-graph");
 
-    const drawContent = async () => {
-      const values = LayeredGraphDataModel.parse(
-        await loadData(
-          this.params["data-url"],
-          this.params["data-type"],
-          this.root.querySelector("main")
-        )
-      );
+    const drawContent = () => {
+      const { nodes, edges } = this.__data.asGraph({
+        nodesKey: this.params["data-nodes_key"] || "nodes",
+        edgesKey: this.params["data-edges_key"] || "links",
+        nodeIdKey: this.params["node-id_key"] || "id",
+      });
 
-      this._data = values;
-
-      const nodes = values.nodes;
-      const edges = values.links;
+      // Merge node data with nodes
+      for (const node of nodes) {
+        Object.assign(
+          node,
+          this._data[this.params["data-nodes_key"]]?.find(
+            (d) => d[this.params["node-id_key"]] === node.id
+          )
+        );
+      }
 
       const HEIGHT = height - MARGIN.TOP - MARGIN.BOTTOM;
       const WIDTH = width - MARGIN.LEFT - MARGIN.RIGHT;
@@ -130,6 +142,7 @@ export default class ForceGraph extends MetaStanza {
       const nodeLabelParams = {
         margin: 3,
         dataKey: this.params["node-label_key"],
+        urlKey: this.params["node-url_key"],
       };
 
       const edgeWidthParams = {
@@ -195,17 +208,6 @@ export default class ForceGraph extends MetaStanza {
         }
       }
 
-      const markerBoxWidth = 8;
-      const markerBoxHeight = 4;
-      const refX = markerBoxWidth;
-      const refY = markerBoxHeight / 2;
-
-      const arrowPoints = [
-        [0, 0],
-        [0, markerBoxHeight],
-        [markerBoxWidth, markerBoxHeight / 2],
-      ];
-
       if (edgeWidthParams.showArrows) {
         const defs = svg.append("defs");
 
@@ -268,7 +270,7 @@ export default class ForceGraph extends MetaStanza {
 
       this._graphArea = svgG;
 
-      var mx, my, mouseX, mouseY;
+      let mx, my, mouseX, mouseY;
 
       const point3d = _3d()
         .x(function (d) {
@@ -350,21 +352,26 @@ export default class ForceGraph extends MetaStanza {
           );
 
         function addNode(nodeGroup) {
-          nodeGroup
-            .append("circle")
-            .classed("node", true)
-            .attr("cx", 0)
-            .attr("cy", 0)
-            .attr("r", (d) => d[symbols.nodeSizeSym])
-            .style("fill", (d) => d[symbols.nodeColorSym]);
-
-          nodeGroup
-            .append("text")
-            .classed("node-label", true)
-            .text((d) => d[symbols.nodeLabelSym] || "")
-            .attr("alignment-baseline", "hanging")
-            .attr("text-anchor", "middle")
-            .attr("y", (d) => d[symbols.nodeSizeSym] + 2);
+          nodeGroup.html(function (d) {
+            let label = "";
+            if (d[symbols.nodeUrlSym]) {
+              label = `<a href="${
+                d[symbols.nodeUrlSym]
+              }" target="_blank"><text class="node-label" alignment-baseline="hanging" text-anchor="middle" y="${
+                d[symbols.nodeSizeSym] + 2
+              }">${d[symbols.nodeLabelSym]}</text></a>`;
+            } else {
+              label = `<text class="node-label" alignment-baseline="hanging" text-anchor="middle" y="${
+                d[symbols.nodeSizeSym] + 2
+              }">${d[symbols.nodeLabelSym]}</text>`;
+            }
+            return `
+              <circle class="node" cx="0" cy="0" r="${
+                d[symbols.nodeSizeSym]
+              }" style="fill: ${d[symbols.nodeColorSym]}"></circle>
+              ${label}
+              `;
+          });
         }
 
         points.sort(point3d.sort);
@@ -383,6 +390,7 @@ export default class ForceGraph extends MetaStanza {
       let groupPlanes = [];
 
       let edgesWithCoords = [];
+
       function init() {
         // Add x,y,z of source and target nodes to 3D edges
         edgesWithCoords = get3DEdges(prepEdges);
@@ -715,14 +723,26 @@ export default class ForceGraph extends MetaStanza {
       init();
 
       if (tooltipParams.show) {
-        const points = svgG.selectAll("circle.node");
-        points.attr("data-tooltip", (d) => {
-          return d[tooltipParams.dataKey];
+        svgG.selectAll(".node-g").each(function (d) {
+          const nodeG = d3.select(this);
+
+          nodeG
+            .selectAll(".node")
+            .attr("data-tooltip", d[tooltipParams.dataKey]);
         });
       }
 
-      const nodeGroups = this._graphArea.selectAll(".node-g");
-      nodeGroups.on("click", (_, d) => {
+      const nodeGroups = this._graphArea
+        .selectAll(".node-g")
+        .selectAll(".node");
+
+      nodeGroups.on("click", (e) => {
+        // need to click onclick on circle, but only circle has no datum. So get the datum from parent
+
+        const g = d3.select(e.currentTarget.parentNode);
+
+        const d = g && g.datum();
+
         toggleSelectIds({
           selectedIds: this.selectedIds,
           targetId: d.id,
