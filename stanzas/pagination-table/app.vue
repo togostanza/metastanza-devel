@@ -204,8 +204,15 @@
             <tr
               v-for="(row, row_index) in rowsInCurrentPage"
               :key="row.id"
-              :class="{ selected: isSelectedRow(row), selectable: eventOutgoing_change_selected_nodes }"
-              @click="eventOutgoing_change_selected_nodes ? handleRowClick($event, row_index, row) : null"
+              :class="{
+                selected: isSelectedRow(row),
+                selectable: eventOutgoing_change_selected_nodes,
+              }"
+              @click="
+                eventOutgoing_change_selected_nodes
+                  ? handleRowClick($event, row_index, row)
+                  : null
+              "
             >
               <template v-for="(cell, i) in row">
                 <td
@@ -688,12 +695,12 @@ export default defineComponent({
           detail: {
             selectedIds,
             targetId: rowId,
-            dataUrl: params.dataUrl
+            dataUrl: params.dataUrl,
           },
         })
       );
       state.lastSelectedRow = rowId;
-      state.selectedRows = [...selectedIds.map(row => row.toString())];
+      state.selectedRows = [...selectedIds.map((row) => row.toString())];
     };
 
     const handleMouseDown = (event) => {
@@ -720,8 +727,8 @@ export default defineComponent({
     };
 
     const updateSelectedRows = (emitSelectedEventParams) => {
-      const {selectedIds} = emitSelectedEventParams;
-      state.selectedRows = [...selectedIds.map(id => id.toString())];
+      const { selectedIds } = emitSelectedEventParams;
+      state.selectedRows = [...selectedIds.map((id) => id.toString())];
     };
 
     return {
@@ -753,7 +760,8 @@ export default defineComponent({
       handleMouseUp,
       isSelectedRow,
       updateSelectedRows,
-      eventOutgoing_change_selected_nodes: params.eventOutgoing_change_selected_nodes,
+      eventOutgoing_change_selected_nodes:
+        params.eventOutgoing_change_selected_nodes,
     };
   },
 });

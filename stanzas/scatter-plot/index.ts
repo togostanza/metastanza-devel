@@ -27,7 +27,6 @@ type MarginsT = {
   BOTTOM: number;
 };
 
-
 const colorSym = Symbol("color");
 const sizeSym = Symbol("size");
 const idSym = Symbol("id");
@@ -123,7 +122,7 @@ export default class ScatterPlot extends MetaStanza {
     const showLegend = this.params["legend-visible"];
     const legendTitle = this.params["legend-title"];
     const tooltipKey = this.params["tooltips-key"];
-    const nodeUrlKey = this.params["node-url_key"]
+    const nodeUrlKey = this.params["node-url_key"];
 
     const width = parseInt(this.css("--togostanza-canvas-width"));
     const height = parseInt(this.css("--togostanza-canvas-height"));

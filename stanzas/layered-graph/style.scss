@@ -27,6 +27,10 @@ g.node-g {
     opacity: 1 !important;
   }
 
+  & > a > .node-label {
+    text-decoration: underline;
+  }
+
   &.-active {
     > .node-label {
       opacity: 1;
@@ -49,10 +53,6 @@ g.node-g {
 
   &.-fadeout {
     opacity: var(--togostanza-fadeout-opacity);
-  }
-
-  & > a > .node-label {
-    text-decoration: underline;
   }
 }
 

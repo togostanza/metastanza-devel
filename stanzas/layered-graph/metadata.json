@@ -8,10 +8,7 @@
   "stanza:license": "MIT",
   "stanza:author": "DBCLS",
   "stanza:address": "https://github.com/togostanza/metastanza",
-  "stanza:contributor": [
-    "PENQE",
-    "Einishi Tech"
-  ],
+  "stanza:contributor": ["PENQE", "Einishi Tech"],
   "stanza:created": "2022-04-01",
   "stanza:updated": "2022-11-02",
   "stanza:parameter": [
@@ -24,12 +21,7 @@
     {
       "stanza:key": "data-type",
       "stanza:type": "single-choice",
-      "stanza:choice": [
-        "json",
-        "tsv",
-        "csv",
-        "sparql-results-json"
-      ],
+      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
       "stanza:example": "json",
       "stanza:description": "Data type",
       "stanza:required": true
@@ -79,10 +71,7 @@
     {
       "stanza:key": "nodes-sort-order",
       "stanza:type": "single-choice",
-      "stanza:choice": [
-        "ascending",
-        "descending"
-      ],
+      "stanza:choice": ["ascending", "descending"],
       "stanza:example": "ascending",
       "stanza:description": "Nodes sorting order"
     },
@@ -107,11 +96,7 @@
     {
       "stanza:key": "node-size-scale",
       "stanza:type": "single-choice",
-      "stanza:choice": [
-        "linear",
-        "sqrt",
-        "log10"
-      ],
+      "stanza:choice": ["linear", "sqrt", "log10"],
       "stanza:example": "sqrt",
       "stanza:description": "Node size scale"
     },
@@ -142,11 +127,7 @@
     {
       "stanza:key": "edge-width-scale",
       "stanza:type": "single-choice",
-      "stanza:choice": [
-        "linear",
-        "sqrt",
-        "log10"
-      ],
+      "stanza:choice": ["linear", "sqrt", "log10"],
       "stanza:example": "linear",
       "stanza:description": "Edge width scale"
     },

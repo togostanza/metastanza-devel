@@ -25,7 +25,8 @@ g {
 
   .selectable {
     transition: var(--togostanza-fadeout-transition);
-    &:hover, &.-selected:not([fill-opacity="0"]) {
+    &:hover,
+    &.-selected:not([fill-opacity="0"]) {
       opacity: 1 !important;
     }
   }

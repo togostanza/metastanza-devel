@@ -81,7 +81,6 @@
       "stanza:example": 3,
       "stanza:description": "Maximum edge width in px (Effective only in circle layout graph mode)"
     },
-
     {
       "stanza:key": "tooltips-key",
       "stanza:type": "string",
@@ -154,7 +153,6 @@
       "stanza:default": 0,
       "stanza:description": "Border width in px"
     },
-
     {
       "stanza:key": "--togostanza-edge-color",
       "stanza:type": "color",
@@ -167,7 +165,6 @@
       "stanza:default": 0.7,
       "stanza:description": "Egdes opacity"
     },
-
     {
       "stanza:key": "--togostanza-theme-series_0_color",
       "stanza:type": "color",

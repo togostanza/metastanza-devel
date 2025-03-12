@@ -21,12 +21,7 @@
     {
       "stanza:key": "data-type",
       "stanza:type": "single-choice",
-      "stanza:choice": [
-        "json",
-        "tsv",
-        "csv",
-        "sparql-results-json"
-      ],
+      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
       "stanza:example": "json",
       "stanza:description": "Data type",
       "stanza:required": true
@@ -73,12 +68,7 @@
     {
       "stanza:key": "axis-x-scale",
       "stanza:type": "single-choice",
-      "stanza:choice": [
-        "linear",
-        "log10",
-        "ordinal",
-        "time"
-      ],
+      "stanza:choice": ["linear", "log10", "ordinal", "time"],
       "stanza:example": "linear",
       "stanza:description": "Axis scale",
       "stanza:required": false
@@ -176,10 +166,7 @@
     {
       "stanza:key": "axis-y-scale",
       "stanza:type": "single-choice",
-      "stanza:choice": [
-        "linear",
-        "log10"
-      ],
+      "stanza:choice": ["linear", "log10"],
       "stanza:example": "linear",
       "stanza:default": "linear",
       "stanza:description": "Axis scale",

@@ -252,10 +252,11 @@ function draw(el, dataset, opts, stanza) {
       .text((d) =>
         d === root
           ? ""
-          : `${name(d)}\n${d?.children
-            ? format(sum(d, (d) => d?.data?.data.value || 0))
-            : d.data.data.value
-          }`
+          : `${name(d)}\n${
+              d?.children
+                ? format(sum(d, (d) => d?.data?.data.value || 0))
+                : d.data.data.value
+            }`
       );
 
     node
@@ -264,10 +265,11 @@ function draw(el, dataset, opts, stanza) {
       .classed("breadcrumb", (d) => d === root)
       .attr("id", (d) => (d.leafUid = uid("leaf")).id)
       .attr("style", (d) => {
-        return `fill: ${d === root
+        return `fill: ${
+          d === root
             ? "var(--togostanza-theme-background_color)"
             : colorScale(d.data.data.label)
-          }`;
+        }`;
       });
 
     //Add inner nodes to show that it's a zoomable tile
@@ -405,11 +407,13 @@ function draw(el, dataset, opts, stanza) {
       if (d === root) {
         return `translate(0,0)`;
       } else if (d.parent !== root) {
-        return `translate(${x(d.x0) - x(d.parent.x0)},${y(d.y0) - y(d.parent.y0)
-          })`;
+        return `translate(${x(d.x0) - x(d.parent.x0)},${
+          y(d.y0) - y(d.parent.y0)
+        })`;
       } else {
-        return `translate(${x(d.x0) + gapWidth},${y(d.y0) + rootHeight + gapWidth
-          })`;
+        return `translate(${x(d.x0) + gapWidth},${
+          y(d.y0) + rootHeight + gapWidth
+        })`;
       }
     });
 
@@ -505,11 +509,11 @@ function getLineHeight(el) {
   temp.setAttribute(
     "style",
     "margin:0; padding:0; " +
-    "font-family:" +
-    (el.style.fontFamily || "inherit") +
-    "; " +
-    "font-size:" +
-    (el.style.fontSize || "inherit")
+      "font-family:" +
+      (el.style.fontFamily || "inherit") +
+      "; " +
+      "font-size:" +
+      (el.style.fontSize || "inherit")
   );
   temp.innerHTML = "A";
 
