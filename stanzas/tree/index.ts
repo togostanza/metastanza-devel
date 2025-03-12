@@ -1,4 +1,4 @@
-import { getCirculateColor } from "@/lib/ColorGenerator";
+import { getCirculateColor } from "../../lib/ColorGenerator";
 import {
   cluster,
   linkHorizontal,
@@ -11,6 +11,7 @@ import {
   stratify,
   tree,
 } from "d3";
+import { HierarchyNode, HierarchyLink } from "d3-hierarchy";
 import {
   downloadCSVMenuItem,
   downloadJSONMenuItem,
@@ -32,13 +33,35 @@ const ASCENDING = "ascending",
   HORIZONTAL = "horizontal",
   VERTICAL = "vertical",
   RADIAL = "radial",
-  TRANSLUCENT = "translucent",
-  MULTIPLY = "multiply",
-  SCREEN = "screen";
+  COLOR_MODES = {
+    translucent: { property: "opacity", value: "0.5" },
+    multiply: { property: "mix-blend-mode", value: "multiply" },
+    screen: { property: "mix-blend-mode", value: "screen" },
+  };
+
+interface NodeData {
+  id: number;
+  label: string;
+  group: string;
+  order?: number;
+  description?: string;
+  url?: string;
+  parent?: number;
+  value?: number;
+  children?: number[];
+}
+
+interface ExtendedHierarchyNode extends HierarchyNode<NodeData> {
+  x?: number;
+  x0?: number;
+  y?: number;
+  y0?: number;
+  _children?: ExtendedHierarchyNode[] | null;
+}
 
 export default class Tree extends MetaStanza {
-  _chartArea;
-  selectedIds = [];
+  _chartArea: d3.Selection<SVGGElement, unknown, SVGElement, undefined>;
+  selectedIds: Array<string | number> = [];
   selectedEventParams = {
     targetElementSelector: "g.labels g",
     selectedElementClassName: "-selected",
@@ -62,78 +85,69 @@ export default class Tree extends MetaStanza {
 
     //Define from params
     const nodeGroupKey = this.params["node-color-group"].trim();
+    const width = parseFloat(this.css("--togostanza-canvas-width")) || 0;
+    const height = parseFloat(this.css("--togostanza-canvas-height")) || 0;
+    const minRadius = this.params["node-size-min"] / 2;
+    const maxRadius = this.params["node-size-max"] / 2;
+    const colorMode = this.params["node-color-blend"];
+    const sortOrder = this.params["sort-order"];
+
+    const root = this._main;
+
+    const dataset: NodeData[] = this.__data.asTree({
+      nodeLabelKey: this.params["node-label-key"].trim(),
+      nodeColorKey: this.params["node-color-key"].trim(),
+      nodeGroupKey,
+      nodeOrderKey: this.params["sort-key"].trim(),
+      nodeValueKey: this.params["node-size-key"].trim(),
+      nodeDescriptionKey: this.params["tooltips-key"].trim(),
+    }).data as NodeData[];
+    const padding = this.MARGIN;
+    const isLeafNodesAlign = this.params["graph-align_leaf_nodes"];
+    const layout = this.params["graph-layout"];
+    const labelMargin = this.params["node-label-margin"];
+    const aveRadius = (minRadius + maxRadius) / 2;
+    const colorGroup = nodeGroupKey; // NOTE Actually, this variable is not needed (because asTree does the property name conversion), but since we cannot remove this variable without changing the getCirculateColor interface, we have left it in.
+
+    let colorModeProperty, colorModeValue;
+
+    // Set color mode
+    if (COLOR_MODES[colorMode]) {
+      ({ property: colorModeProperty, value: colorModeValue } =
+        COLOR_MODES[colorMode]);
+    }
+
+    //Sorting by user keywords
+    const orderSym = Symbol("order");
+    dataset.forEach((datum, index) => {
+      datum[orderSym] = index;
+    });
+
+    const reorder = (
+      a: HierarchyNode<NodeData>,
+      b: HierarchyNode<NodeData>
+    ) => {
+      if (a.data.order && b.data.order) {
+        return sortOrder === ASCENDING
+          ? a.data.order - b.data.order
+          : b.data.order - a.data.order;
+      }
+      return sortOrder === DESCENDING ? b.data[orderSym] - a.data[orderSym] : 0;
+    };
 
     const drawContent = async () => {
-      const root = this._main,
-        dataset = this.__data.asTree({
-          nodeLabelKey: this.params["node-label-key"].trim(),
-          nodeColorKey: this.params["node-color-key"].trim(),
-          nodeGroupKey,
-          nodeOrderKey: this.params["sort-key"].trim(),
-          nodeValueKey: this.params["node-size-key"].trim(),
-          nodeDescriptionKey: this.params["tooltips-key"].trim(),
-        }).data,
-        width = parseFloat(this.css("--togostanza-canvas-width")) || 0,
-        height = parseFloat(this.css("--togostanza-canvas-height")) || 0,
-        padding = this.MARGIN,
-        sortOrder = this.params["sort-order"],
-        isLeafNodesAlign = this.params["graph-align_leaf_nodes"],
-        layout = this.params["graph-layout"],
-        labelMargin = this.params["node-label-margin"],
-        minRadius = this.params["node-size-min"] / 2,
-        maxRadius = this.params["node-size-max"] / 2,
-        aveRadius = (minRadius + maxRadius) / 2,
-        colorGroup = nodeGroupKey, // NOTE Actually, this variable is not needed (because asTree does the property name conversion), but since we cannot remove this variable without changing the getCirculateColor interface, we have left it in.
-        colorMode = this.params["node-color-blend"];
-
-      let colorModeProperty, colorModeValue;
-      switch (colorMode) {
-        case TRANSLUCENT:
-          colorModeProperty = "opacity";
-          colorModeValue = "0.5";
-          break;
-        case MULTIPLY:
-          colorModeProperty = "mix-blend-mode";
-          colorModeValue = "multiply";
-          break;
-        case SCREEN:
-          colorModeProperty = "mix-blend-mode";
-          colorModeValue = "screen";
-          break;
-        default:
-          break;
-      }
-
-      //Sorting by user keywords
-      const orderSym = Symbol("order");
-      dataset.forEach((datum, index) => {
-        datum[orderSym] = index;
-      });
-
-      const reorder = (a, b) => {
-        if (a.data.order && b.data.order) {
-          switch (sortOrder) {
-            case ASCENDING:
-              return a.data.order > b.data.order ? 1 : -1;
-            case DESCENDING:
-              return a.data.order > b.data.order ? -1 : 1;
-          }
-        } else {
-          if (sortOrder === DESCENDING) {
-            return b.data[orderSym] - a.data[orderSym];
-          }
-        }
-      };
-
       //Hierarchize data
-      const treeRoot = stratify()
-        .parentId((d) => d.parent)(dataset)
-        .sort(reorder);
+      const treeRoot = stratify<NodeData>()
+        .id((d) => String(d.id))
+        .parentId((d) => (d.parent !== undefined ? String(d.parent) : null))(
+          dataset
+        )
+        .sort(reorder) as ExtendedHierarchyNode;
 
-      const treeDescendants = treeRoot.descendants();
+      const treeDescendants = treeRoot.descendants() as ExtendedHierarchyNode[];
       const data = treeDescendants.slice(1);
 
-      //Setting node size
+      // Setting node size
       const nodeSizeMin = min(data, (d) => d.data.value);
       const nodeSizeMax = max(data, (d) => d.data.value);
 
@@ -412,8 +426,8 @@ export default class Tree extends MetaStanza {
 
           //Drawing circles
           const nodeCirclesUpdate = gCircles
-            .selectAll("g")
-            .data(treeRoot.descendants(), (d) => d.id || (d.id = ++i));
+            .selectAll<SVGGElement, ExtendedHierarchyNode>("g")
+            .data(treeRoot.descendants(), (d) => d.id ?? String(++i));
 
           //Generate new elements of circle
           const nodeCirclesEnter = nodeCirclesUpdate
@@ -446,7 +460,6 @@ export default class Tree extends MetaStanza {
                     selectedIds: this.selectedIds,
                     ...this.selectedEventParams,
                   });
-                  console.log(this.selectedIds);
                   if (this.params["event-outgoing_change_selected_nodes"]) {
                     emitSelectedEvent({
                       rootElement: this.element,
@@ -484,18 +497,18 @@ export default class Tree extends MetaStanza {
             .attr("data-tooltip", (d) => d.data.description)
             .attr("stroke", setColor)
             .style(colorModeProperty, colorModeValue)
-            .classed("with-children", (d) => d.children)
+            .classed("with-children", (d) => !!d.children)
             .attr("r", (d) =>
               data.some((d) => d.data.value)
                 ? nodeRadius(d.data.value)
-                : parseFloat(aveRadius)
+                : aveRadius
             )
             .attr("fill", setColor);
 
           //Drawing labels
           const nodeLabelsUpdate = gLabels
-            .selectAll("g")
-            .data(treeRoot.descendants(), (d) => d.id || (d.id = ++i));
+            .selectAll<SVGGElement, ExtendedHierarchyNode>("g")
+            .data(treeRoot.descendants(), (d) => d.id ?? String(++i));
 
           //Generate new elements of Labels
           const nodeLabelsEnter = nodeLabelsUpdate
@@ -622,7 +635,7 @@ export default class Tree extends MetaStanza {
 
           //Remove extra elements of Labels
           nodeLabelsUpdate
-            .exit()
+            .exit<ExtendedHierarchyNode>()
             .attr("transform", (d) => {
               switch (layout) {
                 case HORIZONTAL:
@@ -657,16 +670,22 @@ export default class Tree extends MetaStanza {
 
           //Drawing path
           const link = g
-            .selectAll(".link")
+            .selectAll<SVGPathElement, d3.HierarchyLink<NodeData>>(".link")
             .data(treeRoot.links(), (d) => d.target.id);
 
           //Setting the path for each direction
           const getLinkFn = () => {
             switch (layout) {
               case HORIZONTAL:
-                return linkHorizontal();
+                return linkHorizontal<
+                  HierarchyNode<NodeData>,
+                  HierarchyLink<NodeData>
+                >();
               case VERTICAL:
-                return linkVertical();
+                return linkVertical<
+                  HierarchyNode<NodeData>,
+                  HierarchyLink<NodeData>
+                >();
             }
           };
 
@@ -678,11 +697,11 @@ export default class Tree extends MetaStanza {
             .attr(
               "d",
               layout === RADIAL
-                ? linkRadial().angle(source.x).radius(source.y)
+                ? (linkRadial() as any).angle(source.x).radius(source.y)
                 : getLinkFn().x(source.y0).y(source.x0)
             );
 
-          //Path transition
+          // //Path transition
           const linkUpdate = linkEnter;
           linkUpdate
             .transition()
@@ -690,12 +709,8 @@ export default class Tree extends MetaStanza {
             .attr(
               "d",
               layout === RADIAL
-                ? linkRadial()
-                    .angle((d) => d.x)
-                    .radius((d) => d.y)
-                : getLinkFn()
-                    .x((d) => d.y)
-                    .y((d) => d.x)
+                ? (linkRadial() as any).angle((d) => d.x).radius((d) => d.y)
+                : (getLinkFn() as any).x((d) => d.y).y((d) => d.x)
             );
 
           //Remove extra elements of path
@@ -746,7 +761,7 @@ export default class Tree extends MetaStanza {
   }
 
   handleEvent(event) {
-    const { selectedIds, dataUrl, targetId } = event.detail;
+    const { selectedIds, dataUrl } = event.detail;
 
     if (
       this.params["event-incoming_change_selected_nodes"] &&
@@ -756,7 +771,6 @@ export default class Tree extends MetaStanza {
       updateSelectedElementClassNameForD3({
         drawing: this._chartArea,
         selectedIds,
-        targetId,
         ...this.selectedEventParams,
       });
     }
