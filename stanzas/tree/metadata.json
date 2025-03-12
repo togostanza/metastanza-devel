@@ -117,29 +117,13 @@
       "stanza:key": "event-incoming_change_selected_nodes",
       "stanza:type": "boolean",
       "stanza:example": true,
-      "stanza:label": "Receive a change event of selected nodes",
-      "stanza:required": false
+      "stanza:label": "Receive a change event of selected nodes"
     },
     {
       "stanza:key": "event-outgoing_change_selected_nodes",
       "stanza:type": "boolean",
       "stanza:example": true,
-      "stanza:label": "Emit a change event of selected nodes",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "event-incoming_change_selected_nodes",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:label": "Receive a change event of selected nodes",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "event-outgoing_change_selected_nodes",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:label": "Emit a change event of selected nodes",
-      "stanza:required": false
+      "stanza:label": "Emit a change event of selected nodes"
     }
   ],
   "stanza:menu-placement": "bottom-right",
