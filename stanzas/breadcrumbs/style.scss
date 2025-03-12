@@ -30,13 +30,13 @@ breadcrumbs-el {
         font-size: calc(var(--togostanza-fonts-font_size_primary));
       }
 
-      a .node-label {
-        text-decoration: underline;
-      }
-
       .node-label,
       .home-icon {
         fill: var(--togostanza-fonts-font_color);
+      }
+
+      a .node-label {
+        text-decoration: underline;
       }
 
       &.-hover {
