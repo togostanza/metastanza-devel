@@ -8,29 +8,61 @@
   "stanza:license": "MIT",
   "stanza:author": "DBCLS",
   "stanza:address": "https://github.com/togostanza/metastanza",
-  "stanza:contributor": ["PENQE", "Einishi Tech"],
+  "stanza:contributor": [
+    "PENQE",
+    "Einishi Tech"
+  ],
   "stanza:created": "2022-03-28",
   "stanza:updated": "2022-10-21",
   "stanza:parameter": [
     {
       "stanza:key": "data-url",
-      "stanza:example": "https://gist.githubusercontent.com/abkunal/98d35b9b235312e90f3e43c9f7b6932b/raw/d5589ddd53731ae8eec7abd091320df91cdcf5cd/miserables.json",
+      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/refs/heads/feature/add-urls/samples/json/graph-data.json",
       "stanza:description": "Data source URL",
       "stanza:required": true
     },
     {
       "stanza:key": "data-type",
       "stanza:type": "single-choice",
-      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
+      "stanza:choice": [
+        "json",
+        "tsv",
+        "csv",
+        "sparql-results-json"
+      ],
       "stanza:example": "json",
       "stanza:description": "Data type",
       "stanza:required": true
+    },
+    {
+      "stanza:key": "data-nodes_key",
+      "stanza:type": "string",
+      "stanza:example": "nodes",
+      "stanza:description": "Data key for nodes. If empty `nodes` will be used"
+    },
+    {
+      "stanza:key": "data-edges_key",
+      "stanza:type": "string",
+      "stanza:example": "links",
+      "stanza:description": "Data key for edges. If empty `links` will be used"
     },
     {
       "stanza:key": "node-size_key",
       "stanza:type": "string",
       "stanza:example": "",
       "stanza:description": "Set size on the node based on data key, or fallback to value of node-size-min"
+    },
+    {
+      "stanza:key": "node-id_key",
+      "stanza:type": "string",
+      "stanza:example": "id",
+      "stanza:description": "Set ID on the node based on data key. If empty, `id` will be used"
+    },
+    {
+      "stanza:key": "node-url_key",
+      "stanza:type": "string",
+      "stanza:example": "url",
+      "stanza:description": "Set URL on the node based on data key"
     },
     {
       "stanza:key": "node-size_min",
@@ -47,7 +79,11 @@
     {
       "stanza:key": "node-size_scale",
       "stanza:type": "single-choice",
-      "stanza:choice": ["linear", "square root", "log10"],
+      "stanza:choice": [
+        "linear",
+        "square root",
+        "log10"
+      ],
       "stanza:example": "square root",
       "stanza:description": "Node radius scale"
     },
@@ -63,7 +99,6 @@
       "stanza:example": "value",
       "stanza:description": "Set width of the edge  data key"
     },
-
     {
       "stanza:key": "edge-width_min",
       "stanza:type": "number",
@@ -79,7 +114,11 @@
     {
       "stanza:key": "edge-width_scale",
       "stanza:type": "single-choice",
-      "stanza:choice": ["linear", "square root", "log10"],
+      "stanza:choice": [
+        "linear",
+        "square root",
+        "log10"
+      ],
       "stanza:example": "linear",
       "stanza:description": "Edge width scale"
     },

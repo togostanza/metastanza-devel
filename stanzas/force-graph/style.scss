@@ -21,6 +21,10 @@
   stroke-width: var(--togostanza-border-width);
   cursor: pointer;
 
+  & > a {
+    text-decoration: underline;
+  }
+
   &.-selected {
     opacity: 1 !important;
   }
@@ -42,8 +46,10 @@
 }
 
 .link {
+  stroke-opacity: var(--togostanza-edge-opacity);
+  stroke-linecap: round;
+  fill: none;
   stroke: var(--togostanza-edge-color);
-  opacity: var(--togostanza-edge-opacity);
 
   &.-fadeout {
     opacity: calc(
