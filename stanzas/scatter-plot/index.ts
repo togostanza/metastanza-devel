@@ -27,6 +27,15 @@ type MarginsT = {
   BOTTOM: number;
 };
 
+
+const colorSym = Symbol("color");
+const sizeSym = Symbol("size");
+const idSym = Symbol("id");
+const xSym = Symbol("x");
+const ySym = Symbol("y");
+const tooltipSym = Symbol("tooltip");
+const nodeUrlSym = Symbol("nodeUrl");
+
 export default class ScatterPlot extends MetaStanza {
   xAxis: Axis;
   yAxis: Axis;
@@ -114,16 +123,10 @@ export default class ScatterPlot extends MetaStanza {
     const showLegend = this.params["legend-visible"];
     const legendTitle = this.params["legend-title"];
     const tooltipKey = this.params["tooltips-key"];
+    const nodeUrlKey = this.params["node-url_key"]
 
     const width = parseInt(this.css("--togostanza-canvas-width"));
     const height = parseInt(this.css("--togostanza-canvas-height"));
-
-    const colorSym = Symbol("color");
-    const sizeSym = Symbol("size");
-    const idSym = Symbol("id");
-    const xSym = Symbol("x");
-    const ySym = Symbol("y");
-    const tooltipSym = Symbol("tooltip");
 
     const nodeSizes = extent<number, number>(
       data,
@@ -225,6 +228,7 @@ export default class ScatterPlot extends MetaStanza {
       datum[ySym] = this.yAxis.scale(parseFloat(datum[yKey]));
       datum[colorSym] = stanzaColors[0];
       datum[tooltipSym] = datum[tooltipKey];
+      datum[nodeUrlSym] = datum[nodeUrlKey];
     });
 
     if (showLegend && !this._error) {
@@ -263,6 +267,9 @@ export default class ScatterPlot extends MetaStanza {
 
     const enteredCircles = circlesUpdate
       .enter()
+      .append("a")
+      .attr("href", (d) => d[nodeUrlSym])
+      .attr("target", "_blank")
       .append("circle")
       .attr("class", "chart-node")
       .attr("data-tooltip", (d) => d[tooltipSym])
