@@ -30,7 +30,7 @@ breadcrumbs-el {
         font-size: calc(var(--togostanza-fonts-font_size_primary));
       }
 
-      a > .node-label:hover {
+      a .node-label {
         text-decoration: underline;
       }
 
