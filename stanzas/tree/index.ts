@@ -564,6 +564,10 @@ export default class Tree extends MetaStanza {
             })
             .text((d) => d.data.label || "");
 
+          nodeLabelsEnter.on("click", (e, d) => {
+            console.log("click", e, d);
+          });
+
           const duration = 500;
 
           //Circle transition
