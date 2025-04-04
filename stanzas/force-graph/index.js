@@ -8,7 +8,6 @@ import drawForceLayout from "./drawForceLayout";
 import { getMarginsFromCSSString } from "@/lib/utils";
 
 import {
-  appendCustomCss,
   downloadCSVMenuItem,
   downloadJSONMenuItem,
   downloadPngMenuItem,
@@ -125,8 +124,8 @@ export default class ForceGraph extends MetaStanza {
       );
 
       const tooltipParams = {
-        dataKey: this.params["node-tooltip_key"],
-        show: nodes.some((d) => d[this.params["node-tooltip_key"]]),
+        dataKey: this.params["tooltips-key"],
+        show: nodes.some((d) => d[this.params["tooltips-key"]]),
       };
 
       // Setting color scale
