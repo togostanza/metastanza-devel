@@ -2,33 +2,35 @@
   > .inputcontainer {
     position: relative;
     > input {
-      &[type="search"], &[type="text"] {
+      &[type="search"],
+      &[type="text"] {
         border: solid 1px #999;
         margin-left: -2px;
-        padding: .3em 1em .3em 2.1em;
+        padding: 0.3em 1em 0.3em 2.1em;
         line-height: 1;
         border-radius: 1.6em;
         &::placeholder {
-          color: #CCC;
+          color: #ccc;
         }
       }
     }
-    &::before, &::after {
+    &::before,
+    &::after {
       content: "";
       display: block;
       position: absolute;
       z-index: 1;
     }
     &::before {
-      width: .8em;
-      height: .8em;
-      top: .4em;
-      left: .7em;
+      width: 0.8em;
+      height: 0.8em;
+      top: 0.4em;
+      left: 0.7em;
       border-radius: 100%;
       border: solid 1px #999;
     }
     &::after {
-      height: .5em;
+      height: 0.5em;
       top: 1em;
       left: 1.5em;
       rotate: -45deg;
@@ -40,7 +42,7 @@
     display: flex;
     position: absolute;
     overflow: auto;
-    border-radius: .5em;
+    border-radius: 0.5em;
     background-color: white;
     z-index: 2;
     box-shadow: 0 2px 4px #0004;
@@ -51,14 +53,14 @@
       z-index: 1;
       > li {
         display: grid;
-        padding: .4em 1em;
+        padding: 0.4em 1em;
         list-style-type: none;
         position: relative;
         &:first-child {
-          margin-top: .6em;
+          margin-top: 0.6em;
         }
         &:last-child {
-          margin-bottom: .8em;
+          margin-bottom: 0.8em;
         }
       }
     }

@@ -27,6 +27,10 @@ g.node-g {
     opacity: 1 !important;
   }
 
+  & > a > .node-label {
+    text-decoration: underline;
+  }
+
   &.-active {
     > .node-label {
       opacity: 1;
@@ -46,6 +50,7 @@ g.node-g {
       stroke-width: calc(var(--togostanza-border-width) * 1.5px);
     }
   }
+
   &.-fadeout {
     opacity: var(--togostanza-fadeout-opacity);
   }

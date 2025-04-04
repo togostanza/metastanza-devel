@@ -16,7 +16,7 @@
   "stanza:parameter": [
     {
       "stanza:key": "data-url",
-      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/main/samples/json/tree-data.json",
+      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/refs/heads/feature/add-urls/samples/json/tree-data.json",
       "stanza:description": "Data source URL",
       "stanza:required": true
     },
@@ -27,6 +27,13 @@
       "stanza:example": "json",
       "stanza:description": "Data type",
       "stanza:required": true
+    },
+    {
+      "stanza:key": "node-url_key",
+      "stanza:type": "string",
+      "stanza:description": "Key of node URL",
+      "stanza:example": "url",
+      "stanza:required": false
     },
     {
       "stanza:key": "node-key",
@@ -121,7 +128,6 @@
       "stanza:description": "Background color"
     }
   ],
-
   "stanza:incomingEvent": [
     {
       "stanza:key": "selectedDatumChanged",

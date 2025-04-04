@@ -14,7 +14,7 @@
     {
       "stanza:key": "data-url",
       "stanza:type": "text",
-      "stanza:example": "https://sparql-support.dbcls.jp/sparqlist/api/metastanza_scatterplot.json",
+      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/refs/heads/feature/add-urls/samples/json/scatter-plot.json",
       "stanza:description": "Data source URL",
       "stanza:required": true
     },
@@ -106,7 +106,6 @@
       "stanza:description": "Axis ticks format, in d3.format or d3.timeFormat string form (time scale). In case of time scale, use d3.timeFormat format string (https://pubs.opengroup.org/onlinepubs/009695399/functions/strptime.html), fallback value for time scale is '%b %d %I %p'. Have no effect in case of ordinal scale)",
       "stanza:required": false
     },
-
     {
       "stanza:key": "axis-x-gridlines_interval",
       "stanza:type": "number",
@@ -195,6 +194,13 @@
       "stanza:example": null,
       "stanza:computed": true,
       "stanza:description": "Axis gridlines interval. If not set, show 5 gridlines at `neat` values, if set to 0, not show gridlines.",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "node-url_key",
+      "stanza:type": "string",
+      "stanza:example": "url",
+      "stanza:description": "Set URL on the node based on data key",
       "stanza:required": false
     },
     {

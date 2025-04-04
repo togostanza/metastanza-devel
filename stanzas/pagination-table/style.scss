@@ -374,7 +374,8 @@
                 border-bottom: none;
               }
             }
-            &.selected, &.selectable:hover {
+            &.selected,
+            &.selectable:hover {
               > td,
               > td.fixed {
                 background-color: var(

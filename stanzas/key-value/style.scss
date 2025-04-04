@@ -16,15 +16,18 @@ main {
     background-color: var(--togostanza-theme-background_color);
     color: var(--togostanza-fonts-font_color_secondary);
     font-family: var(--togostanza-fonts-font_family);
-    border-top: var(--togostanza-border-width) solid var(--togostanza-border-color);
-    border-bottom: var(--togostanza-border-width) solid var(--togostanza-border-color);
+    border-top: var(--togostanza-border-width) solid
+      var(--togostanza-border-color);
+    border-bottom: var(--togostanza-border-width) solid
+      var(--togostanza-border-color);
 
     dl {
       display: flex;
       padding: 5px;
       break-inside: avoid-column;
       &:not(:last-child) {
-        border-bottom: var(--togostanza-border-width) solid var(--togostanza-border-color);
+        border-bottom: var(--togostanza-border-width) solid
+          var(--togostanza-border-color);
       }
       dt {
         width: var(--togostanza-table-key-width_percentage);

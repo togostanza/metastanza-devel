@@ -35,6 +35,10 @@ breadcrumbs-el {
         fill: var(--togostanza-fonts-font_color);
       }
 
+      a .node-label {
+        text-decoration: underline;
+      }
+
       &.-hover {
         .node-label,
         .home-icon {

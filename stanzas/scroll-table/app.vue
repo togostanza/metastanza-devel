@@ -157,9 +157,13 @@ export default defineComponent({
     function handleScroll(e) {
       if (
         e.currentTarget.scrollTop >
-          e.currentTarget.firstChild.clientHeight - e.currentTarget.clientHeight - 5 &&
+          e.currentTarget.firstChild.clientHeight -
+            e.currentTarget.clientHeight -
+            5 &&
         e.currentTarget.scrollTop <
-          e.currentTarget.firstChild.clientHeight - e.currentTarget.clientHeight + 5 &&
+          e.currentTarget.firstChild.clientHeight -
+            e.currentTarget.clientHeight +
+            5 &&
         !state.isFetching
       ) {
         state.offset = state.offset + params.pageSize;

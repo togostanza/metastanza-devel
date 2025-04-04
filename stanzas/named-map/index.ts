@@ -205,7 +205,7 @@ export default class regionGeographicMap extends MetaStanza {
           .attr("data-tooltip", (d) => d[tooltipKey])
           .attr("fill", (d) =>
             switchProperty(d) ? setColor(d[areaColorValue]) : "#555"
-        );
+          );
 
         pathGroup.on("mouseenter", function () {
           const node = select(this);

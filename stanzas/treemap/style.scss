@@ -20,7 +20,8 @@ svg {
 
     rect.selectable:not(.breadcrumb) {
       transition: var(--togostanza-fadeout-transition);
-      &:hover, &.-selected {
+      &:hover,
+      &.-selected {
         opacity: 1 !important;
       }
     }

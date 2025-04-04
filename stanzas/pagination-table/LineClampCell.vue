@@ -7,11 +7,7 @@
     class="label"
     v-html="value"
   ></label>
-  <label
-    v-else
-    :style="`-webkit-line-clamp: ${lineClamp}`"
-    class="label"
-  >
+  <label v-else :style="`-webkit-line-clamp: ${lineClamp}`" class="label">
     {{ value }}
   </label>
 </template>

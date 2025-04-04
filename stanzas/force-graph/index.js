@@ -8,7 +8,6 @@ import drawForceLayout from "./drawForceLayout";
 import { getMarginsFromCSSString } from "@/lib/utils";
 
 import {
-  appendCustomCss,
   downloadCSVMenuItem,
   downloadJSONMenuItem,
   downloadPngMenuItem,
@@ -46,10 +45,6 @@ export default class ForceGraph extends MetaStanza {
       this._graphArea?.remove();
     }
 
-    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
-
-    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
-
     const setFallbackVal = (param, defVal) => {
       return isNaN(parseFloat(this.params[param]))
         ? defVal
@@ -64,8 +59,8 @@ export default class ForceGraph extends MetaStanza {
     const el = this.root.getElementById("force-graph");
 
     //data
-    const width = parseInt(css("--togostanza-canvas-width"));
-    const height = parseInt(css("--togostanza-canvas-height"));
+    const width = parseInt(this.css("--togostanza-canvas-width"));
+    const height = parseInt(this.css("--togostanza-canvas-height"));
 
     const drawContent = async () => {
       const data = await Data.load(this.params["data-url"], {
@@ -75,10 +70,22 @@ export default class ForceGraph extends MetaStanza {
 
       this._data = data.data;
       const graph = data.asGraph({
-        edgesKey: "links", // TODO parameterize
+        nodesKey: this.params["data-nodes_key"],
+        edgesKey: this.params["data-edges_key"],
+        nodeIdKey: this.params["node-id_key"],
       });
 
       const { nodes, edges } = graph;
+
+      // add any other arbitrary data that was in the json:
+      for (const node of nodes) {
+        Object.assign(
+          node,
+          this._data[this.params["data-nodes_key"]]?.find(
+            (d) => d[this.params["node-id_key"]] === node.id
+          )
+        );
+      }
 
       const nodeSizeParams = {
         dataKey: this.params["node-size_key"] || "",
@@ -107,17 +114,18 @@ export default class ForceGraph extends MetaStanza {
       const nodeLabelParams = {
         margin: 3,
         dataKey: this.params["node-label_key"],
+        urlKey: this.params["node-url_key"],
       };
 
       const highlightAdjEdges = true;
 
       const MARGIN = getMarginsFromCSSString(
-        css("--togostanza-canvas-padding")
+        this.css("--togostanza-canvas-padding")
       );
 
       const tooltipParams = {
-        dataKey: this.params["node-tooltip_key"],
-        show: nodes.some((d) => d[this.params["node-tooltip_key"]]),
+        dataKey: this.params["tooltips-key"],
+        show: nodes.some((d) => d[this.params["tooltips-key"]]),
       };
 
       // Setting color scale
@@ -125,14 +133,14 @@ export default class ForceGraph extends MetaStanza {
 
       let i = 0;
 
-      let togoColor = css(`--togostanza-theme-series_${i}_color`)
+      let togoColor = this.css(`--togostanza-theme-series_${i}_color`)
         .trim()
         .toUpperCase();
 
       while (togoColor) {
         togostanzaColors.push(togoColor);
         i++;
-        togoColor = css(`--togostanza-theme-series_${i}_color`)
+        togoColor = this.css(`--togostanza-theme-series_${i}_color`)
           .trim()
           .toUpperCase();
       }
@@ -178,25 +186,28 @@ export default class ForceGraph extends MetaStanza {
       });
 
       if (this.params["event-outgoing_change_selected_nodes"]) {
-        this._graphArea.selectAll(".node").on("click", (_, d) => {
-          toggleSelectIds({
-            selectedIds: this.selectedIds,
-            targetId: d.id,
-          });
-          updateSelectedElementClassNameForD3({
-            drawing: this._graphArea,
-            selectedIds: this.selectedIds,
-            ...this.selectedEventParams,
-          });
-          if (this.params["event-outgoing_change_selected_nodes"]) {
-            emitSelectedEvent({
-              rootElement: this.element,
-              targetId: d.id,
+        this._graphArea
+          .selectAll(".node")
+          .selectAll("circle")
+          .on("click", (_, d) => {
+            toggleSelectIds({
               selectedIds: this.selectedIds,
-              dataUrl: this.params["data-url"],
+              targetId: d.id,
             });
-          }
-        });
+            updateSelectedElementClassNameForD3({
+              drawing: this._graphArea,
+              selectedIds: this.selectedIds,
+              ...this.selectedEventParams,
+            });
+            if (this.params["event-outgoing_change_selected_nodes"]) {
+              emitSelectedEvent({
+                rootElement: this.element,
+                targetId: d.id,
+                selectedIds: this.selectedIds,
+                dataUrl: this.params["data-url"],
+              });
+            }
+          });
       }
     };
 
