@@ -21,8 +21,8 @@
       </div>
       <div class="tableWrapper" :style="`width: ${width};`">
         <table
-          ref="table"
           v-if="state.allRows"
+          ref="table"
           @mousedown="handleMouseDown"
           @mouseup="handleMouseUp"
         >

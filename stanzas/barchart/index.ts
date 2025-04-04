@@ -1,11 +1,4 @@
-import {
-  BaseType,
-  bin,
-  scaleBand,
-  scaleOrdinal,
-  select,
-  Selection
-} from "d3";
+import { BaseType, bin, scaleBand, scaleOrdinal, select, Selection } from "d3";
 import { AxisDomain } from "d3-axis";
 import {
   downloadCSVMenuItem,
@@ -19,10 +12,7 @@ import getStanzaColors from "../../lib/ColorGenerator";
 import Legend from "../../lib/Legend2";
 import MetaStanza from "../../lib/MetaStanza";
 import ToolTip from "../../lib/ToolTip";
-import {
-  emitSelectedEvent,
-  toggleSelectedIdsMultiple
-} from "../../lib/utils";
+import { emitSelectedEvent, toggleSelectedIdsMultiple } from "../../lib/utils";
 
 export default class Barchart extends MetaStanza {
   xAxisGen: Axis;
