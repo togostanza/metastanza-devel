@@ -10,11 +10,11 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 import loadData from "togostanza-utils/load-data";
-import Stanza from "togostanza/stanza";
+import MetaStanza from "@/lib/MetaStanza";
 
 const LINE_HEIGHT = 1;
 
-export default class VennStanza extends Stanza {
+export default class VennStanza extends MetaStanza {
   menu() {
     return [
       downloadSvgMenuItem(this, "vennstanza"),
@@ -150,9 +150,8 @@ export default class VennStanza extends Stanza {
         })?.size ?? "";
       // set color
       const color = this.getBlendedColor(targets);
-      group
-        .querySelector(":scope > .part")
-        .setAttribute("fill", color.toString());
+      const part = group.querySelector(":scope > .part");
+      part.setAttribute("fill", color.toString());
       // set label
       group.querySelector(":scope .text > text.label").textContent =
         labels.join(",");
@@ -165,10 +164,10 @@ export default class VennStanza extends Stanza {
         selectedDiagram.classList.remove("-hovering")
       );
       // tooltip
-      group.dataset.tooltip = `${labels.join("∩")}: ${count}`;
-      group.dataset.tooltipHtml = true;
+      part.dataset.tooltip = `${labels.join("∩")}: ${count}`;
+      //part.dataset.tooltipHtml = true;
     });
-    // this.tooltip.setup(selectedDiagram.querySelectorAll("[data-tooltip]"));
+    this.tooltip.setup(selectedDiagram.querySelectorAll("[data-tooltip]"));
 
     // legend
     const items = this.data.map((datum) => {
