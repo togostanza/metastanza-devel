@@ -136,6 +136,7 @@ export default class ForceGraph extends Stanza {
 
     const tooltipParams = {
       dataKey: this.params["tooltips-key"],
+      tooltipsHtml: this.params["tooltips-html"],
       show: nodes.some((d) => d[this.params["tooltips-key"]]),
     };
 
@@ -702,6 +703,7 @@ export default class ForceGraph extends Stanza {
       points.attr("data-tooltip", (d) => {
         return d[tooltipParams.dataKey];
       });
+      points.attr("data-tooltip-html", tooltipParams.tooltipsHtml);
       this.tooltip.setup(el.querySelectorAll("[data-tooltip]"));
     }
   }

@@ -114,6 +114,12 @@
       "stanza:description": "Node tooltips data key. If empty, no tooltips will be shown"
     },
     {
+      "stanza:key": "tooltips-html",
+      "stanza:type": "boolean",
+      "stanza:example": "true",
+      "stanza:description": "Rendering HTML in Node tooltips. If empty, raw HTML will be shown"
+    },
+    {
       "stanza:key": "togostanza-custom_css_url",
       "stanza:example": "",
       "stanza:description": "Stylesheet(scss file) URL to override current style",
