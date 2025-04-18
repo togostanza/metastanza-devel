@@ -1,6 +1,7 @@
 import Legend from "@/lib/Legend";
 import ToolTip from "@/lib/ToolTip";
 import Color from "color";
+import Handlebars from "handlebars/dist/handlebars.js";
 import {
   appendCustomCss,
   downloadCSVMenuItem,
@@ -43,20 +44,22 @@ export default class VennStanza extends MetaStanza {
     }
 
     // get data
-    this.data = await this.getData();
+    const data = await this.getData();
+    this.data = this.transform(data);
+
     this.totals = this.data.map((datum) => {
       const total = {
-        set: datum.set,
-        size: 0,
+        set: datum.sets,
+        count: 0,
       };
       const matchedData = this.data.filter((datum2) =>
-        datum.set.every((item) => datum2.set.indexOf(item) !== -1)
+        datum.sets.every((item) => datum2.sets.indexOf(item) !== -1)
       );
-      total.size = matchedData.reduce((acc, datum) => acc + datum.size, 0);
+      total.count = matchedData.reduce((acc, datum) => acc + datum.count, 0);
       return total;
     });
     this.dataLabels = Array.from(
-      new Set(this.data.map((datum) => datum.set).flat())
+      new Set(this.data.map((datum) => datum.sets).flat())
     );
     this.numberOfData = this.dataLabels.length;
     this.venn = new Map();
@@ -64,6 +67,40 @@ export default class VennStanza extends MetaStanza {
     // draw
     this.drawVennDiagram();
   }
+
+  transform(data) {
+    const keys = Object.keys(data);
+    const n = keys.length;
+    const result = [];
+
+    // 非空の部分集合をすべて列挙
+    for (let mask = 1; mask < (1 << n); mask++) {
+      // mask が示す集合名の組み合わせ
+      const subset = [];
+      for (let i = 0; i < n; i++) {
+        if (mask & (1 << i)) { subset.push(keys[i]); }
+      }
+
+      // 最初の集合で初期化し、以降の集合と交差を取る
+      let elements = data[subset[0]].slice();
+      for (let i = 1; i < subset.length; i++) {
+        const k = subset[i];
+        elements = elements.filter(x => data[k].includes(x));
+        if (elements.length === 0) { break; }
+      }
+
+      if (elements.length > 0) {
+        result.push({
+          sets: subset,
+          count: elements.length,
+          elements
+        });
+      }
+    }
+
+    return result;
+  }
+
 
   drawVennDiagram() {
     // set common parameters and styles
@@ -142,12 +179,12 @@ export default class VennStanza extends MetaStanza {
       const count =
         this.data.find((datum) => {
           return (
-            datum.set.length === labels.length &&
+            datum.sets.length === labels.length &&
             labels.every((label) =>
-              datum.set.find((label2) => label === label2)
+              datum.sets.find((label2) => label === label2)
             )
           );
-        })?.size ?? "";
+        })?.count ?? "";
       // set color
       const color = this.getBlendedColor(targets);
       const part = group.querySelector(":scope > .part");
@@ -167,22 +204,25 @@ export default class VennStanza extends MetaStanza {
       part.dataset.tooltip = `${labels.join("∩")}: ${count}`;
       //part.dataset.tooltipHtml = true;
     });
+    console.log(this.data)
+    console.log(this.params["tooltips-html"]);
+    console.log(Handlebars)
     this.tooltip.setup(selectedDiagram.querySelectorAll("[data-tooltip]"));
 
     // legend
     const items = this.data.map((datum) => {
-      const id = datum.set
+      const id = datum.sets
         .map((item) => this.dataLabels.indexOf(item))
         .sort()
         .join(",");
       const color = this.getBlendedColor(
-        datum.set.map((item) => this.dataLabels.indexOf(item))
+        datum.sets.map((item) => this.dataLabels.indexOf(item))
       );
       return Object.fromEntries([
         ["id", id],
-        ["label", datum.set.map((item) => item).join("∩")],
+        ["label", datum.sets.map((item) => item).join("∩")],
         ["color", color.toString()],
-        ["value", datum.size],
+        ["value", datum.count],
         [
           "node",
           selectedDiagram.querySelector(`:scope > g[data-targets="${id}"]`),
