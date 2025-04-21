@@ -140,8 +140,9 @@ export default class VennStanza extends MetaStanza {
 
     // shapes
     const tooltipsTemplate = Handlebars.compile(this.params["tooltips-html"]);
+    const tooltipsVariables = getTemplateVariables(this.params["tooltips-html"]);
     console.log(tooltipsTemplate);
-    console.log(getTemplateVariables(this.params["tooltips-html"]));
+    console.log(tooltipsVariables);
     selectedDiagram.querySelectorAll(":scope > g").forEach((group) => {
       const targets = group.dataset.targets.split(",").map((target) => +target);
       const labels = targets.map((target) => this.dataLabels[target]);
@@ -170,6 +171,7 @@ export default class VennStanza extends MetaStanza {
         selectedDiagram.classList.remove("-hovering")
       );
       // tooltip
+      console.log(tooltipsTemplate(tooltipsTemplate))
       part.dataset.tooltip = `${labels.join("∩")}: ${count}`;
       //part.dataset.tooltipHtml = true;
     });
