@@ -45,7 +45,7 @@ export default class VennStanza extends MetaStanza {
 
     // get data
     const data = await this.getData();
-    this.data = this.transform(data);
+    this.data = transform(data);
 
     this.totals = this.data.map((datum) => {
       const total = {
@@ -67,40 +67,6 @@ export default class VennStanza extends MetaStanza {
     // draw
     this.drawVennDiagram();
   }
-
-  transform(data) {
-    const keys = Object.keys(data);
-    const n = keys.length;
-    const result = [];
-
-    // 非空の部分集合をすべて列挙
-    for (let mask = 1; mask < (1 << n); mask++) {
-      // mask が示す集合名の組み合わせ
-      const subset = [];
-      for (let i = 0; i < n; i++) {
-        if (mask & (1 << i)) { subset.push(keys[i]); }
-      }
-
-      // 最初の集合で初期化し、以降の集合と交差を取る
-      let elements = data[subset[0]].slice();
-      for (let i = 1; i < subset.length; i++) {
-        const k = subset[i];
-        elements = elements.filter(x => data[k].includes(x));
-        if (elements.length === 0) { break; }
-      }
-
-      if (elements.length > 0) {
-        result.push({
-          sets: subset,
-          count: elements.length,
-          elements
-        });
-      }
-    }
-
-    return result;
-  }
-
 
   drawVennDiagram() {
     // set common parameters and styles
@@ -173,6 +139,9 @@ export default class VennStanza extends MetaStanza {
       .forEach((text) => text.setAttribute("dy", textShiftY));
 
     // shapes
+    const tooltipsTemplate = Handlebars.compile(this.params["tooltips-html"]);
+    console.log(tooltipsTemplate);
+    console.log(getTemplateVariables(this.params["tooltips-html"]));
     selectedDiagram.querySelectorAll(":scope > g").forEach((group) => {
       const targets = group.dataset.targets.split(",").map((target) => +target);
       const labels = targets.map((target) => this.dataLabels[target]);
@@ -280,3 +249,84 @@ export default class VennStanza extends MetaStanza {
     return data;
   }
 }
+
+
+function transform(data) {
+  const keys = Object.keys(data);
+  const n = keys.length;
+  const result = [];
+
+  // 非空の部分集合をすべて列挙
+  for (let mask = 1; mask < (1 << n); mask++) {
+    // mask が示す集合名の組み合わせ
+    const subset = [];
+    for (let i = 0; i < n; i++) {
+      if (mask & (1 << i)) { subset.push(keys[i]); }
+    }
+
+    // 最初の集合で初期化し、以降の集合と交差を取る
+    let elements = data[subset[0]].slice();
+    for (let i = 1; i < subset.length; i++) {
+      const k = subset[i];
+      elements = elements.filter(x => data[k].includes(x));
+      if (elements.length === 0) { break; }
+    }
+
+    if (elements.length > 0) {
+      result.push({
+        sets: subset,
+        count: elements.length,
+        elements
+      });
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Handlebars テンプレート文字列から、使われているトップレベルの変数名を抽出する関数
+ * @param {string} templateStr — Handlebars テンプレート文字列
+ * @returns {string[]} — 使われている変数名のユニークな配列
+ */
+function getTemplateVariables(templateStr) {
+  // 1. テンプレート文字列を AST にパース
+  const ast = Handlebars.parse(templateStr);
+
+  // 2. 変数名を格納する Set
+  const vars = new Set();
+
+  // 3. 再帰的に AST をトラバースする関数
+  function walk(node) {
+    if (!node || typeof node !== 'object') return;
+
+    // MustacheStatement（{{foo}}）や BlockStatement（{{#if foo}}...{{/if}}）などをチェック
+    if (
+      (node.type === 'MustacheStatement'     ) ||
+      (node.type === 'BlockStatement'        ) ||
+      (node.type === 'PartialStatement'      ) ||
+      (node.type === 'SubExpression'         )
+    ) {
+      // node.path.parts = ['foo', 'bar', ...] の形式で分割された名前空間
+      if (node.path && Array.isArray(node.path.parts)) {
+        // トップレベルのキー部分だけ取りたいなら parts[0] を使う
+        vars.add(node.path.parts[0]);
+      }
+    }
+
+    // 4. 子ノードにも再帰的に.walk
+    for (const key of Object.keys(node)) {
+      const child = node[key];
+      if (Array.isArray(child)) {
+        child.forEach(walk);
+      } else {
+        walk(child);
+      }
+    }
+  }
+
+  walk(ast);
+  return Array.from(vars);
+}
+
+

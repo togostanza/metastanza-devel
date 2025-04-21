@@ -52,7 +52,7 @@
     {
       "stanza:key": "tooltips-html",
       "stanza:type": "html",
-      "stanza:example": "<p>{{count}}</p>",
+      "stanza:example": "<p>Count: {{count}}</p>",
       "stanza:description": "Data key to use as tooltip text"
     },
     {
