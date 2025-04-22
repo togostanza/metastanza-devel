@@ -1,7 +1,6 @@
 import Legend from "@/lib/Legend";
 import ToolTip from "@/lib/ToolTip";
 import Color from "color";
-import Handlebars from "handlebars/dist/handlebars.js";
 import {
   appendCustomCss,
   downloadCSVMenuItem,
@@ -139,10 +138,10 @@ export default class VennStanza extends MetaStanza {
       .forEach((text) => text.setAttribute("dy", textShiftY));
 
     // shapes
-    const tooltipsTemplate = Handlebars.compile(this.params["tooltips-html"]);
-    const tooltipsVariables = getTemplateVariables(this.params["tooltips-html"]);
-    console.log(tooltipsTemplate);
-    console.log(tooltipsVariables);
+    // const tooltipsTemplate = Handlebars.compile(this.params["tooltips-html"]);
+    // const tooltipsVariables = getTemplateVariables(this.params["tooltips-html"]);
+    // console.log(tooltipsTemplate);
+    // console.log(tooltipsVariables);
     selectedDiagram.querySelectorAll(":scope > g").forEach((group) => {
       const targets = group.dataset.targets.split(",").map((target) => +target);
       const labels = targets.map((target) => this.dataLabels[target]);
@@ -171,13 +170,12 @@ export default class VennStanza extends MetaStanza {
         selectedDiagram.classList.remove("-hovering")
       );
       // tooltip
-      console.log(tooltipsTemplate(tooltipsTemplate))
       part.dataset.tooltip = `${labels.join("∩")}: ${count}`;
       //part.dataset.tooltipHtml = true;
     });
     console.log(this.data)
     console.log(this.params["tooltips-html"]);
-    console.log(Handlebars)
+    this.tooltip.setTemplate(this.params["tooltips-html"]);
     this.tooltip.setup(selectedDiagram.querySelectorAll("[data-tooltip]"));
 
     // legend
@@ -252,7 +250,28 @@ export default class VennStanza extends MetaStanza {
   }
 }
 
-
+/*
+  * Venn 図のデータを変換する関数
+  * @param {Object} data - データオブジェクト
+  * @returns {Array} - 変換されたデータの配列
+  *   各要素は { sets: [集合名], count: 要素数, elements: [要素] } の形式
+  *  例: { A: [1, 2], B: [2, 3] } => [ { sets: ['A'], count: 1, elements: [1] }, ... ]
+  *   @description
+  *   1. data オブジェクトのキーを取得
+  *   2. 各キーに対して、非空の部分集合を列挙
+  *   3. 各部分集合に対して、要素の交差を計算
+  *   4. 結果を配列に格納
+  *   5. 最終的に、各部分集合の要素数と要素を持つオブジェクトの配列を返す
+  *   @example
+  *   const data = { A: [1, 2], B: [2, 3] };
+  *   const result = transform(data);
+  *   console.log(result);
+  *   // => [
+  *   //      { sets: ['A'], count: 1, elements: [1] },
+  *   //      { sets: ['B'], count: 1, elements: [3] },
+  *   //      { sets: ['A', 'B'], count: 1, elements: [2] }
+  *   //    ]
+  */
 function transform(data) {
   const keys = Object.keys(data);
   const n = keys.length;
@@ -286,49 +305,6 @@ function transform(data) {
   return result;
 }
 
-/**
- * Handlebars テンプレート文字列から、使われているトップレベルの変数名を抽出する関数
- * @param {string} templateStr — Handlebars テンプレート文字列
- * @returns {string[]} — 使われている変数名のユニークな配列
- */
-function getTemplateVariables(templateStr) {
-  // 1. テンプレート文字列を AST にパース
-  const ast = Handlebars.parse(templateStr);
 
-  // 2. 変数名を格納する Set
-  const vars = new Set();
-
-  // 3. 再帰的に AST をトラバースする関数
-  function walk(node) {
-    if (!node || typeof node !== 'object') return;
-
-    // MustacheStatement（{{foo}}）や BlockStatement（{{#if foo}}...{{/if}}）などをチェック
-    if (
-      (node.type === 'MustacheStatement'     ) ||
-      (node.type === 'BlockStatement'        ) ||
-      (node.type === 'PartialStatement'      ) ||
-      (node.type === 'SubExpression'         )
-    ) {
-      // node.path.parts = ['foo', 'bar', ...] の形式で分割された名前空間
-      if (node.path && Array.isArray(node.path.parts)) {
-        // トップレベルのキー部分だけ取りたいなら parts[0] を使う
-        vars.add(node.path.parts[0]);
-      }
-    }
-
-    // 4. 子ノードにも再帰的に.walk
-    for (const key of Object.keys(node)) {
-      const child = node[key];
-      if (Array.isArray(child)) {
-        child.forEach(walk);
-      } else {
-        walk(child);
-      }
-    }
-  }
-
-  walk(ast);
-  return Array.from(vars);
-}
 
 
