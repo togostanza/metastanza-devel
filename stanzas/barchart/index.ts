@@ -48,7 +48,7 @@ export default class Barchart extends MetaStanza {
     svg
       .attr("width", +this.css("--togostanza-canvas-width"))
       .attr("height", +this.css("--togostanza-canvas-height"));
-    if (this.params["tooltips-html"]) {
+    if (this.params["tooltips-html"] && !this.tooltips) {
       this.tooltips = new ToolTip();
       this.tooltips.setTemplate(this.params["tooltips-html"]);
       this._main.append(this.tooltips);
@@ -248,11 +248,7 @@ export default class Barchart extends MetaStanza {
       this.legend = null;
     }
 
-    if (values.some((d) => d[tooltipSym])) {
-      // if (!this.tooltips) {
-      //   this.tooltips = new ToolTip();
-      //   this._main.append(this.tooltips);
-      // }
+    if (this.tooltips) {
       this.tooltips.setup(this._main.querySelectorAll("[data-tooltip]"));
     }
   }
