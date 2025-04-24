@@ -414,8 +414,9 @@ function drawGroupedBars(
     .attr("fill", (d) => d[colorSym])
     .attr("data-tooltip", (d) => {
       if (this.tooltips) {
-        // return d[tooltipSym];
         return this.tooltips.compile(d);
+      } else {
+        false;
       }
     });
 
@@ -453,7 +454,13 @@ function drawStackedBars(
       Math.abs(this.yAxisGen.scale(d[y1Sym]) - this.yAxisGen.scale(d[y2Sym]))
     )
     .attr("fill", (d) => d[colorSym])
-    .attr("data-tooltip", (d) => d[tooltipSym]);
+    .attr("data-tooltip", (d) => {
+      if (this.tooltips) {
+        return this.tooltips.compile(d);
+      } else {
+        false;
+      }
+    });
 
   return { barGroup };
 }
