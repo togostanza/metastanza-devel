@@ -54,7 +54,7 @@
     {
       "stanza:key": "axis-x-key",
       "stanza:type": "text",
-      "stanza:example": "count",
+      "stanza:example": "chromosome",
       "stanza:description": "X axis data key",
       "stanza:required": true
     },
