@@ -416,7 +416,7 @@ function drawGroupedBars(
       if (this.tooltips) {
         return this.tooltips.compile(d);
       } else {
-        false;
+        return false;
       }
     });
 
@@ -458,7 +458,7 @@ function drawStackedBars(
       if (this.tooltips) {
         return this.tooltips.compile(d);
       } else {
-        false;
+        return false;
       }
     });
 

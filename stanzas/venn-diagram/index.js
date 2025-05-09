@@ -25,7 +25,7 @@ export default class VennStanza extends MetaStanza {
     ];
   }
 
-  async render() {
+  async renderNext() {
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
     this.colorSeries = this.getColorSeries();
 
@@ -43,8 +43,7 @@ export default class VennStanza extends MetaStanza {
     }
 
     // get data
-    const data = await this.getData();
-    this.data = transform(data);
+    this.data = transform(this._data);
 
     this.totals = this.data.map((datum) => {
       const total = {
@@ -173,8 +172,6 @@ export default class VennStanza extends MetaStanza {
       part.dataset.tooltip = `${labels.join("∩")}: ${count}`;
       //part.dataset.tooltipHtml = true;
     });
-    console.log(this.data)
-    console.log(this.params["tooltips-html"]);
     this.tooltip.setTemplate(this.params["tooltips-html"]);
     this.tooltip.setup(selectedDiagram.querySelectorAll("[data-tooltip]"));
 
@@ -198,6 +195,8 @@ export default class VennStanza extends MetaStanza {
         ],
       ]);
     });
+    console.log(selectedDiagram)
+    console.log(selectedDiagram.querySelectorAll(":scope > g"))
     this.legend.setup(items, this.root.querySelector("main"), {
       fadeoutNodes: selectedDiagram.querySelectorAll(":scope > g"),
       showLeaders: true,
