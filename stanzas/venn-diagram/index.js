@@ -39,7 +39,7 @@ export default class VennStanza extends MetaStanza {
     }
     if (this.params["legend-visible"]) {
       this.legend = new Legend();
-      root.append(this.legend);
+      this.root.append(this.legend);
     }
 
     // get data
