@@ -44,6 +44,12 @@
       "stanza:description": "Whether to show the legend"
     },
     {
+      "stanza:key": "legend-title",
+      "stanza:type": "text",
+      "stanza:example": "Category",
+      "stanza:description": "Legend title"
+    },
+    {
       "stanza:key": "tooltips-key",
       "stanza:type": "text",
       "stanza:example": "name",

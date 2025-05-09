@@ -1,4 +1,4 @@
-import Legend from "@/lib/Legend";
+import Legend from "@/lib/Legend2";
 import ToolTip from "@/lib/ToolTip";
 import Color from "color";
 import {
@@ -139,8 +139,6 @@ export default class VennStanza extends MetaStanza {
     // shapes
     // const tooltipsTemplate = Handlebars.compile(this.params["tooltips-html"]);
     // const tooltipsVariables = getTemplateVariables(this.params["tooltips-html"]);
-    // console.log(tooltipsTemplate);
-    // console.log(tooltipsVariables);
     selectedDiagram.querySelectorAll(":scope > g").forEach((group) => {
       const targets = group.dataset.targets.split(",").map((target) => +target);
       const labels = targets.map((target) => this.dataLabels[target]);
@@ -190,16 +188,14 @@ export default class VennStanza extends MetaStanza {
         ["color", color.toString()],
         ["value", datum.count],
         [
-          "node",
-          selectedDiagram.querySelector(`:scope > g[data-targets="${id}"]`),
+          "nodes",
+          [selectedDiagram.querySelector(`:scope > g[data-targets="${id}"]`)],
         ],
       ]);
     });
-    console.log(selectedDiagram)
-    console.log(selectedDiagram.querySelectorAll(":scope > g"))
-    this.legend.setup(items, this.root.querySelector("main"), {
-      fadeoutNodes: selectedDiagram.querySelectorAll(":scope > g"),
-      showLeaders: true,
+    this.legend.setup({
+      title: this.params["legend-title"],
+      items
     });
   }
 
