@@ -8,20 +8,28 @@
   "stanza:license": "MIT",
   "stanza:author": "DBCLS",
   "stanza:address": "https://github.com/togostanza/metastanza",
-  "stanza:contributor": ["PENQE", "Einishi Tech"],
+  "stanza:contributor": [
+    "PENQE",
+    "Einishi Tech"
+  ],
   "stanza:created": "2021-01-18",
   "stanza:updated": "2021-02-16",
   "stanza:parameter": [
     {
       "stanza:key": "data-url",
-      "stanza:example": "https://gist.githubusercontent.com/neznayer/92e5545547d71667d6a75e20cba92236/raw/aa47156aab1924a360fe4f28d3d207b541261fb4/barchart.json",
+      "stanza:example": "https://raw.githubusercontent.com/penqe/stanza-data/refs/heads/main/barchart.json",
       "stanza:description": "Data source URL",
       "stanza:required": true
     },
     {
       "stanza:key": "data-type",
       "stanza:type": "single-choice",
-      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
+      "stanza:choice": [
+        "json",
+        "tsv",
+        "csv",
+        "sparql-results-json"
+      ],
       "stanza:example": "json",
       "stanza:description": "Data type",
       "stanza:required": true
@@ -29,8 +37,11 @@
     {
       "stanza:key": "data-interpretation",
       "stanza:type": "single-choice",
-      "stanza:choice": ["categorical", "distribution"],
-      "stanza:example": "distribution",
+      "stanza:choice": [
+        "categorical",
+        "distribution"
+      ],
+      "stanza:example": "categorical",
       "stanza:description": "\"categorical\" is interpreted as a so-called bar chart, and \"distribution\" as a histogram."
     },
     {
@@ -43,14 +54,17 @@
     {
       "stanza:key": "axis-x-key",
       "stanza:type": "text",
-      "stanza:example": "count",
+      "stanza:example": "chromosome",
       "stanza:description": "X axis data key",
       "stanza:required": true
     },
     {
       "stanza:key": "axis-x-placement",
       "stanza:type": "single-choice",
-      "stanza:choice": ["top", "bottom"],
+      "stanza:choice": [
+        "top",
+        "bottom"
+      ],
       "stanza:example": "bottom",
       "stanza:description": "axis placement",
       "stanza:required": false
@@ -112,7 +126,10 @@
     {
       "stanza:key": "axis-y-placement",
       "stanza:type": "single-choice",
-      "stanza:choice": ["left", "right"],
+      "stanza:choice": [
+        "left",
+        "right"
+      ],
       "stanza:example": "left",
       "stanza:description": "Y axis placement",
       "stanza:required": false
@@ -175,8 +192,11 @@
     {
       "stanza:key": "grouping-arrangement",
       "stanza:type": "single-choice",
-      "stanza:choice": ["stacked", "grouped"],
-      "stanza:example": "grouped",
+      "stanza:choice": [
+        "stacked",
+        "grouped"
+      ],
+      "stanza:example": "stacked",
       "stanza:description": "Bars arrangement",
       "stanza:required": false
     },
@@ -200,6 +220,12 @@
       "stanza:example": "count",
       "stanza:description": "Bar tooltips data key. If the key not existing, tooltips are not showing.",
       "stanza:required": false
+    },
+    {
+      "stanza:key": "tooltips-html",
+      "stanza:type": "html",
+      "stanza:example": "{{#if url}}<a href={{url}}>{{count}}</a>{{else}}<span>{{count}}</span>{{/if}}",
+      "stanza:description": "Data key to use as tooltip text"
     },
     {
       "stanza:key": "legend-visible",

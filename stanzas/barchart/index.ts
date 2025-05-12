@@ -48,6 +48,11 @@ export default class Barchart extends MetaStanza {
     svg
       .attr("width", +this.css("--togostanza-canvas-width"))
       .attr("height", +this.css("--togostanza-canvas-height"));
+    if (this.params["tooltips-html"] && !this.tooltips) {
+      this.tooltips = new ToolTip();
+      this.tooltips.setTemplate(this.params["tooltips-html"]);
+      this._main.append(this.tooltips);
+    }
 
     // If "binKey" is specified, this component behaves as a histogram; if not, it behaves as a bar chart.
     switch (this.params["data-interpretation"]) {
@@ -243,11 +248,7 @@ export default class Barchart extends MetaStanza {
       this.legend = null;
     }
 
-    if (values.some((d) => d[tooltipSym])) {
-      if (!this.tooltips) {
-        this.tooltips = new ToolTip();
-        this._main.append(this.tooltips);
-      }
+    if (this.tooltips) {
       this.tooltips.setup(this._main.querySelectorAll("[data-tooltip]"));
     }
   }
@@ -411,7 +412,13 @@ function drawGroupedBars(
       (d) => this.yAxisGen.scale(d[y1Sym]) - this.yAxisGen.scale(d[y2Sym])
     )
     .attr("fill", (d) => d[colorSym])
-    .attr("data-tooltip", (d) => d[tooltipSym]);
+    .attr("data-tooltip", (d) => {
+      if (this.tooltips) {
+        return this.tooltips.compile(d);
+      } else {
+        return false;
+      }
+    });
 
   return { barGroup, groupScale };
 }
@@ -447,7 +454,13 @@ function drawStackedBars(
       Math.abs(this.yAxisGen.scale(d[y1Sym]) - this.yAxisGen.scale(d[y2Sym]))
     )
     .attr("fill", (d) => d[colorSym])
-    .attr("data-tooltip", (d) => d[tooltipSym]);
+    .attr("data-tooltip", (d) => {
+      if (this.tooltips) {
+        return this.tooltips.compile(d);
+      } else {
+        return false;
+      }
+    });
 
   return { barGroup };
 }

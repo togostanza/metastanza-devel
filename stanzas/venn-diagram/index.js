@@ -1,4 +1,4 @@
-import Legend from "@/lib/Legend";
+import Legend from "@/lib/Legend2";
 import ToolTip from "@/lib/ToolTip";
 import Color from "color";
 import {
@@ -25,7 +25,7 @@ export default class VennStanza extends MetaStanza {
     ];
   }
 
-  async render() {
+  async renderNext() {
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
     this.colorSeries = this.getColorSeries();
 
@@ -39,24 +39,25 @@ export default class VennStanza extends MetaStanza {
     }
     if (this.params["legend-visible"]) {
       this.legend = new Legend();
-      root.append(this.legend);
+      this.root.append(this.legend);
     }
 
     // get data
-    this.data = await this.getData();
+    this.data = transform(this._data);
+
     this.totals = this.data.map((datum) => {
       const total = {
-        set: datum.set,
-        size: 0,
+        set: datum.sets,
+        count: 0,
       };
       const matchedData = this.data.filter((datum2) =>
-        datum.set.every((item) => datum2.set.indexOf(item) !== -1)
+        datum.sets.every((item) => datum2.sets.indexOf(item) !== -1)
       );
-      total.size = matchedData.reduce((acc, datum) => acc + datum.size, 0);
+      total.count = matchedData.reduce((acc, datum) => acc + datum.count, 0);
       return total;
     });
     this.dataLabels = Array.from(
-      new Set(this.data.map((datum) => datum.set).flat())
+      new Set(this.data.map((datum) => datum.sets).flat())
     );
     this.numberOfData = this.dataLabels.length;
     this.venn = new Map();
@@ -136,18 +137,20 @@ export default class VennStanza extends MetaStanza {
       .forEach((text) => text.setAttribute("dy", textShiftY));
 
     // shapes
+    // const tooltipsTemplate = Handlebars.compile(this.params["tooltips-html"]);
+    // const tooltipsVariables = getTemplateVariables(this.params["tooltips-html"]);
     selectedDiagram.querySelectorAll(":scope > g").forEach((group) => {
       const targets = group.dataset.targets.split(",").map((target) => +target);
       const labels = targets.map((target) => this.dataLabels[target]);
       const count =
         this.data.find((datum) => {
           return (
-            datum.set.length === labels.length &&
+            datum.sets.length === labels.length &&
             labels.every((label) =>
-              datum.set.find((label2) => label === label2)
+              datum.sets.find((label2) => label === label2)
             )
           );
-        })?.size ?? "";
+        })?.count ?? "";
       // set color
       const color = this.getBlendedColor(targets);
       const part = group.querySelector(":scope > .part");
@@ -167,31 +170,32 @@ export default class VennStanza extends MetaStanza {
       part.dataset.tooltip = `${labels.join("∩")}: ${count}`;
       //part.dataset.tooltipHtml = true;
     });
+    this.tooltip.setTemplate(this.params["tooltips-html"]);
     this.tooltip.setup(selectedDiagram.querySelectorAll("[data-tooltip]"));
 
     // legend
     const items = this.data.map((datum) => {
-      const id = datum.set
+      const id = datum.sets
         .map((item) => this.dataLabels.indexOf(item))
         .sort()
         .join(",");
       const color = this.getBlendedColor(
-        datum.set.map((item) => this.dataLabels.indexOf(item))
+        datum.sets.map((item) => this.dataLabels.indexOf(item))
       );
       return Object.fromEntries([
         ["id", id],
-        ["label", datum.set.map((item) => item).join("∩")],
+        ["label", datum.sets.map((item) => item).join("∩")],
         ["color", color.toString()],
-        ["value", datum.size],
+        ["value", datum.count],
         [
-          "node",
-          selectedDiagram.querySelector(`:scope > g[data-targets="${id}"]`),
+          "nodes",
+          [selectedDiagram.querySelector(`:scope > g[data-targets="${id}"]`)],
         ],
       ]);
     });
-    this.legend.setup(items, this.root.querySelector("main"), {
-      fadeoutNodes: selectedDiagram.querySelectorAll(":scope > g"),
-      showLeaders: true,
+    this.legend.setup({
+      title: this.params["legend-title"],
+      items
     });
   }
 
@@ -240,3 +244,62 @@ export default class VennStanza extends MetaStanza {
     return data;
   }
 }
+
+/*
+  * Venn 図のデータを変換する関数
+  * @param {Object} data - データオブジェクト
+  * @returns {Array} - 変換されたデータの配列
+  *   各要素は { sets: [集合名], count: 要素数, elements: [要素] } の形式
+  *  例: { A: [1, 2], B: [2, 3] } => [ { sets: ['A'], count: 1, elements: [1] }, ... ]
+  *   @description
+  *   1. data オブジェクトのキーを取得
+  *   2. 各キーに対して、非空の部分集合を列挙
+  *   3. 各部分集合に対して、要素の交差を計算
+  *   4. 結果を配列に格納
+  *   5. 最終的に、各部分集合の要素数と要素を持つオブジェクトの配列を返す
+  *   @example
+  *   const data = { A: [1, 2], B: [2, 3] };
+  *   const result = transform(data);
+  *   console.log(result);
+  *   // => [
+  *   //      { sets: ['A'], count: 1, elements: [1] },
+  *   //      { sets: ['B'], count: 1, elements: [3] },
+  *   //      { sets: ['A', 'B'], count: 1, elements: [2] }
+  *   //    ]
+  */
+function transform(data) {
+  const keys = Object.keys(data);
+  const n = keys.length;
+  const result = [];
+
+  // 非空の部分集合をすべて列挙
+  for (let mask = 1; mask < (1 << n); mask++) {
+    // mask が示す集合名の組み合わせ
+    const subset = [];
+    for (let i = 0; i < n; i++) {
+      if (mask & (1 << i)) { subset.push(keys[i]); }
+    }
+
+    // 最初の集合で初期化し、以降の集合と交差を取る
+    let elements = data[subset[0]].slice();
+    for (let i = 1; i < subset.length; i++) {
+      const k = subset[i];
+      elements = elements.filter(x => data[k].includes(x));
+      if (elements.length === 0) { break; }
+    }
+
+    if (elements.length > 0) {
+      result.push({
+        sets: subset,
+        count: elements.length,
+        elements
+      });
+    }
+  }
+
+  return result;
+}
+
+
+
+
