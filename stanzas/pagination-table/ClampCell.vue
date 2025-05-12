@@ -78,11 +78,11 @@ export default defineComponent({
   emits: ["toggleCharClampOn"],
   setup() {
     const isClamp = ref(true);
-    const toggleClamp = () => isClamp.value = !isClamp.value;
-    const toggleCharClamp = function() {
-      this.$emit('toggleCharClampOn');
+    const toggleClamp = () => (isClamp.value = !isClamp.value);
+    const toggleCharClamp = function () {
+      this.$emit("toggleCharClampOn");
       this.toggleClamp();
-    }
+    };
     return { isClamp, toggleClamp, toggleCharClamp };
   },
 });

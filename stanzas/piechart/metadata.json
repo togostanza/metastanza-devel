@@ -11,8 +11,6 @@
   "stanza:created": "2023-01-24",
   "stanza:updated": "2023-01-24",
   "stanza:menu-placement": "bottom-right",
-  "stanza:incomingEvent": [],
-  "stanza:outgoingEvent": [],
   "stanza:parameter": [
     {
       "stanza:key": "data-url",
@@ -51,6 +49,20 @@
       "stanza:type": "text",
       "stanza:example": "Population",
       "stanza:description": "Legend title"
+    },
+    {
+      "stanza:key": "event-incoming_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Receive a change event of selected nodes",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "event-outgoing_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Emit a change event of selected nodes",
+      "stanza:required": false
     }
   ],
   "stanza:style": [
@@ -115,6 +127,12 @@
       "stanza:description": "Group color 5"
     },
     {
+      "stanza:key": "--togostanza-theme-selected_border_color",
+      "stanza:type": "color",
+      "stanza:default": "#FF0000",
+      "stanza:description": "Color applied to the selected item"
+    },
+    {
       "stanza:key": "--togostanza-fonts-font_family",
       "stanza:type": "text",
       "stanza:default": "Helvetica, Arial, sans-serif",
@@ -137,6 +155,18 @@
       "stanza:type": "number",
       "stanza:default": 9,
       "stanza:description": "Secondary font size"
+    }
+  ],
+  "stanza:incomingEvent": [
+    {
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
+    }
+  ],
+  "stanza:outgoingEvent": [
+    {
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
     }
   ]
 }

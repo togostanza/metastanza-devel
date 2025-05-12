@@ -37,6 +37,7 @@
         :highlighted-node="state.highligthedNodes[index]"
         :value-obj="valueObj"
         :node-value-alignment="state.nodeValueAlignment"
+        :params="params"
         @set-parent="updatePartialColumnData"
         @set-checked-node="updateCheckedNodes"
       />
@@ -90,7 +91,6 @@ export default defineComponent({
   emits: ["resetHighlightedNode"],
   setup(params) {
     params = toRefs(params);
-
     const layerRefs = ref([]);
     const state = reactive({
       keys: {
@@ -121,12 +121,14 @@ export default defineComponent({
     });
 
     function updateCheckedNodes(node) {
-      const { id, ...obj } = node;
+      const targetData = params.data._object.data.find((d) => d.id === node.id);
+      const { id, ...obj } = targetData;
       state.checkedNodes.has(id)
         ? state.checkedNodes.delete(id)
-        : state.checkedNodes.set(id, { id, ...obj });
-      // TODO: add event handler
-      // console.log([...state.checkedNodes.values()]);
+        : state.checkedNodes.set(id, {
+            id,
+            ...obj,
+          });
     }
     function getChildNodes([layer, parentId]) {
       state.highligthedNodes[layer - 1] = parentId;
@@ -199,6 +201,7 @@ export default defineComponent({
       return state.responseJSON.filter(isNormalSearchHit); // array of nodes.
     });
     return {
+      params,
       isValidSearchNode,
       state,
       layerRefs,

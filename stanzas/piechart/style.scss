@@ -9,9 +9,26 @@ svg {
     stroke: var(--togostanza-border-color);
     stroke-width: 0.5px;
 
+    &:hover {
+      cursor: pointer;
+    }
+
     &.-fadeout {
       opacity: var(--togostanza-fadeout-opacity);
       transition: var(--togostanza-fadeout-transition);
+    }
+
+    &.-selected {
+      opacity: 1 !important;
+    }
+  }
+
+  :has(.-selected) {
+    path {
+      opacity: var(--togostanza-fadeout-opacity);
+      &:hover {
+        opacity: 1;
+      }
     }
   }
 }

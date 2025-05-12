@@ -17,7 +17,7 @@
   "stanza:parameter": [
     {
       "stanza:key": "data-url",
-      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/main/samples/json/tree-data.json",
+      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/main/samples/json/tree.json",
       "stanza:description": "Data source URL",
       "stanza:required": true
     },
@@ -39,7 +39,7 @@
     {
       "stanza:key": "node-label_key",
       "stanza:type": "text",
-      "stanza:example": "label",
+      "stanza:example": "name",
       "stanza:description": "Data key to use as a title"
     },
     {
@@ -84,6 +84,20 @@
       "stanza:key": "togostanza-custom_css_url",
       "stanza:example": "",
       "stanza:description": "Stylesheet(css file) URL to override current style"
+    },
+    {
+      "stanza:key": "event-incoming_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Receive a change event of selected nodes",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "event-outgoing_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Emit a change event of selected nodes",
+      "stanza:required": false
     }
   ],
   "stanza:menu-placement": "bottom-right",
@@ -149,6 +163,12 @@
       "stanza:description": "Background color"
     },
     {
+      "stanza:key": "--togostanza-theme-selected_border_color",
+      "stanza:type": "color",
+      "stanza:default": "#FF0000",
+      "stanza:description": "Color applied to the selected item"
+    },
+    {
       "stanza:key": "--togostanza-fonts-font_family",
       "stanza:type": "text",
       "stanza:default": "Helvetica, Arial, sans-serif",
@@ -175,14 +195,14 @@
   ],
   "stanza:incomingEvent": [
     {
-      "stanza:key": "selectedDatumChanged",
-      "stanza:description": "Event, wich dispatches when user selects some node in other stanza"
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
     }
   ],
   "stanza:outgoingEvent": [
     {
-      "stanza:key": "selectedDatumChanged",
-      "stanza:description": "Event, wich dispatches when user selects some node"
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
     }
   ]
 }

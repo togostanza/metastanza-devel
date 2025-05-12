@@ -4,8 +4,8 @@ import App from "./app.vue";
 
 import {
   appendCustomCss,
-  downloadJSONMenuItem,
   downloadCSVMenuItem,
+  downloadJSONMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
 
@@ -33,5 +33,11 @@ export default class PaginationTable extends Stanza {
       stanzaElement: this.element,
     });
     this._component = this._app.mount(main);
+  }
+
+  handleEvent(event) {
+    if (this.params["event-incoming_change_selected_nodes"]) {
+      this._component.updateSelectedRows(event.detail);
+    }
   }
 }

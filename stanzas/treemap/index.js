@@ -20,9 +20,23 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils"; // from "@/lib/metastanza_utils.js"; //
 import shadeColor from "./shadeColor";
+import { handleApiError } from "../../lib/apiError";
 import treemapBinaryLog from "./treemapBinaryLog";
+import {
+  toggleSelectIds,
+  emitSelectedEvent,
+  updateSelectedElementClassNameForD3,
+} from "../../lib/utils";
 
 export default class TreeMapStanza extends MetaStanza {
+  _chartArea;
+  selectedIds = [];
+  selectedEventParams = {
+    targetElementSelector: "g rect.selectable",
+    selectedElementClassName: "-selected",
+    idPath: "data.data.id",
+  };
+
   menu() {
     return [
       downloadSvgMenuItem(this, "treemap"),
@@ -34,6 +48,10 @@ export default class TreeMapStanza extends MetaStanza {
   }
 
   async renderNext() {
+    if (!this._chartArea?.empty()) {
+      this._chartArea?.remove();
+    }
+
     const width = parseInt(this.css("--togostanza-canvas-width"));
     const height = parseInt(this.css("--togostanza-canvas-height"));
     const MARGIN = this.MARGIN;
@@ -44,52 +62,54 @@ export default class TreeMapStanza extends MetaStanza {
     const logScale = this.params["node-log_scale"];
     const gapWidth = 2;
 
-    const labelKey = this.params["node-label_key"];
-    const valueKey = this.params["node-value_key"];
+    const drawContent = async () => {
+      const data = this.__data.asTree({
+        nodeLabelKey: this.params["node-label_key"].trim(),
+        nodeValueKey: this.params["node-value_key"].trim(),
+      }).data;
 
-    const data = this._data;
+      // filter out all elements with n=0
+      const filteredData = data.filter(
+        (item) =>
+          (item.children?.length > 0 && !item.value) ||
+          (item.value && item.value > 0)
+      );
 
-    // filter out all elements with n=0
-    const filteredData = data.filter(
-      (item) =>
-        (item.children && !item[valueKey]) ||
-        (item[valueKey] && item[valueKey] > 0)
-    );
+      const treeMapElement = this._main;
+      const colorScale = scaleOrdinal(getStanzaColors(this));
 
-    //Add root element if there are more than one elements without parent. D3 cannot process data with more than one root elements
-    const rootElems = filteredData
-      .map((d, i) => ({
-        d,
-        i,
-      }))
-      .filter((d) => !d.d.parent)
-      .map((d) => d.i);
-
-    if (rootElems.length > 1) {
-      filteredData.push({ id: -1, value: "", label: "" });
-
-      rootElems.forEach((index) => {
-        filteredData[index].parent = -1;
-      });
-    }
-
-    if (!filteredData.find((d) => d.id === -1)) {
-      filteredData.push({ id: -1, value: "", label: "" });
-    }
-    const treeMapElement = this._main;
-    const colorScale = scaleOrdinal(getStanzaColors(this));
-
-    const opts = {
-      WIDTH,
-      HEIGHT,
-      colorScale,
-      logScale,
-      gapWidth,
-      labelKey,
-      valueKey,
+      const opts = {
+        WIDTH,
+        HEIGHT,
+        colorScale,
+        logScale,
+        gapWidth,
+      };
+      draw(treeMapElement, filteredData, opts, this);
     };
 
-    draw(treeMapElement, filteredData, opts);
+    handleApiError({
+      stanzaData: this,
+      hasTooltip: true,
+      drawContent,
+    });
+  }
+
+  handleEvent(event) {
+    const { selectedIds, dataUrl } = event.detail;
+
+    if (
+      this.params["event-incoming_change_selected_nodes"] &&
+      dataUrl === this.params["data-url"]
+    ) {
+      this.selectedIds = selectedIds;
+      updateSelectedElementClassNameForD3({
+        drawing: this._chartArea,
+        selectedIds,
+        targetId: event.detail.targetId,
+        ...this.selectedEventParams,
+      });
+    }
   }
 }
 
@@ -104,10 +124,8 @@ function transformValue(logScale, value) {
   return value;
 }
 
-function draw(el, dataset, opts) {
-  const { WIDTH, HEIGHT, logScale, colorScale, gapWidth, labelKey, valueKey } =
-    opts;
-
+function draw(el, dataset, opts, stanza) {
+  const { WIDTH, HEIGHT, logScale, colorScale, gapWidth } = opts;
   const nested = stratify()
     .id(function (d) {
       return d.id;
@@ -138,7 +156,7 @@ function draw(el, dataset, opts) {
       .ancestors()
       .reverse()
       .map((d) => {
-        return d.data.data[labelKey];
+        return d.data.data.label;
       })
       .join(" > ");
   };
@@ -159,7 +177,7 @@ function draw(el, dataset, opts) {
   const treemap = (data) =>
     d3treemap().tile(tile)(
       hierarchy(data)
-        .sum((d) => d.data[valueKey])
+        .sum((d) => d.data.value)
         .sort((a, b) => b.value - a.value)
         .each((d) => {
           d.value2 = transformValue(logScale, d.value);
@@ -167,13 +185,13 @@ function draw(el, dataset, opts) {
     );
 
   select(el).select("svg").remove();
-  const svg = select(el)
+  stanza._chartArea = select(el)
     .append("svg")
     .attr("width", WIDTH)
     .attr("height", HEIGHT)
     .attr("viewBox", [0, 0, WIDTH, HEIGHT]);
 
-  let group = svg.append("g").call(render, treemap(nested), null);
+  let group = stanza._chartArea.append("g").call(render, treemap(nested), null);
 
   function render(group, root, zoomInOut) {
     group
@@ -189,13 +207,45 @@ function draw(el, dataset, opts) {
       .data(root.children.concat(root))
       .join("g");
 
+    let timeout;
     node
+      .attr("cursor", "pointer")
+      .on("click", (e, d) => {
+        if (e.detail === 1) {
+          timeout = setTimeout(() => {
+            toggleSelectIds({
+              selectedIds: stanza.selectedIds,
+              targetId: d.data.data.id,
+            });
+            updateSelectedElementClassNameForD3({
+              drawing: stanza._chartArea,
+              selectedIds: stanza.selectedIds,
+              ...stanza.selectedEventParams,
+            });
+            if (stanza.params["event-outgoing_change_selected_nodes"]) {
+              emitSelectedEvent({
+                rootElement: stanza.element,
+                targetId: d.data.data.id,
+                selectedIds: stanza.selectedIds,
+                dataUrl: stanza.params["data-url"],
+              });
+            }
+          }, 500);
+        }
+      })
       .filter((d) => {
-        console.log(d);
         return d === root ? d.parent : d.children;
       })
-      .attr("cursor", "pointer")
-      .on("click", (_, d) => (d === root ? zoomout(root) : zoomin(d)));
+      .on("dblclick", (e, d) => {
+        clearTimeout(timeout);
+        d === root ? zoomout(root) : zoomin(d);
+
+        updateSelectedElementClassNameForD3({
+          drawing: stanza._chartArea,
+          selectedIds: stanza.selectedIds,
+          ...stanza.selectedEventParams,
+        });
+      });
 
     node
       .append("title")
@@ -204,19 +254,21 @@ function draw(el, dataset, opts) {
           ? ""
           : `${name(d)}\n${
               d?.children
-                ? format(sum(d, (d) => d?.data?.data[valueKey] || 0))
-                : d.data.data[valueKey]
+                ? format(sum(d, (d) => d?.data?.data.value || 0))
+                : d.data.data.value
             }`
       );
 
     node
       .append("rect")
+      .classed("selectable", true)
+      .classed("breadcrumb", (d) => d === root)
       .attr("id", (d) => (d.leafUid = uid("leaf")).id)
       .attr("style", (d) => {
         return `fill: ${
           d === root
             ? "var(--togostanza-theme-background_color)"
-            : colorScale(d.data.data[labelKey])
+            : colorScale(d.data.data.label)
         }`;
       });
 
@@ -231,11 +283,12 @@ function draw(el, dataset, opts) {
 
     innerNode
       .append("rect")
+      .classed("selectable", true)
       .attr("id", (d) => (d.leafUid = uid("leaf")).id)
       .attr("fill", "none")
       .attr("stroke-width", 1)
       .attr("stroke", (d) =>
-        shadeColor(colorScale(d.parent.data.data[labelKey]), -15)
+        shadeColor(colorScale(d.parent.data.data.label), -15)
       );
 
     innerNode
@@ -261,7 +314,7 @@ function draw(el, dataset, opts) {
         if (d === root) {
           return name(d);
         } else {
-          return `${d.data.data[labelKey] || ""}`;
+          return `${d.data.data.label || ""}`;
         }
       });
 
@@ -344,7 +397,7 @@ function draw(el, dataset, opts) {
         .attr("class", "number-label")
         .attr("dy", "1.6em")
         .attr("x", "1.6em")
-        .text((d) => format(sum(d, (d) => d?.data?.data[valueKey] || 0)));
+        .text((d) => format(sum(d, (d) => d?.data?.data.value || 0)));
     }
   }
 
@@ -401,14 +454,16 @@ function draw(el, dataset, opts) {
   // When zooming in, draw the new nodes on top, and fade them in.
   function zoomin(d) {
     const group0 = group.attr("pointer-events", "none");
-    const group1 = (group = svg.append("g").call(render, d, "zoomin"));
+    const group1 = (group = stanza._chartArea
+      .append("g")
+      .call(render, d, "zoomin"));
 
     //re-define domain for scaling
 
     x.domain([d.x0, d.x1]);
     y.domain([d.y0, d.y1]);
 
-    svg
+    stanza._chartArea
       .transition()
       .duration(750)
       .call((t) => {
@@ -426,14 +481,14 @@ function draw(el, dataset, opts) {
   // When zooming out, draw the old nodes on top, and fade them out.
   function zoomout(d) {
     const group0 = group.attr("pointer-events", "none");
-    const group1 = (group = svg
+    const group1 = (group = stanza._chartArea
       .insert("g", "*")
       .call(render, d.parent, "zoomout"));
 
     x.domain([d.parent.x0, d.parent.x1]);
     y.domain([d.parent.y0, d.parent.y1]);
 
-    svg
+    stanza._chartArea
       .transition()
       .duration(750)
       .call((t) =>

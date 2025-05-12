@@ -2,14 +2,33 @@
 
 svg {
   padding: var(--togostanza-canvas-padding);
-}
 
-.path {
-  vector-effect: non-scaling-stroke;
-  stroke-width: calc(var(--togostanza-border-width) * 1px);
-  stroke: var(--togostanza-border-color);
-  &:hover {
-    stroke: var(--togostanza-selected-color);
+  .path {
+    vector-effect: non-scaling-stroke;
+    stroke-width: calc(var(--togostanza-border-width) * 1px);
+    stroke: var(--togostanza-border-color);
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    &.-fadeout {
+      opacity: var(--togostanza-fadeout-opacity);
+      transition: var(--togostanza-fadeout-transition);
+    }
+
+    &.-selected {
+      opacity: 1 !important;
+    }
+  }
+
+  :has(.-selected) {
+    .path {
+      opacity: var(--togostanza-fadeout-opacity);
+      &:hover {
+        opacity: 1;
+      }
+    }
   }
 }
 

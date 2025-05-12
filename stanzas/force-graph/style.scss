@@ -1,16 +1,12 @@
 // Load the repository-wide global style here. The actual file is located at ../common.scss for details.
 @use "@/common.scss";
 
-svg > defs > marker > path {
-  fill: var(--togostanza-edge-default_color);
-}
-
 .label,
 .node,
 .link,
-.active,
-.fadeout,
-.half-active {
+.-active,
+.-fadeout,
+.-half-active {
   transition: all 0.1s ease-in-out;
   transition-property: opacity, stroke-width, stroke-opacity;
 }
@@ -24,43 +20,55 @@ svg > defs > marker > path {
   stroke: var(--togostanza-border-color);
   stroke-width: var(--togostanza-border-width);
   cursor: pointer;
+
+  & > a {
+    text-decoration: underline;
+  }
+
+  &.-selected {
+    opacity: 1 !important;
+  }
+
+  &.-active {
+    opacity: 1;
+    stroke-width: calc(var(--togostanza-border-width) * 2.5px);
+    stroke-opacity: 1;
+  }
+
+  &.-half-active {
+    opacity: calc(var(--togostanza-fadeout-opacity) + 0.3);
+    stroke-width: calc(var(--togostanza-border-width) * 1.6px);
+  }
+
+  &.-fadeout {
+    opacity: var(--togostanza-fadeout-opacity);
+  }
 }
 
 .link {
   stroke-opacity: var(--togostanza-edge-opacity);
   stroke-linecap: round;
   fill: none;
-  stroke: var(--togostanza-edge-default_color);
-}
+  stroke: var(--togostanza-edge-color);
 
-.active {
-  > .node {
-    stroke-width: calc(var(--togostanza-border-width) * 2.5px);
-    stroke-opacity: 1;
-  }
-  > .link {
-    stroke-opacity: 1;
-  }
-  > .label {
-    opacity: 1;
+  &.-fadeout {
+    opacity: calc(
+      var(--togostanza-fadeout-opacity) * var(--togostanza-edge-opacity)
+    );
   }
 }
 
-.fadeout {
-  opacity: 0.05;
-  > .link {
-    stroke-opacity: 0.05;
-  }
-}
-
-.half-active {
-  opacity: 0.8;
-  > .node {
-    stroke-width: calc(var(--togostanza-border-width) * 1.6px);
-    stroke-opacity: 0.8;
+svg {
+  & > defs > marker > path {
+    fill: var(--togostanza-edge-color);
   }
 
-  > .label {
-    opacity: 0.6;
+  &:has(.-selected) {
+    .node {
+      opacity: var(--togostanza-fadeout-opacity);
+    }
+    .link {
+      opacity: var(--togostanza-fadeout-opacity);
+    }
   }
 }

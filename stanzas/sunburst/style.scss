@@ -13,11 +13,33 @@ textPath {
   font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
 }
 
-g .hidden-arc {
-  fill: none;
-  stroke: none;
-}
-
 .no-fill {
   fill: none;
+}
+
+g {
+  .hidden-arc {
+    fill: none;
+    stroke: none;
+  }
+
+  .selectable {
+    transition: var(--togostanza-fadeout-transition);
+    &:hover,
+    &.-selected:not([fill-opacity="0"]) {
+      opacity: 1 !important;
+    }
+  }
+
+  &:has(.selectable.-selected) {
+    .selectable {
+      opacity: var(--togostanza-fadeout-opacity);
+    }
+  }
+
+  circle {
+    &.selectable {
+      cursor: pointer;
+    }
+  }
 }

@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import { addHighlightOnHover } from "../../lib/graphHighlight";
 
 function straightLink(d) {
   const start = { x: d.source.x, y: d.source.y };
@@ -181,7 +182,7 @@ export default function (
     .data(nodes)
     .enter()
     .append("g")
-    .attr("class", "node-group")
+    .attr("class", "node")
     .attr("transform", (d) => {
       return `translate(${d.x},${d.y})`;
     })
@@ -189,7 +190,7 @@ export default function (
 
   const nodeCircles = nodeGroups
     .append("circle")
-    .attr("class", "node")
+
     .attr("cx", 0)
     .attr("cy", 0)
     .attr("r", (d) => d[symbols.nodeSizeSym])
@@ -200,24 +201,33 @@ export default function (
   }
 
   if (nodeLabelParams.dataKey !== "" && nodes[0][nodeLabelParams.dataKey]) {
-    nodeGroups
-      .append("text")
-      .attr("x", 0)
-      .attr("dy", (d) => nodeLabelParams.margin + d[symbols.nodeSizeSym])
-      .attr("class", "label")
-      .attr("alignment-baseline", "hanging")
-      .attr("text-anchor", "middle")
-      .text((d) => d[nodeLabelParams.dataKey]);
-  }
+    nodeGroups.each(function (d) {
+      let selectionToAppend = d3.select(this);
 
-  let isDragging = false;
+      if (d[symbols.nodeUrlSym]) {
+        selectionToAppend = selectionToAppend
+          .append("a")
+          .attr("href", d[symbols.nodeUrlSym])
+          .attr("target", "_blank");
+      }
+
+      selectionToAppend
+        .append("text")
+        .attr("x", 0)
+        .attr("dy", (d) => nodeLabelParams.margin + d[symbols.nodeSizeSym])
+        .attr("class", "label")
+        .attr("alignment-baseline", "hanging")
+        .attr("text-anchor", "middle")
+        .text(d[symbols.nodeLabelSym]);
+    });
+  }
 
   function drag(simulation) {
     function dragstarted(event) {
       if (!event.active) {
         simulation.alphaTarget(0.3).restart();
       }
-      isDragging = true;
+
       event.subject.fx = event.subject.x;
       event.subject.fy = event.subject.y;
     }
@@ -228,7 +238,6 @@ export default function (
     }
 
     function dragended(event) {
-      isDragging = false;
       if (!event.active) {
         simulation.alphaTarget(0);
       }
@@ -244,44 +253,6 @@ export default function (
   }
 
   if (highlightAdjEdges) {
-    nodeGroups.on("mouseover", function (e, d) {
-      if (isDragging) {
-        return;
-      }
-      // highlight current node
-      d3.select(this).classed("active", true);
-      // fade out all other nodes, highlight a little connected ones
-      nodeGroups
-        .classed("fadeout", (p) => d !== p)
-        .classed("half-active", (p) => {
-          return (
-            p !== d &&
-            d[symbols.edgeSym].some(
-              (edge) =>
-                edge[symbols.sourceNodeSym] === p ||
-                edge[symbols.targetNodeSym] === p
-            )
-          );
-        });
-
-      // fadeout not connected edges, highlight connected ones
-      links
-        .classed("fadeout", (p) => !d[symbols.edgeSym].includes(p))
-        .classed("active", (p) => d[symbols.edgeSym].includes(p));
-    });
-
-    nodeGroups.on("mouseleave", function () {
-      if (isDragging) {
-        return;
-      }
-      links
-        .classed("active", false)
-        .classed("fadeout", false)
-        .classed("half-active", false);
-      nodeGroups
-        .classed("active", false)
-        .classed("fadeout", false)
-        .classed("half-active", false);
-    });
+    addHighlightOnHover(symbols, nodes, nodeGroups, links);
   }
 }

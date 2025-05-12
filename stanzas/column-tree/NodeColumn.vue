@@ -14,19 +14,24 @@
       @click="hasChildren(node.children) ? setParent(node.id) : null"
     >
       <span class="inner">
-
         <input
+          :data-togostanza-id="node.id"
+          class="selectable"
+          :class="{ '-selected': checkedNodes.get(node.id) }"
           type="checkbox"
           :checked="checkedNodes.get(node.id)"
-          @input="setCheckedNode(node)"
+          @input="handleCheckboxClick(node)"
         />
 
         <span class="label" :class="`-${nodeValueAlignment}`">
           <strong class="title">
-            {{ node[keys.label] }}
+            {{ node.label }}
           </strong>
-          <span class="value" :class="{fallback: node[keys.value] === undefined}">
-            {{ node[keys.value]?.toLocaleString() ?? valueObj.fallback }}
+          <span
+            class="value"
+            :class="{ fallback: node[keys.value] === undefined }"
+          >
+            {{ node.value?.toLocaleString() ?? valueObj.fallback }}
           </span>
         </span>
         <font-awesome-icon
@@ -82,6 +87,10 @@ export default defineComponent({
       type: String,
       default: "horizontal",
     },
+    params: {
+      type: Object,
+      required: true,
+    },
   },
   emits: ["setParent", "setCheckedNode"],
   setup(props, context) {
@@ -102,10 +111,27 @@ export default defineComponent({
     function setParent(id) {
       context.emit("setParent", [props.layer + 1, id]);
     }
+
+    function handleCheckboxClick(node) {
+      setCheckedNode(node);
+
+      if (this.params.data._object.eventOutgoingChangeSelectedNodes) {
+        document.querySelector("togostanza-column-tree").dispatchEvent(
+          new CustomEvent("changeSelectedNodes", {
+            detail: {
+              selectedIds: [...this.checkedNodes.keys()],
+              targetId: node.id,
+              dataUrl: this.params.data._object.dataUrl,
+            },
+          })
+        );
+      }
+    }
+
     return {
       setParent,
-      setCheckedNode,
       hasChildren,
+      handleCheckboxClick,
     };
   },
 });

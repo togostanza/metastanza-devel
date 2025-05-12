@@ -5,13 +5,31 @@ main {
   padding: var(--togostanza-canvas-padding);
 }
 
-svg rect.container {
-  fill: var(--togostanza-theme-background_color);
-}
+svg {
+  > g {
+    > rect.container {
+      fill: var(--togostanza-theme-background_color);
+    }
 
-svg text {
-  font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
-  > tspan.number-label {
-    font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+    text {
+      font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+      > tspan.number-label {
+        font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+      }
+    }
+
+    rect.selectable:not(.breadcrumb) {
+      transition: var(--togostanza-fadeout-transition);
+      &:hover,
+      &.-selected {
+        opacity: 1 !important;
+      }
+    }
+  }
+
+  &:has(rect.selectable.-selected) {
+    rect.selectable {
+      opacity: var(--togostanza-fadeout-opacity);
+    }
   }
 }

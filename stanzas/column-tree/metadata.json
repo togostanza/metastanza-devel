@@ -17,7 +17,7 @@
   "stanza:parameter": [
     {
       "stanza:key": "data-url",
-      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/main/samples/json/tree-data.json",
+      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/main/samples/json/tree.json",
       "stanza:description": "Data source URL",
       "stanza:required": true
     },
@@ -31,7 +31,7 @@
     },
     {
       "stanza:key": "node-label_key",
-      "stanza:example": "label",
+      "stanza:example": "name",
       "stanza:description": "Key for data attribute to display as label",
       "stanza:required": true
     },
@@ -61,6 +61,20 @@
       "stanza:key": "togostanza-custom_css_url",
       "stanza:example": "",
       "stanza:description": "Stylesheet(css file) URL to override current style"
+    },
+    {
+      "stanza:key": "event-incoming_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Receive a change event of selected nodes",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "event-outgoing_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:description": "Emit a change event of selected nodes",
+      "stanza:required": false
     }
   ],
   "stanza:menu-placement": "bottom-right",
@@ -126,30 +140,22 @@
       "stanza:description": "Border color for single column"
     },
     {
-      "stanza:key": "--togostanza-node-selected_background_color",
+      "stanza:key": "--togostanza-theme-selected_background_color",
       "stanza:type": "color",
-      "stanza:default": "#6590e6",
-      "stanza:description": "Background color for selected items"
-    },
-    {
-      "stanza:key": "--togostanza-node-selected_text_color",
-      "stanza:type": "color",
-      "stanza:default": "#FFFFFF",
-      "stanza:description": "Text color for selected items"
-    },
-    {
-      "stanza:key": "--togostanza-node-hover_background_color",
-      "stanza:type": "color",
-      "stanza:default": "#C7EEFF",
-      "stanza:description": "Hover color for background when hovering over items"
-    },
-    {
-      "stanza:key": "--togostanza-node-hover_text_color",
-      "stanza:type": "color",
-      "stanza:default": "#221727",
-      "stanza:description": "Hover color for text when hovering over items"
+      "stanza:default": "#00DDFF44",
+      "stanza:description": "Color applied to the selected item"
     }
   ],
-  "stanza:incomingEvent": [],
-  "stanza:outgoingEvent": []
+  "stanza:incomingEvent": [
+    {
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
+    }
+  ],
+  "stanza:outgoingEvent": [
+    {
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
+    }
+  ]
 }
