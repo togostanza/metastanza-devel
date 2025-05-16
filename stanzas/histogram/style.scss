@@ -1,0 +1,90 @@
+// Load the repository-wide global style here. The actual file is located at ../common.scss for details.
+@use "@/common.scss";
+
+svg {
+  .tick > text {
+    font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+    font-family: var(--togostanza-fonts-font_family);
+  }
+
+  line.grid-line {
+    stroke: var(--togostanza-grid-color);
+  }
+
+  text.title {
+    font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+  }
+
+  line.zero-line {
+    stroke-width: calc(var(--togostanza-axis-zero_line_width) * 1px);
+    stroke: var(--togostanza-axis-zero_line_color);
+  }
+
+  .bar-group,
+  .bar {
+    > rect {
+      stroke-width: 0.5px;
+      stroke: var(--togostanza-border-color);
+      transition: var(--togostanza-fadeout-transition);
+      cursor: pointer;
+      &.-highlight {
+        opacity: 1;
+      }
+      &.-fadeout {
+        opacity: var(--togostanza-fadeout-opacity);
+      }
+    }
+    &.-selected,
+    &:hover {
+      > rect {
+        opacity: 1 !important;
+      }
+    }
+  }
+
+  line.error-bar {
+    stroke: var(--togostanza-border-color);
+    stroke-width: 1px;
+    opacity: 0.8;
+    transition: stroke-opacity 0.3s ease-out;
+
+    &.-highlight {
+      stroke-opacity: 1;
+    }
+    &.-fadeout {
+      stroke-opacity: var(--togostanza-fadeout-opacity);
+    }
+  }
+
+  &:has(.bar-group.-selected) {
+    .bar-group {
+      > rect {
+        opacity: var(--togostanza-fadeout-opacity);
+      }
+    }
+  }
+  &:has(.bar.-selected) {
+    .bar {
+      > rect {
+        opacity: var(--togostanza-fadeout-opacity);
+      }
+    }
+  }
+}
+
+.axis-container {
+  pointer-events: none;
+}
+
+main {
+  background-color: var(--togostanza-theme-background_color);
+}
+
+:host {
+  position: relative;
+  > togostanza--legend2 {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}
