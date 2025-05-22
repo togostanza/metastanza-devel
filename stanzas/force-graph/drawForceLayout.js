@@ -190,14 +190,15 @@ export default function (
 
   const nodeCircles = nodeGroups
     .append("circle")
-
     .attr("cx", 0)
     .attr("cy", 0)
     .attr("r", (d) => d[symbols.nodeSizeSym])
     .style("fill", (d) => d[symbols.nodeColorSym]);
 
-  if (tooltipParams.show) {
-    nodeCircles.attr("data-tooltip", (d) => d[tooltipParams.dataKey]);
+  if (tooltipParams.show && tooltipParams.tooltipsInstance) {
+    nodeCircles.attr("data-tooltip", (d) =>
+      tooltipParams.tooltipsInstance.compile(d)
+    );
   }
 
   if (nodeLabelParams.dataKey !== "" && nodes[0][nodeLabelParams.dataKey]) {

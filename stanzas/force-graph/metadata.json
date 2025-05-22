@@ -119,10 +119,10 @@
       "stanza:description": "Node labels data key. If empty, no labels will be shown"
     },
     {
-      "stanza:key": "tooltips-key",
+      "stanza:key": "tooltip",
       "stanza:type": "string",
-      "stanza:example": "id",
-      "stanza:description": "Node tooltips data key. If empty, no tooltips will be shown"
+      "stanza:example": "<h3>{{id}}</h3>",
+      "stanza:description": "A handlebars HTML template string to show in tooltip"
     },
     {
       "stanza:key": "event-incoming_change_selected_nodes",
