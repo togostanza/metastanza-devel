@@ -1,8 +1,6 @@
 import prepareGraphData from "@/lib/prepareGraphData";
 import * as d3 from "d3";
-import { Data } from "togostanza-utils/data";
 import MetaStanza from "../../lib/MetaStanza";
-import { handleApiError } from "../../lib/apiError";
 import drawForceLayout from "./drawForceLayout";
 
 import { getMarginsFromCSSString } from "@/lib/utils";
@@ -19,6 +17,7 @@ import {
   toggleSelectIds,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
+import ToolTip from "../../lib/ToolTip";
 
 export default class ForceGraph extends MetaStanza {
   _graphArea;
@@ -58,18 +57,17 @@ export default class ForceGraph extends MetaStanza {
     const root = this.root.querySelector("main");
     const el = this.root.getElementById("force-graph");
 
-    //data
     const width = parseInt(this.css("--togostanza-canvas-width"));
     const height = parseInt(this.css("--togostanza-canvas-height"));
 
-    const drawContent = async () => {
-      const data = await Data.load(this.params["data-url"], {
-        type: this.params["data-type"],
-        mainElement: this.root.querySelector("main"),
-      });
+    if (this.params["tooltip"]) {
+      this.tooltips = new ToolTip();
+      this.tooltips.setTemplate(this.params["tooltip"]);
+      this._main.appendChild(this.tooltips);
+    }
 
-      this._data = data.data;
-      const graph = data.asGraph({
+    const drawContent = async () => {
+      const graph = this.__data.asGraph({
         nodesKey: this.params["data-nodes_key"],
         edgesKey: this.params["data-edges_key"],
         nodeIdKey: this.params["node-id_key"],
@@ -124,8 +122,9 @@ export default class ForceGraph extends MetaStanza {
       );
 
       const tooltipParams = {
-        dataKey: this.params["tooltips-key"],
-        show: nodes.some((d) => d[this.params["tooltips-key"]]),
+        dataKey: this.params["tooltip"],
+        show: !!this.params["tooltip"],
+        tooltipsInstance: this.tooltips,
       };
 
       // Setting color scale
@@ -153,6 +152,7 @@ export default class ForceGraph extends MetaStanza {
       if (existingSvg) {
         existingSvg.remove();
       }
+
       this._graphArea = d3
         .select(el)
         .append("svg")
@@ -185,6 +185,11 @@ export default class ForceGraph extends MetaStanza {
         symbols,
       });
 
+      if (tooltipParams.show && this.tooltips) {
+        const nodesList = this._main.querySelectorAll("[data-tooltip]");
+        this.tooltips.setup(nodesList);
+      }
+
       if (this.params["event-outgoing_change_selected_nodes"]) {
         this._graphArea
           .selectAll(".node")
@@ -211,11 +216,7 @@ export default class ForceGraph extends MetaStanza {
       }
     };
 
-    handleApiError({
-      stanzaData: this,
-      hasTooltip: true,
-      drawContent,
-    });
+    drawContent();
   }
 
   handleEvent(event) {
