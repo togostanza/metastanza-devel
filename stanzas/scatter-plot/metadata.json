@@ -238,10 +238,10 @@
       "stanza:description": "Legend title"
     },
     {
-      "stanza:key": "tooltips-key",
+      "stanza:key": "tooltip",
       "stanza:type": "text",
-      "stanza:example": "pref",
-      "stanza:description": "Tooltips data key. If the key not existing, tooltips are not showing.",
+      "stanza:example": "<h3>{{pref}}</h3>",
+      "stanza:description": "A handlebars HTML template string to show in tooltip",
       "stanza:required": false
     },
     {

@@ -6,17 +6,17 @@ import {
   downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
-import { Axis } from "../../lib/AxisMixin";
-import getStanzaColors from "../../lib/ColorGenerator";
-import Legend from "../../lib/Legend2";
-import MetaStanza from "../../lib/MetaStanza";
-import ToolTip from "../../lib/ToolTip";
+import { Axis } from "@/lib/AxisMixin";
+import getStanzaColors from "@/lib/ColorGenerator";
+import Legend from "@/lib/Legend2";
+import MetaStanza from "@/lib/MetaStanza";
 import {
   emitSelectedEvent,
   getMarginsFromCSSString,
   toggleSelectIds,
   updateSelectedElementClassNameForD3,
-} from "../../lib/utils";
+} from "@/lib/utils";
+import ToolTip from "@/lib/ToolTip";
 
 const POINT_ID_KEY = "__togostanza_id__";
 
@@ -143,7 +143,7 @@ export default class ScatterPlot extends MetaStanza {
 
     const root = this.root;
 
-    const main = root.querySelector("main");
+    const main = this._main;
 
     if (!this.xAxis) {
       this.xAxis = new Axis(svg.node());
@@ -178,6 +178,7 @@ export default class ScatterPlot extends MetaStanza {
 
     if (!this.tooltips) {
       this.tooltips = new ToolTip();
+      this.tooltips.setTemplate(this.params["tooltip"]);
       main.append(this.tooltips);
     }
 
@@ -244,7 +245,7 @@ export default class ScatterPlot extends MetaStanza {
       this.legend.title = legendTitle;
     }
 
-    const showTooltips = data.some((d) => d[tooltipSym]);
+    const showTooltips = !!this.params["tooltip"];
 
     this._graphArea = select<SVGGElement, object>(svg.node()).select(
       ".chart-content"
@@ -271,14 +272,15 @@ export default class ScatterPlot extends MetaStanza {
       .attr("target", "_blank")
       .append("circle")
       .attr("class", "chart-node")
-      .attr("data-tooltip", (d) => d[tooltipSym])
+      .attr("data-tooltip", (d) => this.tooltips.compile(d))
       .attr("cx", (d) => d[xSym])
       .attr("cy", (d) => d[ySym])
       .attr("r", (d) => d[sizeSym])
       .attr("fill", (d) => d[colorSym]);
 
     if (showTooltips) {
-      this.tooltips.setup(enteredCircles.nodes());
+      const nodesWithTooltips = this._main.querySelectorAll("[data-tooltip");
+      this.tooltips.setup(nodesWithTooltips);
     }
 
     if (this.params["event-outgoing_change_selected_nodes"]) {
