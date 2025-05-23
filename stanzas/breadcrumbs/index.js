@@ -1,23 +1,19 @@
-import Stanza from "togostanza/stanza";
-
-import { appendCustomCss } from "togostanza-utils";
-import loadData from "togostanza-utils/load-data";
 import { Breadcrumbs } from "./components/Breadcrumbs";
 import "./components/BreadcrumbsNode";
 import "./components/BreadcrumbsNodeMenu";
+import MetaStanza from "@/lib/MetaStanza";
+import Tooltip from "@/lib/ToolTip";
 
-export default class BreadcrumbsLit extends Stanza {
+export default class BreadcrumbsLit extends MetaStanza {
   menu() {
     return [];
   }
 
-  async render() {
-    appendCustomCss(this, this.params["togostanza-custom_css_url"]);
-
-    const root = this.root.querySelector("main");
+  renderNext() {
+    const root = this._main;
 
     if (isExamplePage.apply(this)) {
-      root.style = null;
+      this._main.style = null;
       const overflowEl = this.element.parentElement.parentElement;
       overflowEl.classList.remove("overflow-auto");
     }
@@ -26,17 +22,39 @@ export default class BreadcrumbsLit extends Stanza {
       this.breadcrumbs.remove();
     }
 
-    this.breadcrumbs = new Breadcrumbs(root);
+    if (this.params["tooltip"] && !this.tooltips) {
+      this.tooltips = new Tooltip();
+      this.tooltips.setTemplate(this.params["tooltip"]);
+      this._main.append(this.tooltips);
+    }
 
-    const data = await loadData(
-      this.params["data-url"],
-      this.params["data-type"],
-      root,
-      5000
+    const breadcrumbsConfig = {
+      tooltipParams: {
+        show: !!this.params["tooltip"],
+        tooltipsInstance: this.tooltips,
+      },
+    };
+
+    this.breadcrumbs = new Breadcrumbs(root, breadcrumbsConfig);
+
+    this.breadcrumbs.updateParams(this.params, this._data);
+
+    setTimeout(this.setupTooltips, 100);
+  }
+
+  setupTooltips = () => {
+    // Get all breadcrumb nodes that should have tooltips
+    const breadcrumbNodes =
+      this.breadcrumbs.querySelectorAll("breadcrumbs-node");
+
+    const nodes = [...breadcrumbNodes.values()].map((d) =>
+      d.querySelector("[data-tooltip]")
     );
 
-    this.breadcrumbs.updateParams(this.params, data);
-  }
+    if (breadcrumbNodes.length > 0) {
+      this.tooltips.setup(nodes);
+    }
+  };
 
   handleEvent(e) {
     if (e.details?.id) {

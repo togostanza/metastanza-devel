@@ -1,5 +1,6 @@
 import { LitElement, html, nothing, svg } from "lit";
 import { ref, createRef } from "lit/directives/ref.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 import roundPathCorners from "../rounding.js";
 import * as FAIcons from "@fortawesome/free-solid-svg-icons";
 
@@ -14,6 +15,7 @@ class Node extends LitElement {
       },
       iconName: { type: String, state: true },
       mode: { type: String },
+      tooltip: { type: String, state: true },
     };
   }
 
@@ -45,6 +47,8 @@ class Node extends LitElement {
     this.showMenu = false;
 
     this.arrowWidth = 2;
+
+    this.tooltip = "";
   }
 
   willUpdate() {
@@ -130,9 +134,9 @@ class Node extends LitElement {
       ];
     }
 
-    const Lpath = points.map((p) => `L ${p.join(",")}`);
+    const lPath = points.map((p) => `L ${p.join(",")}`);
 
-    const path = `M 0,0 ${Lpath} Z`;
+    const path = `M 0,0 ${lPath} Z`;
 
     return path;
   }
@@ -204,9 +208,12 @@ class Node extends LitElement {
     </g>`
         : nothing
     }
-    ${svg`<text class="node-label" transform="translate(${
-      this.textMargin.left
-    },${this.height / 2})">${this.node.label}</text>`}
+
+    ${svg`<text class="node-label" data-tooltip="${ifDefined(
+      this.tooltip
+    )}" transform="translate(${this.textMargin.left},${this.height / 2})">${
+      this.node.label
+    }</text>`}
 
   </g>`;
 
@@ -219,9 +226,7 @@ class Node extends LitElement {
         height="${this.height}"
         ${ref(this.svg)}
       >
-        ${this.node.url
-          ? svg`<a href="${this.node.url}" target="_blank">${nodeG}</a>`
-          : nodeG}
+        ${nodeG}
       </svg>
 
       ${this.showMenu && this.showDropdown && this.menuItems.length > 0
