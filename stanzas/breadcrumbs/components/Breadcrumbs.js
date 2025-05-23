@@ -3,6 +3,8 @@ import { map } from "lit/directives/map.js";
 import { applyConstructor } from "@/lib/utils";
 import { ref, createRef } from "lit/directives/ref.js";
 
+const tooltipKeySym = Symbol("tooltip");
+
 export class Breadcrumbs extends LitElement {
   data = [];
   loading = false;
@@ -15,6 +17,7 @@ export class Breadcrumbs extends LitElement {
   observedStyle = null;
   observer = null;
   invisibleNode = createRef();
+  tooltipParams = {};
 
   static get properties() {
     return {
@@ -22,9 +25,12 @@ export class Breadcrumbs extends LitElement {
       data: { type: Array, state: true },
     };
   }
-  constructor(element) {
+  constructor(element, { tooltipParams }) {
     super();
     element.append(this);
+    this.tooltipParams = tooltipParams;
+
+    console.log("tooltipParams", this.tooltipParams);
   }
 
   updateParams(params, data) {
@@ -40,6 +46,9 @@ export class Breadcrumbs extends LitElement {
           typeof d.parent === "undefined" ? undefined : d.parent.toString();
         d[this.nodeKey] = d[this.nodeKey].toString();
         this.nodesMap.set(d[this.nodeKey], d);
+
+        d[tooltipKeySym] =
+          this.tooltipParams?.tooltipsInstance?.compile(d) || null;
       });
 
       this.currentId = this.nodeInitialId.toString();
@@ -198,6 +207,7 @@ export class Breadcrumbs extends LitElement {
             @menu-item-clicked=${({ detail }) =>
               (this.currentId = "" + detail.id)}
             data-id="${node[this.nodeKey]}"
+            .tooltip="${node[tooltipKeySym]}"
             .node="${{
               label: node[this.nodeLabelKey],
               id: node[this.nodeKey],
