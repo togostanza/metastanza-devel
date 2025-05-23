@@ -14,13 +14,13 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 import MetaStanza from "../../lib/MetaStanza";
-import { handleApiError } from "../../lib/apiError";
 import {
   emitSelectedEvent,
   toggleSelectIds,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
 import { curvedLink, straightLink } from "./curvedLink";
+import ToolTip from "../../lib/ToolTip";
 
 const markerBoxWidth = 8;
 const markerBoxHeight = 4;
@@ -69,13 +69,21 @@ export default class ForceGraph extends MetaStanza {
       this.css("--togostanza-canvas-height"),
       200
     );
-    const MARGIN = getMarginsFromCSSString(
-      this.css("--togostanza-canvas-padding")
-    );
 
+    // renderTemplate needs to be before adding tooltips, or else it will reset the _main content
     this.renderTemplate({
       template: "stanza.html.hbs",
     });
+
+    if (this.params["tooltip"]) {
+      this.tooltips = new ToolTip();
+      this.tooltips.setTemplate(this.params["tooltip"]);
+      this._main.append(this.tooltips);
+    }
+
+    const MARGIN = getMarginsFromCSSString(
+      this.css("--togostanza-canvas-padding")
+    );
 
     const el = this.root.getElementById("layered-graph");
 
@@ -159,8 +167,9 @@ export default class ForceGraph extends MetaStanza {
       };
 
       const tooltipParams = {
-        dataKey: this.params["tooltips-key"],
-        show: nodes.some((d) => d[this.params["tooltips-key"]]),
+        dataKey: this.params["tooltip"],
+        show: !!this.params["tooltip"],
+        tooltipsInstance: this.tooltips,
       };
 
       const highlightAdjEdges = true;
@@ -587,7 +596,7 @@ export default class ForceGraph extends MetaStanza {
             .classed("-fadeout", false)
             .classed("-half-active", true)
             .classed("-dashed", true)
-            .attr("-stroke-dasharray", (d) =>
+            .attr("stroke-dasharray", (d) =>
               Math.max(d.edge[symbols.edgeWidthSym] * 2, 2)
             );
 
@@ -722,14 +731,15 @@ export default class ForceGraph extends MetaStanza {
 
       init();
 
-      if (tooltipParams.show) {
-        svgG.selectAll(".node-g").each(function (d) {
-          const nodeG = d3.select(this);
+      if (tooltipParams.show && this.tooltips) {
+        svgG
+          .selectAll(".node-g")
+          .select(".node")
+          .attr("data-tooltip", (d) => this.tooltips.compile(d));
 
-          nodeG
-            .selectAll(".node")
-            .attr("data-tooltip", d[tooltipParams.dataKey]);
-        });
+        const nodesList = this._main.querySelectorAll("[data-tooltip]");
+
+        this.tooltips.setup(nodesList);
       }
 
       const nodeGroups = this._graphArea
@@ -763,11 +773,7 @@ export default class ForceGraph extends MetaStanza {
       });
     };
 
-    handleApiError({
-      stanzaData: this,
-      hasTooltip: true,
-      drawContent,
-    });
+    drawContent();
   }
 
   handleEvent(event) {
