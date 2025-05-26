@@ -196,13 +196,7 @@
       "stanza:description": "Axis gridlines interval. If not set, show 5 gridlines at `neat` values, if set to 0, not show gridlines.",
       "stanza:required": false
     },
-    {
-      "stanza:key": "node-url_key",
-      "stanza:type": "string",
-      "stanza:example": "url",
-      "stanza:description": "Set URL on the node based on data key",
-      "stanza:required": false
-    },
+
     {
       "stanza:key": "node-size_key",
       "stanza:type": "text",
@@ -240,7 +234,7 @@
     {
       "stanza:key": "tooltip",
       "stanza:type": "text",
-      "stanza:example": "<h3>{{pref}}</h3>",
+      "stanza:example": "<h3>{{#if url}}<a href={{url}}>{{pref}}</a>{{else}}{{pref}}{{/if}}</h3>",
       "stanza:description": "A handlebars HTML template string to show in tooltip",
       "stanza:required": false
     },
