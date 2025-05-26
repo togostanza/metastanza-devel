@@ -25,12 +25,10 @@ export class Breadcrumbs extends LitElement {
       data: { type: Array, state: true },
     };
   }
-  constructor(element, { tooltipParams }) {
+  constructor(element, { tooltipParams } = {}) {
     super();
     element.append(this);
     this.tooltipParams = tooltipParams;
-
-    console.log("tooltipParams", this.tooltipParams);
   }
 
   updateParams(params, data) {
