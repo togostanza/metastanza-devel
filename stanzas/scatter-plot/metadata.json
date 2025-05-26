@@ -364,6 +364,16 @@
       "stanza:description": "Axis zero gridline width in px"
     }
   ],
-  "stanza:incomingEvent": [],
-  "stanza:outgoingEvent": []
+  "stanza:incomingEvent": [
+    {
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
+    }
+  ],
+  "stanza:outgoingEvent": [
+    {
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
+    }
+  ]
 }

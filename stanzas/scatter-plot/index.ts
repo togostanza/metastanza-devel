@@ -267,9 +267,6 @@ export default class ScatterPlot extends MetaStanza {
 
     const enteredCircles = circlesUpdate
       .enter()
-      .append("a")
-      .attr("href", (d) => d[nodeUrlSym])
-      .attr("target", "_blank")
       .append("circle")
       .attr("class", "chart-node")
       .attr("data-tooltip", (d) => this.tooltips.compile(d))
