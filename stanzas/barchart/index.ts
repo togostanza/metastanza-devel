@@ -48,10 +48,16 @@ export default class Barchart extends MetaStanza {
     svg
       .attr("width", +this.css("--togostanza-canvas-width"))
       .attr("height", +this.css("--togostanza-canvas-height"));
-    if (this.params["tooltips-html"] && !this.tooltips) {
-      this.tooltips = new ToolTip();
-      this.tooltips.setTemplate(this.params["tooltips-html"]);
-      this._main.append(this.tooltips);
+
+    const tooltipString = this.params["tooltip"];
+
+    if (tooltipString) {
+      if (!this.tooltips) {
+        this.tooltips = new ToolTip();
+        this._main.append(this.tooltips);
+      }
+
+      this.tooltips.setTemplate(tooltipString);
     }
 
     // If "binKey" is specified, this component behaves as a histogram; if not, it behaves as a bar chart.
