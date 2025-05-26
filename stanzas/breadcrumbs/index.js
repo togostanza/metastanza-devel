@@ -39,7 +39,7 @@ export default class BreadcrumbsLit extends MetaStanza {
 
     this.breadcrumbs.updateParams(this.params, this._data);
 
-    setTimeout(this.setupTooltips, 100);
+    this.breadcrumbs.updateComplete.then(this.setupTooltips);
   }
 
   setupTooltips = () => {
@@ -47,11 +47,11 @@ export default class BreadcrumbsLit extends MetaStanza {
     const breadcrumbNodes =
       this.breadcrumbs.querySelectorAll("breadcrumbs-node");
 
-    const nodes = [...breadcrumbNodes.values()].map((d) =>
-      d.querySelector("[data-tooltip]")
-    );
+    const nodes = [...breadcrumbNodes]
+      .map((d) => d.querySelector("[data-tooltip]"))
+      .filter(Boolean);
 
-    if (breadcrumbNodes.length > 0) {
+    if (nodes.length > 0) {
       this.tooltips.setup(nodes);
     }
   };
