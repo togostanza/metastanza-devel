@@ -73,7 +73,7 @@ export default class Barchart extends MetaStanza {
     const groupKeyName = this.params["grouping-key"];
     const grouingArrangement = this.params["grouping-arrangement"];
 
-    const errorKeyName = this.params["error_bars-key"];
+    const errorKeyName = this.params["errorbar-key"];
     const showErrorBars = this._data.some((d) => d[errorKeyName]);
     const barColorKey = this.params["color_by-key"];
     const tooltipKey = this.params["tooltips-key"];
