@@ -215,17 +215,11 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "tooltips-key",
-      "stanza:type": "text",
-      "stanza:example": "count",
-      "stanza:description": "Bar tooltips data key. If the key not existing, tooltips are not showing.",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "tooltips-html",
+      "stanza:key": "tooltip",
       "stanza:type": "html",
       "stanza:example": "{{#if url}}<a href={{url}}>{{count}}</a>{{else}}<span>{{count}}</span>{{/if}}",
-      "stanza:description": "Data key to use as tooltip text"
+      "stanza:description": "A handlebars HTML template string to show in tooltip",
+      "stanza:required": false
     },
     {
       "stanza:key": "legend-visible",
