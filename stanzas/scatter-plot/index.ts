@@ -33,7 +33,6 @@ const idSym = Symbol("id");
 const xSym = Symbol("x");
 const ySym = Symbol("y");
 const tooltipSym = Symbol("tooltip");
-const nodeUrlSym = Symbol("nodeUrl");
 
 export default class ScatterPlot extends MetaStanza {
   xAxis: Axis;
@@ -121,8 +120,8 @@ export default class ScatterPlot extends MetaStanza {
     const sizeMax = this.params["node-size_max"] || sizeMin;
     const showLegend = this.params["legend-visible"];
     const legendTitle = this.params["legend-title"];
-    const tooltipKey = this.params["tooltips-key"];
-    const nodeUrlKey = this.params["node-url_key"];
+    // const tooltipKey = this.params["tooltips-key"];
+    const showTooltips = !!this.params["tooltip"];
 
     const width = parseInt(this.css("--togostanza-canvas-width"));
     const height = parseInt(this.css("--togostanza-canvas-height"));
@@ -176,10 +175,12 @@ export default class ScatterPlot extends MetaStanza {
       return legendSize;
     }
 
-    if (!this.tooltips) {
-      this.tooltips = new ToolTip();
+    if (showTooltips) {
+      if (!this.tooltips) {
+        this.tooltips = new ToolTip();
+        main.append(this.tooltips);
+      }
       this.tooltips.setTemplate(this.params["tooltip"]);
-      main.append(this.tooltips);
     }
 
     const drawArea = {
@@ -227,8 +228,7 @@ export default class ScatterPlot extends MetaStanza {
       datum[xSym] = this.xAxis.scale(parseFloat(datum[xKey]));
       datum[ySym] = this.yAxis.scale(parseFloat(datum[yKey]));
       datum[colorSym] = stanzaColors[0];
-      datum[tooltipSym] = datum[tooltipKey];
-      datum[nodeUrlSym] = datum[nodeUrlKey];
+      // datum[tooltipSym] = datum[tooltipKey];
     });
 
     if (showLegend && !this._error) {
@@ -244,8 +244,6 @@ export default class ScatterPlot extends MetaStanza {
 
       this.legend.title = legendTitle;
     }
-
-    const showTooltips = !!this.params["tooltip"];
 
     this._graphArea = select<SVGGElement, object>(svg.node()).select(
       ".chart-content"
@@ -267,9 +265,6 @@ export default class ScatterPlot extends MetaStanza {
 
     const enteredCircles = circlesUpdate
       .enter()
-      .append("a")
-      .attr("href", (d) => d[nodeUrlSym])
-      .attr("target", "_blank")
       .append("circle")
       .attr("class", "chart-node")
       .attr("data-tooltip", (d) => this.tooltips.compile(d))
@@ -279,7 +274,7 @@ export default class ScatterPlot extends MetaStanza {
       .attr("fill", (d) => d[colorSym]);
 
     if (showTooltips) {
-      const nodesWithTooltips = this._main.querySelectorAll("[data-tooltip");
+      const nodesWithTooltips = this._main.querySelectorAll("[data-tooltip]");
       this.tooltips.setup(nodesWithTooltips);
     }
 
