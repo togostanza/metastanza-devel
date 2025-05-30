@@ -21,7 +21,7 @@ main {
   box-sizing: border-box;
   margin: 0;
   list-style: none;
-  font-family: var(--togostanza-font-family);
+  font-family: var(--togostanza-fonts-font_family);
 }
 
 #renderDiv {
@@ -41,15 +41,15 @@ main {
     border-bottom: var(--togostanza-table-border);
     box-shadow: var(--togostanza-table-shadow);
     > thead {
-      background-color: var(--togostanza-thead-background-color);
-      font-size: var(--togostanza-thead-font-size);
-      color: var(--togostanza-thead-font-color);
+      background-color: var(--togostanza-table-thead-background_color);
+      font-size: var(--togostanza-table-thead-font-size);
+      color: var(--togostanza-table-thead-font_color);
       margin-bottom: 0;
       > tr {
         > th {
-          color: var(--togostanza-thead-font-color);
+          color: var(--togostanza-table-thead-font_color);
           font-weight: var(--togostanza-thead-font-weight);
-          background-color: var(--togostanza-thead-background-color);
+          background-color: var(--togostanza-table-thead-background_color);
           position: sticky;
           top: 0;
           &.fixed {
@@ -60,7 +60,7 @@ main {
             border-bottom: var(--togostanza-table-border);
           }
           &:after {
-            border-bottom: var(--togostanza-thead-border-bottom);
+            border-bottom: var(--togostanza-table-thead-border-bottom);
           }
         }
       }
@@ -73,10 +73,10 @@ main {
       border-left: var(--tbody-border-left);
       > tr {
         &:nth-child(odd) {
-          background-color: var(--togostanza-tbody-odd-background-color);
+          background-color: var(--togostanza-table-tbody-odd_background_color);
         }
         &:nth-child(even) {
-          background-color: var(--togostanza-tbody-even-background-color);
+          background-color: var(--togostanza-table-tbody-even_background_color);
         }
         > td {
           font-size: var(--togostanza-tbody-font-size);

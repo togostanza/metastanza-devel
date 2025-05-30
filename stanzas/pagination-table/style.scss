@@ -9,8 +9,8 @@
 @mixin button {
   border: var(--togostanza-control-border);
   border-radius: 3px;
-  background-color: var(--togostanza-thead-background-color);
-  color: var(--togostanza-thead-font-color);
+  background-color: var(--togostanza-table-thead-background_color);
+  color: var(--togostanza-table-thead-font_color);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -35,7 +35,7 @@
   margin: 0;
   list-style: none;
   color: var(--togostanza-control-font-color);
-  font-family: var(--togostanza-font-family);
+  font-family: var(--togostanza-fonts-font_family);
   font-size: var(--togostanza-control-font-size);
 }
 
@@ -119,22 +119,31 @@
     }
     > .tableWrapper {
       overflow: auto;
-      background-color: var(--togostanza-background-color);
+      // background-color: var(--togostanza-background-color);
       > table {
-        border-top: var(--togostanza-table-border);
-        border-bottom: var(--togostanza-table-border);
-        box-shadow: var(--togostanza-table-shadow);
+        border-style: solid;
+        border-top-width: calc(var(--togostanza-border-width) * 1px);
+        border-right-width: calc(var(--togostanza-border-width) * 1px);
+        border-bottom-width: calc(var(--togostanza-border-width) * 1px);
+        border-left-width: calc(var(--togostanza-border-width) * 1px);
+        border-top-color: var(--togostanza-border-color);
+        border-right-color: var(--togostanza-border-color);
+        border-bottom-color: var(--togostanza-border-color);
+        border-left-color: var(--togostanza-border-color);
+        color: var(--togostanza-fonts-font_color);
         line-height: 1.2;
         > thead {
-          background-color: var(--togostanza-thead-background-color);
-          color: var(--togostanza-thead-font-color);
+          background-color: var(--togostanza-table-thead-background_color);
+          color: var(--togostanza-table-thead-font_color);
           margin-bottom: 0;
-          border-bottom: var(--togostanza-thead-border-bottom);
+          border-bottom-style: solid;
+          border-bottom-width: calc(var(--togostanza-border-width) * 1px);
+          border-bottom-color: var(--togostanza-border-color);
           > tr {
             > th {
-              color: var(--togostanza-thead-font-color);
-              font-size: var(--togostanza-thead-font-size);
-              font-weight: var(--togostanza-thead-font-weight);
+              color: var(--togostanza-table-thead-font_color);
+              font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+              font-weight: bold;
               white-space: nowrap;
               position: relative;
               &.fixed {
@@ -142,13 +151,13 @@
                 z-index: 20;
               }
               &:first-child {
-                background-color: var(--togostanza-thead-background-color);
+                background-color: var(--togostanza-table-thead-background_color);
               }
               > .filterWrapper {
                 display: inline-block;
                 position: relative;
                 position: absolute;
-                top: calc(var(--togostanza-thead-font-size) + 16px);
+                top: calc(var(--togostanza-fonts-font_size_primary) * 1px + 16px);
                 left: 0;
                 z-index: 3;
                 &.lastCol {
@@ -163,8 +172,8 @@
                   border-radius: var(--togostanza-control-border-radius);
                   > .filterWindowTitle {
                     padding: 4px 8px;
-                    background-color: var(--togostanza-thead-background-color);
-                    color: var(--togostanza-thead-font-color);
+                    background-color: var(--togostanza-table-thead-background_color);
+                    color: var(--togostanza-table-thead-font_color);
                   }
                   > ul.filters {
                     padding: 9px 8px;
@@ -208,7 +217,7 @@
               }
               > .textSearchByColumnWrapper {
                 position: absolute;
-                top: calc(var(--togostanza-thead-font-size) + 16px);
+                top: calc(var(--togostanza-fonts-font_size_primary) * 1px + 16px);
                 left: 0;
                 z-index: 3;
                 background: #ffffff;
@@ -220,8 +229,8 @@
                 > p.title {
                   display: block;
                   padding: 6px 16px;
-                  background-color: var(--togostanza-thead-background-color);
-                  color: var(--togostanza-thead-font-color);
+                  background-color: var(--togostanza-table-thead-background_color);
+                  color: var(--togostanza-table-thead-font_color);
                 }
                 > input.textSearchInput[name="queryInputByColumn"] {
                   margin: 20px 30px;
@@ -313,9 +322,9 @@
             .icon.isShowing {
               z-index: 3;
               position: relative;
-              background-color: var(--togostanza-thead-background-color);
+              background-color: var(--togostanza-table-thead-background_color);
               path {
-                color: var(--togostanza-thead-font-color);
+                color: var(--togostanza-table-thead-font_color);
               }
             }
           }
@@ -323,18 +332,20 @@
         > tbody {
           > tr {
             &:nth-child(odd) {
-              background-color: var(--togostanza-tbody-odd-background-color);
+              background-color: var(--togostanza-table-tbody-odd_background_color);
             }
             &:nth-child(even) {
-              background-color: var(--togostanza-tbody-even-background-color);
+              background-color: var(--togostanza-table-tbody-even_background_color);
             }
             > td {
-              border-bottom: var(--togostanza-tbody-border-bottom);
+              border-bottom-style: solid;
+              border-bottom-width: calc(var(--togostanza-border-width) * 0.5px);
+              border-bottom-color: var(--togostanza-border-color);
               border-collapse: collapse;
               &.fixed {
                 position: sticky;
                 z-index: 10;
-                background-color: var(--togostanza-background-color);
+                // background-color: var(--togostanza-background-color);
               }
               &.hide {
                 display: none;
@@ -346,9 +357,7 @@
                 text-align: right;
               }
               > span {
-                font-size: var(--togostanza-tbody-font-size);
-                color: var(--togostanza-tbody-font-color);
-                font-weight: var(--togostanza-tbody-font-weight);
+                font-size: var(--togostanza-fonts-font_size_primary);
                 > a {
                   font-size: inherit;
                   color: inherit;
@@ -359,7 +368,6 @@
                   overflow: hidden;
                   display: -webkit-box;
                   -webkit-box-orient: vertical;
-                  color: var(--togostanza-tbody-font-color);
                 }
                 input {
                   display: none;
