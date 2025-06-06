@@ -9,7 +9,6 @@ import {
 } from "togostanza-utils";
 import { feature } from "topojson-client";
 import { Topology } from "topojson-specification";
-import { handleApiError } from "../../lib/apiError";
 import { getGradationColor } from "../../lib/ColorGenerator";
 import MetaStanza from "../../lib/MetaStanza";
 import {
@@ -17,6 +16,8 @@ import {
   toggleSelectIds,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
+import ToolTip from "../../lib/ToolTip";
+import Legend from "../../lib/Legend2.js";
 
 interface DataItem {
   [key: string]: string | number;
@@ -52,6 +53,8 @@ const REGION = new Map([
 export default class regionGeographicMap extends MetaStanza {
   _chartArea: d3.Selection<SVGGElement, unknown, SVGElement, undefined>;
   selectedIds: Array<string | number> = [];
+  legend: Legend;
+  tooltips: ToolTip;
   selectedEventParams = {
     targetElementSelector: ".path",
     selectedElementClassName: "-selected",
@@ -138,7 +141,8 @@ export default class regionGeographicMap extends MetaStanza {
       },
     };
 
-    const tooltipKey = this.params["tooltips-key"].trim();
+    // Tooltip
+    const tooltipString = this.params["tooltip"].trim();
 
     //Styles
     const width = parseFloat(this.css("--togostanza-canvas-width"));
@@ -163,6 +167,16 @@ export default class regionGeographicMap extends MetaStanza {
         .append("svg")
         .attr("width", svgWidth)
         .attr("height", svgHeight);
+
+      // Append tooltips
+      if (tooltipString) {
+        if (!this.tooltips) {
+          this.tooltips = new ToolTip();
+          root.append(this.tooltips);
+        }
+        this.tooltips.setTemplate(tooltipString);
+      }
+
       const g = this._chartArea.append("g").classed("g-path", true);
 
       // Setting  projection
@@ -183,14 +197,20 @@ export default class regionGeographicMap extends MetaStanza {
             const matchData = dataset.find(
               (val: DataItem) => switchProperty(geoDatum) === val[areaColorKey]
             );
-            return Object.assign({}, geoDatum, {
-              [areaColorValue]: matchData
-                ? matchData[areaColorValue]
-                : undefined,
-              __togostanza_id__: matchData
-                ? matchData.__togostanza_id__
-                : undefined,
-            });
+
+            const wrappedMatchData = matchData
+              ? Object.fromEntries(
+                  Object.entries(matchData).filter(
+                    ([key]) => key !== "__togostanza_id__"
+                  )
+                )
+              : {};
+
+            return {
+              ...geoDatum,
+              userData: wrappedMatchData,
+              __togostanza_id__: matchData?.__togostanza_id__,
+            };
           });
         }
 
@@ -202,9 +222,15 @@ export default class regionGeographicMap extends MetaStanza {
           .append("path")
           .classed("path", true)
           .attr("d", path)
-          .attr("data-tooltip", (d) => d[tooltipKey])
+          .attr("data-tooltip", (d) => {
+            if (this.tooltips) {
+              return this.tooltips.compile(d.userData);
+            } else {
+              return false;
+            }
+          })
           .attr("fill", (d) =>
-            switchProperty(d) ? setColor(d[areaColorValue]) : "#555"
+            switchProperty(d) ? setColor(d.userData[areaColorValue]) : "#555"
           );
 
         pathGroup.on("mouseenter", function () {
@@ -292,18 +318,22 @@ export default class regionGeographicMap extends MetaStanza {
       }
     };
 
-    const legendOptions = {
-      isLegendVisible,
-      legendConfiguration,
-    };
-    // Draw content and handle api errors
-    handleApiError({
-      stanzaData: this,
-      drawContent,
-      hasLegend: true,
-      hasTooltip: true,
-      legendOptions,
-    });
+    await drawContent();
+
+    if (isLegendVisible) {
+      if (!this.legend) {
+        this.legend = new Legend();
+        this.root.append(this.legend);
+      }
+      this.legend.setup(legendConfiguration);
+    } else {
+      this.legend?.remove();
+      this.legend = null;
+    }
+
+    if (this.tooltips) {
+      this.tooltips.setup(root.querySelectorAll("[data-tooltip]"));
+    }
 
     //Create legend objects
     function intervals(
