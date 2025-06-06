@@ -124,10 +124,10 @@
       "stanza:description": "Area color domain max"
     },
     {
-      "stanza:key": "tooltips-key",
-      "stanza:type": "text",
-      "stanza:example": "rate",
-      "stanza:description": "Data key to use as tooltip"
+      "stanza:key": "tooltip",
+      "stanza:type": "html",
+      "stanza:example": "{{#if url}}<a href={{url}}>{{rate}}</a>{{else}}<span>{{rate}}</span>{{/if}}",
+      "stanza:description": "A handlebars HTML template string to show in tooltip"
     },
     {
       "stanza:key": "event-incoming_change_selected_nodes",
