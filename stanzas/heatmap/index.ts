@@ -169,7 +169,7 @@ export default class Heatmap extends MetaStanza {
       this.yAxisGen = null;
     }
 
-    const drawContent = () => {
+    const drawContent = async () => {
       this._chartArea = select(root)
         .append("svg")
         .classed("svg", true)
@@ -267,7 +267,7 @@ export default class Heatmap extends MetaStanza {
       this.yAxisGen._g.raise();
     };
 
-    drawContent();
+    await drawContent();
 
     if (isLegendVisible) {
       if (!this.legend) {
