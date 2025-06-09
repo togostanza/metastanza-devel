@@ -7,13 +7,14 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 import getStanzaColors from "../../lib/ColorGenerator";
-import Legend from "../../lib/Legend2";
 import MetaStanza from "../../lib/MetaStanza";
 import {
   emitSelectedEvent,
   toggleSelectIds,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
+import Legend from "../../lib/Legend2";
+import ToolTip from "../../lib/ToolTip";
 
 interface DataItem {
   [key: string]: string | number;
@@ -24,6 +25,7 @@ export default class Piechart extends MetaStanza {
   _chartArea: d3.Selection<SVGGElement, unknown, SVGElement, undefined>;
   selectedIds: Array<string | number> = [];
   legend: Legend;
+  tooltips: ToolTip;
   selectedEventParams = {
     targetElementSelector: ".pie-slice",
     selectedElementClassName: "-selected",
@@ -41,6 +43,8 @@ export default class Piechart extends MetaStanza {
   }
 
   async renderNext() {
+    const root = this._main;
+    this._chartArea = select(this._main.querySelector("svg"));
     const width = parseInt(this.css("--togostanza-canvas-width"));
     const height = parseInt(this.css("--togostanza-canvas-height"));
     const valueKey = this.params["data-value_key"];
@@ -60,6 +64,9 @@ export default class Piechart extends MetaStanza {
       d[COLOR_KEY] = d[colorKey] ?? color(d[categoryKey]);
     });
 
+    // Tooltip
+    const tooltipString = this.params["tooltip"].trim();
+
     if (!this._chartArea?.empty()) {
       this._chartArea?.remove();
     }
@@ -67,12 +74,20 @@ export default class Piechart extends MetaStanza {
     let chartG: d3.Selection<SVGGElement, unknown, SVGElement, undefined>;
 
     const drawContent = async () => {
-      this._chartArea = select(this._main).select("svg");
-      if (this._chartArea.empty()) {
-        this._chartArea = select(this._main).append("svg");
-      }
+      // Drawing svg
+      this._chartArea = select(root)
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
 
-      this._chartArea.attr("width", width).attr("height", height);
+      // Append tooltips
+      if (tooltipString) {
+        if (!this.tooltips) {
+          this.tooltips = new ToolTip();
+          root.append(this.tooltips);
+        }
+        this.tooltips.setTemplate(tooltipString);
+      }
 
       const existingChart = this._chartArea.select("g.chart");
       if (!existingChart.empty()) {
@@ -106,6 +121,13 @@ export default class Piechart extends MetaStanza {
         .append("path")
         .classed("pie-slice", true)
         .attr("d", arcGenerator)
+        .attr("data-tooltip", (d) => {
+          if (this.tooltips) {
+            return this.tooltips.compile(d.data);
+          } else {
+            return false;
+          }
+        })
         .attr("fill", (d) => d.data[COLOR_KEY]);
 
       pieGroups.on("mouseenter", function () {
@@ -138,6 +160,8 @@ export default class Piechart extends MetaStanza {
       });
     };
 
+    await drawContent();
+
     const isLegendVisible: boolean = this.params["legend-visible"];
 
     const legendConfiguration = {
@@ -157,8 +181,6 @@ export default class Piechart extends MetaStanza {
       },
     };
 
-    await drawContent();
-
     if (isLegendVisible) {
       if (!this.legend) {
         this.legend = new Legend();
@@ -168,6 +190,10 @@ export default class Piechart extends MetaStanza {
     } else {
       this.legend?.remove();
       this.legend = null;
+    }
+
+    if (this.tooltips) {
+      this.tooltips.setup(root.querySelectorAll("[data-tooltip]"));
     }
   }
 
