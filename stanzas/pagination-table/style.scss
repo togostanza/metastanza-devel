@@ -121,31 +121,36 @@
       overflow: auto;
       // background-color: var(--togostanza-background-color);
       > table {
-        border-style: solid;
-        border-top-width: calc(var(--togostanza-border-width) * 1px);
-        border-right-width: calc(var(--togostanza-border-width) * 1px);
-        border-bottom-width: calc(var(--togostanza-border-width) * 1px);
-        border-left-width: calc(var(--togostanza-border-width) * 1px);
-        border-top-color: var(--togostanza-border-color);
-        border-right-color: var(--togostanza-border-color);
-        border-bottom-color: var(--togostanza-border-color);
-        border-left-color: var(--togostanza-border-color);
+        border: solid 0 var(--togostanza-border-color);
         color: var(--togostanza-fonts-font_color);
         line-height: 1.2;
+        main[data-border-horizontal="true"] & {
+          border-top-width: calc(var(--togostanza-border-width) * 1px);
+          border-bottom-width: calc(var(--togostanza-border-width) * 1px);
+        }
+        main[data-border-vertical="true"] & {
+          border-right-width: calc(var(--togostanza-border-width) * 1px);
+          border-left-width: calc(var(--togostanza-border-width) * 1px);
+        }
         > thead {
           background-color: var(--togostanza-table-thead-background_color);
           color: var(--togostanza-table-thead-font_color);
           margin-bottom: 0;
-          border-bottom-style: solid;
-          border-bottom-width: calc(var(--togostanza-border-width) * 1px);
-          border-bottom-color: var(--togostanza-border-color);
+          border-bottom: solid 0 var(--togostanza-border-color);
+          main[data-border-horizontal="true"] & {
+            border-bottom-width: calc(var(--togostanza-border-width) * 1px);
+          }
           > tr {
             > th {
+              border-right: solid 0 var(--togostanza-border-color);
               color: var(--togostanza-table-thead-font_color);
               font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
               font-weight: bold;
               white-space: nowrap;
               position: relative;
+              main[data-border-vertical="true"] & {
+                border-right-width: calc(var(--togostanza-border-width) * 0.5px);
+              }
               &.fixed {
                 position: sticky;
                 z-index: 20;
@@ -338,10 +343,17 @@
               background-color: var(--togostanza-table-tbody-even_background_color);
             }
             > td {
-              border-bottom-style: solid;
-              border-bottom-width: calc(var(--togostanza-border-width) * 0.5px);
-              border-bottom-color: var(--togostanza-border-color);
+              border-bottom: solid 0 var(--togostanza-border-color);
+              border-left: solid 0 var(--togostanza-border-color);
               border-collapse: collapse;
+              main[data-border-horizontal="true"] & {
+                border-top-width: calc(var(--togostanza-border-width) * 0.5px);
+                border-bottom-width: calc(var(--togostanza-border-width) * 0.5px);
+              }
+              main[data-border-vertical="true"] & {
+                border-right-width: calc(var(--togostanza-border-width) * 0.5px);
+                border-left-width: calc(var(--togostanza-border-width) * 0.5px);
+              }
               &.fixed {
                 position: sticky;
                 z-index: 10;

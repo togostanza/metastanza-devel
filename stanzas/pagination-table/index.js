@@ -1,6 +1,6 @@
-import Stanza from "togostanza/stanza";
 import { createApp } from "vue";
 import App from "./app.vue";
+import MetaStanza from "@/lib/MetaStanza";
 
 import {
   appendCustomCss,
@@ -9,7 +9,7 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 
-export default class PaginationTable extends Stanza {
+export default class PaginationTable extends MetaStanza {
   menu() {
     return [
       downloadJSONMenuItem(this, "table", this._component?.json()),
@@ -18,13 +18,24 @@ export default class PaginationTable extends Stanza {
     ];
   }
 
-  async render() {
+  async renderNext() {
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     const main = this.root.querySelector("main");
     // main.parentNode.style.backgroundColor =
     //   "var(--togostanza-background-color)"; TODO: コメントアウトしたが、要検討
     main.parentNode.style.padding = this.params["padding"];
+
+    const borderHorizontal = window
+      .getComputedStyle(this.element)
+      .getPropertyValue("--togostanza-border-horizontal")
+      .trim();
+    const borderVertical = window
+      .getComputedStyle(this.element)
+      .getPropertyValue("--togostanza-border-vertical")
+      .trim();
+    main.dataset.borderHorizontal = borderHorizontal;
+    main.dataset.borderVertical = borderVertical;
 
     this._app?.unmount();
     this._app = createApp(App, {

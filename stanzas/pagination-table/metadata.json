@@ -158,6 +158,18 @@
       "stanza:description": "Border width"
     },
     {
+      "stanza:key": "--togostanza-border-horizontal",
+      "stanza:type": "boolean",
+      "stanza:default": true,
+      "stanza:description": "Whether to draw horizontal lines"
+    },
+    {
+      "stanza:key": "--togostanza-border-vertical",
+      "stanza:type": "boolean",
+      "stanza:default": false,
+      "stanza:description": "Whether to draw vertical lines"
+    },
+    {
       "stanza:key": "--togostanza-table-thead-font_color",
       "stanza:type": "color",
       "stanza:default": "",
