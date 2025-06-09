@@ -9,7 +9,6 @@ import {
 import getStanzaColors from "../../lib/ColorGenerator";
 import Legend from "../../lib/Legend2";
 import MetaStanza from "../../lib/MetaStanza";
-import { handleApiError, type LegendItem } from "../../lib/apiError";
 import {
   emitSelectedEvent,
   toggleSelectIds,
@@ -22,9 +21,9 @@ interface DataItem {
 }
 
 export default class Piechart extends MetaStanza {
-  legend: Legend;
   _chartArea: d3.Selection<SVGGElement, unknown, SVGElement, undefined>;
   selectedIds: Array<string | number> = [];
+  legend: Legend;
   selectedEventParams = {
     targetElementSelector: ".pie-slice",
     selectedElementClassName: "-selected",
@@ -66,7 +65,8 @@ export default class Piechart extends MetaStanza {
     }
 
     let chartG: d3.Selection<SVGGElement, unknown, SVGElement, undefined>;
-    const drawContent = () => {
+
+    const drawContent = async () => {
       this._chartArea = select(this._main).select("svg");
       if (this._chartArea.empty()) {
         this._chartArea = select(this._main).append("svg");
@@ -147,7 +147,7 @@ export default class Piechart extends MetaStanza {
           value: item[categoryKey],
           color: item[COLOR_KEY],
           toggled: false,
-        } as LegendItem;
+        };
       }),
       title: legendTitle,
       options: {
@@ -157,15 +157,18 @@ export default class Piechart extends MetaStanza {
       },
     };
 
-    handleApiError({
-      stanzaData: this,
-      drawContent,
-      hasLegend: true,
-      legendOptions: {
-        isLegendVisible,
-        legendConfiguration,
-      },
-    });
+    await drawContent();
+
+    if (isLegendVisible) {
+      if (!this.legend) {
+        this.legend = new Legend();
+        this.root.append(this.legend);
+      }
+      this.legend.setup(legendConfiguration);
+    } else {
+      this.legend?.remove();
+      this.legend = null;
+    }
   }
 
   handleEvent(event) {
