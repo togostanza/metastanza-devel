@@ -1,4 +1,4 @@
-import { arc, pie, scaleOrdinal, select } from "d3";
+import { arc, pie, scaleOrdinal, select, Arc, PieArcDatum } from "d3";
 import {
   downloadCSVMenuItem,
   downloadJSONMenuItem,
@@ -15,6 +15,11 @@ import {
   toggleSelectIds,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
+
+interface DataItem {
+  [key: string]: string | number;
+  __togostanza_id: string | number;
+}
 
 export default class Piechart extends MetaStanza {
   legend: Legend;
@@ -50,10 +55,10 @@ export default class Piechart extends MetaStanza {
 
     const color = scaleOrdinal(getStanzaColors(this)).domain(categoryList);
 
-    const colorSym = Symbol("color");
+    const COLOR_KEY = "__color";
     this._data.forEach((d: string | number) => {
       d[valueKey] = +d[valueKey];
-      d[colorSym] = d[colorKey] ?? color(d[categoryKey]);
+      d[COLOR_KEY] = d[colorKey] ?? color(d[categoryKey]);
     });
 
     if (!this._chartArea?.empty()) {
@@ -81,9 +86,16 @@ export default class Piechart extends MetaStanza {
 
       const R = Math.min(WIDTH, HEIGHT) / 2;
 
-      const arcGenerator = arc().innerRadius(0).outerRadius(R);
+      const arcGenerator: Arc<SVGPathElement, PieArcDatum<DataItem>> = arc<
+        SVGPathElement,
+        PieArcDatum<DataItem>
+      >()
+        .innerRadius(0)
+        .outerRadius(R);
 
-      const pieConvertor = pie().value((d) => d[valueKey]);
+      const pieConvertor = pie<DataItem>().value((d) =>
+        parseFloat(String(d[valueKey]))
+      );
 
       const dataReady = pieConvertor(this._data);
 
@@ -93,8 +105,8 @@ export default class Piechart extends MetaStanza {
         .enter()
         .append("path")
         .classed("pie-slice", true)
-        .attr("d", <any>arcGenerator)
-        .attr("fill", (d) => d.data[colorSym]);
+        .attr("d", arcGenerator)
+        .attr("fill", (d) => d.data[COLOR_KEY]);
 
       pieGroups.on("mouseenter", function () {
         const node = select(this);
@@ -133,7 +145,7 @@ export default class Piechart extends MetaStanza {
         return {
           id: "" + index,
           value: item[categoryKey],
-          color: item[colorSym],
+          color: item[COLOR_KEY],
           toggled: false,
         } as LegendItem;
       }),
