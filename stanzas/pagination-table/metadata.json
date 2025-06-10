@@ -27,11 +27,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "width",
-      "stanza:type": "number",
-      "stanza:description": "Width"
-    },
-    {
       "stanza:key": "fixed-columns",
       "stanza:type": "number",
       "stanza:example": 1,

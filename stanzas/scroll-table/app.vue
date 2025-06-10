@@ -2,7 +2,7 @@
 <template>
   <div
     class="tableWrapper"
-    :style="`width: ${width}px; height: ${height}px;`"
+    :style="`height: ${height}px;`"
     @scroll="handleScroll"
   >
     <table v-if="state.allRows">
@@ -186,7 +186,6 @@ export default defineComponent({
     return {
       state,
       handleScroll,
-      width: params.width,
       height: params.height,
       padding: params.padding,
       thead,

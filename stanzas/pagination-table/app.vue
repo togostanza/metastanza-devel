@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <div ref="rootElement" class="wrapper" :style="`width: ${width};`">
+  <div ref="rootElement" class="wrapper" :style="`width: ${canvasWidth}; height: ${canvasHeight};`">
     <div class="tableOptionWrapper">
       <div class="tableOption">
         <input
@@ -19,7 +19,7 @@
           entries
         </p>
       </div>
-      <div class="tableWrapper" :style="`width: ${width};`">
+      <div class="tableWrapper" :style="`width: ${canvasWidth};`">
         <table
           v-if="state.allRows"
           ref="table"
@@ -355,16 +355,23 @@ export default defineComponent({
   ],
 
   setup(params) {
+    const canvasWidth = ref("100%");
+    const canvasHeight = ref("");
+
     onMounted(() => {
       requestAnimationFrame(() => {
         const style = window.getComputedStyle(rootElement.value);
-        const value = style.getPropertyValue(
+        const widthFromCss = style.getPropertyValue("--togostanza-canvas-width").trim();
+        canvasWidth.value = widthFromCss ? widthFromCss + "px" : "100%";
+        const heightFromCss = style.getPropertyValue("--togostanza-canvas-height").trim();
+        canvasHeight.value = heightFromCss ? heightFromCss + "px" : "";
+        const flexDirection = style.getPropertyValue(
           "--togostanza-pagination-placement-vertical"
         );
         rootElement.value.style.flexDirection = {
           top: "column-reverse",
           bottom: "column",
-        }[value];
+        }[flexDirection];
       });
     });
 
@@ -732,7 +739,8 @@ export default defineComponent({
     };
 
     return {
-      width: params.width ? params.width + "px" : "100%",
+      canvasWidth,
+      canvasHeight,
       no_data_message,
       sliderPagination,
       pageSizeOption,

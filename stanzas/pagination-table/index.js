@@ -26,6 +26,7 @@ export default class PaginationTable extends MetaStanza {
     //   "var(--togostanza-background-color)"; TODO: コメントアウトしたが、要検討
     main.parentNode.style.padding = this.params["padding"];
 
+    // Set border styles from CSS variables
     const borderHorizontal = window
       .getComputedStyle(this.element)
       .getPropertyValue("--togostanza-border-horizontal")
