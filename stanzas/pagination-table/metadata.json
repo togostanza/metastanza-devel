@@ -200,12 +200,6 @@
       "stanza:description": "Color of control area"
     },
     {
-      "stanza:key": "--togostanza-control-active-color",
-      "stanza:type": "color",
-      "stanza:default": "#6590e6",
-      "stanza:description": "Active color of control area"
-    },
-    {
       "stanza:key": "--togostanza-non-active-color",
       "stanza:type": "color",
       "stanza:default": "#00000044",
