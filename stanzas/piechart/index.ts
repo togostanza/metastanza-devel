@@ -6,7 +6,7 @@ import {
   downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
-import getStanzaColors from "../../lib/ColorGenerator";
+import getStanzaColors, { getCirculateColor } from "../../lib/ColorGenerator";
 import MetaStanza from "../../lib/MetaStanza";
 import {
   emitSelectedEvent,
@@ -49,19 +49,49 @@ export default class Piechart extends MetaStanza {
     const height = parseInt(this.css("--togostanza-canvas-height"));
     const valueKey = this.params["data-value_key"];
     const categoryKey = this.params["data-category_key"];
-    const colorKey = this.params["data-color_key"];
+    const colorKey = this.params["color-key"].trim();
+    const groupKey = this.params["group-key"].trim();
+
     const legendTitle = this.params["legend-title"];
 
+    const hasGroup = this._data.some((d) => d[groupKey]);
+
     const categoryList = [
-      ...new Set(this._data.map((d) => d[categoryKey])),
+      ...new Set(this._data.map((d: DataItem) => d[categoryKey])),
     ] as string[];
 
-    const color = scaleOrdinal(getStanzaColors(this)).domain(categoryList);
+    const defaultColorScale = scaleOrdinal(getStanzaColors(this)).domain(
+      categoryList
+    );
+
+    // groupベースのカラー取得用
+    const groupColorScale = hasGroup
+      ? getCirculateColor(this, this._data, groupKey).groupColor
+      : null;
+
+    /** カラー取得関数
+     * 優先順位:
+     * 1. color プロパティがあればそれを使う
+     * 2. group プロパティがあれば groupColorScale を使う
+     * 3. それ以外は category ベースの defaultColorScale を使う */
+    const setColorFromRawData = (d: DataItem) => {
+      const color = d[colorKey];
+      if (color) {
+        return color;
+      }
+
+      const group = d[groupKey];
+      if (hasGroup && groupColorScale && group) {
+        return groupColorScale(group);
+      }
+
+      return defaultColorScale(String(d[categoryKey]));
+    };
 
     const COLOR_KEY = "__color";
-    this._data.forEach((d: string | number) => {
+    this._data.forEach((d: DataItem) => {
       d[valueKey] = +d[valueKey];
-      d[COLOR_KEY] = d[colorKey] ?? color(d[categoryKey]);
+      d[COLOR_KEY] = setColorFromRawData(d);
     });
 
     // Tooltip

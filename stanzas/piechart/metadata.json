@@ -39,6 +39,18 @@
       "stanza:required": true
     },
     {
+      "stanza:key": "color-key",
+      "stanza:type": "text",
+      "stanza:example": "color",
+      "stanza:description": "Data key to color the data points. if all data keys values includes hex color, use that color, otherwise use ordinal scale from the theme colors."
+    },
+    {
+      "stanza:key": "group-key",
+      "stanza:type": "text",
+      "stanza:example": "group",
+      "stanza:description": "Data key to use to define group color"
+    },
+    {
       "stanza:key": "legend-visible",
       "stanza:type": "boolean",
       "stanza:label": "Show legend",
