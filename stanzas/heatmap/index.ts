@@ -61,9 +61,9 @@ export default class Heatmap extends MetaStanza {
 
     // Color scale
     const cellColorKey: string = this.params["cell-color_key"].trim();
-    const cellColorMin: number = this.params["cell-color_min"];
-    const cellColorMid: number = this.params["cell-color_mid"];
-    const cellColorMax: number = this.params["cell-color_max"];
+    const cellColorMin: string = this.params["cell-color_min"];
+    const cellColorMid: string = this.params["cell-color_mid"];
+    const cellColorMax: string = this.params["cell-color_max"];
     let cellDomainMin = parseFloat(this.params["cell-value_min"]);
     let cellDomainMid = parseFloat(this.params["cell-value_mid"]);
     let cellDomainMax = parseFloat(this.params["cell-value_max"]);
