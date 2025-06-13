@@ -1,4 +1,4 @@
-import { arc, pie, scaleOrdinal, select } from "d3";
+import { arc, pie, scaleOrdinal, select, Arc, PieArcDatum } from "d3";
 import {
   downloadCSVMenuItem,
   downloadJSONMenuItem,
@@ -6,20 +6,26 @@ import {
   downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
-import getStanzaColors from "../../lib/ColorGenerator";
-import Legend from "../../lib/Legend2";
+import getStanzaColors, { getCirculateColor } from "../../lib/ColorGenerator";
 import MetaStanza from "../../lib/MetaStanza";
-import { handleApiError, type LegendItem } from "../../lib/apiError";
 import {
   emitSelectedEvent,
   toggleSelectIds,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
+import Legend from "../../lib/Legend2";
+import ToolTip from "../../lib/ToolTip";
+
+interface DataItem {
+  [key: string]: string | number;
+  __togostanza_id: string | number;
+}
 
 export default class Piechart extends MetaStanza {
-  legend: Legend;
   _chartArea: d3.Selection<SVGGElement, unknown, SVGElement, undefined>;
   selectedIds: Array<string | number> = [];
+  legend: Legend;
+  tooltips: ToolTip;
   selectedEventParams = {
     targetElementSelector: ".pie-slice",
     selectedElementClassName: "-selected",
@@ -37,37 +43,81 @@ export default class Piechart extends MetaStanza {
   }
 
   async renderNext() {
+    const root = this._main;
+    this._chartArea = select(this._main.querySelector("svg"));
     const width = parseInt(this.css("--togostanza-canvas-width"));
     const height = parseInt(this.css("--togostanza-canvas-height"));
     const valueKey = this.params["data-value_key"];
     const categoryKey = this.params["data-category_key"];
-    const colorKey = this.params["data-color_key"];
+    const colorKey = this.params["color-key"].trim();
+    const groupKey = this.params["group-key"].trim();
+
     const legendTitle = this.params["legend-title"];
 
+    const hasGroup = this._data.some((d) => d[groupKey]);
+
     const categoryList = [
-      ...new Set(this._data.map((d) => d[categoryKey])),
+      ...new Set(this._data.map((d: DataItem) => d[categoryKey])),
     ] as string[];
 
-    const color = scaleOrdinal(getStanzaColors(this)).domain(categoryList);
+    const defaultColorScale = scaleOrdinal(getStanzaColors(this)).domain(
+      categoryList
+    );
 
-    const colorSym = Symbol("color");
-    this._data.forEach((d: string | number) => {
+    // groupベースのカラー取得用
+    const groupColorScale = hasGroup
+      ? getCirculateColor(this, this._data, groupKey).groupColor
+      : null;
+
+    /** カラー取得関数
+     * 優先順位:
+     * 1. color プロパティがあればそれを使う
+     * 2. group プロパティがあれば groupColorScale を使う
+     * 3. それ以外は category ベースの defaultColorScale を使う */
+    const setColorFromRawData = (d: DataItem) => {
+      const color = d[colorKey];
+      if (color) {
+        return color;
+      }
+
+      const group = d[groupKey];
+      if (hasGroup && groupColorScale && group) {
+        return groupColorScale(group);
+      }
+
+      return defaultColorScale(String(d[categoryKey]));
+    };
+
+    const COLOR_KEY = "__color";
+    this._data.forEach((d: DataItem) => {
       d[valueKey] = +d[valueKey];
-      d[colorSym] = d[colorKey] ?? color(d[categoryKey]);
+      d[COLOR_KEY] = setColorFromRawData(d);
     });
+
+    // Tooltip
+    const tooltipString = this.params["tooltip"].trim();
 
     if (!this._chartArea?.empty()) {
       this._chartArea?.remove();
     }
 
     let chartG: d3.Selection<SVGGElement, unknown, SVGElement, undefined>;
-    const drawContent = () => {
-      this._chartArea = select(this._main).select("svg");
-      if (this._chartArea.empty()) {
-        this._chartArea = select(this._main).append("svg");
-      }
 
-      this._chartArea.attr("width", width).attr("height", height);
+    const drawContent = async () => {
+      // Drawing svg
+      this._chartArea = select(root)
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+      // Append tooltips
+      if (tooltipString) {
+        if (!this.tooltips) {
+          this.tooltips = new ToolTip();
+          root.append(this.tooltips);
+        }
+        this.tooltips.setTemplate(tooltipString);
+      }
 
       const existingChart = this._chartArea.select("g.chart");
       if (!existingChart.empty()) {
@@ -81,9 +131,16 @@ export default class Piechart extends MetaStanza {
 
       const R = Math.min(WIDTH, HEIGHT) / 2;
 
-      const arcGenerator = arc().innerRadius(0).outerRadius(R);
+      const arcGenerator: Arc<SVGPathElement, PieArcDatum<DataItem>> = arc<
+        SVGPathElement,
+        PieArcDatum<DataItem>
+      >()
+        .innerRadius(0)
+        .outerRadius(R);
 
-      const pieConvertor = pie().value((d) => d[valueKey]);
+      const pieConvertor = pie<DataItem>().value((d) =>
+        parseFloat(String(d[valueKey]))
+      );
 
       const dataReady = pieConvertor(this._data);
 
@@ -93,8 +150,15 @@ export default class Piechart extends MetaStanza {
         .enter()
         .append("path")
         .classed("pie-slice", true)
-        .attr("d", <any>arcGenerator)
-        .attr("fill", (d) => d.data[colorSym]);
+        .attr("d", arcGenerator)
+        .attr("data-tooltip", (d) => {
+          if (this.tooltips) {
+            return this.tooltips.compile(d.data);
+          } else {
+            return false;
+          }
+        })
+        .attr("fill", (d) => d.data[COLOR_KEY]);
 
       pieGroups.on("mouseenter", function () {
         const node = select(this);
@@ -126,6 +190,8 @@ export default class Piechart extends MetaStanza {
       });
     };
 
+    await drawContent();
+
     const isLegendVisible: boolean = this.params["legend-visible"];
 
     const legendConfiguration = {
@@ -133,9 +199,9 @@ export default class Piechart extends MetaStanza {
         return {
           id: "" + index,
           value: item[categoryKey],
-          color: item[colorSym],
+          color: item[COLOR_KEY],
           toggled: false,
-        } as LegendItem;
+        };
       }),
       title: legendTitle,
       options: {
@@ -145,15 +211,20 @@ export default class Piechart extends MetaStanza {
       },
     };
 
-    handleApiError({
-      stanzaData: this,
-      drawContent,
-      hasLegend: true,
-      legendOptions: {
-        isLegendVisible,
-        legendConfiguration,
-      },
-    });
+    if (isLegendVisible) {
+      if (!this.legend) {
+        this.legend = new Legend();
+        this.root.append(this.legend);
+      }
+      this.legend.setup(legendConfiguration);
+    } else {
+      this.legend?.remove();
+      this.legend = null;
+    }
+
+    if (this.tooltips) {
+      this.tooltips.setup(root.querySelectorAll("[data-tooltip]"));
+    }
   }
 
   handleEvent(event) {
