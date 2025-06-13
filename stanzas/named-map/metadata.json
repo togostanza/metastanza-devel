@@ -89,19 +89,19 @@
     },
     {
       "stanza:key": "area-color_min",
-      "stanza:type": "text",
+      "stanza:type": "color",
       "stanza:example": "#6590e6",
       "stanza:description": "Area color range min"
     },
     {
       "stanza:key": "area-color_mid",
-      "stanza:type": "text",
+      "stanza:type": "color",
       "stanza:example": "#ffffff",
       "stanza:description": "Area color range mid"
     },
     {
       "stanza:key": "area-color_max",
-      "stanza:type": "text",
+      "stanza:type": "color",
       "stanza:example": "#F75976",
       "stanza:description": "Area color range max"
     },
