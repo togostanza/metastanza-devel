@@ -2,7 +2,7 @@
   <div v-show="showSuggestions" class="search-wrapper suggestionscontainer">
     <ul class="suggestions">
       <li
-        v-for="(node, index) of data"
+        v-for="(node, index) in data"
         :key="index"
         :class="'-with-border'"
         @click="$emit('selectNode', node)"
@@ -24,36 +24,33 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup lang="ts">
+// 型定義
+interface SuggestionItem {
+  [key: string]: string | number | undefined;
+}
 
-export default defineComponent({
-  props: {
-    showSuggestions: {
-      type: Boolean,
-      default: false,
-    },
-    data: {
-      type: Array,
-      default: () => [],
-    },
-    searchInput: {
-      type: String,
-      required: true,
-    },
-    keys: {
-      type: Object,
-      required: true,
-    },
-    valueObj: {
-      type: Object,
-      required: true,
-    },
-    nodeValueAlignment: {
-      type: String,
-      default: "horizontal",
-    },
-  },
-  emits: ["selectNode"],
-});
+interface Keys {
+  label: string;
+  value: string;
+}
+
+interface ValueObj {
+  fallback: string | number;
+}
+
+// Props 定義
+defineProps<{
+  showSuggestions?: boolean;
+  data?: SuggestionItem[];
+  searchInput: string;
+  keys: Keys;
+  valueObj: ValueObj;
+  nodeValueAlignment?: "horizontal" | "vertical";
+}>();
+
+// Emits 定義
+defineEmits<{
+  (e: "selectNode", node: SuggestionItem): void;
+}>();
 </script>

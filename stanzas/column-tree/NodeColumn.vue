@@ -44,95 +44,89 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
-import { library } from "@fortawesome/fontawesome-svg-core";
+<script setup lang="ts">
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
 import { faChevronRight, faClipboard } from "@fortawesome/free-solid-svg-icons";
 library.add(faChevronRight, faClipboard);
-export default defineComponent({
-  components: {
-    FontAwesomeIcon,
-  },
-  props: {
-    layer: {
-      type: Number,
-      default: 0,
-    },
-    nodes: {
-      type: Array,
-      default: () => [],
-    },
-    children: {
-      type: Boolean,
-      default: false,
-    },
-    checkedNodes: {
-      type: Map,
-      required: true,
-    },
-    keys: {
-      type: Object,
-      required: true,
-    },
-    valueObj: {
-      type: Object,
-      required: true,
-    },
-    highlightedNode: {
-      type: [Number, String, null],
-      default: null,
-    },
-    nodeValueAlignment: {
-      type: String,
-      default: "horizontal",
-    },
-    params: {
-      type: Object,
-      required: true,
-    },
-  },
-  emits: ["setParent", "setCheckedNode"],
-  setup(props, context) {
-    function hasChildren(childrenProp) {
-      if (typeof childrenProp === "string") {
-        childrenProp = childrenProp
-          .split(/,/)
-          .map(parseFloat)
-          .filter((prop) => !isNaN(prop));
-      }
-      return childrenProp && childrenProp.length > 0;
-    }
 
-    function setCheckedNode(node) {
-      context.emit("setCheckedNode", node);
-    }
+// 型定義
+interface NodeItem {
+  id: string | number;
+  label: string;
+  value?: number;
+  children?: string | number[]; // 文字列の可能性あり
+  [key: string]: any;
+}
 
-    function setParent(id) {
-      context.emit("setParent", [props.layer + 1, id]);
-    }
+interface Keys {
+  label: string;
+  value: string;
+}
 
-    function handleCheckboxClick(node) {
-      setCheckedNode(node);
+interface ValueObj {
+  fallback: string | number;
+}
 
-      if (this.params.data._object.eventOutgoingChangeSelectedNodes) {
-        document.querySelector("togostanza-column-tree").dispatchEvent(
-          new CustomEvent("changeSelectedNodes", {
-            detail: {
-              selectedIds: [...this.checkedNodes.keys()],
-              targetId: node.id,
-              dataUrl: this.params.data._object.dataUrl,
-            },
-          })
-        );
-      }
-    }
-
-    return {
-      setParent,
-      hasChildren,
-      handleCheckboxClick,
+interface Params {
+  data: {
+    _object: {
+      eventOutgoingChangeSelectedNodes: boolean;
+      dataUrl: string;
     };
-  },
-});
+  };
+}
+
+// Props定義
+const props = defineProps<{
+  layer?: number;
+  nodes?: NodeItem[];
+  children?: boolean;
+  checkedNodes: Map<string | number, NodeItem>;
+  keys: Keys;
+  valueObj: ValueObj;
+  highlightedNode?: number | string | null;
+  nodeValueAlignment?: string;
+  params: Params;
+}>();
+
+// Emits定義
+const emit = defineEmits<{
+  (e: "setParent", value: [number, string | number]): void;
+  (e: "setCheckedNode", node: NodeItem): void;
+}>();
+
+// 子ノードが存在するか判定
+function hasChildren(childrenProp: unknown): boolean {
+  if (typeof childrenProp === "string") {
+    childrenProp = childrenProp
+      .split(/,/)
+      .map(parseFloat)
+      .filter((prop) => !isNaN(prop));
+  }
+  return Array.isArray(childrenProp) && childrenProp.length > 0;
+}
+
+// 親ノードをセット
+function setParent(id: string | number) {
+  emit("setParent", [props.layer + 1, id]);
+}
+
+// チェックボックスがクリックされたときの処理
+function handleCheckboxClick(node: NodeItem) {
+  emit("setCheckedNode", node);
+
+  if (props.params.data._object.eventOutgoingChangeSelectedNodes) {
+    const stanza = document.querySelector("togostanza-column-tree");
+    stanza?.dispatchEvent(
+      new CustomEvent("changeSelectedNodes", {
+        detail: {
+          selectedIds: [...props.checkedNodes.keys()],
+          targetId: node.id,
+          dataUrl: props.params.data._object.dataUrl,
+        },
+      })
+    );
+  }
+}
 </script>
