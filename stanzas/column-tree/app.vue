@@ -14,7 +14,7 @@
           @input="toggleSuggestionsIfValid"
         />
       </div>
-      <search-suggestions
+      <SearchSuggestions
         :show-suggestions="state.showSuggestions"
         :search-input="state.searchTerm"
         :data="suggestions"
@@ -44,175 +44,149 @@
     </div>
   </section>
 </template>
-
-<script>
-import {
-  defineComponent,
-  reactive,
-  toRefs,
-  watchEffect,
-  ref,
-  computed,
-} from "vue";
-import metadata from "./metadata.json";
+<script setup lang="ts">
+import { reactive, watchEffect, computed } from "vue";
 import NodeColumn from "./NodeColumn.vue";
 import SearchSuggestions from "./SearchSuggestions.vue";
-import { camelCase } from "lodash";
 
-function isRootNode(parent) {
-  return !parent || isNaN(parent);
+interface Node {
+  id: string | number;
+  label: string;
+  value?: number;
+  parent?: string | number;
+  path?: Node[];
+  [key: string]: any;
 }
 
-const getType = (stanzaType) => {
-  switch (stanzaType) {
-    case "boolean":
-      return Boolean;
-    case "number":
-      return Number;
-    default:
-      return String;
-  }
-};
-const typeArray = metadata["stanza:parameter"].map((param) => {
-  return {
-    name: camelCase(param["stanza:key"]),
-    type: getType(param["stanza:type"]),
-  };
-});
-const typeObject = typeArray.reduce(
-  (objects, current) => ({ ...objects, [current.name]: current.type }),
-  {}
-);
+// 動的にpropsを型付けする代替手段は明示的に列挙または any の利用
+const props = defineProps<{
+  data: Node[];
+  nodeLabelKey?: string;
+  nodeValueKey?: string;
+  nodeValueFallback?: string;
+  nodeValueAlignment?: "horizontal" | "vertical";
+  searchKey?: string;
+  [key: string]: any; // metadataからの動的キーを許容
+}>();
 
-// TODO: set path for data objects
-export default defineComponent({
-  components: { NodeColumn, SearchSuggestions },
-  props: { ...typeObject, data: { type: Array, default: () => [] } },
-  emits: ["resetHighlightedNode"],
-  setup(params) {
-    params = toRefs(params);
-    const layerRefs = ref([]);
-    const state = reactive({
-      keys: {
-        label: params?.nodeLabelKey?.value.trim(),
-        value: params?.nodeValueKey?.value.trim(),
-      },
-      fallbackInCaseOfNoValue: params?.nodeValueFallback.value,
-      nodeValueAlignment: params?.nodeValueAlignment?.value,
-      showSuggestions: false,
-      responseJSON: [],
-      columnData: [],
-      checkedNodes: new Map(),
-      searchTerm: "",
-      highligthedNodes: [],
-    });
-    watchEffect(
-      () => {
-        state.responseJSON = params?.data?.value?.map((node) => {
-          return { ...node, path: getPath(node) };
-        });
-        state.checkedNodes = new Map();
-      },
-      { immediate: true }
-    );
-    watchEffect(() => {
-      const data = state.responseJSON || [];
-      state.columnData[0] = data.filter((obj) => isRootNode(obj.parent));
-    });
+defineEmits<{
+  (e: "resetHighlightedNode"): void;
+}>();
 
-    function updateCheckedNodes(node) {
-      const targetData = params.data._object.data.find((d) => d.id === node.id);
-      const { id, ...obj } = targetData;
-      state.checkedNodes.has(id)
-        ? state.checkedNodes.delete(id)
-        : state.checkedNodes.set(id, {
-            id,
-            ...obj,
-          });
-    }
-    function getChildNodes([layer, parentId]) {
-      state.highligthedNodes[layer - 1] = parentId;
-      return state.responseJSON.filter((obj) => obj.parent === parentId);
-    }
-    function updatePartialColumnData([layer, parentId]) {
-      const children = getChildNodes([layer, parentId]);
-      const indexesToRemove = state.columnData.length - layer;
-      state.columnData.splice(layer, indexesToRemove, children);
-      return children;
-    }
-    function isNormalSearchHit(node) {
-      return node[params?.searchKey?.value.trim()]
-        ?.toString()
-        .toLowerCase()
-        .includes(state.searchTerm.toLowerCase());
-    }
-    function isPathSearchHit(node) {
-      return node.path
-        .map((node) => node.id)
-        .join("/")
-        .toLowerCase()
-        .startsWith(state.searchTerm.toLowerCase());
-    }
-    const valueObj = computed(() => {
-      return {
-        fallback: state.fallbackInCaseOfNoValue,
-      };
-    });
-    const isValidSearchNode = computed(() => {
-      return state.searchTerm.length > 0;
-    });
-    function selectNode(node) {
-      state.highligthedNodes = [];
-      state.columnData = [
-        state.responseJSON.filter((obj) => isRootNode(obj.parent)),
-        ...[...node.path].map((node, index) => {
-          return getChildNodes([index + 1, node.id]);
-        }),
-      ];
-      state.checkedNodes = new Map([[node.id, node]]);
-      toggleSuggestions();
-    }
-    function getPath(node) {
-      const path = [];
-      let parent = { id: node.id, label: node.label, parent: node.parent };
-      path.push(parent);
-      while (parent.parent) {
-        const obj = params?.data?.value?.find((obj) => {
-          return obj.id === parent.parent;
-        });
-        parent = { id: obj?.id, label: obj?.label, parent: obj?.parent };
-        path.push(parent);
-      }
-      return path.reverse();
-    }
-    function toggleSuggestionsIfValid() {
-      if (!isValidSearchNode.value || state.showSuggestions) {
-        return;
-      }
-      toggleSuggestions();
-    }
-    function toggleSuggestions() {
-      state.showSuggestions = !state.showSuggestions;
-    }
-    const suggestions = computed(() => {
-      if (state.searchTerm.includes("/")) {
-        return state.responseJSON.filter(isPathSearchHit);
-      }
-      return state.responseJSON.filter(isNormalSearchHit); // array of nodes.
-    });
-    return {
-      params,
-      isValidSearchNode,
-      state,
-      layerRefs,
-      updateCheckedNodes,
-      updatePartialColumnData,
-      suggestions,
-      valueObj,
-      selectNode,
-      toggleSuggestions,
-      toggleSuggestionsIfValid,
-    };
+const state = reactive({
+  keys: {
+    label: props.nodeLabelKey?.trim(),
+    value: props.nodeValueKey?.trim(),
   },
+  fallbackInCaseOfNoValue: props.nodeValueFallback,
+  nodeValueAlignment: props.nodeValueAlignment,
+  showSuggestions: false,
+  responseJSON: [] as Node[],
+  columnData: [] as Node[][],
+  checkedNodes: new Map<string | number, Node>(),
+  searchTerm: "",
+  highligthedNodes: [] as (string | number)[],
+});
+
+function isRootNode(parent: unknown): boolean {
+  return !parent || isNaN(Number(parent));
+}
+
+watchEffect(() => {
+  state.responseJSON = props.data.map((node) => {
+    return { ...node, path: getPath(node) };
+  });
+  state.checkedNodes = new Map();
+});
+
+watchEffect(() => {
+  state.columnData[0] = state.responseJSON.filter((obj) =>
+    isRootNode(obj.parent)
+  );
+});
+
+function updateCheckedNodes(node: Node) {
+  const targetData = props.data.find((d) => d.id === node.id);
+  if (!targetData) {
+    return;
+  }
+  const { id, ...obj } = targetData;
+  state.checkedNodes.has(id)
+    ? state.checkedNodes.delete(id)
+    : state.checkedNodes.set(id, { id, ...obj });
+}
+
+function getChildNodes([layer, parentId]: [number, string | number]): Node[] {
+  state.highligthedNodes[layer - 1] = parentId;
+  return state.responseJSON.filter((obj) => obj.parent === parentId);
+}
+
+function updatePartialColumnData([layer, parentId]: [number, string | number]) {
+  const children = getChildNodes([layer, parentId]);
+  const indexesToRemove = state.columnData.length - layer;
+  state.columnData.splice(layer, indexesToRemove, children);
+  return children;
+}
+
+function isNormalSearchHit(node: Node): boolean {
+  return node[props.searchKey?.trim() || ""]
+    ?.toString()
+    .toLowerCase()
+    .includes(state.searchTerm.toLowerCase());
+}
+
+function isPathSearchHit(node: Node): boolean {
+  return (
+    node.path
+      ?.map((n) => n.id)
+      .join("/")
+      .toLowerCase()
+      .startsWith(state.searchTerm.toLowerCase()) ?? false
+  );
+}
+
+const valueObj = computed(() => ({ fallback: state.fallbackInCaseOfNoValue }));
+const isValidSearchNode = computed(() => state.searchTerm.length > 0);
+
+function selectNode(node: Node) {
+  state.highligthedNodes = [];
+  state.columnData = [
+    state.responseJSON.filter((obj) => isRootNode(obj.parent)),
+    ...node.path!.map((n, index) => getChildNodes([index + 1, n.id])),
+  ];
+  state.checkedNodes = new Map([[node.id, node]]);
+  toggleSuggestions();
+}
+
+function getPath(node: Node): Node[] {
+  const path: Node[] = [];
+  let parent: Node = { id: node.id, label: node.label, parent: node.parent };
+  path.push(parent);
+  while (parent.parent) {
+    const obj = props.data.find((obj) => obj.id === parent.parent);
+    if (!obj) {
+      break;
+    }
+    parent = { id: obj.id, label: obj.label, parent: obj.parent };
+    path.push(parent);
+  }
+  return path.reverse();
+}
+
+function toggleSuggestionsIfValid() {
+  if (!isValidSearchNode.value || state.showSuggestions) {
+    return;
+  }
+  toggleSuggestions();
+}
+
+function toggleSuggestions() {
+  state.showSuggestions = !state.showSuggestions;
+}
+
+const suggestions = computed(() => {
+  return state.searchTerm.includes("/")
+    ? state.responseJSON.filter(isPathSearchHit)
+    : state.responseJSON.filter(isNormalSearchHit);
 });
 </script>
