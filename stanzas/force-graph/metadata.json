@@ -14,7 +14,7 @@
   "stanza:parameter": [
     {
       "stanza:key": "data-url",
-      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/refs/heads/feature/add-urls/samples/json/graph-data.json",
+      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/refs/heads/main/samples/json/graph-data.json",
       "stanza:description": "Data source URL",
       "stanza:required": true
     },
@@ -50,12 +50,7 @@
       "stanza:example": "id",
       "stanza:description": "Set ID on the node based on data key. If empty, `id` will be used"
     },
-    {
-      "stanza:key": "node-url_key",
-      "stanza:type": "string",
-      "stanza:example": "url",
-      "stanza:description": "Set URL on the node based on data key"
-    },
+
     {
       "stanza:key": "node-size_min",
       "stanza:type": "number",
@@ -76,9 +71,22 @@
       "stanza:description": "Node radius scale"
     },
     {
-      "stanza:key": "node-color_key",
+      "stanza:key": "node-group_key",
       "stanza:type": "string",
       "stanza:example": "group",
+      "stanza:description": "Color groups of nodes based on same key"
+    },
+    {
+      "stanza:key": "node-color_key",
+      "stanza:type": "string",
+      "stanza:example": "color",
+      "stanza:description": "Set color of the node based on data key"
+    },
+    {
+      "stanza:key": "node-color_blend",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["multiply", "screen", "normal"],
+      "stanza:example": "normal",
       "stanza:description": "Set color of the node based on data key"
     },
     {
@@ -110,7 +118,7 @@
       "stanza:key": "edge-arrows_visible",
       "stanza:type": "boolean",
       "stanza:example": "true",
-      "stanza:description": "Show arrows"
+      "stanza:label": "Show arrows"
     },
     {
       "stanza:key": "node-label_key",
@@ -127,15 +135,15 @@
     {
       "stanza:key": "event-incoming_change_selected_nodes",
       "stanza:type": "boolean",
+      "stanza:label": "Receive a change event of selected nodes",
       "stanza:example": true,
-      "stanza:description": "Receive a change event of selected nodes",
       "stanza:required": false
     },
     {
       "stanza:key": "event-outgoing_change_selected_nodes",
       "stanza:type": "boolean",
+      "stanza:label": "Emit a change event of selected nodes",
       "stanza:example": true,
-      "stanza:description": "Emit a change event of selected nodes",
       "stanza:required": false
     },
     {

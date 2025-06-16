@@ -63,6 +63,19 @@ svg {
     fill: var(--togostanza-edge-color);
   }
 
+  & > #forceG {
+    &.-nodes-blend-multiply {
+      .node > circle {
+        mix-blend-mode: multiply;
+      }
+    }
+    &.-nodes-blend-screen {
+      .node > circle {
+        mix-blend-mode: screen;
+      }
+    }
+  }
+
   &:has(.-selected) {
     .node {
       opacity: var(--togostanza-fadeout-opacity);

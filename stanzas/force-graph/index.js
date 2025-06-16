@@ -75,16 +75,6 @@ export default class ForceGraph extends MetaStanza {
 
       const { nodes, edges } = graph;
 
-      // add any other arbitrary data that was in the json:
-      for (const node of nodes) {
-        Object.assign(
-          node,
-          this._data[this.params["data-nodes_key"]]?.find(
-            (d) => d[this.params["node-id_key"]] === node.id
-          )
-        );
-      }
-
       const nodeSizeParams = {
         dataKey: this.params["node-size_key"] || "",
         minSize: setFallbackVal("node-size_min", 0),
@@ -93,7 +83,9 @@ export default class ForceGraph extends MetaStanza {
       };
 
       const nodeColorParams = {
-        dataKey: this.params["node-color_key"] || "",
+        colorKey: this.params["node-color_key"] || "",
+        groupKey: this.params["node-group_key"] || "",
+        colorBlendMode: this.params["node-color_blend"] || "normal",
       };
 
       const edgeWidthParams = {
@@ -112,7 +104,6 @@ export default class ForceGraph extends MetaStanza {
       const nodeLabelParams = {
         margin: 3,
         dataKey: this.params["node-label_key"],
-        urlKey: this.params["node-url_key"],
       };
 
       const highlightAdjEdges = true;

@@ -59,6 +59,7 @@ export default function (
     tooltipParams,
     highlightAdjEdges,
     edgeWidthParams,
+    nodeColorParams,
     symbols,
   }
 ) {
@@ -120,7 +121,15 @@ export default function (
   const forceG = svg
     .append("g")
     .attr("id", "forceG")
-    .attr("transform", `translate(${MARGIN.LEFT},${MARGIN.TOP})`);
+    .attr("transform", `translate(${MARGIN.LEFT},${MARGIN.TOP})`)
+    .attr(
+      "class",
+      nodeColorParams.colorBlendMode === "multiply"
+        ? "-nodes-blend-multiply"
+        : nodeColorParams.colorBlendMode === "screen"
+        ? "-nodes-blend-screen"
+        : ""
+    );
 
   const gLinks = forceG.append("g").attr("class", "links");
   const gNodes = forceG.append("g").attr("class", "nodes");
@@ -203,16 +212,7 @@ export default function (
 
   if (nodeLabelParams.dataKey !== "" && nodes[0][nodeLabelParams.dataKey]) {
     nodeGroups.each(function (d) {
-      let selectionToAppend = d3.select(this);
-
-      if (d[symbols.nodeUrlSym]) {
-        selectionToAppend = selectionToAppend
-          .append("a")
-          .attr("href", d[symbols.nodeUrlSym])
-          .attr("target", "_blank");
-      }
-
-      selectionToAppend
+      d3.select(this)
         .append("text")
         .attr("x", 0)
         .attr("dy", (d) => nodeLabelParams.margin + d[symbols.nodeSizeSym])
