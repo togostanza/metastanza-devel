@@ -7,7 +7,9 @@
 // --greeting-color and --greeting-align are style variables, which are defined in metadata.json.
 
 @mixin button {
-  border: var(--togostanza-control-border);
+  border-style: solid;
+  border-width: calc(var(--togostanza-border-width) * 0.5px);
+  border-color: var(--togostanza-border-color);
   border-radius: 3px;
   background-color: var(--togostanza-table-thead-background_color);
   color: var(--togostanza-table-thead-font_color);
@@ -20,10 +22,12 @@
 @mixin text-input {
   width: 164px;
   height: 20px;
-  border: var(--togostanza-control-border);
-  border-radius: var(--togostanza-control-border-radius);
-  font-size: var(--togostanza-control-font-size);
-  color: var(--togostanza-control-font-color);
+  border-style: solid;
+  border-width: calc(var(--togostanza-border-width) * 0.5px);
+  border-color: var(--togostanza-border-color);
+  border-radius: 0.2em;
+  font-size: var(--togostanza-fonts-font_size_secondary);
+  color: var(--togostanza-fonts-font_color);
   &::placeholder {
     padding: 0px 0px 0px 4px;
     color: var(--searchbox-font-color);
@@ -34,9 +38,9 @@
   box-sizing: border-box;
   margin: 0;
   list-style: none;
-  color: var(--togostanza-control-font-color);
+  color: var(--togostanza-fonts-font_color);
   font-family: var(--togostanza-fonts-font_family);
-  font-size: var(--togostanza-control-font-size);
+  font-size: var(--togostanza-fonts-font_size_secondary);
 }
 
 #renderDiv {
@@ -74,10 +78,12 @@
       > .entries {
         margin-left: auto;
         margin-right: 10px;
-        font-size: var(--togostanza-control-font-color);
+        font-size: var(--togostanza-fonts-font_color);
         select {
-          border: var(--togostanza-control-border);
-          border-radius: var(--togostanza-control-border-radius);
+          border-style: solid;
+          border-width: calc(var(--togostanza-border-width) * 0.5px);
+          border-color: var(--togostanza-border-color);
+          border-radius: 0.2em;
           height: 20px;
         }
       }
@@ -149,7 +155,7 @@
                   height: auto;
                   background-color: #ffffff;
                   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
-                  border-radius: var(--togostanza-control-border-radius);
+                  border-radius: 0.2em;
                   > .filterWindowTitle {
                     padding: 4px 8px;
                     background-color: var(--togostanza-table-thead-background_color);
@@ -267,7 +273,7 @@
                   > .dash {
                     width: 8px;
                     height: 1px;
-                    background-color: var(--togostanza-control-font-color);
+                    background-color: var(--togostanza-fonts-font_color);
                     margin-left: 4px;
                     margin-right: 4px;
                     margin-bottom: 10px;
@@ -284,14 +290,15 @@
               }
             }
             .icon {
+              font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
               cursor: pointer;
               content: "";
               display: inline-block;
-              width: var(--togostanza-control-font-size);
-              height: var(--togostanza-control-font-size);
+              width: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+              height: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
               transform: translateY(1px);
               path {
-                color: var(--togostanza-control-font-color);
+                color: var(--togostanza-fonts-font_color);
                 opacity: 0.4;
               }
               &.active {
@@ -301,8 +308,8 @@
               }
               &.search {
                 margin-left: 1px;
-                width: calc(var(--togostanza-control-font-size) - 1px);
-                height: calc(var(--togostanza-control-font-size) - 1px);
+                width: calc(var(--togostanza-fonts-font_size_secondary) * 1px - 1em);
+                height: calc(var(--togostanza-fonts-font_size_secondary) * 1px - 1em);
               }
               &.filter {
                 padding: 0 2px;
@@ -535,8 +542,8 @@
 
 .no-data {
   text-align: center;
-  font-size: var(--togostanza-control-font-size);
-  color: var(--togostanza-control-font-color);
+  font-size: var(--togostanza-fonts-font_size_secondary);
+  color: var(--togostanza-fonts-font_color);
   padding-top: 1em;
 }
 

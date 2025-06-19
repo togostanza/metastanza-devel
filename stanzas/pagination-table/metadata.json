@@ -189,34 +189,10 @@
       "stanza:description": "Background color of table body (even row)"
     },
     {
-      "stanza:key": "--togostanza-control-border",
-      "stanza:type": "text",
-      "stanza:default": "1px solid #999",
-      "stanza:description": "Color of control area"
-    },
-    {
       "stanza:key": "--togostanza-non-active-color",
       "stanza:type": "color",
       "stanza:default": "#00000044",
       "stanza:description": "Non active color of control area"
-    },
-    {
-      "stanza:key": "--togostanza-control-font-color",
-      "stanza:type": "color",
-      "stanza:default": "#707070",
-      "stanza:description": "Font color of control area"
-    },
-    {
-      "stanza:key": "--togostanza-control-font-size",
-      "stanza:type": "text",
-      "stanza:default": "10px",
-      "stanza:description": "Font size of control area"
-    },
-    {
-      "stanza:key": "--togostanza-control-border-radius",
-      "stanza:type": "text",
-      "stanza:default": "3px",
-      "stanza:description": "Border radius of control area (boxes)"
     },
     {
       "stanza:key": "--togostanza-pagination-font-color",
