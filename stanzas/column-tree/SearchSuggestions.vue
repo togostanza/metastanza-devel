@@ -1,56 +1,51 @@
 <template>
-  <div v-show="showSuggestions" class="search-wrapper suggestionscontainer">
+  <div v-show="showSuggestions" class="suggestions-container">
     <ul class="suggestions">
+      <!-- 候補リストが存在する場合 -->
       <li
         v-for="(node, index) in data"
         :key="index"
-        :class="'-with-border'"
+        class="suggestion-item"
         @click="$emit('selectNode', node)"
       >
         <span class="label" :class="`-${nodeValueAlignment}`">
-          <strong class="title">{{ node[keys.label] }}</strong>
+          <strong class="title">{{ node.label }}</strong>
           <span
             class="value"
-            :class="{ fallback: node[keys.value] === undefined }"
+            :class="{ fallback: node[labelAndValueKeys.value] === undefined }"
           >
-            {{ node[keys.value]?.toLocaleString() ?? valueObj.fallback }}
+            {{ node.value?.toLocaleString() ?? valueFallback.fallback }}
           </span>
         </span>
       </li>
-      <li v-if="data.length < 1" class="no-results">
-        {{ valueObj.fallback }}
+
+      <!-- 候補リストが空の場合 -->
+      <li v-if="data.length === 0" class="no-results">
+        {{ valueFallback.fallback }}
       </li>
     </ul>
   </div>
 </template>
 
 <script setup lang="ts">
-// 型定義
-interface SuggestionItem {
-  [key: string]: string | number | undefined;
-}
-
-interface Keys {
-  label: string;
-  value: string;
-}
-
-interface ValueObj {
-  fallback: string | number;
-}
+import type {
+  TreeItemWithPath,
+  ValueFallback,
+  LabelAndValueKeys,
+} from "./types";
 
 // Props 定義
 defineProps<{
   showSuggestions?: boolean;
-  data?: SuggestionItem[];
+  data?: TreeItemWithPath[];
   searchInput: string;
-  keys: Keys;
-  valueObj: ValueObj;
+  labelAndValueKeys: LabelAndValueKeys;
+  valueFallback: ValueFallback;
   nodeValueAlignment?: "horizontal" | "vertical";
 }>();
 
 // Emits 定義
 defineEmits<{
-  (e: "selectNode", node: SuggestionItem): void;
+  (e: "selectNode", node: TreeItemWithPath);
 }>();
 </script>
