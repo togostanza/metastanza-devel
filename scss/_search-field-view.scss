@@ -37,32 +37,4 @@
       border-left: solid 1px #999;
     }
   }
-  > .suggestionscontainer {
-    min-height: fit-content;
-    display: flex;
-    position: absolute;
-    overflow: auto;
-    border-radius: 0.5em;
-    background-color: white;
-    z-index: 2;
-    box-shadow: 0 2px 4px #0004;
-    > .suggestions {
-      margin: 0;
-      padding: 0;
-      overflow: auto;
-      z-index: 1;
-      > li {
-        display: grid;
-        padding: 0.4em 1em;
-        list-style-type: none;
-        position: relative;
-        &:first-child {
-          margin-top: 0.6em;
-        }
-        &:last-child {
-          margin-bottom: 0.8em;
-        }
-      }
-    }
-  }
 }

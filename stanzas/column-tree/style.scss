@@ -20,27 +20,30 @@
   height: calc(var(--togostanza-canvas-height) * 1px);
   padding: var(--togostanza-canvas-padding);
   overflow: auto;
-  .value {
-    flex-grow: 1;
-    font-weight: normal;
-    opacity: 0.8;
-    &.fallback {
-      opacity: 0.5;
-      font-style: italic;
-    }
-  }
+
+  // suggestions-containerとtree共通
   .label {
     display: flex;
     overflow: hidden;
-    > strong,
+    > .title,
     .value {
       word-break: break-all;
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
     }
-    > strong {
+    > .title {
       min-width: 50%;
+    }
+
+    > .value {
+      flex-grow: 1;
+      font-weight: normal;
+      opacity: 0.8;
+      &.fallback {
+        opacity: 0.5;
+        font-style: italic;
+      }
     }
     &.-horizontal {
       width: 100%;
@@ -60,22 +63,7 @@
       }
     }
   }
-  .icon {
-    width: calc(var(--togostanza-fonts-font_size_primary) * 0.6 * 1px);
-  }
-  // .-with-border {
-  //   &:after {
-  //     position: absolute;
-  //     content: "";
-  //     display: block;
-  //     width: 100%;
-  //     top: -2px;
-  //     left: 0;
-  //     border-top: solid
-  //       1px
-  //       var(--togostanza-column-border_color);
-  //   }
-  // }
+
   > .search-field-view {
     margin-bottom: 8px;
     > .inputcontainer {
@@ -85,11 +73,36 @@
         width: 190px;
       }
     }
-    > .suggestionscontainer {
+
+    > .suggestions-container {
       max-height: 80%;
+      min-height: fit-content;
+      display: flex;
+      position: absolute;
+      overflow: auto;
+      border-radius: 0.5em;
+      background-color: white;
+      z-index: 2;
+      box-shadow: 0 2px 4px #0004;
       > .suggestions {
+        margin: 0;
+        padding: 0;
+        overflow: auto;
+        z-index: 1;
+
         > li {
-          border-bottom: var(--togostanza-column-border);
+          display: grid;
+          padding: 0.4em 1em;
+          list-style-type: none;
+          position: relative;
+          &:first-child {
+            margin-top: 0.6em;
+          }
+          &:last-child {
+            margin-bottom: 0.8em;
+          }
+        }
+        > .suggestion-item {
           &:hover {
             background-color: var(--togostanza-theme-selected_background_color);
             cursor: pointer;
@@ -97,12 +110,23 @@
         }
       }
     }
+
+    .inputcontainer input {
+      position: relative;
+      margin-right: 1rem;
+      width: 190px;
+    }
   }
   > #tree {
     display: flex;
     width: fit-content;
     height: 100%;
     padding: 1px;
+
+    .icon {
+      width: calc(var(--togostanza-fonts-font_size_primary) * 0.6 * 1px);
+    }
+
     > .column {
       overflow: auto;
       background-color: var(--togostanza-column-background_color);
