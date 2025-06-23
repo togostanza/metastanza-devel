@@ -275,7 +275,15 @@ export default class ForceGraph extends MetaStanza {
             .on("start", dragStart)
             .on("end", dragEnd)
         )
-        .append("g");
+        .append("g")
+        .attr(
+          "class",
+          nodeColorParams.colorBlendMode === "multiply"
+            ? "-nodes-blend-multiply"
+            : nodeColorParams.colorBlendMode === "screen"
+            ? "-nodes-blend-screen"
+            : ""
+        );
 
       this._graphArea = svgG;
 
