@@ -14,7 +14,7 @@
   "stanza:parameter": [
     {
       "stanza:key": "data-url",
-      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/refs/heads/feature/add-urls/samples/json/graph-data.json",
+      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/refs/heads/main/samples/json/graph-data.json",
       "stanza:description": "Data source URL",
       "stanza:required": true
     },
@@ -39,78 +39,10 @@
       "stanza:description": "Data key for edges. If empty `links` will be used"
     },
     {
-      "stanza:key": "node-size_key",
-      "stanza:type": "string",
-      "stanza:example": "",
-      "stanza:description": "Set size on the node based on data key, or fallback to value of node-size-min"
-    },
-    {
       "stanza:key": "node-id_key",
       "stanza:type": "string",
       "stanza:example": "id",
       "stanza:description": "Set ID on the node based on data key. If empty, `id` will be used"
-    },
-    {
-      "stanza:key": "node-url_key",
-      "stanza:type": "string",
-      "stanza:example": "url",
-      "stanza:description": "Set URL on the node based on data key"
-    },
-    {
-      "stanza:key": "node-size_min",
-      "stanza:type": "number",
-      "stanza:example": 3,
-      "stanza:description": "Minimum node radius in px (fallback to 0)"
-    },
-    {
-      "stanza:key": "node-size_max",
-      "stanza:type": "number",
-      "stanza:example": 6,
-      "stanza:description": "Maximum node radius in px"
-    },
-    {
-      "stanza:key": "node-size_scale",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["linear", "square root", "log10"],
-      "stanza:example": "square root",
-      "stanza:description": "Node radius scale"
-    },
-    {
-      "stanza:key": "node-color_key",
-      "stanza:type": "string",
-      "stanza:example": "group",
-      "stanza:description": "Set color of the node based on data key"
-    },
-    {
-      "stanza:key": "edge-width_key",
-      "stanza:type": "string",
-      "stanza:example": "value",
-      "stanza:description": "Set width of the edge  data key"
-    },
-    {
-      "stanza:key": "edge-width_min",
-      "stanza:type": "number",
-      "stanza:example": 1,
-      "stanza:description": "Minimum edge width in px"
-    },
-    {
-      "stanza:key": "edge-width_max",
-      "stanza:type": "number",
-      "stanza:example": 1,
-      "stanza:description": "Maximum edge width in px"
-    },
-    {
-      "stanza:key": "edge-width_scale",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["linear", "square root", "log10"],
-      "stanza:example": "linear",
-      "stanza:description": "Edge width scale"
-    },
-    {
-      "stanza:key": "edge-arrows_visible",
-      "stanza:type": "boolean",
-      "stanza:example": "true",
-      "stanza:description": "Show arrows"
     },
     {
       "stanza:key": "node-label_key",
@@ -118,6 +50,83 @@
       "stanza:example": "id",
       "stanza:description": "Node labels data key. If empty, no labels will be shown"
     },
+    {
+      "stanza:key": "node-group_key",
+      "stanza:type": "string",
+      "stanza:example": "group",
+      "stanza:description": "Color groups of nodes based on same key"
+    },
+    {
+      "stanza:key": "node-color_key",
+      "stanza:type": "string",
+      "stanza:example": "color",
+      "stanza:description": "Set color of the node based on data key"
+    },
+    {
+      "stanza:key": "node-color_blend",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["multiply", "screen", "normal"],
+      "stanza:example": "normal",
+      "stanza:description": "Set color of the node based on data key"
+    },
+    {
+      "stanza:key": "node-size-key",
+      "stanza:type": "string",
+      "stanza:example": "",
+      "stanza:description": "Set size on the node based on data key, or fallback to value of node-size-min"
+    },
+
+    {
+      "stanza:key": "node-size-min",
+      "stanza:type": "number",
+      "stanza:example": 3,
+      "stanza:description": "Minimum node radius in px (fallback to 0)"
+    },
+    {
+      "stanza:key": "node-size-max",
+      "stanza:type": "number",
+      "stanza:example": 6,
+      "stanza:description": "Maximum node radius in px"
+    },
+    {
+      "stanza:key": "node-size-scale",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["linear", "sqrt", "log10"],
+      "stanza:example": "sqrt",
+      "stanza:description": "Node radius scale"
+    },
+    {
+      "stanza:key": "edge-width-key",
+      "stanza:type": "string",
+      "stanza:example": "value",
+      "stanza:description": "Set width of the edge  data key"
+    },
+    {
+      "stanza:key": "edge-width-min",
+      "stanza:type": "number",
+      "stanza:example": 1,
+      "stanza:description": "Minimum edge width in px"
+    },
+    {
+      "stanza:key": "edge-width-max",
+      "stanza:type": "number",
+      "stanza:example": 1,
+      "stanza:description": "Maximum edge width in px"
+    },
+    {
+      "stanza:key": "edge-width-scale",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["linear", "sqrt", "log10"],
+      "stanza:example": "linear",
+      "stanza:description": "Edge width scale"
+    },
+    {
+      "stanza:key": "edge-arrows_visible",
+      "stanza:type": "boolean",
+      "stanza:example": "true",
+      "stanza:label": "Show arrows"
+    },
+
     {
       "stanza:key": "tooltip",
       "stanza:type": "string",
@@ -127,15 +136,15 @@
     {
       "stanza:key": "event-incoming_change_selected_nodes",
       "stanza:type": "boolean",
+      "stanza:label": "Receive a change event of selected nodes",
       "stanza:example": true,
-      "stanza:description": "Receive a change event of selected nodes",
       "stanza:required": false
     },
     {
       "stanza:key": "event-outgoing_change_selected_nodes",
       "stanza:type": "boolean",
+      "stanza:label": "Emit a change event of selected nodes",
       "stanza:example": true,
-      "stanza:description": "Emit a change event of selected nodes",
       "stanza:required": false
     },
     {
