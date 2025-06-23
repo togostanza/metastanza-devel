@@ -78,7 +78,7 @@ export default class ForceGraph extends MetaStanza {
     if (this.params["tooltip"]) {
       this.tooltips = new ToolTip();
       this.tooltips.setTemplate(this.params["tooltip"]);
-      this._main.append(this.tooltips);
+      this._main.appendChild(this.tooltips);
     }
 
     const MARGIN = getMarginsFromCSSString(
@@ -110,8 +110,8 @@ export default class ForceGraph extends MetaStanza {
       // Setting color scale
       const togostanzaColors = getStanzaColors(this);
 
-      const color = function (type = "scaleOrdinal") {
-        return d3[type]().range(togostanzaColors);
+      const color = function () {
+        return d3.scaleOrdinal().range(togostanzaColors);
       };
 
       const svg = d3
@@ -131,11 +131,6 @@ export default class ForceGraph extends MetaStanza {
         sortOrder: this.params["group_planes-sort-order"] || "ascending",
       };
 
-      const nodesSortParams = {
-        sortBy: this.params["nodes-sort-key"],
-        sortOrder: this.params["nodes-sort-order"] || "ascending",
-      };
-
       const nodeSizeParams = {
         dataKey: this.params["node-size-key"] || "",
         minSize: setFallbackNumVal(this.params["node-size-min"], 3),
@@ -144,13 +139,14 @@ export default class ForceGraph extends MetaStanza {
       };
 
       const nodeColorParams = {
-        dataKey: this.params["node-color-key"] || "",
+        colorKey: this.params["node-color_key"] || "",
+        groupKey: this.params["node-group_key"] || "",
+        colorBlendMode: this.params["node-color_blend"] || "normal",
       };
 
       const nodeLabelParams = {
         margin: 3,
         dataKey: this.params["node-label_key"],
-        urlKey: this.params["node-url_key"],
       };
 
       const edgeWidthParams = {
@@ -158,7 +154,7 @@ export default class ForceGraph extends MetaStanza {
         minWidth: setFallbackNumVal(this.params["edge-width-min"], 1),
         maxWidth: this.params["edge-width-max"],
         scale: this.params["edge-width-scale"] || "linear",
-        showArrows: this.params["data-directed_graph"],
+        showArrows: this.params["edge-arrows_visible"] || false,
       };
 
       const edgeColorParams = {
@@ -183,7 +179,6 @@ export default class ForceGraph extends MetaStanza {
         color,
         highlightAdjEdges,
         nodeSizeParams,
-        nodesSortParams,
         groupsSortParams,
         nodeColorParams,
         edgeWidthParams,
@@ -370,18 +365,10 @@ export default class ForceGraph extends MetaStanza {
 
         function addNode(nodeGroup) {
           nodeGroup.html(function (d) {
-            let label = "";
-            if (d[symbols.nodeUrlSym]) {
-              label = `<a href="${
-                d[symbols.nodeUrlSym]
-              }" target="_blank"><text class="node-label" alignment-baseline="hanging" text-anchor="middle" y="${
-                d[symbols.nodeSizeSym] + 2
-              }">${d[symbols.nodeLabelSym]}</text></a>`;
-            } else {
-              label = `<text class="node-label" alignment-baseline="hanging" text-anchor="middle" y="${
-                d[symbols.nodeSizeSym] + 2
-              }">${d[symbols.nodeLabelSym]}</text>`;
-            }
+            const label = `<text class="node-label" alignment-baseline="hanging" text-anchor="middle" y="${
+              d[symbols.nodeSizeSym] + 2
+            }">${d[symbols.nodeLabelSym]}</text>`;
+
             return `
               <circle class="node" cx="0" cy="0" r="${
                 d[symbols.nodeSizeSym]
