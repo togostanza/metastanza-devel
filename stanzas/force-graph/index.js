@@ -76,10 +76,10 @@ export default class ForceGraph extends MetaStanza {
       const { nodes, edges } = graph;
 
       const nodeSizeParams = {
-        dataKey: this.params["node-size_key"] || "",
-        minSize: setFallbackVal("node-size_min", 0),
-        maxSize: this.params["node-size_max"],
-        scale: this.params["node-size_scale"] || "linear",
+        dataKey: this.params["node-size-key"] || "",
+        minSize: setFallbackVal("node-size-min", 0),
+        maxSize: this.params["node-size-max"],
+        scale: this.params["node-size-scale"] || "linear",
       };
 
       const nodeColorParams = {
@@ -89,10 +89,10 @@ export default class ForceGraph extends MetaStanza {
       };
 
       const edgeWidthParams = {
-        dataKey: this.params["edge-width_key"] || "",
-        minWidth: setFallbackVal("edge-width_min", 1),
-        maxWidth: this.params["edge-width_max"],
-        scale: this.params["edge-width_scale"] || "linear",
+        dataKey: this.params["edge-width-key"] || "",
+        minWidth: setFallbackVal("edge-width-min", 1),
+        maxWidth: this.params["edge-width-max"],
+        scale: this.params["edge-width-scale"] || "linear",
         showArrows: this.params["edge-arrows_visible"],
       };
 
