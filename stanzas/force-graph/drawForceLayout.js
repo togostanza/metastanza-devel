@@ -202,7 +202,9 @@ export default function (
     .attr("cx", 0)
     .attr("cy", 0)
     .attr("r", (d) => d[symbols.nodeSizeSym])
-    .style("fill", (d) => d[symbols.nodeColorSym]);
+    .attr("fill", (d) => {
+      return d[symbols.nodeColorSym];
+    });
 
   if (tooltipParams.show && tooltipParams.tooltipsInstance) {
     nodeCircles.attr("data-tooltip", (d) =>

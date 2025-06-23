@@ -1,9 +1,9 @@
+import getStanzaColors from "@/lib/ColorGenerator";
+import MetaStanza from "@/lib/MetaStanza";
 import prepareGraphData from "@/lib/prepareGraphData";
-import * as d3 from "d3";
-import MetaStanza from "../../lib/MetaStanza";
-import drawForceLayout from "./drawForceLayout";
-
 import { getMarginsFromCSSString } from "@/lib/utils";
+import * as d3 from "d3";
+import drawForceLayout from "./drawForceLayout";
 
 import {
   downloadCSVMenuItem,
@@ -12,12 +12,12 @@ import {
   downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
+import ToolTip from "../../lib/ToolTip";
 import {
   emitSelectedEvent,
   toggleSelectIds,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
-import ToolTip from "../../lib/ToolTip";
 
 export default class ForceGraph extends MetaStanza {
   _graphArea;
@@ -118,22 +118,7 @@ export default class ForceGraph extends MetaStanza {
         tooltipsInstance: this.tooltips,
       };
 
-      // Setting color scale
-      const togostanzaColors = [];
-
-      let i = 0;
-
-      let togoColor = this.css(`--togostanza-theme-series_${i}_color`)
-        .trim()
-        .toUpperCase();
-
-      while (togoColor) {
-        togostanzaColors.push(togoColor);
-        i++;
-        togoColor = this.css(`--togostanza-theme-series_${i}_color`)
-          .trim()
-          .toUpperCase();
-      }
+      const togostanzaColors = getStanzaColors(this);
 
       const color = function () {
         return d3.scaleOrdinal().range(togostanzaColors);
