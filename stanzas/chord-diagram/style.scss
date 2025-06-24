@@ -91,6 +91,19 @@
   }
 }
 
+.-nodes-blend-multiply {
+  .node > circle,
+  .node > path {
+    mix-blend-mode: multiply;
+  }
+}
+.-nodes-blend-screen {
+  .node > circle,
+  .node > path {
+    mix-blend-mode: screen;
+  }
+}
+
 svg {
   background-color: var(--togostanza-background-color);
 

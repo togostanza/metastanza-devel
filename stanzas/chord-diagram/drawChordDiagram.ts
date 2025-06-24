@@ -66,7 +66,6 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
     node[symbols.edgeSym] = edges.filter(
       (edge) => edge.source === node.id || edge.target === node.id
     );
-    node.tooltip = nodes[node.index][params.tooltipParams.dataKey];
     node.label = nodes[node.index][params.nodeLabelParams.dataKey];
   });
 
@@ -75,6 +74,14 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
     .attr(
       "transform",
       `translate(${[params.width * 0.5, params.height * 0.5]})`
+    )
+    .attr(
+      "class",
+      params.nodeColorParams.colorBlendMode === "multiply"
+        ? "-nodes-blend-multiply"
+        : params.nodeColorParams.colorBlendMode === "screen"
+        ? "-nodes-blend-screen"
+        : ""
     );
 
   const ribbons = rootGroup
@@ -136,12 +143,10 @@ export function drawChordDiagram(svg, nodes, edges, { symbols, ...params }) {
       })
   );
 
-  if (params.tooltipParams.show) {
-    arcs.attr("data-tooltip", (d) => d.tooltip);
-    arcsG
-      .select("g")
-      .select("text.label")
-      .attr("data-tooltip", (d) => d.tooltip);
+  if (params.tooltipParams.show && params.tooltipParams.tooltipsInstance) {
+    arcs.attr("data-tooltip", (d) =>
+      params.tooltipParams.tooltipsInstance.compile(d)
+    );
   }
 
   if (params.highlightAdjEdges) {

@@ -10,6 +10,7 @@ export default function (
     MARGIN,
     symbols,
     nodeLabelParams,
+    nodeColorParams,
     tooltipParams,
     highlightAdjEdges,
     edgeParams,
@@ -36,7 +37,15 @@ export default function (
   const circleG = svg
     .append("g")
     .attr("id", "circleG")
-    .attr("transform", `translate(${MARGIN.LEFT},${MARGIN.TOP})`);
+    .attr("transform", `translate(${MARGIN.LEFT},${MARGIN.TOP})`)
+    .attr(
+      "class",
+      nodeColorParams.colorBlendMode === "multiply"
+        ? "-nodes-blend-multiply"
+        : nodeColorParams.colorBlendMode === "screen"
+        ? "-nodes-blend-screen"
+        : ""
+    );
 
   let links;
   let draw;
@@ -155,15 +164,11 @@ export default function (
       })
       .attr("class", "label");
 
-    if (tooltipParams.show) {
-      nodeLabels.attr("data-tooltip", (d) => d[tooltipParams.dataKey]);
+    if (tooltipParams.show && tooltipParams.tooltipsInstance) {
+      nodeCircles.attr("data-tooltip", (d) =>
+        tooltipParams.tooltipsInstance.compile(d)
+      );
     }
-  }
-
-  // comment
-
-  if (tooltipParams.show) {
-    nodeCircles.attr("data-tooltip", (d) => d[tooltipParams.dataKey]);
   }
 
   if (highlightAdjEdges) {

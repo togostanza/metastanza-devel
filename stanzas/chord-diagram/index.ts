@@ -7,12 +7,10 @@ import {
   downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
-import loadData from "togostanza-utils/load-data";
-import getStanzaColors from "../../lib/ColorGenerator";
-import MetaStanza from "../../lib/MetaStanza";
-import ToolTip from "../../lib/ToolTip";
-import { handleApiError } from "../../lib/apiError";
-import prepareGraphData from "../../lib/prepareGraphData";
+import getStanzaColors from "@/lib/ColorGenerator";
+import MetaStanza from "@/lib/MetaStanza";
+import ToolTip from "@/lib/ToolTip";
+import prepareGraphData from "@/lib/prepareGraphData";
 import {
   MarginsI,
   emitSelectedEvent,
@@ -30,7 +28,7 @@ interface Datum {
 //log
 
 export default class ChordDiagram extends MetaStanza {
-  tooltip: ToolTip;
+  tooltips: ToolTip;
   _chartArea: d3.Selection<SVGGElement, any, SVGElement, any>;
   selectedIds: Array<string | number> = [];
   selectedEventParams = {
@@ -51,6 +49,10 @@ export default class ChordDiagram extends MetaStanza {
   }
 
   async renderNext() {
+    if (!this._chartArea?.empty()) {
+      this._chartArea?.remove();
+    }
+
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     const setFallbackVal = (param, defVal) => {
@@ -59,36 +61,37 @@ export default class ChordDiagram extends MetaStanza {
         : this.params[param];
     };
 
-    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
+    const root = this.root.querySelector("main");
 
     //data
+    const width = parseInt(this.css("--togostanza-canvas-width"));
+    const height = parseInt(this.css("--togostanza-canvas-height"));
 
-    const width = parseInt(css("--togostanza-canvas-width"));
-    const height = parseInt(css("--togostanza-canvas-height"));
+    const tooltipString = this.params["tooltip"];
 
-    if (!this._chartArea?.empty()) {
-      this._chartArea?.remove();
+    if (tooltipString) {
+      if (!this.tooltips) {
+        this.tooltips = new ToolTip();
+        this._main.append(this.tooltips);
+      }
+
+      this.tooltips.setTemplate(tooltipString);
     }
 
     const drawContent = async () => {
-      const values = await loadData(
-        this.params["data-url"],
-        this.params["data-type"],
-        this.root.querySelector("main")
-      );
+      const graph = this.__data.asGraph({
+        nodesKey: this.params["data-nodes_key"],
+        edgesKey: this.params["data-edges_key"],
+        nodeIdKey: this.params["node-id_key"],
+      });
 
-      this._data = values;
-
-      const nodes = values["nodes"];
-      const edges = values["links"];
+      const { nodes, edges } = graph;
 
       const togostanzaColors = getStanzaColors(this);
 
       const color = function () {
         return d3.scaleOrdinal().range(togostanzaColors);
       };
-
-      const root = this.root.querySelector("main");
 
       const existingSvg = root.getElementsByTagName("svg")[0];
       if (existingSvg) {
@@ -102,13 +105,8 @@ export default class ChordDiagram extends MetaStanza {
 
       this._chartArea = svg;
 
-      const nodesSortParams = {
-        sortBy: this.params["nodes-sort-key"],
-        sortOrder: this.params["nodes-sort-order"] || "ascending",
-      };
-
       const nodeSizeParams = {
-        isChord: !this.params["node-size-fixed"],
+        isChord: this.params["layout"] === "chord",
         dataKey: "",
         minSize: 3,
         maxSize: 3,
@@ -116,7 +114,9 @@ export default class ChordDiagram extends MetaStanza {
       };
 
       const nodeColorParams = {
-        dataKey: this.params["node-color_key"] || "",
+        colorKey: this.params["node-color_key"] || "",
+        groupKey: this.params["node-group_key"] || "",
+        colorBlendMode: this.params["node-color_blend"] || "normal",
       };
 
       const nodeLabelParams = {
@@ -129,7 +129,6 @@ export default class ChordDiagram extends MetaStanza {
         minWidth: setFallbackVal("edge-width-min", 1),
         maxWidth: this.params["edge-width-max"],
         scale: "linear",
-        showArrows: this.params["edge-show_arrows"],
       };
 
       const edgeColorParams = {
@@ -138,8 +137,8 @@ export default class ChordDiagram extends MetaStanza {
       };
 
       const tooltipParams = {
-        dataKey: this.params["tooltips-key"],
-        show: nodes.some((d) => d[this.params["tooltips-key"]]),
+        show: !!this.params["tooltip"],
+        tooltipsInstance: this.tooltips,
       };
 
       const edgeParams = {
@@ -150,7 +149,7 @@ export default class ChordDiagram extends MetaStanza {
       const highlightAdjEdges = true;
 
       const CSSMargins = getMarginsFromCSSString(
-        css("--togostanza-canvas-padding")
+        this.css("--togostanza-canvas-padding")
       );
 
       const longestLabelWidth = getLongestLabelWidth(
@@ -172,7 +171,6 @@ export default class ChordDiagram extends MetaStanza {
         svg,
         color,
         highlightAdjEdges,
-        nodesSortParams,
         nodeSizeParams,
         nodeColorParams,
         edgeWidthParams,
@@ -206,6 +204,13 @@ export default class ChordDiagram extends MetaStanza {
         drawCircleLayout(svg, prepNodes, prepEdges, { ...params, symbols });
       }
 
+      // Pass nodes to add tooltips to
+      if (tooltipParams.show && this.tooltips) {
+        const nodesList = this._main.querySelectorAll("[data-tooltip]");
+        this.tooltips.setup(nodesList);
+      }
+
+      // Add select/deselect event listeners
       this._chartArea
         .selectAll(this.selectedEventParams.targetElementSelector)
         .on("click", (_, d: Datum) => {
@@ -229,11 +234,13 @@ export default class ChordDiagram extends MetaStanza {
         });
     };
 
-    handleApiError({
-      stanzaData: this,
-      hasTooltip: true,
-      drawContent,
-    });
+    drawContent();
+
+    // handleApiError({
+    //   stanzaData: this,
+    //   hasTooltip: true,
+    //   drawContent,
+    // });
   }
 
   handleEvent(event) {
