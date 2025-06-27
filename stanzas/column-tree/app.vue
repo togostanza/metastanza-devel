@@ -191,8 +191,10 @@ function selectNode(node: TreeItemWithPath) {
 
   state.columnData = [rootNodes, ...pathColumns];
 
-  // チェック済みノードをこのノードに限定
-  state.checkedNodes = new Map([[node.id, node]]);
+  // チェック済みノードに追加
+  if (!state.checkedNodes.has(node.id)) {
+    state.checkedNodes.set(node.id, node);
+  }
 
   // サジェスト表示を閉じる
   toggleSuggestions();
