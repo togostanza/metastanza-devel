@@ -60,16 +60,16 @@
     {
       "stanza:key": "event-incoming_change_selected_nodes",
       "stanza:type": "boolean",
+      "stanza:label": "Incoming event",
       "stanza:example": true,
-      "stanza:description": "Receive a change event of selected nodes",
-      "stanza:required": false
+      "stanza:description": "Receive a change event of selected nodes"
     },
     {
       "stanza:key": "event-outgoing_change_selected_nodes",
       "stanza:type": "boolean",
+      "stanza:label": "Outgoing event",
       "stanza:example": true,
-      "stanza:description": "Emit a change event of selected nodes",
-      "stanza:required": false
+      "stanza:description": "Emit a change event of selected nodes"
     }
   ],
   "stanza:menu-placement": "bottom-right",
