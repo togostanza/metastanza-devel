@@ -8,6 +8,14 @@ import { createApp, type ComponentPublicInstance } from "vue";
 import MetaStanza from "../../lib/MetaStanza";
 import App from "./app.vue";
 import type { Tree, TreeItem } from "./types";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import {
+  faChevronRight,
+  faMagnifyingGlass,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
+library.add(faChevronRight, faMagnifyingGlass, faXmark);
 
 export default class ColumnTree extends MetaStanza {
   _app: ReturnType<typeof createApp> | null = null;
@@ -40,6 +48,7 @@ export default class ColumnTree extends MetaStanza {
     // Vueアプリを新たにマウント
     const drawContent = async () => {
       this._app = createApp(App, { ...camelCaseParams });
+      this._app.component("FontAwesomeIcon", FontAwesomeIcon);
       this._component = this._app.mount(root) as ComponentPublicInstance<
         typeof App
       >;

@@ -77,7 +77,7 @@
     {
       "stanza:key": "--togostanza-canvas-width",
       "stanza:type": "number",
-      "stanza:default": 600,
+      "stanza:default": 800,
       "stanza:description": "Width for entire stanza"
     },
     {

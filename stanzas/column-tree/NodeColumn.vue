@@ -1,6 +1,6 @@
 <template>
   <div class="column">
-    <span
+    <div
       v-for="node in nodes"
       :key="node.id"
       class="node"
@@ -9,12 +9,12 @@
           '-highlighted':
             node.id === highlightedNode && hasChildren(node.children),
         },
-        '-with-border',
       ]"
       @click="hasChildren(node.children) ? setParent(node.id) : null"
     >
-      <span class="inner">
+      <div class="inner" :class="`-${nodeValueAlignment}`">
         <input
+          :id="`checkbox-${node.id}`"
           :data-togostanza-id="node.id"
           class="selectable"
           :class="{ '-selected': checkedNodes.get(node.id) }"
@@ -23,43 +23,34 @@
           @input="handleCheckboxClick(node)"
         />
 
-        <span class="label" :class="`-${nodeValueAlignment}`">
-          <strong class="title">
-            {{ node.label }}
-          </strong>
-          <span
-            class="value"
-            :class="{ fallback: node[labelAndValueKeys.value] === undefined }"
-          >
+        <div class="label" :class="`-${nodeValueAlignment}`">
+          <span class="title">{{ node.label }}</span>
+          <span class="value">
             {{ node.value?.toLocaleString() ?? valueFallback.fallback }}
           </span>
-        </span>
+        </div>
         <font-awesome-icon
           v-if="hasChildren(node.children)"
-          icon="chevron-right"
           class="icon"
+          :icon="['fas', 'chevron-right']"
         />
-      </span>
-    </span>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faChevronRight, faClipboard } from "@fortawesome/free-solid-svg-icons";
 import type {
   TreeItemWithPath,
   ValueFallback,
   LabelAndValueKeys,
 } from "./types";
-library.add(faChevronRight, faClipboard);
 
 // Props定義
 const props = defineProps<{
   data: TreeItemWithPath[];
   dataUrl: string;
-  layer?: number;
+  layer: number;
   nodes?: TreeItemWithPath[];
   children?: boolean;
   checkedNodes: Map<string | number, TreeItemWithPath>;
@@ -86,7 +77,7 @@ function hasChildren(childrenProp: string[] | number[]): boolean {
 
 /** 指定されたノード ID を親とし、その子ノードの階層レベルをイベントで通知する関数
  * @param parentId 親ノードの ID（数値または文字列） */
-function setParent(parentId: string | number): void {
+function setParent(parentId: string | number) {
   const nextLayer = (props.layer ?? 0) + 1;
   emit("setParent", [nextLayer, parentId]);
 }
