@@ -15,10 +15,10 @@
     "lint:editorconfig": "editorconfig-checker"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^6.3.0",
-    "@fortawesome/fontawesome-svg-core": "^6.2.0",
-    "@fortawesome/free-solid-svg-icons": "^6.2.0",
-    "@fortawesome/vue-fontawesome": "^3.0.0-1",
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/vue-fontawesome": "^3.0.8",
     "@rollup/plugin-replace": "^5.0.1",
     "@types/d3": "^7.4.0",
     "@types/topojson-specification": "^1.0.5",
