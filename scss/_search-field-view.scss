@@ -1,40 +1,80 @@
 .search-field-view {
-  > .inputcontainer {
+  position: relative;
+  margin-bottom: 8px;
+
+  .search-icon,
+  .search-clear {
     position: relative;
-    > input {
-      &[type="search"],
-      &[type="text"] {
-        border: solid 1px #999;
-        margin-left: -2px;
-        padding: 0.3em 1em 0.3em 2.1em;
-        line-height: 1;
-        border-radius: 1.6em;
-        &::placeholder {
-          color: #ccc;
+    top: 0.2rem;
+    color: #999;
+    z-index: 1;
+  }
+
+  .search-icon {
+    left: 0.5rem;
+    width: 0.9rem;
+    pointer-events: none;
+  }
+  .search-clear {
+    right: 2.3rem;
+    width: 0.7rem;
+    cursor: pointer;
+  }
+
+  .search-input {
+    position: relative;
+    left: -15px;
+    width: 200px;
+    border: solid 1px #999;
+    padding: 0.3em 1em 0.3em 2.1em;
+    border-radius: 1.6em;
+    &::placeholder {
+      color: #ccc;
+    }
+  }
+
+  .suggestions-container {
+    position: absolute;
+    left: -1px;
+    max-height: 80%;
+    min-height: fit-content;
+    border-radius: 0.5em;
+    background-color: white;
+    z-index: 2;
+    box-shadow: 0 2px 4px #0004;
+    overflow: hidden;
+    > .suggestions {
+      margin: 0;
+      padding: 0;
+      z-index: 1;
+      max-height: 200px;
+      overflow-y: auto;
+      overscroll-behavior-y: contain;
+
+      > li {
+        display: grid;
+        padding: 0.4em 1em;
+        list-style-type: none;
+        position: relative;
+
+        &:first-child {
+          padding-top: 8px;
+        }
+        &:last-child {
+          padding-bottom: 8px;
         }
       }
-    }
-    &::before,
-    &::after {
-      content: "";
-      display: block;
-      position: absolute;
-      z-index: 1;
-    }
-    &::before {
-      width: 0.8em;
-      height: 0.8em;
-      top: 0.4em;
-      left: 0.7em;
-      border-radius: 100%;
-      border: solid 1px #999;
-    }
-    &::after {
-      height: 0.5em;
-      top: 1em;
-      left: 1.5em;
-      rotate: -45deg;
-      border-left: solid 1px #999;
+
+      > .suggestion-item {
+        &:hover {
+          background-color: var(--togostanza-theme-selected_background_color);
+          cursor: pointer;
+        }
+        &:focus {
+          background-color: var(--togostanza-theme-selected_background_color);
+          outline: none;
+        }
+      }
     }
   }
 }
