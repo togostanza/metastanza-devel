@@ -56,18 +56,18 @@
   },
   "devDependencies": {
     "@types/topojson-client": "^3.1.4",
-    "@typescript-eslint/eslint-plugin": "^5.51.0",
+    "@typescript-eslint/eslint-plugin": "^8.35.0",
     "editorconfig-checker": "4.0.0",
-    "eslint": "^8.35.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-vue": "^9.7.0",
+    "eslint": "^9.29.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-vue": "^10.2.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
     "stylelint": "^14.14.0",
     "stylelint-config-prettier": "^9.0.3",
     "stylelint-config-recommended-scss": "^8.0.0",
     "stylelint-scss": "^4.3.0",
-    "vue-eslint-parser": "^9.1.0"
+    "vue-eslint-parser": "^10.1.4"
   },
   "engines": {
     "node": ">=14"
