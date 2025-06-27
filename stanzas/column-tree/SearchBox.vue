@@ -26,7 +26,6 @@
       :is-show-suggestions="state.isShowSuggestions"
       :search-input="state.searchTerm"
       :data="suggestions"
-      :label-and-value-keys="labelAndValueKeys"
       :value-fallback="valueFallback"
       :node-value-alignment="nodeValueAlignment"
       @select-node="handleSelectNode"
@@ -37,122 +36,107 @@
 
 <script setup lang="ts">
 import { reactive, computed, ref, onMounted, onUnmounted, nextTick } from "vue";
-import type {
-  TreeItemWithPath,
-  ValueFallback,
-  LabelAndValueKeys,
-} from "./types";
-import SearchSuggestions from "./SearchSuggestions.vue";
 import type { ComponentPublicInstance } from "vue";
+import SearchSuggestions from "./SearchSuggestions.vue";
+import type { TreeItemWithPath } from "./types";
 
+/** 型定義：子コンポーネント（SearchSuggestions）のインスタンス */
 type SearchSuggestionsInstance = ComponentPublicInstance<{
   focusFirstSuggestionItem: () => void;
 }>;
 
-// Props定義
+// Props & Emits ------------------------------
 const props = defineProps<{
-  isValidSearchNode: boolean;
   treeItemsWithPath: TreeItemWithPath[];
-  labelAndValueKeys: LabelAndValueKeys;
-  valueFallback: ValueFallback;
+  valueFallback: string;
   nodeValueAlignment: "horizontal" | "vertical";
 }>();
 
-// Emit定義
 const emit = defineEmits<{
-  (e: "selectNode", node: TreeItemWithPath);
+  (e: "selectNode", node: TreeItemWithPath): void;
   (e: "closeSuggestions"): void;
 }>();
 
-// state ------------------------------
+// State ------------------------------
 const state = reactive({
   isShowSuggestions: false,
   searchTerm: "",
 });
 
-// ref ------------------------------
+// DOM参照 ------------------------------
 const inputRef = ref<HTMLElement | null>(null);
 const suggestionsRef = ref<SearchSuggestionsInstance | null>(null);
 
-// computed ------------------------------
-// 検索入力が有効かどうか
-const isValidSearchNode = computed(() => state.searchTerm.length > 0);
+// Computed ------------------------------
+/** 検索語が有効かどうか */
+const isValidSearchInput = computed(() => state.searchTerm.length > 0);
 
-// サジェスト候補のリスト（通常検索 or パス検索）
+/** 入力にマッチするノードの一覧をフィルタリング */
 const suggestions = computed(() =>
-  props.treeItemsWithPath.filter(isNormalSearchHit)
+  props.treeItemsWithPath.filter((node) => {
+    if (!isValidSearchInput.value) {
+      return false;
+    }
+    return node.label.toLowerCase().includes(state.searchTerm.toLowerCase());
+  })
 );
 
-// method ------------------------------
-/** ノードのラベルが検索語を含むかどうかを判定する関数
- * @param node - 検索対象のツリーノード
- * @returns 部分一致していれば true、それ以外は false */
-function isNormalSearchHit(node: TreeItemWithPath): boolean {
-  if (!isValidSearchNode.value) {
-    return false; // 検索語が無効な場合はヒットしない
-  }
-  const value = node.label.toString().toLowerCase();
-  const search = state.searchTerm.toLowerCase();
-  return value.includes(search);
-}
-
-/** 有効な検索語が入力されている場合のみ、
- * サジェスト表示をトグル（表示・非表示）します。 */
+// Methods ------------------------------
+/** 入力が有効なときだけサジェストを表示する */
 function toggleSuggestionsIfValid() {
-  const hasValidInput = isValidSearchNode.value;
-
-  if (hasValidInput) {
-    showSuggestions();
-  } else {
-    closeSuggestions();
-  }
+  isValidSearchInput.value ? showSuggestions() : closeSuggestions();
 }
 
-function showSuggestions() {
-  if (state.isShowSuggestions) {
-    return; // 既に表示中なら何もしない
-  }
-  state.isShowSuggestions = true;
-}
-
-function closeSuggestions() {
+/** サジェストを表示 */
+function showSuggestions(): void {
   if (!state.isShowSuggestions) {
-    return; // 既に非表示なら何もしない
+    state.isShowSuggestions = true;
   }
-  state.isShowSuggestions = false;
 }
 
+/** サジェストを非表示 */
+function closeSuggestions() {
+  if (state.isShowSuggestions) {
+    state.isShowSuggestions = false;
+  }
+}
+
+/** サジェスト候補が選択されたときに実行される
+ * @param node - 選択されたノード */
 function handleSelectNode(node: TreeItemWithPath) {
   state.isShowSuggestions = false;
   emit("selectNode", node);
 }
 
-const clearSearch = () => {
+/** 検索入力をクリアし、フォーカスを戻す */
+function clearSearch() {
   state.searchTerm = "";
   inputRef.value?.focus();
-};
+}
 
-// 外側クリック検出
+/** 入力欄外をクリックしたときにサジェストを閉じる
+ * @param event - クリックイベント */
 function handleClickOutside(event: MouseEvent) {
   const target = event.composedPath()[0] as Node;
-
   if (inputRef.value && !inputRef.value.contains(target)) {
     closeSuggestions();
   }
 }
 
-function handleKeydown(e: KeyboardEvent) {
-  if (e.key === "ArrowDown") {
-    e.preventDefault();
+/** キーボード操作（↓でサジェストにフォーカス、ESCで閉じる）
+ * @param event - キーボードイベント */
+function handleKeydown(event: KeyboardEvent) {
+  if (event.key === "ArrowDown") {
+    event.preventDefault();
     nextTick(() => {
       suggestionsRef.value?.focusFirstSuggestionItem();
     });
-  } else if (e.key === "Escape") {
+  } else if (event.key === "Escape") {
     closeSuggestions();
   }
 }
 
-// マウント時にイベント登録、アンマウント時に解除
+// Lifecycle ----------------------
 onMounted(() => {
   document.addEventListener("click", handleClickOutside);
 });

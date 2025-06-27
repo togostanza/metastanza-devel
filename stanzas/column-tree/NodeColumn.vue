@@ -26,7 +26,7 @@
         <div class="label" :class="`-${nodeValueAlignment}`">
           <span class="title">{{ node.label }}</span>
           <span class="value">
-            {{ node.value?.toLocaleString() ?? valueFallback.fallback }}
+            {{ node.value?.toLocaleString() ?? valueFallback }}
           </span>
         </div>
         <font-awesome-icon
@@ -40,13 +40,9 @@
 </template>
 
 <script setup lang="ts">
-import type {
-  TreeItemWithPath,
-  ValueFallback,
-  LabelAndValueKeys,
-} from "./types";
+import type { TreeItemWithPath } from "./types";
 
-// Props定義
+// Props & Emits ------------------------------
 const props = defineProps<{
   data: TreeItemWithPath[];
   dataUrl: string;
@@ -54,20 +50,18 @@ const props = defineProps<{
   nodes?: TreeItemWithPath[];
   children?: boolean;
   checkedNodes: Map<string | number, TreeItemWithPath>;
-  labelAndValueKeys: LabelAndValueKeys;
-  valueFallback: ValueFallback;
+  valueFallback: string;
   highlightedNode?: number | string | null;
   nodeValueAlignment?: string;
   isEventOutgoing: boolean;
 }>();
 
-// Emits定義
 const emit = defineEmits<{
   (e: "setParent", value: [number, string | number]): void;
   (e: "setCheckedNode", node: TreeItemWithPath): void;
 }>();
 
-// method ------------------------------
+// Methods ------------------------------
 /** 子ノードの配列が1つ以上の要素を持つかを判定する関数
  * @param childrenProp 子ノードの ID 配列（文字列または数値の配列）
  * @returns 子ノードが存在するかどうか（配列の長さが 1 以上か） */

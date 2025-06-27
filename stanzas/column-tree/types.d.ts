@@ -25,12 +25,3 @@ export interface TreePathNode {
   label: string;
   parent?: number | string;
 }
-
-export interface ValueFallback {
-  fallback: string | number;
-}
-
-export interface LabelAndValueKeys {
-  label: string;
-  value: string;
-}

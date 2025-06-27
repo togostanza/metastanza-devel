@@ -1,13 +1,9 @@
 <template>
   <section id="wrapper">
     <SearchBox
-      :data="suggestions"
-      :is-valid-search-node="isValidSearchNode"
-      :show-suggestions="state.showSuggestions"
       :tree-items-with-path="state.treeItemsWithPath"
-      :label-and-value-keys="state.labelAndValueKeys"
-      :value-fallback="valueFallback"
-      :node-value-alignment="state.nodeValueAlignment"
+      :value-fallback="nodeValueFallback"
+      :node-value-alignment="nodeValueAlignment"
       @select-node="selectNode"
     />
     <div id="tree">
@@ -21,10 +17,9 @@
         :layer="index"
         :nodes="column"
         :checked-nodes="state.checkedNodes"
-        :label-and-value-keys="state.labelAndValueKeys"
-        :value-fallback="valueFallback"
+        :value-fallback="nodeValueFallback"
         :highlighted-node="state.highligthedNodes[index]"
-        :node-value-alignment="state.nodeValueAlignment"
+        :node-value-alignment="nodeValueAlignment"
         :is-event-outgoing="props.eventOutgoingChangeSelectedNodes"
         @set-parent="updatePartialColumnData"
         @set-checked-node="updateCheckedNodes"
@@ -34,71 +29,55 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed, watchEffect } from "vue";
+import { reactive, watch } from "vue";
 import SearchBox from "./SearchBox.vue";
 import NodeColumn from "./NodeColumn.vue";
 import type { TreeItem, TreeItemWithPath, TreePathNode } from "./types";
 
-// Props定義
+// Props ------------------------------
 const props = defineProps<{
   data: TreeItem[];
   dataUrl: string;
-  nodeLabelKey?: string;
-  nodeValueKey?: string;
-  nodeValueAlignment?: "horizontal" | "vertical";
-  nodeValueFallback?: string;
+  nodeLabelKey: string;
+  nodeValueKey: string;
+  nodeValueAlignment: "horizontal" | "vertical";
+  nodeValueFallback: string;
   eventOutgoingChangeSelectedNodes: boolean;
 }>();
 
-// state ------------------------------
+// State ------------------------------
 // アプリケーションの状態をまとめたreactiveオブジェクト
 const state = reactive({
-  labelAndValueKeys: {
-    label: props.nodeLabelKey?.trim() ?? "",
-    value: props.nodeValueKey?.trim() ?? "",
-  },
-  nodeValueAlignment: props.nodeValueAlignment,
-  fallbackInCaseOfNoValue: props.nodeValueFallback,
-  showSuggestions: false,
   treeItemsWithPath: [] as TreeItemWithPath[],
   columnData: [] as TreeItemWithPath[][],
   checkedNodes: new Map<string | number, TreeItemWithPath>(),
-  searchTerm: "",
   highligthedNodes: [] as (string | number)[],
 });
 
-// computed ------------------------------
-// 表示する値のfallback情報
-const valueFallback = computed(() => ({
-  fallback: state.fallbackInCaseOfNoValue,
-}));
-
-// 検索入力が有効かどうか
-const isValidSearchNode = computed(() => state.searchTerm.length > 0);
-
-// サジェスト候補のリスト（通常検索 or パス検索）
-const suggestions = computed(() =>
-  state.treeItemsWithPath.filter(isNormalSearchHit)
+// Watchers ------------------------------
+// ノードにpathを追加しつつ初期化
+watch(
+  () => props.data,
+  (newData) => {
+    state.treeItemsWithPath = newData.map((item) => ({
+      ...item,
+      path: getPath(item),
+    }));
+    state.checkedNodes = new Map();
+  },
+  { immediate: true }
 );
 
-// watch ------------------------------
-// ノードにpathを追加しつつ初期化
-watchEffect(() => {
-  state.treeItemsWithPath = props.data.map((item) => ({
-    ...item,
-    path: getPath(item),
-  }));
-  state.checkedNodes = new Map();
-});
-
 // ルートノードの列を初期化
-watchEffect(() => {
-  state.columnData[0] = state.treeItemsWithPath.filter((obj) =>
-    isRootNode(obj.parent)
-  );
-});
+watch(
+  () => state.treeItemsWithPath,
+  (newTreeItems) => {
+    state.columnData[0] = newTreeItems.filter((obj) => isRootNode(obj.parent));
+  },
+  { immediate: true }
+);
 
-// method ------------------------------
+// Methods ------------------------------
 /** 指定されたノードからルートノードまでのパス（親子関係）を取得する関数
  * @param node 対象のツリーノード
  * @returns TreePathNode[] ルートから該当ノードまでの順に並んだノード配列 */
@@ -136,25 +115,6 @@ function getPath(node: TreeItem): TreePathNode[] {
  * @returns ルートノードなら true、それ以外は false */
 function isRootNode(parent: number | string | undefined): boolean {
   return !parent;
-}
-
-/** ノードの指定された検索対象フィールドが検索語を含むかどうかを判定する関数
- * @param node - 検索対象のツリーノード
- * @returns 検索語が一致するフィールドに含まれる場合は true、それ以外は false
- */
-function isNormalSearchHit(node: TreeItemWithPath): boolean {
-  const key = props.nodeLabelKey?.trim(); // nameになる
-  const search = state.searchTerm.toLowerCase(); // 入力した文字
-
-  if (!key || !(key in node)) {
-    return false;
-  }
-
-  const value = node[key];
-
-  return typeof value === "string" || typeof value === "number"
-    ? value.toString().toLowerCase().includes(search)
-    : false;
 }
 
 /** 指定したレイヤーと親ノード ID に基づいて、その親を持つ子ノードの一覧を返す。
@@ -195,9 +155,6 @@ function selectNode(node: TreeItemWithPath) {
   if (!state.checkedNodes.has(node.id)) {
     state.checkedNodes.set(node.id, node);
   }
-
-  // サジェスト表示を閉じる
-  toggleSuggestions();
 }
 
 /** 指定されたレイヤーと親 ID に基づき、子ノードの一覧を取得し、
@@ -232,10 +189,5 @@ function updateCheckedNodes(node: TreeItemWithPath) {
   isAlreadyChecked
     ? state.checkedNodes.delete(id)
     : state.checkedNodes.set(id, { id, ...rest });
-}
-
-/** サジェストの表示状態を反転（ON/OFF）します。 */
-function toggleSuggestions() {
-  state.showSuggestions = !state.showSuggestions;
 }
 </script>
