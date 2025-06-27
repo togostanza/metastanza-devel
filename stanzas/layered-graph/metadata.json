@@ -14,7 +14,7 @@
   "stanza:parameter": [
     {
       "stanza:key": "data-url",
-      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/refs/heads/feature/add-urls/samples/json/graph-data.json",
+      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/refs/heads/main/samples/json/graph-data.json",
       "stanza:description": "Data source URL",
       "stanza:required": true
     },
@@ -25,12 +25,6 @@
       "stanza:example": "json",
       "stanza:description": "Data type",
       "stanza:required": true
-    },
-    {
-      "stanza:key": "data-directed_graph",
-      "stanza:type": "boolean",
-      "stanza:example": "true",
-      "stanza:description": "Whether the graph data is directed (whether to show the arrows or not)"
     },
     {
       "stanza:key": "data-nodes_key",
@@ -50,12 +44,7 @@
       "stanza:example": "id",
       "stanza:description": "Set ID on the node based on data key. If empty, `id` will be used"
     },
-    {
-      "stanza:key": "node-url_key",
-      "stanza:type": "string",
-      "stanza:example": "url",
-      "stanza:description": "Set URL on the node based on data key"
-    },
+
     {
       "stanza:key": "node-label_key",
       "stanza:type": "string",
@@ -63,17 +52,23 @@
       "stanza:description": "Node labels data key. If empty, no labels will be shown"
     },
     {
-      "stanza:key": "nodes-sort-key",
+      "stanza:key": "node-group_key",
       "stanza:type": "string",
-      "stanza:example": "id",
-      "stanza:description": "Sort nodes by this data key value"
+      "stanza:example": "group",
+      "stanza:description": "Color groups of nodes based on same key"
     },
     {
-      "stanza:key": "nodes-sort-order",
+      "stanza:key": "node-color_key",
+      "stanza:type": "string",
+      "stanza:example": "color",
+      "stanza:description": "Set color of the node based on data key"
+    },
+    {
+      "stanza:key": "node-color_blend",
       "stanza:type": "single-choice",
-      "stanza:choice": ["ascending", "descending"],
-      "stanza:example": "ascending",
-      "stanza:description": "Nodes sorting order"
+      "stanza:choice": ["multiply", "screen", "normal"],
+      "stanza:example": "normal",
+      "stanza:description": "Set color of the node based on data key"
     },
     {
       "stanza:key": "node-size-key",
@@ -100,12 +95,7 @@
       "stanza:example": "sqrt",
       "stanza:description": "Node size scale"
     },
-    {
-      "stanza:key": "node-color-key",
-      "stanza:type": "string",
-      "stanza:example": "group",
-      "stanza:description": "Set color of the node based on data key"
-    },
+
     {
       "stanza:key": "edge-width-key",
       "stanza:type": "string",
@@ -124,12 +114,19 @@
       "stanza:example": 3,
       "stanza:description": "Maximum edge width in px"
     },
+
     {
       "stanza:key": "edge-width-scale",
       "stanza:type": "single-choice",
       "stanza:choice": ["linear", "sqrt", "log10"],
       "stanza:example": "linear",
       "stanza:description": "Edge width scale"
+    },
+    {
+      "stanza:key": "edge-arrows_visible",
+      "stanza:type": "boolean",
+      "stanza:example": "true",
+      "stanza:label": "Show arrows"
     },
     {
       "stanza:key": "tooltip",

@@ -14,7 +14,7 @@
   "stanza:parameter": [
     {
       "stanza:key": "data-url",
-      "stanza:example": "https://gist.githubusercontent.com/abkunal/98d35b9b235312e90f3e43c9f7b6932b/raw/d5589ddd53731ae8eec7abd091320df91cdcf5cd/miserables.json",
+      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/refs/heads/main/samples/json/graph-data.json",
       "stanza:description": "Data source URL",
       "stanza:required": true
     },
@@ -27,41 +27,55 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "togostanza-custom_css_url",
-      "stanza:example": "",
-      "stanza:description": "Custom CSS URL"
+      "stanza:key": "data-nodes_key",
+      "stanza:type": "string",
+      "stanza:example": "nodes",
+      "stanza:description": "Data key for nodes. If empty `nodes` will be used"
+    },
+    {
+      "stanza:key": "data-edges_key",
+      "stanza:type": "string",
+      "stanza:example": "links",
+      "stanza:description": "Data key for edges. If empty `links` will be used"
+    },
+
+    {
+      "stanza:key": "node-id_key",
+      "stanza:type": "string",
+      "stanza:example": "id",
+      "stanza:description": "Set ID on the node based on data key. If empty, `id` will be used"
     },
     {
       "stanza:key": "node-label_key",
       "stanza:type": "string",
       "stanza:example": "id",
-      "stanza:description": "Key of the node label"
+      "stanza:description": "Node labels data key. If empty, no labels will be shown"
+    },
+    {
+      "stanza:key": "node-group_key",
+      "stanza:type": "string",
+      "stanza:example": "group",
+      "stanza:description": "Color groups of nodes based on same key"
     },
     {
       "stanza:key": "node-color_key",
-      "stanza:type": "text",
-      "stanza:example": "group",
-      "stanza:description": "Node's color key"
-    },
-    {
-      "stanza:key": "nodes-sort-key",
       "stanza:type": "string",
-      "stanza:example": "group",
-      "stanza:description": "Sort by value of this key"
+      "stanza:example": "color",
+      "stanza:description": "Set color of the node based on data key"
     },
     {
-      "stanza:key": "nodes-sort-order",
+      "stanza:key": "node-color_blend",
       "stanza:type": "single-choice",
-      "stanza:choice": ["descending", "ascending"],
-      "stanza:example": "ascending",
-      "stanza:description": "Sort order"
+      "stanza:choice": ["multiply", "screen", "normal"],
+      "stanza:example": "normal",
+      "stanza:description": "Set color of the node based on data key"
     },
     {
-      "stanza:key": "node-size-fixed",
-      "stanza:type": "boolean",
-      "stanza:example": false,
-      "stanza:label": "Toggle",
-      "stanza:description": "Whether to render a chord diagram or circle layout graph"
+      "stanza:key": "layout",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["chord", "circle"],
+      "stanza:example": "chord",
+      "stanza:description": "Chord diagram of circle layout graph"
     },
     {
       "stanza:key": "edge-width-key",
@@ -81,12 +95,12 @@
       "stanza:example": 3,
       "stanza:description": "Maximum edge width in px (Effective only in circle layout graph mode)"
     },
+
     {
-      "stanza:key": "tooltips-key",
+      "stanza:key": "tooltip",
       "stanza:type": "string",
-      "stanza:default": "id",
-      "stanza:example": "id",
-      "stanza:description": "Node tooltips data key. If empty, no tooltips will be shown"
+      "stanza:example": "<h3>{{id}}</h3>",
+      "stanza:description": "A handlebars HTML template string to show in tooltip"
     },
     {
       "stanza:key": "event-incoming_change_selected_nodes",
@@ -101,6 +115,11 @@
       "stanza:example": true,
       "stanza:description": "Emit a change event of selected nodes",
       "stanza:required": false
+    },
+    {
+      "stanza:key": "togostanza-custom_css_url",
+      "stanza:example": "",
+      "stanza:description": "Custom CSS URL"
     }
   ],
   "stanza:menu-placement": "bottom-right",
