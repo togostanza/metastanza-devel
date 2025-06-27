@@ -36,7 +36,6 @@ $search-field-height: calc(25px + 8px);
     &.-horizontal {
       width: 100%;
       line-height: 1;
-      height: calc(var(--togostanza-fonts-font_size_primary) * 1px + 1px);
       flex-direction: row;
       gap: 1rem;
       > .value {

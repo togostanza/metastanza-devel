@@ -117,6 +117,12 @@
       "stanza:description": "Font size used in stanza"
     },
     {
+      "stanza:key": "--togostanza-fonts-font_size_secondary",
+      "stanza:type": "number",
+      "stanza:default": 14,
+      "stanza:description": "Font size used in stanza"
+    },
+    {
       "stanza:key": "--togostanza-column-background_color",
       "stanza:type": "color",
       "stanza:default": "#FFFFFF",
