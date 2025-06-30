@@ -1,10 +1,12 @@
+import { defineConfig } from "eslint/config";
 import vue from "eslint-plugin-vue";
 import tseslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 import prettier from "eslint-config-prettier";
 
-export default [
+export default defineConfig([
   {
+    files: ["**/*.js", "**/*.ts", "**/*.tsx", "**/*.vue"],
     ignores: [".github", "dist"],
     languageOptions: {
       ecmaVersion: 2021,
@@ -32,4 +34,4 @@ export default [
     },
   },
   prettier,
-];
+]);
