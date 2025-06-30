@@ -170,33 +170,16 @@ export default class Linechart extends MetaStanza {
       this.yAxisGen = null;
     }
     svg = select(this._main).append("svg");
+
     svg.attr("width", width).attr("height", height);
+
     this.graphArea = svg.append("g").attr("class", "chart") as TGSelection;
 
     const axisArea = {
-      x: this.MARGIN.LEFT,
-      y: this.MARGIN.TOP,
-      width: width - this.MARGIN.LEFT - this.MARGIN.RIGHT,
-      height: height - this.MARGIN.TOP - this.MARGIN.BOTTOM,
-    };
-
-    const AxesMargins: MarginsI = {
-      LEFT:
-        params["axis-y-placement"] === "left"
-          ? params["axis-y-title_padding"] || 0
-          : 0,
-      RIGHT:
-        params["axis-y-placement"] === "right"
-          ? params["axis-y-title_padding"] || 0
-          : 0,
-      TOP:
-        params["axis-x-placement"] === "top"
-          ? params["axis-x-title_padding"] || 0
-          : 0,
-      BOTTOM:
-        params["axis-x-placement"] === "bottom"
-          ? params["axis-x-title_padding"] || 0
-          : 0,
+      x: 0,
+      y: 0,
+      width: +this.css("--togostanza-canvas-width"),
+      height: +this.css("--togostanza-canvas-height"),
     };
 
     let xDomain = [];
@@ -224,7 +207,7 @@ export default class Linechart extends MetaStanza {
       placement: params["axis-x-placement"],
       domain: xDomain,
       drawArea: axisArea,
-      margins: AxesMargins,
+      margins: this.MARGIN,
       tickLabelsAngle: params["axis-x-ticks_label_angle"],
       title: xAxisTitle,
       titlePadding: params["axis-x-title_padding"],
@@ -240,7 +223,7 @@ export default class Linechart extends MetaStanza {
       placement: params["axis-y-placement"],
       domain: yDomain,
       drawArea: axisArea,
-      margins: AxesMargins,
+      margins: this.MARGIN,
       tickLabelsAngle: params["axis-y-ticks_label_angle"],
       title: yAxisTitle,
       titlePadding: params["axis-y-title_padding"],

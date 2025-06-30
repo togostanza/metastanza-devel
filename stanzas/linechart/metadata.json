@@ -232,7 +232,7 @@
     {
       "stanza:key": "--togostanza-canvas-padding",
       "stanza:type": "text",
-      "stanza:default": "10",
+      "stanza:default": "10 20 40 40",
       "stanza:description": "Metastanza padding CSS in px."
     },
     {
