@@ -71,7 +71,7 @@
     "vue-eslint-parser": "^10.1.4"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=22"
   },
   "private": true
 }
