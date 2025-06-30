@@ -11,7 +11,8 @@
     "skipLibCheck": true,
     "paths": {
       "@/*": ["./*"]
-    }
+    },
+    "typeRoots": ["node_modules/@types"]
   },
-  "include": ["stanzas", "shims-vue.d.ts"]
+  "include": ["stanzas", "types"]
 }
