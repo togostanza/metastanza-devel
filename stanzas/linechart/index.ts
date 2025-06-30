@@ -122,10 +122,15 @@ export default class Linechart extends MetaStanza {
       return;
     }
 
-    if (this.params["tooltip"]) {
-      this.tooltips = new ToolTip();
-      this.tooltips.setTemplate(tooltipParams.dataKey);
-      this._main.appendChild(this.tooltips);
+    const tooltipString = this.params["tooltip"];
+
+    if (tooltipString) {
+      if (!this.tooltips) {
+        this.tooltips = new ToolTip();
+        this._main.append(this.tooltips);
+      }
+
+      this.tooltips.setTemplate(tooltipString);
     }
 
     values = values.filter((value) => {
