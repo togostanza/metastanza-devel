@@ -172,14 +172,14 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "point_size",
+      "stanza:key": "node-size",
       "stanza:type": "number",
       "stanza:example": 5,
       "stanza:description": "Data points size in px",
       "stanza:default": 5
     },
     {
-      "stanza:key": "grouping-key",
+      "stanza:key": "group-key",
       "stanza:type": "text",
       "stanza:example": "category",
       "stanza:default": "",

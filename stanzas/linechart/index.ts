@@ -91,8 +91,8 @@ export default class Linechart extends MetaStanza {
       typeof this.params["axis-y-title"] === "undefined"
         ? yKeyName
         : this.params["axis-y-title"];
-    const groupKeyName = this.params["grouping-key"];
-    const pointSize = this.params["point_size"];
+    const groupKeyName = this.params["group-key"];
+    const pointSize = this.params["node-size"];
     const tooltipKey = this.params["tooltips-key"];
     const showLegend = this.params["legend-visible"];
     const legendTitle =
@@ -100,7 +100,6 @@ export default class Linechart extends MetaStanza {
         ? groupKeyName
         : this.params["legend-title"];
     const errorKeyName = this.params["errorbar-key"];
-    const showErrorBars = this._data.some((d) => d[errorKeyName]);
 
     let values = structuredClone(this._data) as any[];
 
