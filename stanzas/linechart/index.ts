@@ -274,8 +274,6 @@ export default class Linechart extends MetaStanza {
       .attr("height", this.yAxisGen.axisArea.height)
       .attr("fill", "white");
 
-    // this.graphArea.attr("clip-path", "url(#mask)");
-
     const lines = drawChart(this.graphArea, this.dataByGroup, symbols);
 
     const dataPointSymbols = drawPoints(lines, pointSize, symbols);
@@ -405,10 +403,7 @@ function addErrorbars(
 
   selection
     .append("line")
-    .attr("y1", (d) => {
-      console.log("d", d);
-      return d[errorSym][0];
-    })
+    .attr("y1", (d) => d[errorSym][0])
     .attr("y2", (d) => d[errorSym][1])
     .attr("x1", 0)
     .attr("x2", 0);
@@ -426,15 +421,6 @@ function addErrorbars(
     .attr("x2", 2)
     .attr("y1", (d) => d[errorSym][1])
     .attr("y2", (d) => d[errorSym][1]);
-
-  // .data((d) => {
-  //   return d[errorSym] || [];
-  // })
-  // .join("rect")
-  // .attr("x", (d) => {
-  //   console.log("error d", d);
-  //   return 0;
-  // });
 }
 
 function isXYValueInRange(width: number, height: number, x: number, y: number) {
