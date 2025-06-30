@@ -20,6 +20,7 @@ svg {
   > .chart {
     > .chart-line-group {
       transition: var(--togostanza-fadeout-transition);
+
       &.-highlight {
         opacity: 1;
       }
@@ -33,6 +34,13 @@ svg {
       }
       > .symbol-g > path.symbol {
         cursor: pointer;
+      }
+
+      .error-bar > line {
+        stroke: var(--togostanza-border-color);
+        stroke-width: 1px;
+        opacity: 0.8;
+        transition: stroke-opacity 0.3s ease-out;
       }
     }
   }

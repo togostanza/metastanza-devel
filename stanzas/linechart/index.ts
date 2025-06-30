@@ -1,4 +1,13 @@
-import { extent, line, scaleOrdinal, select, symbol, symbolCircle } from "d3";
+import {
+  ScaleLinear,
+  Selection,
+  extent,
+  line,
+  scaleOrdinal,
+  select,
+  symbol,
+  symbolCircle,
+} from "d3";
 import {
   downloadCSVMenuItem,
   downloadJSONMenuItem,
@@ -90,6 +99,8 @@ export default class Linechart extends MetaStanza {
       typeof this.params["legend-title"] === "undefined"
         ? groupKeyName
         : this.params["legend-title"];
+    const errorKeyName = this.params["errorbar-key"];
+    const showErrorBars = this._data.some((d) => d[errorKeyName]);
 
     let values = structuredClone(this._data) as any[];
 
@@ -132,6 +143,7 @@ export default class Linechart extends MetaStanza {
     const ySym = Symbol("y");
     const colorSym = Symbol("color");
     const tooltipSym = Symbol("tooltip");
+    const errorSym = Symbol("error");
 
     const symbols: TSymbols = {
       xSym,
@@ -242,6 +254,9 @@ export default class Linechart extends MetaStanza {
       val[ySym] = this.yAxisGen.scale(val[yKeyName]);
       val[colorSym] = color(val[groupKeyName]);
       val[tooltipSym] = `${val[groupKeyName]}: ${val[tooltipKey]}`;
+      val[errorSym] = val[errorKeyName]?.map(
+        (d: number) => this.yAxisGen.scale(d) - val[ySym]
+      );
     });
 
     this.graphArea.attr(
@@ -264,6 +279,8 @@ export default class Linechart extends MetaStanza {
     const lines = drawChart(this.graphArea, this.dataByGroup, symbols);
 
     const dataPointSymbols = drawPoints(lines, pointSize, symbols);
+
+    addErrorbars(dataPointSymbols, errorSym);
 
     dataPointSymbols
       .filter(
@@ -369,6 +386,55 @@ function drawPoints(
     .attr("data-tooltip", (d) => d[symbols.tooltipSym]);
 
   return enterSymbols;
+}
+
+function addErrorbars(
+  points: Selection<
+    SVGGElement,
+    TValueWithSymbols,
+    SVGGElement,
+    [string, IDataByGroup]
+  >,
+  errorSym: symbol
+) {
+  const selection = points
+    .filter((d) => d[errorSym])
+    .append("g")
+    .attr("class", "error-bar")
+    .attr("part", "error-bar");
+
+  selection
+    .append("line")
+    .attr("y1", (d) => {
+      console.log("d", d);
+      return d[errorSym][0];
+    })
+    .attr("y2", (d) => d[errorSym][1])
+    .attr("x1", 0)
+    .attr("x2", 0);
+
+  selection
+    .append("line")
+    .attr("x1", -2)
+    .attr("x2", 2)
+    .attr("y1", (d) => d[errorSym][0])
+    .attr("y2", (d) => d[errorSym][0]);
+
+  selection
+    .append("line")
+    .attr("x1", -2)
+    .attr("x2", 2)
+    .attr("y1", (d) => d[errorSym][1])
+    .attr("y2", (d) => d[errorSym][1]);
+
+  // .data((d) => {
+  //   return d[errorSym] || [];
+  // })
+  // .join("rect")
+  // .attr("x", (d) => {
+  //   console.log("error d", d);
+  //   return 0;
+  // });
 }
 
 function isXYValueInRange(width: number, height: number, x: number, y: number) {
