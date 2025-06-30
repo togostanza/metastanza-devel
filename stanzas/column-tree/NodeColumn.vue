@@ -1,6 +1,6 @@
 <template>
   <div class="column">
-    <span
+    <div
       v-for="node in nodes"
       :key="node.id"
       class="node"
@@ -9,130 +9,91 @@
           '-highlighted':
             node.id === highlightedNode && hasChildren(node.children),
         },
-        '-with-border',
       ]"
       @click="hasChildren(node.children) ? setParent(node.id) : null"
     >
-      <span class="inner">
+      <div class="inner" :class="`-${nodeValueAlignment}`">
         <input
+          :id="`checkbox-${node.id}`"
           :data-togostanza-id="node.id"
           class="selectable"
           :class="{ '-selected': checkedNodes.get(node.id) }"
           type="checkbox"
-          :checked="checkedNodes.get(node.id)"
+          :checked="!!checkedNodes.get(node.id)"
           @input="handleCheckboxClick(node)"
         />
 
-        <span class="label" :class="`-${nodeValueAlignment}`">
-          <strong class="title">
-            {{ node.label }}
-          </strong>
-          <span
-            class="value"
-            :class="{ fallback: node[keys.value] === undefined }"
-          >
-            {{ node.value?.toLocaleString() ?? valueObj.fallback }}
+        <div class="label" :class="`-${nodeValueAlignment}`">
+          <span class="title">{{ node.label }}</span>
+          <span class="value">
+            {{ node.value?.toLocaleString() ?? valueFallback }}
           </span>
-        </span>
+        </div>
         <font-awesome-icon
           v-if="hasChildren(node.children)"
-          icon="chevron-right"
           class="icon"
+          :icon="['fas', 'chevron-right']"
         />
-      </span>
-    </span>
+      </div>
+    </div>
   </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faChevronRight, faClipboard } from "@fortawesome/free-solid-svg-icons";
-library.add(faChevronRight, faClipboard);
-export default defineComponent({
-  components: {
-    FontAwesomeIcon,
-  },
-  props: {
-    layer: {
-      type: Number,
-      default: 0,
-    },
-    nodes: {
-      type: Array,
-      default: () => [],
-    },
-    children: {
-      type: Boolean,
-      default: false,
-    },
-    checkedNodes: {
-      type: Map,
-      required: true,
-    },
-    keys: {
-      type: Object,
-      required: true,
-    },
-    valueObj: {
-      type: Object,
-      required: true,
-    },
-    highlightedNode: {
-      type: [Number, String, null],
-      default: null,
-    },
-    nodeValueAlignment: {
-      type: String,
-      default: "horizontal",
-    },
-    params: {
-      type: Object,
-      required: true,
-    },
-  },
-  emits: ["setParent", "setCheckedNode"],
-  setup(props, context) {
-    function hasChildren(childrenProp) {
-      if (typeof childrenProp === "string") {
-        childrenProp = childrenProp
-          .split(/,/)
-          .map(parseFloat)
-          .filter((prop) => !isNaN(prop));
-      }
-      return childrenProp && childrenProp.length > 0;
-    }
+<script setup lang="ts">
+import type { TreeItemWithPath } from "./types";
 
-    function setCheckedNode(node) {
-      context.emit("setCheckedNode", node);
-    }
+// Props & Emits ------------------------------
+const props = defineProps<{
+  data: TreeItemWithPath[];
+  dataUrl: string;
+  layer: number;
+  nodes?: TreeItemWithPath[];
+  children?: boolean;
+  checkedNodes: Map<string | number, TreeItemWithPath>;
+  valueFallback: string;
+  highlightedNode?: number | string | null;
+  nodeValueAlignment?: string;
+  isEventOutgoing: boolean;
+}>();
 
-    function setParent(id) {
-      context.emit("setParent", [props.layer + 1, id]);
-    }
+const emit = defineEmits<{
+  (e: "setParent", value: [number, string | number]): void;
+  (e: "setCheckedNode", node: TreeItemWithPath): void;
+}>();
 
-    function handleCheckboxClick(node) {
-      setCheckedNode(node);
+// Methods ------------------------------
+/** 子ノードの配列が1つ以上の要素を持つかを判定する関数
+ * @param childrenProp 子ノードの ID 配列（文字列または数値の配列）
+ * @returns 子ノードが存在するかどうか（配列の長さが 1 以上か） */
+function hasChildren(childrenProp: string[] | number[]): boolean {
+  return Array.isArray(childrenProp) && childrenProp.length > 0;
+}
 
-      if (this.params.data._object.eventOutgoingChangeSelectedNodes) {
-        document.querySelector("togostanza-column-tree").dispatchEvent(
-          new CustomEvent("changeSelectedNodes", {
-            detail: {
-              selectedIds: [...this.checkedNodes.keys()],
-              targetId: node.id,
-              dataUrl: this.params.data._object.dataUrl,
-            },
-          })
-        );
-      }
-    }
+/** 指定されたノード ID を親とし、その子ノードの階層レベルをイベントで通知する関数
+ * @param parentId 親ノードの ID（数値または文字列） */
+function setParent(parentId: string | number) {
+  const nextLayer = (props.layer ?? 0) + 1;
+  emit("setParent", [nextLayer, parentId]);
+}
 
-    return {
-      setParent,
-      hasChildren,
-      handleCheckboxClick,
-    };
-  },
-});
+/** チェックボックスがクリックされたときの処理を行う関数
+ * - イベント `setCheckedNode` を emit して選択状態を親に通知
+ * - `props.isEventOutgoing` が true の場合、Stanza 向けに `changeSelectedNodes` イベントも dispatch
+ * @param node チェック対象のツリーノード（TreeItemWithPath 型） */
+function handleCheckboxClick(node: TreeItemWithPath) {
+  emit("setCheckedNode", node);
+
+  if (props.isEventOutgoing) {
+    const stanza = document.querySelector("togostanza-column-tree");
+    stanza?.dispatchEvent(
+      new CustomEvent("changeSelectedNodes", {
+        detail: {
+          selectedIds: [...props.checkedNodes.keys()],
+          targetId: node.id,
+          dataUrl: props.dataUrl,
+        },
+      })
+    );
+  }
+}
 </script>

@@ -348,9 +348,7 @@ export default defineComponent({
   },
 
   props: [
-    // eslint-disable-next-line vue/require-prop-types
     ...metadata["stanza:parameter"].map((p) => p["stanza:key"]),
-    // eslint-disable-next-line vue/require-prop-types
     "stanzaElement",
   ],
 
