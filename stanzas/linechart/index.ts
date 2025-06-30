@@ -246,10 +246,11 @@ export default class Linechart extends MetaStanza {
     this.xAxisGen.update(xParams);
     this.yAxisGen.update(yParams);
 
-    this.yAxisGen.axisArea;
-
     values.forEach((val) => {
-      val[xSym] = this.xAxisGen.scale(val[xKeyName]);
+      val[xSym] =
+        this.xAxisGen.scale(val[xKeyName]) +
+        (this.xAxisGen.axisGen.scale()?.bandwidth?.() || 0) / 2;
+
       val[ySym] = this.yAxisGen.scale(val[yKeyName]);
       val[colorSym] = color(val[groupKeyName]);
       val[tooltipSym] = `${val[groupKeyName]}: ${val[tooltipKey]}`;
