@@ -258,9 +258,13 @@ export default class Linechart extends MetaStanza {
       val[ySym] = this.yAxisGen.scale(val[yKeyName]);
       val[colorSym] = color(val[groupKeyName]);
       val[tooltipSym] = this.tooltips.compile(val);
-      val[errorSym] = val[errorKeyName]?.map(
-        (d: number) => this.yAxisGen.scale(d) - val[ySym]
-      );
+      val[errorSym] = Array.isArray(val[errorKeyName]) &&
+        val[errorKeyName].length === 2 &&
+        val[errorKeyName].every((d: any) => typeof d === "number")
+        ? val[errorKeyName].map(
+            (d: number) => this.yAxisGen.scale(d) - val[ySym]
+          )
+        : null;
     });
 
     this.graphArea.attr(
