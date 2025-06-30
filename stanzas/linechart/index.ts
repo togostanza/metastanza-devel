@@ -1,5 +1,4 @@
 import {
-  ScaleLinear,
   Selection,
   extent,
   line,
@@ -54,6 +53,12 @@ type TGSelection = d3.Selection<
   undefined
 >;
 
+const xSym = Symbol("x");
+const ySym = Symbol("y");
+const colorSym = Symbol("color");
+const tooltipSym = Symbol("tooltip");
+const errorSym = Symbol("error");
+
 export default class Linechart extends MetaStanza {
   xAxisGen: Axis;
   yAxisGen: Axis;
@@ -93,7 +98,13 @@ export default class Linechart extends MetaStanza {
         : this.params["axis-y-title"];
     const groupKeyName = this.params["group-key"];
     const pointSize = this.params["node-size"];
-    const tooltipKey = this.params["tooltips-key"];
+
+    const tooltipParams = {
+      dataKey: this.params["tooltip"],
+      show: !!this.params["tooltip"],
+      tooltipsInstance: this.tooltips,
+    };
+
     const showLegend = this.params["legend-visible"];
     const legendTitle =
       typeof this.params["legend-title"] === "undefined"
@@ -109,6 +120,12 @@ export default class Linechart extends MetaStanza {
     } catch (error) {
       console.log(error);
       return;
+    }
+
+    if (this.params["tooltip"]) {
+      this.tooltips = new ToolTip();
+      this.tooltips.setTemplate(tooltipParams.dataKey);
+      this._main.appendChild(this.tooltips);
     }
 
     values = values.filter((value) => {
@@ -137,12 +154,6 @@ export default class Linechart extends MetaStanza {
     this.dataByGroup.forEach((value, key) => {
       value.color = color(key) as string;
     });
-
-    const xSym = Symbol("x");
-    const ySym = Symbol("y");
-    const colorSym = Symbol("color");
-    const tooltipSym = Symbol("tooltip");
-    const errorSym = Symbol("error");
 
     const symbols: TSymbols = {
       xSym,
@@ -253,7 +264,7 @@ export default class Linechart extends MetaStanza {
 
       val[ySym] = this.yAxisGen.scale(val[yKeyName]);
       val[colorSym] = color(val[groupKeyName]);
-      val[tooltipSym] = `${val[groupKeyName]}: ${val[tooltipKey]}`;
+      val[tooltipSym] = this.tooltips.compile(val);
       val[errorSym] = val[errorKeyName]?.map(
         (d: number) => this.yAxisGen.scale(d) - val[ySym]
       );
@@ -299,7 +310,7 @@ export default class Linechart extends MetaStanza {
       this.legend = null;
     }
 
-    if (values.some((d) => d[tooltipKey])) {
+    if (tooltipParams.show && this.tooltips) {
       addTooltips.call(this);
     }
   }
@@ -322,14 +333,6 @@ function addLegend(legendTitle: string, lines: TGSelection) {
   };
 
   this.legend.setup(legendParams);
-}
-
-function addTooltips() {
-  if (!this.tooltips) {
-    this.tooltips = new ToolTip();
-    this._main.append(this.tooltips);
-  }
-  this.tooltips.setup(this._main.querySelectorAll("[data-tooltip]"));
 }
 
 function drawChart(g: TGSelection, dataMap: TDataByGroup, symbols: TSymbols) {
@@ -453,4 +456,9 @@ function parseType(
     default:
       return value;
   }
+}
+
+function addTooltips(this: Linechart) {
+  const nodesList = this._main.querySelectorAll("[data-tooltip]");
+  this.tooltips.setup(nodesList);
 }
