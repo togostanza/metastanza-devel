@@ -1,67 +1,59 @@
 import { defineConfig } from "eslint/config";
-import vue from "eslint-plugin-vue";
+import pluginVue from "eslint-plugin-vue";
 import tseslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 import vueParser from "vue-eslint-parser";
 import prettier from "eslint-config-prettier";
 
+const commonGlobals = {
+  window: "readonly",
+  document: "readonly",
+};
+
+const commonRules = {
+  curly: "error",
+  eqeqeq: "error",
+  "object-shorthand": "error",
+  "prefer-const": "error",
+  "@typescript-eslint/ban-types": "off",
+};
+
 export default defineConfig([
   {
-    files: ["**/*.js", "**/*.ts", "**/*.tsx"],
     ignores: [".github", "dist"],
+  },
+  {
+    files: ["**/*.ts", "**/*.tsx", "**/*.js"],
     languageOptions: {
       ecmaVersion: 2021,
       sourceType: "module",
       parser: tsParser,
-      parserOptions: {
-        ecmaVersion: 12,
-        sourceType: "module",
-      },
-      globals: {
-        window: "readonly",
-        document: "readonly",
-      },
+      globals: commonGlobals,
     },
     plugins: {
       "@typescript-eslint": tseslint,
     },
-    rules: {
-      curly: "error",
-      eqeqeq: "error",
-      "object-shorthand": "error",
-      "prefer-const": "error",
-      "@typescript-eslint/ban-types": "off",
-    },
+    rules: commonRules,
   },
   {
     files: ["**/*.vue"],
-    ignores: [".github", "dist"],
     languageOptions: {
       ecmaVersion: 2021,
       sourceType: "module",
       parser: vueParser,
       parserOptions: {
-        ecmaVersion: 12,
-        sourceType: "module",
         parser: tsParser,
+        ecmaVersion: 2021,
+        sourceType: "module",
         extraFileExtensions: [".vue"],
       },
-      globals: {
-        window: "readonly",
-        document: "readonly",
-      },
+      globals: commonGlobals,
     },
     plugins: {
-      vue,
+      pluginVue,
       "@typescript-eslint": tseslint,
     },
-    rules: {
-      curly: "error",
-      eqeqeq: "error",
-      "object-shorthand": "error",
-      "prefer-const": "error",
-      "@typescript-eslint/ban-types": "off",
-    },
+    rules: commonRules,
   },
   prettier,
 ]);
