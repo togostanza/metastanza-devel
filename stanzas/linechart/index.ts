@@ -206,7 +206,12 @@ export default class Linechart extends MetaStanza {
       xDomain = extent(values.map((d) => d[xKeyName]));
     }
 
-    const yDomain = extent(values.map((d) => d[yKeyName]));
+    const yDomain = extent(
+      values.flatMap((d) => [
+        d[errorKeyName]?.[0] ?? d[yKeyName],
+        d[errorKeyName]?.[1] ?? d[yKeyName],
+      ])
+    );
 
     if (yMin !== undefined) {
       yDomain[0] = yMin;
