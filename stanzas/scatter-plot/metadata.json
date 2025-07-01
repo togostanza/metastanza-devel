@@ -14,7 +14,7 @@
     {
       "stanza:key": "data-url",
       "stanza:type": "text",
-      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/refs/heads/feature/add-urls/samples/json/scatter-plot.json",
+      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/refs/heads/main/samples/json/scatter-plot.json",
       "stanza:description": "Data source URL",
       "stanza:required": true
     },
@@ -222,9 +222,16 @@
     {
       "stanza:key": "group-key",
       "stanza:type": "text",
-      "stanza:example": "category",
+      "stanza:example": "group",
       "stanza:default": "",
-      "stanza:description": "Data key to group by data series. All data points which includes that key will be considered as one data series. If not set, all points will be considered as of one data series."
+      "stanza:description": "Data key to group by data points. All data points which has same value will be considered as one group, and colored according to color settings, and legend would show these group values. If not set, all points will be considered as of one data series, and legend would show distribution of sizes of nodes"
+    },
+    {
+      "stanza:key": "group-default_value",
+      "stanza:type": "text",
+      "stanza:example": "Others",
+      "stanza:default": "Others",
+      "stanza:description": "Default group value applicable when data point doesn't have group value"
     },
     {
       "stanza:key": "node-color_key",
@@ -238,6 +245,13 @@
       "stanza:type": "boolean",
       "stanza:example": true,
       "stanza:description": "Whether to show the legend"
+    },
+    {
+      "stanza:key": "node-color_blend",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["multiply", "screen", "normal"],
+      "stanza:example": "normal",
+      "stanza:description": "Set blend mode for nodes"
     },
     {
       "stanza:key": "legend-title",
