@@ -96,11 +96,15 @@ export default class ScatterPlot extends MetaStanza {
     const nodeColorKey = this.params["node-color_key"];
 
     const stanzaColors = getStanzaColors(this);
-    const color = scaleOrdinal<string, string>().range(stanzaColors as string[]);
+    const color = scaleOrdinal<string, string>().range(
+      stanzaColors as string[]
+    );
 
     if (groupKey) {
-      const groupNames = Array.from(new Set(data.map(d => d[groupKey] as string)));
-      color.domain(groupNames);
+      const groupNames = Array.from(
+        new Set(data.map((d) => d[groupKey] as string))
+      );
+      color.domain(groupNames as string[]);
     }
 
     const MARGINS: MarginsT = getMarginsFromCSSString(
@@ -235,7 +239,9 @@ export default class ScatterPlot extends MetaStanza {
         "" + i + datum[xKey] + datum[yKey] + datum[sizeKey] + xScale + yScale;
       datum[xSym] = this.xAxis.scale(parseFloat(datum[xKey]));
       datum[ySym] = this.yAxis.scale(parseFloat(datum[yKey]));
-      datum[colorSym] = datum[nodeColorKey] ?? (groupKey ? color(datum[groupKey]) : stanzaColors[0]);
+      datum[colorSym] =
+        datum[nodeColorKey] ??
+        (groupKey ? color(datum[groupKey]) : stanzaColors[0]);
       // datum[tooltipSym] = datum[tooltipKey];
     });
 
@@ -244,7 +250,7 @@ export default class ScatterPlot extends MetaStanza {
       root.append(this.legend);
 
       if (groupKey) {
-        const groupNames = Array.from(new Set(data.map(d => d[groupKey])));
+        const groupNames = Array.from(new Set(data.map((d) => d[groupKey])));
         this.legend.items = groupNames.map((groupName) => ({
           id: groupName,
           label: groupName,
