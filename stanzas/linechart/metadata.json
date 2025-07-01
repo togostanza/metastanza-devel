@@ -12,7 +12,20 @@
   "stanza:created": "2021-01-06",
   "stanza:updated": "2022-11-01",
   "stanza:parameter": [
-    { "stanza:include": "togostanza-utils/params/data-chart.json" },
+    {
+      "stanza:key": "data-url",
+      "stanza:example": "https://raw.githubusercontent.com/penqe/stanza-data/refs/heads/main/barchart.json",
+      "stanza:description": "Data source URL",
+      "stanza:required": true
+    },
+    {
+      "stanza:key": "data-type",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
+      "stanza:example": "json",
+      "stanza:description": "Data type",
+      "stanza:required": true
+    },
     {
       "stanza:key": "axis-x-key",
       "stanza:type": "text",
@@ -152,14 +165,21 @@
       "stanza:description": "Axis gridlines interval. If not set, show 5 gridlines at `neat` values, if set to 0, not show gridlines."
     },
     {
-      "stanza:key": "point_size",
+      "stanza:key": "errorbar-key",
+      "stanza:type": "string",
+      "stanza:example": "error",
+      "stanza:description": "Show error bars. Data for error bars is array [minValue, maxValue]. If the key is not existing in data, no error bars would be shown",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "node-size",
       "stanza:type": "number",
       "stanza:example": 5,
       "stanza:description": "Data points size in px",
       "stanza:default": 5
     },
     {
-      "stanza:key": "grouping-key",
+      "stanza:key": "group-key",
       "stanza:type": "text",
       "stanza:example": "category",
       "stanza:default": "",
@@ -181,10 +201,11 @@
       "stanza:description": "Legend title"
     },
     {
-      "stanza:key": "tooltips-key",
-      "stanza:type": "text",
-      "stanza:example": "count",
-      "stanza:description": "Bar tooltips data key. If the key not existing, tooltips are not showing."
+      "stanza:key": "tooltip",
+      "stanza:type": "html",
+      "stanza:example": "{{#if url}}<a href={{url}}>{{count}}</a>{{else}}<span>{{count}}</span>{{/if}}",
+      "stanza:description": "A handlebars HTML template string to show in tooltip",
+      "stanza:required": false
     },
     {
       "stanza:key": "togostanza-custom_css_url",
@@ -211,7 +232,7 @@
     {
       "stanza:key": "--togostanza-canvas-padding",
       "stanza:type": "text",
-      "stanza:default": "10",
+      "stanza:default": "10 20 40 40",
       "stanza:description": "Metastanza padding CSS in px."
     },
     {

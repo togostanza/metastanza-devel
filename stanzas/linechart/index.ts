@@ -1,4 +1,12 @@
-import { extent, line, scaleOrdinal, select, symbol, symbolCircle } from "d3";
+import {
+  Selection,
+  extent,
+  line,
+  scaleOrdinal,
+  select,
+  symbol,
+  symbolCircle,
+} from "d3";
 import {
   downloadCSVMenuItem,
   downloadJSONMenuItem,
@@ -45,6 +53,12 @@ type TGSelection = d3.Selection<
   undefined
 >;
 
+const xSym = Symbol("x");
+const ySym = Symbol("y");
+const colorSym = Symbol("color");
+const tooltipSym = Symbol("tooltip");
+const errorSym = Symbol("error");
+
 export default class Linechart extends MetaStanza {
   xAxisGen: Axis;
   yAxisGen: Axis;
@@ -82,14 +96,21 @@ export default class Linechart extends MetaStanza {
       typeof this.params["axis-y-title"] === "undefined"
         ? yKeyName
         : this.params["axis-y-title"];
-    const groupKeyName = this.params["grouping-key"];
-    const pointSize = this.params["point_size"];
-    const tooltipKey = this.params["tooltips-key"];
+    const groupKeyName = this.params["group-key"];
+    const pointSize = this.params["node-size"];
+
+    const tooltipParams = {
+      dataKey: this.params["tooltip"],
+      show: !!this.params["tooltip"],
+      tooltipsInstance: this.tooltips,
+    };
+
     const showLegend = this.params["legend-visible"];
     const legendTitle =
       typeof this.params["legend-title"] === "undefined"
         ? groupKeyName
         : this.params["legend-title"];
+    const errorKeyName = this.params["errorbar-key"];
 
     let values = structuredClone(this._data) as any[];
 
@@ -99,6 +120,17 @@ export default class Linechart extends MetaStanza {
     } catch (error) {
       console.log(error);
       return;
+    }
+
+    const tooltipString = this.params["tooltip"];
+
+    if (tooltipString) {
+      if (!this.tooltips) {
+        this.tooltips = new ToolTip();
+        this._main.append(this.tooltips);
+      }
+
+      this.tooltips.setTemplate(tooltipString);
     }
 
     values = values.filter((value) => {
@@ -128,11 +160,6 @@ export default class Linechart extends MetaStanza {
       value.color = color(key) as string;
     });
 
-    const xSym = Symbol("x");
-    const ySym = Symbol("y");
-    const colorSym = Symbol("color");
-    const tooltipSym = Symbol("tooltip");
-
     const symbols: TSymbols = {
       xSym,
       ySym,
@@ -148,33 +175,16 @@ export default class Linechart extends MetaStanza {
       this.yAxisGen = null;
     }
     svg = select(this._main).append("svg");
+
     svg.attr("width", width).attr("height", height);
+
     this.graphArea = svg.append("g").attr("class", "chart") as TGSelection;
 
     const axisArea = {
-      x: this.MARGIN.LEFT,
-      y: this.MARGIN.TOP,
-      width: width - this.MARGIN.LEFT - this.MARGIN.RIGHT,
-      height: height - this.MARGIN.TOP - this.MARGIN.BOTTOM,
-    };
-
-    const AxesMargins: MarginsI = {
-      LEFT:
-        params["axis-y-placement"] === "left"
-          ? params["axis-y-title_padding"] || 0
-          : 0,
-      RIGHT:
-        params["axis-y-placement"] === "right"
-          ? params["axis-y-title_padding"] || 0
-          : 0,
-      TOP:
-        params["axis-x-placement"] === "top"
-          ? params["axis-x-title_padding"] || 0
-          : 0,
-      BOTTOM:
-        params["axis-x-placement"] === "bottom"
-          ? params["axis-x-title_padding"] || 0
-          : 0,
+      x: 0,
+      y: 0,
+      width: +this.css("--togostanza-canvas-width"),
+      height: +this.css("--togostanza-canvas-height"),
     };
 
     let xDomain = [];
@@ -184,7 +194,12 @@ export default class Linechart extends MetaStanza {
       xDomain = extent(values.map((d) => d[xKeyName]));
     }
 
-    const yDomain = extent(values.map((d) => d[yKeyName]));
+    const yDomain = extent(
+      values.flatMap((d) => [
+        d[errorKeyName]?.[0] ?? d[yKeyName],
+        d[errorKeyName]?.[1] ?? d[yKeyName],
+      ])
+    );
 
     if (yMin !== undefined) {
       yDomain[0] = yMin;
@@ -197,7 +212,7 @@ export default class Linechart extends MetaStanza {
       placement: params["axis-x-placement"],
       domain: xDomain,
       drawArea: axisArea,
-      margins: AxesMargins,
+      margins: this.MARGIN,
       tickLabelsAngle: params["axis-x-ticks_label_angle"],
       title: xAxisTitle,
       titlePadding: params["axis-x-title_padding"],
@@ -213,7 +228,7 @@ export default class Linechart extends MetaStanza {
       placement: params["axis-y-placement"],
       domain: yDomain,
       drawArea: axisArea,
-      margins: AxesMargins,
+      margins: this.MARGIN,
       tickLabelsAngle: params["axis-y-ticks_label_angle"],
       title: yAxisTitle,
       titlePadding: params["axis-y-title_padding"],
@@ -235,13 +250,21 @@ export default class Linechart extends MetaStanza {
     this.xAxisGen.update(xParams);
     this.yAxisGen.update(yParams);
 
-    this.yAxisGen.axisArea;
-
     values.forEach((val) => {
-      val[xSym] = this.xAxisGen.scale(val[xKeyName]);
+      val[xSym] =
+        this.xAxisGen.scale(val[xKeyName]) +
+        (this.xAxisGen.axisGen.scale()?.bandwidth?.() || 0) / 2;
+
       val[ySym] = this.yAxisGen.scale(val[yKeyName]);
       val[colorSym] = color(val[groupKeyName]);
-      val[tooltipSym] = `${val[groupKeyName]}: ${val[tooltipKey]}`;
+      val[tooltipSym] = this.tooltips.compile(val);
+      val[errorSym] = Array.isArray(val[errorKeyName]) &&
+        val[errorKeyName].length === 2 &&
+        val[errorKeyName].every((d: any) => typeof d === "number")
+        ? val[errorKeyName].map(
+            (d: number) => this.yAxisGen.scale(d) - val[ySym]
+          )
+        : null;
     });
 
     this.graphArea.attr(
@@ -259,11 +282,11 @@ export default class Linechart extends MetaStanza {
       .attr("height", this.yAxisGen.axisArea.height)
       .attr("fill", "white");
 
-    // this.graphArea.attr("clip-path", "url(#mask)");
-
     const lines = drawChart(this.graphArea, this.dataByGroup, symbols);
 
     const dataPointSymbols = drawPoints(lines, pointSize, symbols);
+
+    addErrorbars(dataPointSymbols, errorSym);
 
     dataPointSymbols
       .filter(
@@ -284,7 +307,7 @@ export default class Linechart extends MetaStanza {
       this.legend = null;
     }
 
-    if (values.some((d) => d[tooltipKey])) {
+    if (tooltipParams.show && this.tooltips) {
       addTooltips.call(this);
     }
   }
@@ -307,14 +330,6 @@ function addLegend(legendTitle: string, lines: TGSelection) {
   };
 
   this.legend.setup(legendParams);
-}
-
-function addTooltips() {
-  if (!this.tooltips) {
-    this.tooltips = new ToolTip();
-    this._main.append(this.tooltips);
-  }
-  this.tooltips.setup(this._main.querySelectorAll("[data-tooltip]"));
 }
 
 function drawChart(g: TGSelection, dataMap: TDataByGroup, symbols: TSymbols) {
@@ -371,6 +386,43 @@ function drawPoints(
   return enterSymbols;
 }
 
+function addErrorbars(
+  points: Selection<
+    SVGGElement,
+    TValueWithSymbols,
+    SVGGElement,
+    [string, IDataByGroup]
+  >,
+  errorSym: symbol
+) {
+  const selection = points
+    .filter((d) => d[errorSym])
+    .append("g")
+    .attr("class", "error-bar")
+    .attr("part", "error-bar");
+
+  selection
+    .append("line")
+    .attr("y1", (d) => d[errorSym][0])
+    .attr("y2", (d) => d[errorSym][1])
+    .attr("x1", 0)
+    .attr("x2", 0);
+
+  selection
+    .append("line")
+    .attr("x1", -2)
+    .attr("x2", 2)
+    .attr("y1", (d) => d[errorSym][0])
+    .attr("y2", (d) => d[errorSym][0]);
+
+  selection
+    .append("line")
+    .attr("x1", -2)
+    .attr("x2", 2)
+    .attr("y1", (d) => d[errorSym][1])
+    .attr("y2", (d) => d[errorSym][1]);
+}
+
 function isXYValueInRange(width: number, height: number, x: number, y: number) {
   return x >= 0 && x <= width && y >= 0 && y <= height;
 }
@@ -401,4 +453,9 @@ function parseType(
     default:
       return value;
   }
+}
+
+function addTooltips(this: Linechart) {
+  const nodesList = this._main.querySelectorAll("[data-tooltip]");
+  this.tooltips.setup(nodesList);
 }
