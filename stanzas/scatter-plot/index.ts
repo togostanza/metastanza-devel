@@ -255,7 +255,6 @@ export default class ScatterPlot extends MetaStanza {
         (groupKey
           ? color(datum[groupKey] || defaultGroupName)
           : stanzaColors[0]);
-      // datum[tooltipSym] = datum[tooltipKey];
     });
 
     if (showLegend && !this._error) {
