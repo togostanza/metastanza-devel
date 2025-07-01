@@ -252,7 +252,9 @@ export default class ScatterPlot extends MetaStanza {
       datum[ySym] = this.yAxis.scale(parseFloat(datum[yKey]));
       datum[colorSym] =
         datum[nodeColorKey] ??
-        (groupKey ? color(datum[groupKey] || "Others") : stanzaColors[0]);
+        (groupKey
+          ? color(datum[groupKey] || defaultGroupName)
+          : stanzaColors[0]);
       // datum[tooltipSym] = datum[tooltipKey];
     });
 
