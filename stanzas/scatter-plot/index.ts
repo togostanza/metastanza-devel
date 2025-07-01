@@ -90,10 +90,18 @@ export default class ScatterPlot extends MetaStanza {
       .attr("width", +this.css("--togostanza-canvas-width"))
       .attr("height", +this.css("--togostanza-canvas-height"));
 
-    const stanzaColors = getStanzaColors(this);
-    const color = scaleOrdinal().range(stanzaColors as string[]);
-
     const data = structuredClone(this._data);
+
+    const groupKey = this.params["group-key"];
+    const nodeColorKey = this.params["node-color_key"];
+
+    const stanzaColors = getStanzaColors(this);
+    const color = scaleOrdinal<string, string>().range(stanzaColors as string[]);
+
+    if (groupKey) {
+      const groupNames = Array.from(new Set(data.map(d => d[groupKey] as string)));
+      color.domain(groupNames);
+    }
 
     const MARGINS: MarginsT = getMarginsFromCSSString(
       this.css("--togostanza-canvas-padding")
@@ -227,7 +235,7 @@ export default class ScatterPlot extends MetaStanza {
         "" + i + datum[xKey] + datum[yKey] + datum[sizeKey] + xScale + yScale;
       datum[xSym] = this.xAxis.scale(parseFloat(datum[xKey]));
       datum[ySym] = this.yAxis.scale(parseFloat(datum[yKey]));
-      datum[colorSym] = stanzaColors[0];
+      datum[colorSym] = datum[nodeColorKey] ?? (groupKey ? color(datum[groupKey]) : stanzaColors[0]);
       // datum[tooltipSym] = datum[tooltipKey];
     });
 
@@ -235,12 +243,21 @@ export default class ScatterPlot extends MetaStanza {
       this.legend = new Legend();
       root.append(this.legend);
 
-      this.legend.items = getNodeSizesForLegend().map((item, i) => ({
-        id: "" + i,
-        value: format(".2s")(item.value),
-        color: stanzaColors[0],
-        size: item.size * 2,
-      }));
+      if (groupKey) {
+        const groupNames = Array.from(new Set(data.map(d => d[groupKey])));
+        this.legend.items = groupNames.map((groupName) => ({
+          id: groupName,
+          label: groupName,
+          color: color(groupName as string),
+        }));
+      } else {
+        this.legend.items = getNodeSizesForLegend().map((item, i) => ({
+          id: "" + i,
+          value: format(".2s")(item.value),
+          color: stanzaColors[0],
+          size: item.size * 2,
+        }));
+      }
 
       this.legend.title = legendTitle;
     }

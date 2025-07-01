@@ -220,6 +220,20 @@
       "stanza:description": "Maximum node radius in px"
     },
     {
+      "stanza:key": "group-key",
+      "stanza:type": "text",
+      "stanza:example": "category",
+      "stanza:default": "",
+      "stanza:description": "Data key to group by data series. All data points which includes that key will be considered as one data series. If not set, all points will be considered as of one data series."
+    },
+    {
+      "stanza:key": "node-color_key",
+      "stanza:type": "text",
+      "stanza:example": "color",
+      "stanza:description": "Use the color stored in this key to override node's color. (useful for highlighting particular nodes)",
+      "stanza:required": false
+    },
+    {
       "stanza:key": "legend-visible",
       "stanza:type": "boolean",
       "stanza:example": true,
