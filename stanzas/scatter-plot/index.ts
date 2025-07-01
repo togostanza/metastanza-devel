@@ -32,7 +32,6 @@ const sizeSym = Symbol("size");
 const idSym = Symbol("id");
 const xSym = Symbol("x");
 const ySym = Symbol("y");
-const tooltipSym = Symbol("tooltip");
 
 export default class ScatterPlot extends MetaStanza {
   xAxis: Axis;
@@ -90,10 +89,33 @@ export default class ScatterPlot extends MetaStanza {
       .attr("width", +this.css("--togostanza-canvas-width"))
       .attr("height", +this.css("--togostanza-canvas-height"));
 
-    const stanzaColors = getStanzaColors(this);
-    const color = scaleOrdinal().range(stanzaColors as string[]);
-
     const data = structuredClone(this._data);
+
+    const groupKey = this.params["group-key"];
+    const defaultGroupName = this.params["group-default_value"];
+    const nodeColorKey = this.params["node-color_key"];
+
+    const stanzaColors = getStanzaColors(this);
+    const color = scaleOrdinal<string, string>().range(
+      stanzaColors as string[]
+    );
+
+    let allGroupNames: string[] = [];
+    if (groupKey) {
+      const rawGroupValues = Array.from(new Set(data.map((d) => d[groupKey])));
+      const definedGroupValues = rawGroupValues.filter(
+        (v) => v !== null && v !== undefined && v !== ""
+      ) as string[];
+      const hasUngroupedData = rawGroupValues.some(
+        (v) => v === null || v === undefined || v === ""
+      );
+
+      allGroupNames = definedGroupValues;
+      if (hasUngroupedData) {
+        allGroupNames.push(defaultGroupName);
+      }
+      color.domain(allGroupNames);
+    }
 
     const MARGINS: MarginsT = getMarginsFromCSSString(
       this.css("--togostanza-canvas-padding")
@@ -120,6 +142,7 @@ export default class ScatterPlot extends MetaStanza {
     const sizeMax = this.params["node-size_max"] || sizeMin;
     const showLegend = this.params["legend-visible"];
     const legendTitle = this.params["legend-title"];
+    const nodeColorBlendMode = this.params["node-color_blend"] || "normal";
     // const tooltipKey = this.params["tooltips-key"];
     const showTooltips = !!this.params["tooltip"];
 
@@ -227,21 +250,39 @@ export default class ScatterPlot extends MetaStanza {
         "" + i + datum[xKey] + datum[yKey] + datum[sizeKey] + xScale + yScale;
       datum[xSym] = this.xAxis.scale(parseFloat(datum[xKey]));
       datum[ySym] = this.yAxis.scale(parseFloat(datum[yKey]));
-      datum[colorSym] = stanzaColors[0];
-      // datum[tooltipSym] = datum[tooltipKey];
+      datum[colorSym] =
+        datum[nodeColorKey] ??
+        (groupKey
+          ? color(datum[groupKey] || defaultGroupName)
+          : stanzaColors[0]);
     });
 
     if (showLegend && !this._error) {
       this.legend = new Legend();
       root.append(this.legend);
 
-      this.legend.items = getNodeSizesForLegend().map((item, i) => ({
-        id: "" + i,
+      const legendItems = [];
+
+      // Add color legend if groupKey is set
+      if (groupKey) {
+        const colorLegendItems = allGroupNames.map((groupName) => ({
+          id: `color-${groupName}`,
+          value: groupName,
+          color: color(groupName),
+        }));
+        legendItems.push(...colorLegendItems);
+      }
+
+      // Add size legend (always)
+      const sizeLegendItems = getNodeSizesForLegend().map((item, i) => ({
+        id: `size-${i}`,
         value: format(".2s")(item.value),
-        color: stanzaColors[0],
+        color: groupKey ? "transparent" : stanzaColors[0], // For border-only circles
         size: item.size * 2,
       }));
+      legendItems.push(...sizeLegendItems);
 
+      this.legend.items = legendItems;
       this.legend.title = legendTitle;
     }
 
@@ -252,7 +293,9 @@ export default class ScatterPlot extends MetaStanza {
     if (this._graphArea.empty()) {
       this._graphArea = select(svg.node())
         .append("g")
-        .classed("chart-content", true);
+        .classed("chart-content", true)
+        .classed("-nodes-blend-multiply", nodeColorBlendMode === "multiply")
+        .classed("-nodes-blend-screen", nodeColorBlendMode === "screen");
     }
 
     const circlesUpdate = this._graphArea
