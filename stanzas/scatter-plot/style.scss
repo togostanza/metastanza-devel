@@ -12,19 +12,6 @@ togostanza--legend2 {
 }
 
 svg {
-  & > .chart-content {
-    &.-nodes-blend-multiply {
-      .chart-node {
-        mix-blend-mode: multiply;
-      }
-    }
-    &.-nodes-blend-screen {
-      .chart-node {
-        mix-blend-mode: screen;
-      }
-    }
-  }
-
   text.title {
     font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
   }
@@ -53,6 +40,19 @@ svg {
       opacity: var(--togostanza-fadeout-opacity);
       &:hover {
         opacity: 1;
+      }
+    }
+  }
+
+  & > .chart-content {
+    &.-nodes-blend-multiply {
+      .chart-node {
+        mix-blend-mode: multiply;
+      }
+    }
+    &.-nodes-blend-screen {
+      .chart-node {
+        mix-blend-mode: screen;
       }
     }
   }
