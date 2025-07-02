@@ -54,12 +54,13 @@ export default class TreeMapStanza extends MetaStanza {
 
     const width = parseInt(this.css("--togostanza-canvas-width"));
     const height = parseInt(this.css("--togostanza-canvas-height"));
+
     const MARGIN = this.MARGIN;
 
     const WIDTH = width - MARGIN.LEFT - MARGIN.RIGHT;
     const HEIGHT = height - MARGIN.TOP - MARGIN.BOTTOM;
 
-    const logScale = this.params["node-log_scale"];
+    const logScale = false;
     const gapWidth = 2;
 
     const drawContent = async () => {
@@ -126,6 +127,8 @@ function transformValue(logScale, value) {
 
 function draw(el, dataset, opts, stanza) {
   const { WIDTH, HEIGHT, logScale, colorScale, gapWidth } = opts;
+  const colorKey = stanza.params["node-color_key"];
+
   const nested = stratify()
     .id(function (d) {
       return d.id;
@@ -265,11 +268,14 @@ function draw(el, dataset, opts, stanza) {
       .classed("breadcrumb", (d) => d === root)
       .attr("id", (d) => (d.leafUid = uid("leaf")).id)
       .attr("style", (d) => {
-        return `fill: ${
-          d === root
-            ? "var(--togostanza-theme-background_color)"
-            : colorScale(d.data.data.label)
-        }`;
+        if (d === root) {
+          return `fill: var(--togostanza-theme-background_color)`;
+        }
+
+        if (colorKey && d.data.data[colorKey]) {
+          return `fill: ${d.data.data[colorKey]}`;
+        }
+        return `fill: ${colorScale(d.data.data.label)}`;
       });
 
     //Add inner nodes to show that it's a zoomable tile
@@ -287,9 +293,14 @@ function draw(el, dataset, opts, stanza) {
       .attr("id", (d) => (d.leafUid = uid("leaf")).id)
       .attr("fill", "none")
       .attr("stroke-width", 1)
-      .attr("stroke", (d) =>
-        shadeColor(colorScale(d.parent.data.data.label), -15)
-      );
+      .attr("stroke", (d) => {
+        const colorKey = stanza.params["node-color_key"]?.trim();
+        const baseColor =
+          colorKey && d.parent.data.data[colorKey]
+            ? d.parent.data.data[colorKey]
+            : stanza.css(colorScale(d.parent.data.data.label));
+        return shadeColor(baseColor, -15);
+      });
 
     innerNode
       .append("clipPath")
