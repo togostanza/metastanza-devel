@@ -114,6 +114,12 @@ export default class TreeMapStanza extends MetaStanza {
   }
 }
 
+/**
+ *
+ * @param {boolean} logScale - Whether to use log10 scle or not
+ * @param {number} value - value to transform
+ * @returns
+ */
 function transformValue(logScale, value) {
   if (!value || value <= 0) {
     return null;
