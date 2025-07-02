@@ -166,14 +166,14 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "grouping-key",
+      "stanza:key": "group-key",
       "stanza:type": "text",
       "stanza:example": "category",
-      "stanza:description": "Bars grouping",
+      "stanza:description": "Bars grouping key",
       "stanza:required": true
     },
     {
-      "stanza:key": "grouping-arrangement",
+      "stanza:key": "group-arrangement",
       "stanza:type": "single-choice",
       "stanza:choice": ["stacked", "grouped"],
       "stanza:example": "stacked",
@@ -181,7 +181,7 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "color_by-key",
+      "stanza:key": "node-color_key",
       "stanza:type": "text",
       "stanza:example": "color",
       "stanza:description": "Use the color stored in this key to override bar's color. (useful for highlighting particular bars)",
@@ -218,14 +218,14 @@
       "stanza:key": "event-incoming_change_selected_nodes",
       "stanza:type": "boolean",
       "stanza:example": true,
-      "stanza:description": "Receive a change event of selected nodes",
+      "stanza:label": "Receive a change event of selected nodes",
       "stanza:required": false
     },
     {
       "stanza:key": "event-outgoing_change_selected_nodes",
       "stanza:type": "boolean",
       "stanza:example": true,
-      "stanza:description": "Emit a change event of selected nodes",
+      "stanza:label": "Emit a change event of selected nodes",
       "stanza:required": false
     },
     {
