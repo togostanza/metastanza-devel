@@ -295,10 +295,19 @@ function draw(el, dataset, opts, stanza) {
       .attr("stroke-width", 1)
       .attr("stroke", (d) => {
         const colorKey = stanza.params["node-color_key"]?.trim();
-        const baseColor =
-          colorKey && d.parent.data.data[colorKey]
-            ? d.parent.data.data[colorKey]
-            : stanza.css(colorScale(d.parent.data.data.label));
+        let baseColor;
+        if (colorKey && d.parent.data.data[colorKey]) {
+          // Use custom color from data directly
+          baseColor = d.parent.data.data[colorKey];
+        } else {
+          // Get the CSS variable string and extract just the variable name inside var()
+          const cssVariable = colorScale(d.parent.data.data.label);
+          const varName = cssVariable.substring(
+            cssVariable.indexOf("(") + 1,
+            cssVariable.lastIndexOf(")")
+          );
+          baseColor = stanza.css(varName);
+        }
         return shadeColor(baseColor, -15);
       });
 
