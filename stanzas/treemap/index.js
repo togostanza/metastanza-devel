@@ -116,7 +116,7 @@ export default class TreeMapStanza extends MetaStanza {
 
 /**
  *
- * @param {boolean} logScale - Whether to use log10 scle or not
+ * @param {boolean} logScale - Whether to use log10 scale or not
  * @param {number} value - value to transform
  * @returns
  */
@@ -133,7 +133,7 @@ function transformValue(logScale, value) {
 
 function draw(el, dataset, opts, stanza) {
   const { WIDTH, HEIGHT, logScale, colorScale, gapWidth } = opts;
-  const colorKey = stanza.params["node-color_key"];
+  const colorKey = stanza.params["node-color_key"]?.trim();
 
   const nested = stratify()
     .id(function (d) {
@@ -300,7 +300,6 @@ function draw(el, dataset, opts, stanza) {
       .attr("fill", "none")
       .attr("stroke-width", 1)
       .attr("stroke", (d) => {
-        const colorKey = stanza.params["node-color_key"]?.trim();
         let baseColor;
         if (colorKey && d.parent.data.data[colorKey]) {
           // Use custom color from data directly
