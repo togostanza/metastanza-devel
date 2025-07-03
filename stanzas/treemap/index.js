@@ -54,12 +54,13 @@ export default class TreeMapStanza extends MetaStanza {
 
     const width = parseInt(this.css("--togostanza-canvas-width"));
     const height = parseInt(this.css("--togostanza-canvas-height"));
+
     const MARGIN = this.MARGIN;
 
     const WIDTH = width - MARGIN.LEFT - MARGIN.RIGHT;
     const HEIGHT = height - MARGIN.TOP - MARGIN.BOTTOM;
 
-    const logScale = this.params["node-log_scale"];
+    const logScale = false;
     const gapWidth = 2;
 
     const drawContent = async () => {
@@ -113,6 +114,12 @@ export default class TreeMapStanza extends MetaStanza {
   }
 }
 
+/**
+ *
+ * @param {boolean} logScale - Whether to use log10 scale or not
+ * @param {number} value - value to transform
+ * @returns
+ */
 function transformValue(logScale, value) {
   if (!value || value <= 0) {
     return null;
@@ -126,6 +133,8 @@ function transformValue(logScale, value) {
 
 function draw(el, dataset, opts, stanza) {
   const { WIDTH, HEIGHT, logScale, colorScale, gapWidth } = opts;
+  const colorKey = stanza.params["node-color_key"]?.trim();
+
   const nested = stratify()
     .id(function (d) {
       return d.id;
@@ -265,11 +274,14 @@ function draw(el, dataset, opts, stanza) {
       .classed("breadcrumb", (d) => d === root)
       .attr("id", (d) => (d.leafUid = uid("leaf")).id)
       .attr("style", (d) => {
-        return `fill: ${
-          d === root
-            ? "var(--togostanza-theme-background_color)"
-            : colorScale(d.data.data.label)
-        }`;
+        if (d === root) {
+          return `fill: var(--togostanza-theme-background_color)`;
+        }
+
+        if (colorKey && d.data.data[colorKey]) {
+          return `fill: ${d.data.data[colorKey]}`;
+        }
+        return `fill: ${colorScale(d.data.data.label)}`;
       });
 
     //Add inner nodes to show that it's a zoomable tile
@@ -287,9 +299,22 @@ function draw(el, dataset, opts, stanza) {
       .attr("id", (d) => (d.leafUid = uid("leaf")).id)
       .attr("fill", "none")
       .attr("stroke-width", 1)
-      .attr("stroke", (d) =>
-        shadeColor(colorScale(d.parent.data.data.label), -15)
-      );
+      .attr("stroke", (d) => {
+        let baseColor;
+        if (colorKey && d.parent.data.data[colorKey]) {
+          // Use custom color from data directly
+          baseColor = d.parent.data.data[colorKey];
+        } else {
+          // Get the CSS variable string and extract just the variable name inside var()
+          const cssVariable = colorScale(d.parent.data.data.label);
+          const varName = cssVariable.substring(
+            cssVariable.indexOf("(") + 1,
+            cssVariable.lastIndexOf(")")
+          );
+          baseColor = stanza.css(varName);
+        }
+        return shadeColor(baseColor, -15);
+      });
 
     innerNode
       .append("clipPath")

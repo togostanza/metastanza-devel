@@ -244,7 +244,7 @@
       "stanza:key": "legend-visible",
       "stanza:type": "boolean",
       "stanza:example": true,
-      "stanza:description": "Whether to show the legend"
+      "stanza:label": "Whether to show the legend"
     },
     {
       "stanza:key": "node-color_blend",
@@ -270,14 +270,14 @@
       "stanza:key": "event-incoming_change_selected_nodes",
       "stanza:type": "boolean",
       "stanza:example": true,
-      "stanza:description": "Receive a change event of selected nodes",
+      "stanza:label": "Receive a change event of selected nodes",
       "stanza:required": false
     },
     {
       "stanza:key": "event-outgoing_change_selected_nodes",
       "stanza:type": "boolean",
       "stanza:example": true,
-      "stanza:description": "Emit a change event of selected nodes",
+      "stanza:label": "Emit a change event of selected nodes",
       "stanza:required": false
     }
   ],

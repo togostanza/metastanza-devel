@@ -44,11 +44,10 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "node-log_scale",
-      "stanza:type": "boolean",
-      "stanza:label": "Log scale for values",
-      "stanza:example": true,
-      "stanza:description": "Log scale for values"
+      "stanza:key": "node-color_key",
+      "stanza:type": "text",
+      "stanza:example": "color",
+      "stanza:description": "Set color of the node based on data key"
     },
     {
       "stanza:key": "togostanza-custom_css_url",
@@ -60,14 +59,14 @@
       "stanza:key": "event-incoming_change_selected_nodes",
       "stanza:type": "boolean",
       "stanza:example": true,
-      "stanza:description": "Receive a change event of selected nodes",
+      "stanza:label": "Receive a change event of selected nodes",
       "stanza:required": false
     },
     {
       "stanza:key": "event-outgoing_change_selected_nodes",
       "stanza:type": "boolean",
       "stanza:example": true,
-      "stanza:description": "Emit a change event of selected nodes",
+      "stanza:label": "Emit a change event of selected nodes",
       "stanza:required": false
     }
   ],

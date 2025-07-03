@@ -35,7 +35,7 @@
       "stanza:key": "format_key",
       "stanza:type": "boolean",
       "stanza:example": true,
-      "stanza:description": "Capitalize the acronym and convert underscore to blank"
+      "stanza:label": "Capitalize the acronym and convert underscore to blank"
     },
     {
       "stanza:key": "togostanza-custom_css_url",
