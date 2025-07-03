@@ -84,7 +84,6 @@ export default class Sunburst extends MetaStanza {
   }
 
   async renderNext() {
-    /* eslint-disable @typescript-eslint/no-this-alias */
     const that = this;
     this.state = new Proxy(this.state, {
       set(target, key, value) {
@@ -437,7 +436,7 @@ export default class Sunburst extends MetaStanza {
 
       const t = g.transition().duration(750);
 
-      // Transition the data on all arcs, even the ones that aren’t visible,
+      // Transition the data on all arcs, even the ones that aren't visible,
       // so that if this transition is interrupted, entering arcs will start
       // the next transition from the desired position.
       path

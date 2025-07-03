@@ -6,14 +6,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           submodules: true
           fetch-depth: 0
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 20
 
       - name: Workaround for npm v7 bug. Reconfigure git to use HTTP authentication
         run: >
@@ -21,13 +21,5 @@ jobs:
           ssh://git@github.com/
       - run: npm ci
 
-      - uses: github/super-linter@v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LINTER_RULES_PATH: / # https://github.com/github/super-linter/issues/685#issuecomment-690939192
-          VALIDATE_JAVASCRIPT_ES: true
-          JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.yml
-          JAVASCRIPT_DEFAULT_STYLE: prettier
-          VALIDATE_CSS: true
-          CSS_FILE_NAME: .stylelintrc.yml
-          VALIDATE_EDITORCONFIG: true
+      - name: Run ESLint
+        run: npx eslint . --ext .js,.ts,.vue

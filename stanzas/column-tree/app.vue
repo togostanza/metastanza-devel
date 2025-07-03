@@ -1,43 +1,26 @@
 <template>
   <section id="wrapper">
-    <div
-      class="search-container search-field-view"
-      @mouseleave="state.showSuggestions ? toggleSuggestions() : null"
-    >
-      <div class="inputcontainer">
-        <input
-          v-model="state.searchTerm"
-          type="text"
-          placeholder="Search for keywords"
-          class="search"
-          @focus="toggleSuggestionsIfValid"
-          @input="toggleSuggestionsIfValid"
-        />
-      </div>
-      <search-suggestions
-        :show-suggestions="state.showSuggestions"
-        :search-input="state.searchTerm"
-        :data="suggestions"
-        :keys="state.keys"
-        :value-obj="valueObj"
-        :node-value-alignment="state.nodeValueAlignment"
-        @select-node="selectNode"
-      />
-    </div>
+    <SearchBox
+      :tree-items-with-path="state.treeItemsWithPath"
+      :value-fallback="nodeValueFallback"
+      :node-value-alignment="nodeValueAlignment"
+      @select-node="selectNode"
+    />
     <div id="tree">
       <NodeColumn
         v-for="(column, index) of state.columnData.filter(
           (col) => col?.length > 0
         )"
         :key="index"
-        :nodes="column"
+        :data="state.treeItemsWithPath"
+        :data-url="props.dataUrl"
         :layer="index"
+        :nodes="column"
         :checked-nodes="state.checkedNodes"
-        :keys="state.keys"
+        :value-fallback="nodeValueFallback"
         :highlighted-node="state.highligthedNodes[index]"
-        :value-obj="valueObj"
-        :node-value-alignment="state.nodeValueAlignment"
-        :params="params"
+        :node-value-alignment="nodeValueAlignment"
+        :is-event-outgoing="props.eventOutgoingChangeSelectedNodes"
         @set-parent="updatePartialColumnData"
         @set-checked-node="updateCheckedNodes"
       />
@@ -45,174 +28,166 @@
   </section>
 </template>
 
-<script>
-import {
-  defineComponent,
-  reactive,
-  toRefs,
-  watchEffect,
-  ref,
-  computed,
-} from "vue";
-import metadata from "./metadata.json";
+<script setup lang="ts">
+import { reactive, watch } from "vue";
+import SearchBox from "./SearchBox.vue";
 import NodeColumn from "./NodeColumn.vue";
-import SearchSuggestions from "./SearchSuggestions.vue";
-import { camelCase } from "lodash";
+import type { TreeItem, TreeItemWithPath, TreePathNode } from "./types";
 
-function isRootNode(parent) {
-  return !parent || isNaN(parent);
-}
+// Props ------------------------------
+const props = defineProps<{
+  data: TreeItem[];
+  dataUrl: string;
+  nodeLabelKey: string;
+  nodeValueKey: string;
+  nodeValueAlignment: "horizontal" | "vertical";
+  nodeValueFallback: string;
+  eventOutgoingChangeSelectedNodes: boolean;
+}>();
 
-const getType = (stanzaType) => {
-  switch (stanzaType) {
-    case "boolean":
-      return Boolean;
-    case "number":
-      return Number;
-    default:
-      return String;
-  }
-};
-const typeArray = metadata["stanza:parameter"].map((param) => {
-  return {
-    name: camelCase(param["stanza:key"]),
-    type: getType(param["stanza:type"]),
-  };
+// State ------------------------------
+// アプリケーションの状態をまとめたreactiveオブジェクト
+const state = reactive({
+  treeItemsWithPath: [] as TreeItemWithPath[],
+  columnData: [] as TreeItemWithPath[][],
+  checkedNodes: new Map<string | number, TreeItemWithPath>(),
+  highligthedNodes: [] as (string | number)[],
 });
-const typeObject = typeArray.reduce(
-  (objects, current) => ({ ...objects, [current.name]: current.type }),
-  {}
+
+// Watchers ------------------------------
+// ノードにpathを追加しつつ初期化
+watch(
+  () => props.data,
+  (newData) => {
+    state.treeItemsWithPath = newData.map((item) => ({
+      ...item,
+      path: getPath(item),
+    }));
+    state.checkedNodes = new Map();
+  },
+  { immediate: true }
 );
 
-// TODO: set path for data objects
-export default defineComponent({
-  components: { NodeColumn, SearchSuggestions },
-  props: { ...typeObject, data: { type: Array, default: () => [] } },
-  emits: ["resetHighlightedNode"],
-  setup(params) {
-    params = toRefs(params);
-    const layerRefs = ref([]);
-    const state = reactive({
-      keys: {
-        label: params?.nodeLabelKey?.value.trim(),
-        value: params?.nodeValueKey?.value.trim(),
-      },
-      fallbackInCaseOfNoValue: params?.nodeValueFallback.value,
-      nodeValueAlignment: params?.nodeValueAlignment?.value,
-      showSuggestions: false,
-      responseJSON: [],
-      columnData: [],
-      checkedNodes: new Map(),
-      searchTerm: "",
-      highligthedNodes: [],
-    });
-    watchEffect(
-      () => {
-        state.responseJSON = params?.data?.value?.map((node) => {
-          return { ...node, path: getPath(node) };
-        });
-        state.checkedNodes = new Map();
-      },
-      { immediate: true }
-    );
-    watchEffect(() => {
-      const data = state.responseJSON || [];
-      state.columnData[0] = data.filter((obj) => isRootNode(obj.parent));
-    });
-
-    function updateCheckedNodes(node) {
-      const targetData = params.data._object.data.find((d) => d.id === node.id);
-      const { id, ...obj } = targetData;
-      state.checkedNodes.has(id)
-        ? state.checkedNodes.delete(id)
-        : state.checkedNodes.set(id, {
-            id,
-            ...obj,
-          });
-    }
-    function getChildNodes([layer, parentId]) {
-      state.highligthedNodes[layer - 1] = parentId;
-      return state.responseJSON.filter((obj) => obj.parent === parentId);
-    }
-    function updatePartialColumnData([layer, parentId]) {
-      const children = getChildNodes([layer, parentId]);
-      const indexesToRemove = state.columnData.length - layer;
-      state.columnData.splice(layer, indexesToRemove, children);
-      return children;
-    }
-    function isNormalSearchHit(node) {
-      return node[params?.searchKey?.value.trim()]
-        ?.toString()
-        .toLowerCase()
-        .includes(state.searchTerm.toLowerCase());
-    }
-    function isPathSearchHit(node) {
-      return node.path
-        .map((node) => node.id)
-        .join("/")
-        .toLowerCase()
-        .startsWith(state.searchTerm.toLowerCase());
-    }
-    const valueObj = computed(() => {
-      return {
-        fallback: state.fallbackInCaseOfNoValue,
-      };
-    });
-    const isValidSearchNode = computed(() => {
-      return state.searchTerm.length > 0;
-    });
-    function selectNode(node) {
-      state.highligthedNodes = [];
-      state.columnData = [
-        state.responseJSON.filter((obj) => isRootNode(obj.parent)),
-        ...[...node.path].map((node, index) => {
-          return getChildNodes([index + 1, node.id]);
-        }),
-      ];
-      state.checkedNodes = new Map([[node.id, node]]);
-      toggleSuggestions();
-    }
-    function getPath(node) {
-      const path = [];
-      let parent = { id: node.id, label: node.label, parent: node.parent };
-      path.push(parent);
-      while (parent.parent) {
-        const obj = params?.data?.value?.find((obj) => {
-          return obj.id === parent.parent;
-        });
-        parent = { id: obj?.id, label: obj?.label, parent: obj?.parent };
-        path.push(parent);
-      }
-      return path.reverse();
-    }
-    function toggleSuggestionsIfValid() {
-      if (!isValidSearchNode.value || state.showSuggestions) {
-        return;
-      }
-      toggleSuggestions();
-    }
-    function toggleSuggestions() {
-      state.showSuggestions = !state.showSuggestions;
-    }
-    const suggestions = computed(() => {
-      if (state.searchTerm.includes("/")) {
-        return state.responseJSON.filter(isPathSearchHit);
-      }
-      return state.responseJSON.filter(isNormalSearchHit); // array of nodes.
-    });
-    return {
-      params,
-      isValidSearchNode,
-      state,
-      layerRefs,
-      updateCheckedNodes,
-      updatePartialColumnData,
-      suggestions,
-      valueObj,
-      selectNode,
-      toggleSuggestions,
-      toggleSuggestionsIfValid,
-    };
+// ルートノードの列を初期化
+watch(
+  () => state.treeItemsWithPath,
+  (newTreeItems) => {
+    state.columnData[0] = newTreeItems.filter((obj) => isRootNode(obj.parent));
   },
-});
+  { immediate: true }
+);
+
+// Methods ------------------------------
+/** 指定されたノードからルートノードまでのパス（親子関係）を取得する関数
+ * @param node 対象のツリーノード
+ * @returns TreePathNode[] ルートから該当ノードまでの順に並んだノード配列 */
+function getPath(node: TreeItem): TreePathNode[] {
+  const path: TreePathNode[] = [];
+
+  // 初期ノードを TreePathNode として追加
+  let current: TreePathNode = {
+    id: node.id,
+    label: node.label,
+    parent: node.parent,
+  };
+  path.push(current);
+
+  // 親を辿ってルートノードまで取得
+  while (current.parent !== undefined) {
+    const ancestor = props.data.find((item) => item.id === current.parent);
+    if (!ancestor) {
+      break;
+    }
+
+    current = {
+      id: ancestor.id,
+      label: ancestor.label,
+      parent: ancestor.parent,
+    };
+    path.push(current);
+  }
+
+  return path.reverse();
+}
+
+/** 親 ID が未定義または空であればルートノードとみなす。
+ * @param parent ノードの親 ID（数値または文字列、または未定義）
+ * @returns ルートノードなら true、それ以外は false */
+function isRootNode(parent: number | string | undefined): boolean {
+  return !parent;
+}
+
+/** 指定したレイヤーと親ノード ID に基づいて、その親を持つ子ノードの一覧を返す。
+ * 同時に、指定レイヤーの直前（親レイヤー）のノードをハイライト状態として記録する。
+ * @param layer レイヤー番号（1 以上の整数）
+ * @param parentId 親ノードの ID
+ * @returns 指定した親 ID を持つ子ノードの配列 */
+function getChildNodes([layer, parentId]: [
+  number,
+  string | number
+]): TreeItemWithPath[] {
+  // ハイライト対象ノードを記録（親ノードをハイライト）
+  state.highligthedNodes[layer - 1] = parentId;
+
+  // 指定された親を持つ子ノードだけを返す
+  return state.treeItemsWithPath.filter((node) => node.parent === parentId);
+}
+
+/** 指定されたノードを選択状態にし、該当ノードまでのパスに基づいて
+ * カラム表示とチェック状態を更新する関数。
+ * @param node - 選択されたノード（パス情報付き） */
+function selectNode(node: TreeItemWithPath) {
+  // ハイライト対象ノードを初期化
+  state.highligthedNodes = [];
+
+  // 最上位のルートノード + パスに基づく各階層の子ノードを再構築
+  const rootNodes = state.treeItemsWithPath.filter((item) =>
+    isRootNode(item.parent)
+  );
+  const pathColumns =
+    node.path?.map((ancestor, index) =>
+      getChildNodes([index + 1, ancestor.id])
+    ) ?? [];
+
+  state.columnData = [rootNodes, ...pathColumns];
+
+  // チェック済みノードに追加
+  if (!state.checkedNodes.has(node.id)) {
+    state.checkedNodes.set(node.id, node);
+  }
+}
+
+/** 指定されたレイヤーと親 ID に基づき、子ノードの一覧を取得し、
+ * そのレイヤー以降の columnData を置き換える。
+ * @param layer 現在のレイヤー番号（0 ベース）
+ * @param parentId 親ノードの ID
+ * @returns 取得された子ノードの配列 */
+function updatePartialColumnData([layer, parentId]: [
+  number,
+  string | number
+]): TreeItemWithPath[] {
+  const children = getChildNodes([layer, parentId]);
+
+  // 現在のレイヤー以降のデータを children のみに置き換える
+  state.columnData.splice(layer, state.columnData.length - layer, children);
+
+  return children;
+}
+
+/** ノードのチェック状態をトグルする関数。
+ * チェックされていなければ Map に追加し、チェック済みであれば削除する。
+ * @param node チェック状態を変更する対象ノード（TreePath を含む） */
+function updateCheckedNodes(node: TreeItemWithPath) {
+  const target = props.data.find((item) => item.id === node.id);
+  if (!target) {
+    return;
+  }
+
+  const { id, ...rest } = target;
+
+  const isAlreadyChecked = state.checkedNodes.has(id);
+  isAlreadyChecked
+    ? state.checkedNodes.delete(id)
+    : state.checkedNodes.set(id, { id, ...rest });
+}
 </script>
