@@ -28,16 +28,16 @@ import {
 } from "../../lib/utils";
 
 //Declaring constants
-const ASCENDING = "ascending",
-  DESCENDING = "descending",
-  HORIZONTAL = "horizontal",
-  VERTICAL = "vertical",
-  RADIAL = "radial",
-  COLOR_MODES = {
-    translucent: { property: "opacity", value: "0.5" },
-    multiply: { property: "mix-blend-mode", value: "multiply" },
-    screen: { property: "mix-blend-mode", value: "screen" },
-  };
+// const ASCENDING = "ascending";
+// const DESCENDING = "descending";
+const HORIZONTAL = "horizontal";
+const VERTICAL = "vertical";
+const RADIAL = "radial";
+const COLOR_MODES = {
+  translucent: { property: "opacity", value: "0.5" },
+  multiply: { property: "mix-blend-mode", value: "multiply" },
+  screen: { property: "mix-blend-mode", value: "screen" },
+};
 
 interface NodeData {
   id: number;
@@ -84,28 +84,28 @@ export default class Tree extends MetaStanza {
     }
 
     //Define from params
-    const nodeGroupKey = this.params["node-color-group"].trim();
+    const nodeGroupKey = this.params["node-color_group"].trim();
     const width = parseFloat(this.css("--togostanza-canvas-width")) || 0;
     const height = parseFloat(this.css("--togostanza-canvas-height")) || 0;
-    const minRadius = this.params["node-size-min"] / 2;
-    const maxRadius = this.params["node-size-max"] / 2;
-    const colorMode = this.params["node-color-blend"];
-    const sortOrder = this.params["sort-order"];
+    const minRadius = this.params["node-size_min"] / 2;
+    const maxRadius = this.params["node-size_max"] / 2;
+    const colorMode = this.params["node-color_blend"];
+    // const sortOrder = this.params["sort-order"];
 
     const root = this._main;
 
     const dataset: NodeData[] = this.__data.asTree({
-      nodeLabelKey: this.params["node-label-key"].trim(),
-      nodeColorKey: this.params["node-color-key"].trim(),
+      nodeLabelKey: this.params["node-label_key"].trim(),
+      nodeColorKey: this.params["node-color_key"].trim(),
       nodeGroupKey,
-      nodeOrderKey: this.params["sort-key"].trim(),
-      nodeValueKey: this.params["node-size-key"].trim(),
+      // nodeOrderKey: this.params["sort-key"].trim(),
+      nodeValueKey: this.params["node-size_key"].trim(),
       nodeDescriptionKey: this.params["tooltips-key"].trim(),
     }).data as NodeData[];
     const padding = this.MARGIN;
-    const isLeafNodesAlign = this.params["graph-align_leaf_nodes"];
-    const layout = this.params["graph-layout"];
-    const labelMargin = this.params["node-label-margin"];
+    const isLeafNodesAlign = this.params["layout-align_leaf_nodes"];
+    const layout = this.params["layout-orientation"];
+    const labelMargin = this.params["node-label_margin"];
     const aveRadius = (minRadius + maxRadius) / 2;
     const colorGroup = nodeGroupKey; // NOTE Actually, this variable is not needed (because asTree does the property name conversion), but since we cannot remove this variable without changing the getCirculateColor interface, we have left it in.
 
@@ -117,32 +117,33 @@ export default class Tree extends MetaStanza {
         COLOR_MODES[colorMode]);
     }
 
-    //Sorting by user keywords
-    const orderSym = Symbol("order");
-    dataset.forEach((datum, index) => {
-      datum[orderSym] = index;
-    });
+    // Sort機能を使用しなくなったため、コメントアウト
+    // Sorting by user keywords
+    // const orderSym = Symbol("order");
+    // dataset.forEach((datum, index) => {
+    //   datum[orderSym] = index;
+    // });
 
-    const reorder = (
-      a: HierarchyNode<NodeData>,
-      b: HierarchyNode<NodeData>
-    ) => {
-      if (a.data.order && b.data.order) {
-        return sortOrder === ASCENDING
-          ? a.data.order - b.data.order
-          : b.data.order - a.data.order;
-      }
-      return sortOrder === DESCENDING ? b.data[orderSym] - a.data[orderSym] : 0;
-    };
+    // const reorder = (
+    //   a: HierarchyNode<NodeData>,
+    //   b: HierarchyNode<NodeData>
+    // ) => {
+    //   if (a.data.order && b.data.order) {
+    //     return sortOrder === ASCENDING
+    //       ? a.data.order - b.data.order
+    //       : b.data.order - a.data.order;
+    //   }
+    //   return sortOrder === DESCENDING ? b.data[orderSym] - a.data[orderSym] : 0;
+    // };
 
     const drawContent = async () => {
       //Hierarchize data
       const treeRoot = stratify<NodeData>()
         .id((d) => String(d.id))
         .parentId((d) => (d.parent !== undefined ? String(d.parent) : null))(
-          dataset
-        )
-        .sort(reorder) as ExtendedHierarchyNode;
+        dataset
+      ) as ExtendedHierarchyNode;
+      // .sort(reorder) ;
 
       const treeDescendants = treeRoot.descendants() as ExtendedHierarchyNode[];
       const data = treeDescendants.slice(1);
