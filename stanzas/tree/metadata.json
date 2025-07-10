@@ -90,10 +90,10 @@
       "stanza:description": "Blend mode for overlaying nodes"
     },
     {
-      "stanza:key": "tooltips-key",
-      "stanza:type": "text",
-      "stanza:example": "name",
-      "stanza:description": "Data key to use as tooltip text"
+      "stanza:key": "tooltip",
+      "stanza:type": "html",
+      "stanza:example": "{{#if url}}<a href={{url}}>{{name}}</a>{{else}}<span>{{name}}</span>{{/if}}",
+      "stanza:description": "A handlebars HTML template string to show in tooltip"
     },
     {
       "stanza:key": "togostanza-custom_css_url",

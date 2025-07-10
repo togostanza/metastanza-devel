@@ -20,12 +20,12 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 import MetaStanza from "../../lib/MetaStanza";
-import { handleApiError } from "../../lib/apiError";
 import {
   emitSelectedEvent,
   toggleSelectIds,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
+import ToolTip from "../../lib/ToolTip";
 
 //Declaring constants
 // const ASCENDING = "ascending";
@@ -49,6 +49,7 @@ interface NodeData {
   parent?: number;
   value?: number;
   children?: number[];
+  originalData?: Record<string, any>;
 }
 
 interface ExtendedHierarchyNode extends HierarchyNode<NodeData> {
@@ -67,6 +68,8 @@ export default class Tree extends MetaStanza {
     selectedElementClassName: "-selected",
     idPath: "data.id",
   };
+  tooltips: ToolTip;
+
   //Stanza download menu contents
   menu() {
     return [
@@ -100,7 +103,7 @@ export default class Tree extends MetaStanza {
       nodeGroupKey,
       // nodeOrderKey: this.params["sort-key"].trim(),
       nodeValueKey: this.params["node-size_key"].trim(),
-      nodeDescriptionKey: this.params["tooltips-key"].trim(),
+      nodeDescriptionKey: this.params["tooltip"].trim(),
     }).data as NodeData[];
     const padding = this.MARGIN;
     const isLeafNodesAlign = this.params["layout-align_leaf_nodes"];
@@ -116,6 +119,17 @@ export default class Tree extends MetaStanza {
       ({ property: colorModeProperty, value: colorModeValue } =
         COLOR_MODES[colorMode]);
     }
+
+    // Tooltip
+    const tooltipString = this.params["tooltip"].trim();
+
+    const mergedDataset = dataset.map((item) => {
+      const original = this.__data.data.find((d) => d.id === item.id);
+      return {
+        ...item,
+        originalData: original, // idが同じoriginalのプロパティを追加
+      };
+    });
 
     // Sort機能を使用しなくなったため、コメントアウト
     // Sorting by user keywords
@@ -141,7 +155,7 @@ export default class Tree extends MetaStanza {
       const treeRoot = stratify<NodeData>()
         .id((d) => String(d.id))
         .parentId((d) => (d.parent !== undefined ? String(d.parent) : null))(
-        dataset
+        mergedDataset
       ) as ExtendedHierarchyNode;
       // .sort(reorder) ;
 
@@ -191,6 +205,15 @@ export default class Tree extends MetaStanza {
 
       const svgWidth = width - padding.LEFT - padding.RIGHT;
       const svgHeight = height - padding.TOP - padding.BOTTOM;
+
+      // Append tooltips
+      if (tooltipString) {
+        if (!this.tooltips) {
+          this.tooltips = new ToolTip();
+          root.append(this.tooltips);
+        }
+        this.tooltips.setTemplate(tooltipString);
+      }
 
       //Setting svg area
       select(root).select("svg").remove();
@@ -495,7 +518,13 @@ export default class Tree extends MetaStanza {
           //Decorate circle
           nodeCirclesEnter
             .append("circle")
-            .attr("data-tooltip", (d) => d.data.description)
+            .attr("data-tooltip", (d) => {
+              if (this.tooltips) {
+                return this.tooltips.compile(d.data.originalData);
+              } else {
+                return false;
+              }
+            })
             .attr("stroke", setColor)
             .style(colorModeProperty, colorModeValue)
             .classed("with-children", (d) => !!d.children)
@@ -758,11 +787,11 @@ export default class Tree extends MetaStanza {
       }
     };
 
-    handleApiError({
-      stanzaData: this,
-      hasTooltip: true,
-      drawContent,
-    });
+    await drawContent();
+
+    if (this.tooltips) {
+      this.tooltips.setup(root.querySelectorAll("[data-tooltip]"));
+    }
   }
 
   handleEvent(event) {
