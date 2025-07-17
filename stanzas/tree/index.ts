@@ -64,7 +64,7 @@ export default class Tree extends MetaStanza {
   _chartArea: d3.Selection<SVGGElement, unknown, SVGElement, undefined>;
   selectedIds: Array<string | number> = [];
   selectedEventParams = {
-    targetElementSelector: "g.labels g",
+    targetElementSelector: ".node",
     selectedElementClassName: "-selected",
     idPath: "data.id",
   };
@@ -457,6 +457,7 @@ export default class Tree extends MetaStanza {
           const nodeCirclesEnter = nodeCirclesUpdate
             .enter()
             .append("g")
+            .attr("class", "node")
             .attr("transform", () => {
               switch (layout) {
                 case HORIZONTAL:
@@ -544,6 +545,7 @@ export default class Tree extends MetaStanza {
           const nodeLabelsEnter = nodeLabelsUpdate
             .enter()
             .append("g")
+            .attr("class", "node")
             .attr("transform", () => {
               switch (layout) {
                 case HORIZONTAL:
@@ -765,6 +767,88 @@ export default class Tree extends MetaStanza {
             d.x0 = d.x;
             d.y0 = d.y;
           });
+
+          // Add hover functionality for tree nodes
+          const addTreeHighlightOnHover = () => {
+            const nodeGroups = g.selectAll<SVGGElement, ExtendedHierarchyNode>(
+              ".node"
+            );
+            const nodeLabels = g.selectAll<SVGGElement, ExtendedHierarchyNode>(
+              "g.labels g"
+            );
+            const links = g.selectAll<
+              SVGPathElement,
+              d3.HierarchyLink<NodeData>
+            >(".link");
+
+            nodeGroups.on("mouseover", function (e, d) {
+              select(this).select("circle").classed("-active", true);
+
+              // Find related nodes (parent and children)
+              const relatedNodeIds = new Set<number>();
+              relatedNodeIds.add(d.data.id);
+
+              // Add parent nodes
+              let current: ExtendedHierarchyNode = d;
+              while (current.parent) {
+                relatedNodeIds.add(current.parent.data.id);
+                current = current.parent as ExtendedHierarchyNode;
+              }
+
+              // Add child nodes
+              const addChildren = (node: ExtendedHierarchyNode) => {
+                if (node.children) {
+                  node.children.forEach((child: ExtendedHierarchyNode) => {
+                    relatedNodeIds.add(child.data.id);
+                    addChildren(child);
+                  });
+                }
+              };
+              addChildren(d);
+
+              // Apply fadeout and half-active to nodes (like force-graph)
+              nodeGroups
+                .classed(
+                  "-fadeout",
+                  (p) => d !== p && !relatedNodeIds.has(p.data.id)
+                )
+                .classed("-half-active", (p) => {
+                  return p !== d && relatedNodeIds.has(p.data.id);
+                });
+
+              nodeLabels
+                .classed(
+                  "-fadeout",
+                  (p) => d !== p && !relatedNodeIds.has(p.data.id)
+                )
+                .classed("-half-active", (p) => {
+                  return p !== d && relatedNodeIds.has(p.data.id);
+                });
+
+              // Apply fadeout to unrelated links
+              links.classed("-fadeout", (link) => {
+                const sourceId = (link.source as ExtendedHierarchyNode).data.id;
+                const targetId = (link.target as ExtendedHierarchyNode).data.id;
+                return (
+                  !relatedNodeIds.has(sourceId) || !relatedNodeIds.has(targetId)
+                );
+              });
+            });
+
+            nodeGroups.on("mouseleave", function () {
+              links.classed("-active", false).classed("-fadeout", false);
+              nodeGroups
+                .classed("-active", false)
+                .classed("-fadeout", false)
+                .classed("-half-active", false);
+              nodeLabels
+                .classed("-active", false)
+                .classed("-fadeout", false)
+                .classed("-half-active", false);
+            });
+          };
+
+          addTreeHighlightOnHover();
         };
         update(treeRoot);
       };
