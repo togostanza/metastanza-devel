@@ -3,19 +3,89 @@
 
 svg {
   padding: var(--togostanza-canvas-padding);
+
   .link {
     fill: none;
     stroke: var(--togostanza-border-color);
     stroke-width: calc(var(--togostanza-border-width) * 1px);
+    transition: all 0.1s ease-in-out;
+    transition-property: opacity, stroke-width, stroke-opacity;
+
+    &.-fadeout {
+      opacity: calc(
+        var(--togostanza-fadeout-opacity) * var(--togostanza-edge-opacity, 1)
+      );
+    }
   }
-  circle {
-    cursor: pointer;
-  }
-  g.labels g {
+
+  .node {
+    transition: all 0.1s ease-in-out;
+    transition-property: opacity;
+
     &.-selected {
+      opacity: 1 !important;
+    }
+
+    &.-active {
+      opacity: 1;
+    }
+
+    &.-half-active {
+      opacity: calc(var(--togostanza-fadeout-opacity) + 0.3);
+    }
+
+    &.-fadeout {
+      opacity: var(--togostanza-fadeout-opacity);
+    }
+
+    circle {
+      cursor: pointer;
+      transition: all 0.1s ease-in-out;
+      transition-property: opacity, stroke-width, stroke-opacity;
+
+      &.-active {
+        stroke-width: calc(var(--togostanza-border-width) * 2.5px);
+        stroke-opacity: 1;
+      }
+    }
+  }
+
+  g.labels g {
+    transition: all 0.1s ease-in-out;
+    transition-property: opacity;
+
+    &.-selected {
+      opacity: 1 !important;
       text {
         fill: var(--togostanza-theme-selected_border_color);
       }
+    }
+
+    &.-active {
+      opacity: 1;
+    }
+
+    &.-half-active {
+      opacity: calc(var(--togostanza-fadeout-opacity) + 0.3);
+    }
+
+    &.-fadeout {
+      opacity: var(--togostanza-fadeout-opacity);
+    }
+  }
+
+  // 選択時は全体をフェードアウト（選択された要素は除く）
+  &:has(.-selected) {
+    .link {
+      opacity: var(--togostanza-fadeout-opacity);
+    }
+
+    .node {
+      opacity: var(--togostanza-fadeout-opacity);
+    }
+
+    g.labels g {
+      opacity: var(--togostanza-fadeout-opacity);
     }
   }
 }
