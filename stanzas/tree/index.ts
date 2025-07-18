@@ -808,6 +808,7 @@ export default class Tree extends MetaStanza {
 
               // Apply fadeout and half-active to nodes (like force-graph)
               nodeGroups
+                .classed("-active", (p) => p === d)
                 .classed(
                   "-fadeout",
                   (p) => d !== p && !relatedNodeIds.has(p.data.id)
@@ -817,6 +818,7 @@ export default class Tree extends MetaStanza {
                 });
 
               nodeLabels
+                .classed("-active", (p) => p === d)
                 .classed(
                   "-fadeout",
                   (p) => d !== p && !relatedNodeIds.has(p.data.id)
