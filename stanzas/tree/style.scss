@@ -27,11 +27,11 @@ svg {
     }
 
     &.-active {
-      opacity: 1;
+      opacity: 1 !important;
     }
 
     &.-half-active {
-      opacity: calc(var(--togostanza-fadeout-opacity) + 0.3);
+      opacity: calc(var(--togostanza-fadeout-opacity) + 0.3) !important;
     }
 
     &.-fadeout {
@@ -62,11 +62,11 @@ svg {
     }
 
     &.-active {
-      opacity: 1;
+      opacity: 1 !important;
     }
 
     &.-half-active {
-      opacity: calc(var(--togostanza-fadeout-opacity) + 0.3);
+      opacity: calc(var(--togostanza-fadeout-opacity) + 0.3) !important;
     }
 
     &.-fadeout {
