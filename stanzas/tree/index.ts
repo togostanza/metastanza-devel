@@ -770,6 +770,7 @@ export default class Tree extends MetaStanza {
 
           // Add hover functionality for tree nodes
           const addTreeHighlightOnHover = () => {
+            const selectedIds = this.selectedIds;
             const nodeGroups = g.selectAll<SVGGElement, ExtendedHierarchyNode>(
               ".node"
             );
@@ -814,7 +815,12 @@ export default class Tree extends MetaStanza {
                   (p) => d !== p && !relatedNodeIds.has(p.data.id)
                 )
                 .classed("-half-active", (p) => {
-                  return p !== d && relatedNodeIds.has(p.data.id);
+                  // 選択されたアイテムには-half-activeを適用しない
+                  return (
+                    p !== d &&
+                    relatedNodeIds.has(p.data.id) &&
+                    !selectedIds.includes(p.data.id)
+                  );
                 });
 
               nodeLabels
@@ -824,7 +830,12 @@ export default class Tree extends MetaStanza {
                   (p) => d !== p && !relatedNodeIds.has(p.data.id)
                 )
                 .classed("-half-active", (p) => {
-                  return p !== d && relatedNodeIds.has(p.data.id);
+                  // 選択されたアイテムには-half-activeを適用しない
+                  return (
+                    p !== d &&
+                    relatedNodeIds.has(p.data.id) &&
+                    !selectedIds.includes(p.data.id)
+                  );
                 });
 
               // Apply fadeout to unrelated links
