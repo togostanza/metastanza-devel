@@ -53,11 +53,6 @@
       "stanza:description": "Message in case there is no data for data set by [node-value-key]"
     },
     {
-      "stanza:key": "search_key",
-      "stanza:example": "value",
-      "stanza:description": "Key for data atrribute to search with suggestions."
-    },
-    {
       "stanza:key": "togostanza-custom_css_url",
       "stanza:example": "",
       "stanza:description": "Stylesheet(css file) URL to override current style"
@@ -66,15 +61,13 @@
       "stanza:key": "event-incoming_change_selected_nodes",
       "stanza:type": "boolean",
       "stanza:example": true,
-      "stanza:label": "Receive a change event of selected nodes",
-      "stanza:required": false
+      "stanza:label": "Receive a change event of selected nodes"
     },
     {
       "stanza:key": "event-outgoing_change_selected_nodes",
       "stanza:type": "boolean",
       "stanza:example": true,
-      "stanza:label": "Emit a change event of selected nodes",
-      "stanza:required": false
+      "stanza:label": "Emit a change event of selected nodes"
     }
   ],
   "stanza:menu-placement": "bottom-right",
@@ -82,7 +75,7 @@
     {
       "stanza:key": "--togostanza-canvas-width",
       "stanza:type": "number",
-      "stanza:default": 600,
+      "stanza:default": 800,
       "stanza:description": "Width for entire stanza"
     },
     {
@@ -117,6 +110,12 @@
     },
     {
       "stanza:key": "--togostanza-fonts-font_size_primary",
+      "stanza:type": "number",
+      "stanza:default": 14,
+      "stanza:description": "Font size used in stanza"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_size_secondary",
       "stanza:type": "number",
       "stanza:default": 14,
       "stanza:description": "Font size used in stanza"
