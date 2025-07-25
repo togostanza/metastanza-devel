@@ -96,11 +96,6 @@
       "stanza:description": "A handlebars HTML template string to show in tooltip"
     },
     {
-      "stanza:key": "togostanza-custom_css_url",
-      "stanza:example": "",
-      "stanza:description": "Custom css to apply"
-    },
-    {
       "stanza:key": "event-incoming_change_selected_nodes",
       "stanza:type": "boolean",
       "stanza:example": true,
@@ -111,6 +106,11 @@
       "stanza:type": "boolean",
       "stanza:example": true,
       "stanza:label": "Emit a change event of selected nodes"
+    },
+    {
+      "stanza:key": "togostanza-custom_css_url",
+      "stanza:example": "",
+      "stanza:description": "Custom css to apply"
     }
   ],
   "stanza:menu-placement": "bottom-right",
@@ -174,12 +174,6 @@
       "stanza:type": "color",
       "stanza:default": "rgba(255,255,255,0)",
       "stanza:description": "Background color"
-    },
-    {
-      "stanza:key": "--togostanza-theme-selected_border_color",
-      "stanza:type": "color",
-      "stanza:default": "#FF0000",
-      "stanza:description": "Color applied to the selected item"
     },
     {
       "stanza:key": "--togostanza-fonts-font_family",

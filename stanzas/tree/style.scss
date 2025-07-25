@@ -54,13 +54,6 @@ svg {
     transition: all 0.1s ease-in-out;
     transition-property: opacity;
 
-    &.-selected {
-      opacity: 1 !important;
-      text {
-        fill: var(--togostanza-theme-selected_border_color);
-      }
-    }
-
     &.-active {
       opacity: 1 !important;
     }
