@@ -28,8 +28,6 @@ import {
 import ToolTip from "../../lib/ToolTip";
 
 //Declaring constants
-// const ASCENDING = "ascending";
-// const DESCENDING = "descending";
 const HORIZONTAL = "horizontal";
 const VERTICAL = "vertical";
 const RADIAL = "radial";
@@ -93,7 +91,6 @@ export default class Tree extends MetaStanza {
     const minRadius = this.params["node-size_min"] / 2;
     const maxRadius = this.params["node-size_max"] / 2;
     const colorMode = this.params["node-color_blend"];
-    // const sortOrder = this.params["sort-order"];
 
     const root = this._main;
 
@@ -101,7 +98,6 @@ export default class Tree extends MetaStanza {
       nodeLabelKey: this.params["node-label_key"].trim(),
       nodeColorKey: this.params["node-color_key"].trim(),
       nodeGroupKey,
-      // nodeOrderKey: this.params["sort-key"].trim(),
       nodeValueKey: this.params["node-size_key"].trim(),
       nodeDescriptionKey: this.params["tooltip"].trim(),
     }).data as NodeData[];
@@ -127,51 +123,21 @@ export default class Tree extends MetaStanza {
       const original = this.__data.data.find((d) => d.id === item.id);
       return {
         ...item,
-        originalData: original, // idが同じoriginalのプロパティを追加
+        originalData: original,
       };
     });
 
-    // Sort機能を使用しなくなったため、コメントアウト
-    // Sorting by user keywords
-    // const orderSym = Symbol("order");
-    // dataset.forEach((datum, index) => {
-    //   datum[orderSym] = index;
-    // });
-
-    // const reorder = (
-    //   a: HierarchyNode<NodeData>,
-    //   b: HierarchyNode<NodeData>
-    // ) => {
-    //   if (a.data.order && b.data.order) {
-    //     return sortOrder === ASCENDING
-    //       ? a.data.order - b.data.order
-    //       : b.data.order - a.data.order;
-    //   }
-    //   return sortOrder === DESCENDING ? b.data[orderSym] - a.data[orderSym] : 0;
-    // };
-
     const drawContent = async () => {
       //Hierarchize data
-      const treeRoot = stratify<NodeData>()
-        .id((d) => String(d.id))
-        .parentId((d) => (d.parent !== undefined ? String(d.parent) : null))(
-        mergedDataset
-      ) as ExtendedHierarchyNode;
-      // .sort(reorder) ;
-
-      const treeDescendants = treeRoot.descendants() as ExtendedHierarchyNode[];
+      const treeRoot = generateTreeStructure(mergedDataset);
+      const treeDescendants = treeRoot.descendants();
       const data = treeDescendants.slice(1);
 
-      // Setting node size
-      const nodeSizeMin = min(data, (d) => d.data.value);
-      const nodeSizeMax = max(data, (d) => d.data.value);
-
-      const radiusScale = scaleSqrt()
-        .domain([nodeSizeMin, nodeSizeMax])
-        .range([minRadius, maxRadius]);
-
+      const radiusScale = createRadiusScale(data, minRadius, maxRadius);
       const nodeRadius = (size) => {
-        return size ? radiusScale(size) : radiusScale(nodeSizeMin);
+        return size
+          ? radiusScale(size)
+          : radiusScale(min(data, (d) => d.data.value));
       };
 
       //Toggle display/hide of children
@@ -186,12 +152,7 @@ export default class Tree extends MetaStanza {
       };
 
       //Setting color scale
-      const colorDatas = [];
-      treeDescendants.forEach((d) => {
-        colorDatas.push(d.data);
-      });
-
-      const getColor = getCirculateColor(this, colorDatas, colorGroup);
+      const getColor = setupColorScale(this, treeDescendants, colorGroup);
 
       const setColor = (d) => {
         if (d.data.color) {
@@ -222,28 +183,11 @@ export default class Tree extends MetaStanza {
         .attr("width", svgWidth)
         .attr("height", svgHeight);
 
-      //Get width of root label
-      const rootGroup = this._chartArea
-        .append("text")
-        .text(treeDescendants[0].data.label || "");
-      const rootLabelWidth = rootGroup.node().getBBox().width;
-      rootGroup.remove();
-
-      //Get width of the largest label at the lowest level
-      const maxDepth = max(data, (d) => d.depth);
-      const labels = [];
-      for (const n of data) {
-        n.depth === maxDepth ? labels.push(n.data.label || "") : "";
-      }
-      const maxLabelGroup = this._chartArea.append("g");
-      maxLabelGroup
-        .selectAll("text")
-        .data(labels)
-        .enter()
-        .append("text")
-        .text((d) => d);
-      const maxLabelWidth = maxLabelGroup.node().getBBox().width;
-      maxLabelGroup.remove();
+      const { rootLabelWidth, maxLabelWidth } = await measureLabels(
+        this._chartArea,
+        treeDescendants,
+        data
+      );
 
       //Create each group
       const g = this._chartArea.append("g");
@@ -906,4 +850,65 @@ export default class Tree extends MetaStanza {
       });
     }
   }
+}
+
+function generateTreeStructure(data: NodeData[]): ExtendedHierarchyNode {
+  return stratify<NodeData>()
+    .id((d) => String(d.id))
+    .parentId((d) => (d.parent !== undefined ? String(d.parent) : null))(data);
+}
+
+function createRadiusScale(
+  data: ExtendedHierarchyNode[],
+  minRadius: number,
+  maxRadius: number
+) {
+  const minVal = min(data, (d) => d.data.value);
+  const maxVal = max(data, (d) => d.data.value);
+  return scaleSqrt().domain([minVal, maxVal]).range([minRadius, maxRadius]);
+}
+
+function setupColorScale(
+  thisEl,
+  treeDescendants: ExtendedHierarchyNode[],
+  colorGroup
+) {
+  const colorDatas = treeDescendants.map((d) => d.data);
+  return getCirculateColor(thisEl, colorDatas, colorGroup);
+}
+
+async function measureLabels(
+  chartArea: d3.Selection<SVGGElement, unknown, SVGElement, undefined>,
+  treeDescendants: ExtendedHierarchyNode[],
+  data: ExtendedHierarchyNode[]
+) {
+  await document.fonts.ready;
+
+  const rootText = treeDescendants[0].data.label || "";
+  const rootGroup = chartArea
+    .append("text")
+    .text(rootText)
+    .attr("visibility", "hidden");
+  await new Promise(requestAnimationFrame);
+  const rootLabelWidth = rootGroup.node().getBBox().width;
+  rootGroup.remove();
+
+  const labels = data
+    .filter((n) => !n.children && !n._children)
+    .map((n) => n.data.label || "");
+  const textSelection = chartArea
+    .append("g")
+    .selectAll("text")
+    .data(labels)
+    .enter()
+    .append("text")
+    .text((d) => d)
+    .attr("visibility", "hidden");
+  await new Promise(requestAnimationFrame);
+
+  const widths = textSelection.nodes().map((el) => el.getBBox().width);
+  const maxLabelWidth = Math.max(...widths);
+  textSelection.remove();
+
+  return { rootLabelWidth, maxLabelWidth };
 }
