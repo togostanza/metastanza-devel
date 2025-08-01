@@ -26,8 +26,8 @@ export default class Scorecard extends MetaStanza {
     const titleKey = this.params["data-title_key"].trim();
     const scoreValue = dataset[scoreKey];
     const titleText = dataset[titleKey];
-    const prefixText = this.params["data-prefix"].trim();
-    const suffixText = this.params["data-suffix"].trim();
+    const prefixText = this.params["data-prefix"]?.trim() || "";
+    const suffixText = this.params["data-suffix"]?.trim() || "";
     this._data = [{ [titleText]: scoreValue }];
     // Styles
     const width = parseFloat(this.css("--togostanza-canvas-width")) || 0;
