@@ -1,10 +1,10 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <div
-    class="tableWrapper"
-    :style="`height: ${height}px;`"
-    @scroll="handleScroll"
-  >
+  <div ref="rootElement" class="wrapper" :style="`width: ${canvasWidth}; height: ${canvasHeight};`">
+    <div
+      class="tableWrapper"
+      @scroll="handleScroll"
+    >
     <table v-if="state.allRows">
       <thead ref="thead">
         <tr>
@@ -70,6 +70,7 @@
       </tbody>
     </table>
   </div>
+</div>
 </template>
 
 <script>
@@ -94,6 +95,10 @@ export default defineComponent({
   },
   props: metadata["stanza:parameter"].map((p) => p["stanza:key"]),
   setup(params) {
+    const rootElement = ref(null);
+    const canvasWidth = ref("100%");
+    const canvasHeight = ref("");
+
     const state = reactive({
       columns: [],
       allRows: [],
@@ -172,6 +177,15 @@ export default defineComponent({
     }
 
     onMounted(() => {
+      // CSS変数を読み取り、キャンバスサイズを設定
+      requestAnimationFrame(() => {
+        const style = window.getComputedStyle(rootElement.value);
+        const widthFromCss = style.getPropertyValue("--togostanza-canvas-width").trim();
+        canvasWidth.value = widthFromCss ? widthFromCss + "px" : "100%";
+        const heightFromCss = style.getPropertyValue("--togostanza-canvas-height").trim();
+        canvasHeight.value = heightFromCss ? heightFromCss + "px" : "";
+      });
+      
       fetchData();
     });
 
@@ -186,7 +200,9 @@ export default defineComponent({
     return {
       state,
       handleScroll,
-      height: params.height,
+      rootElement,
+      canvasWidth,
+      canvasHeight,
       thead,
     };
   },

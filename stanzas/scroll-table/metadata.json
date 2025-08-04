@@ -33,13 +33,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "height",
-      "stanza:type": "number",
-      "stanza:example": 400,
-      "stanza:description": "Height",
-      "stanza:required": true
-    },
-    {
       "stanza:key": "fixed-columns",
       "stanza:type": "number",
       "stanza:example": 1,
@@ -67,6 +60,18 @@
   ],
   "stanza:menu-placement": "bottom-right",
   "stanza:style": [
+    {
+      "stanza:key": "--togostanza-canvas-width",
+      "stanza:type": "number",
+      "stanza:default": 500,
+      "stanza:description": "Metastanza width in px (fallback to 100% if not specified)"
+    },
+    {
+      "stanza:key": "--togostanza-canvas-height",
+      "stanza:type": "number",
+      "stanza:default": 400,
+      "stanza:description": "Metastanza height in px (fallback to content height if not specified)"
+    },
     {
       "stanza:key": "--togostanza-fonts-font_family",
       "stanza:type": "text",
