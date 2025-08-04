@@ -47,13 +47,6 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "padding",
-      "stanza:type": "number",
-      "stanza:example": 0,
-      "stanza:description": "Padding",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "page-size",
       "stanza:type": "number",
       "stanza:example": 10,

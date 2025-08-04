@@ -187,7 +187,6 @@ export default defineComponent({
       state,
       handleScroll,
       height: params.height,
-      padding: params.padding,
       thead,
     };
   },

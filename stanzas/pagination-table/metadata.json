@@ -34,12 +34,6 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "padding",
-      "stanza:example": "0px",
-      "stanza:description": "Padding",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "page-size-option",
       "stanza:example": "10,20,50,100",
       "stanza:description": "Page size list",
@@ -103,12 +97,6 @@
       "stanza:type": "number",
       "stanza:default": 400,
       "stanza:description": "Metastanza height in px"
-    },
-    {
-      "stanza:key": "--togostanza-canvas-padding",
-      "stanza:type": "text",
-      "stanza:default": "10px",
-      "stanza:description": "Metastanza padding CSS in px."
     },
     {
       "stanza:key": "--togostanza-theme-series_0_color",
