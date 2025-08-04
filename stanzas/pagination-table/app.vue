@@ -186,8 +186,8 @@
                   </transition>
 
                   <font-awesome-icon
-                    v-if="showAxisSelector"
-                    :class="['icon', 'search']"
+                    v-if="showAxisSelector === true"
+                    :class="['icon', 'chart-bar']"
                     icon="chart-bar"
                     @click="handleAxisSelectorButton(column)"
                   />

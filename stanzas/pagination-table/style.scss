@@ -311,6 +311,11 @@
                 width: calc(var(--togostanza-fonts-font_size_secondary) * 1px - 1em);
                 height: calc(var(--togostanza-fonts-font_size_secondary) * 1px - 1em);
               }
+              &.chart-bar {
+                margin-left: 2px;
+                width: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+                height: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+              }
               &.filter {
                 padding: 0 2px;
               }
