@@ -11,6 +11,7 @@ import {
   stratify,
   tree,
 } from "d3";
+import { HierarchyNode, HierarchyLink } from "d3-hierarchy";
 import {
   downloadCSVMenuItem,
   downloadJSONMenuItem,
@@ -18,32 +19,55 @@ import {
   downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
-import MetaStanza from "../../lib/MetaStanza";
-import { handleApiError } from "../../lib/apiError";
+import MetaStanza from "@/lib/MetaStanza";
 import {
   emitSelectedEvent,
   toggleSelectIds,
   updateSelectedElementClassNameForD3,
-} from "../../lib/utils";
+} from "@/lib/utils";
+import ToolTip from "@/lib/ToolTip";
 
 //Declaring constants
-const ASCENDING = "ascending",
-  DESCENDING = "descending",
-  HORIZONTAL = "horizontal",
-  VERTICAL = "vertical",
-  RADIAL = "radial",
-  TRANSLUCENT = "translucent",
-  MULTIPLY = "multiply",
-  SCREEN = "screen";
+const HORIZONTAL = "horizontal";
+const VERTICAL = "vertical";
+const RADIAL = "radial";
+const COLOR_MODES = {
+  translucent: { property: "opacity", value: "0.5" },
+  multiply: { property: "mix-blend-mode", value: "multiply" },
+  screen: { property: "mix-blend-mode", value: "screen" },
+};
+
+interface NodeData {
+  id: number;
+  label: string;
+  group: string;
+  order?: number;
+  description?: string;
+  url?: string;
+  parent?: number;
+  value?: number;
+  children?: number[];
+  originalData?: Record<string, any>;
+}
+
+interface ExtendedHierarchyNode extends HierarchyNode<NodeData> {
+  x?: number;
+  x0?: number;
+  y?: number;
+  y0?: number;
+  _children?: ExtendedHierarchyNode[] | null;
+}
 
 export default class Tree extends MetaStanza {
-  _chartArea;
-  selectedIds = [];
+  _chartArea: d3.Selection<SVGGElement, unknown, SVGElement, undefined>;
+  selectedIds: Array<string | number> = [];
   selectedEventParams = {
-    targetElementSelector: "g.labels g",
+    targetElementSelector: ".node",
     selectedElementClassName: "-selected",
     idPath: "data.id",
   };
+  tooltips: ToolTip;
+
   //Stanza download menu contents
   menu() {
     return [
@@ -61,88 +85,59 @@ export default class Tree extends MetaStanza {
     }
 
     //Define from params
-    const nodeGroupKey = this.params["node-color-group"].trim();
+    const nodeGroupKey = this.params["node-color_group"].trim();
+    const width = parseFloat(this.css("--togostanza-canvas-width")) || 0;
+    const height = parseFloat(this.css("--togostanza-canvas-height")) || 0;
+    const minRadius = this.params["node-size_min"] / 2;
+    const maxRadius = this.params["node-size_max"] / 2;
+    const colorMode = this.params["node-color_blend"];
+
+    const root = this._main;
+
+    const dataset: NodeData[] = this.__data.asTree({
+      nodeLabelKey: this.params["node-label_key"].trim(),
+      nodeColorKey: this.params["node-color_key"].trim(),
+      nodeGroupKey,
+      nodeValueKey: this.params["node-size_key"].trim(),
+      nodeDescriptionKey: this.params["tooltip"].trim(),
+    }).data as NodeData[];
+    const padding = this.MARGIN;
+    const isLeafNodesAlign = this.params["layout-align_leaf_nodes"];
+    const layout = this.params["layout-orientation"];
+    const labelMargin = this.params["node-label_margin"];
+    const aveRadius = (minRadius + maxRadius) / 2;
+    const colorGroup = nodeGroupKey; // NOTE Actually, this variable is not needed (because asTree does the property name conversion), but since we cannot remove this variable without changing the getCirculateColor interface, we have left it in.
+
+    let colorModeProperty, colorModeValue;
+
+    // Set color mode
+    if (COLOR_MODES[colorMode]) {
+      ({ property: colorModeProperty, value: colorModeValue } =
+        COLOR_MODES[colorMode]);
+    }
+
+    // Tooltip
+    const tooltipString = this.params["tooltip"].trim();
+
+    const mergedDataset = dataset.map((item) => {
+      const original = this.__data.data.find((d) => d.id === item.id);
+      return {
+        ...item,
+        originalData: original,
+      };
+    });
 
     const drawContent = async () => {
-      const root = this._main,
-        dataset = this.__data.asTree({
-          nodeLabelKey: this.params["node-label-key"].trim(),
-          nodeColorKey: this.params["node-color-key"].trim(),
-          nodeGroupKey,
-          nodeOrderKey: this.params["sort-key"].trim(),
-          nodeValueKey: this.params["node-size-key"].trim(),
-          nodeDescriptionKey: this.params["tooltips-key"].trim(),
-        }).data,
-        width = parseFloat(this.css("--togostanza-canvas-width")) || 0,
-        height = parseFloat(this.css("--togostanza-canvas-height")) || 0,
-        padding = this.MARGIN,
-        sortOrder = this.params["sort-order"],
-        isLeafNodesAlign = this.params["graph-align_leaf_nodes"],
-        layout = this.params["graph-layout"],
-        labelMargin = this.params["node-label-margin"],
-        minRadius = this.params["node-size-min"] / 2,
-        maxRadius = this.params["node-size-max"] / 2,
-        aveRadius = (minRadius + maxRadius) / 2,
-        colorGroup = nodeGroupKey, // NOTE Actually, this variable is not needed (because asTree does the property name conversion), but since we cannot remove this variable without changing the getCirculateColor interface, we have left it in.
-        colorMode = this.params["node-color-blend"];
-
-      let colorModeProperty, colorModeValue;
-      switch (colorMode) {
-        case TRANSLUCENT:
-          colorModeProperty = "opacity";
-          colorModeValue = "0.5";
-          break;
-        case MULTIPLY:
-          colorModeProperty = "mix-blend-mode";
-          colorModeValue = "multiply";
-          break;
-        case SCREEN:
-          colorModeProperty = "mix-blend-mode";
-          colorModeValue = "screen";
-          break;
-        default:
-          break;
-      }
-
-      //Sorting by user keywords
-      const orderSym = Symbol("order");
-      dataset.forEach((datum, index) => {
-        datum[orderSym] = index;
-      });
-
-      const reorder = (a, b) => {
-        if (a.data.order && b.data.order) {
-          switch (sortOrder) {
-            case ASCENDING:
-              return a.data.order > b.data.order ? 1 : -1;
-            case DESCENDING:
-              return a.data.order > b.data.order ? -1 : 1;
-          }
-        } else {
-          if (sortOrder === DESCENDING) {
-            return b.data[orderSym] - a.data[orderSym];
-          }
-        }
-      };
-
       //Hierarchize data
-      const treeRoot = stratify()
-        .parentId((d) => d.parent)(dataset)
-        .sort(reorder);
-
+      const treeRoot = generateTreeStructure(mergedDataset);
       const treeDescendants = treeRoot.descendants();
       const data = treeDescendants.slice(1);
 
-      //Setting node size
-      const nodeSizeMin = min(data, (d) => d.data.value);
-      const nodeSizeMax = max(data, (d) => d.data.value);
-
-      const radiusScale = scaleSqrt()
-        .domain([nodeSizeMin, nodeSizeMax])
-        .range([minRadius, maxRadius]);
-
+      const radiusScale = createRadiusScale(data, minRadius, maxRadius);
       const nodeRadius = (size) => {
-        return size ? radiusScale(size) : radiusScale(nodeSizeMin);
+        return size
+          ? radiusScale(size)
+          : radiusScale(min(data, (d) => d.data.value));
       };
 
       //Toggle display/hide of children
@@ -157,12 +152,7 @@ export default class Tree extends MetaStanza {
       };
 
       //Setting color scale
-      const colorDatas = [];
-      treeDescendants.forEach((d) => {
-        colorDatas.push(d.data);
-      });
-
-      const getColor = getCirculateColor(this, colorDatas, colorGroup);
+      const getColor = setupColorScale(this, treeDescendants, colorGroup);
 
       const setColor = (d) => {
         if (d.data.color) {
@@ -177,6 +167,15 @@ export default class Tree extends MetaStanza {
       const svgWidth = width - padding.LEFT - padding.RIGHT;
       const svgHeight = height - padding.TOP - padding.BOTTOM;
 
+      // Append tooltips
+      if (tooltipString) {
+        if (!this.tooltips) {
+          this.tooltips = new ToolTip();
+          root.append(this.tooltips);
+        }
+        this.tooltips.setTemplate(tooltipString);
+      }
+
       //Setting svg area
       select(root).select("svg").remove();
       this._chartArea = select(root)
@@ -184,28 +183,11 @@ export default class Tree extends MetaStanza {
         .attr("width", svgWidth)
         .attr("height", svgHeight);
 
-      //Get width of root label
-      const rootGroup = this._chartArea
-        .append("text")
-        .text(treeDescendants[0].data.label || "");
-      const rootLabelWidth = rootGroup.node().getBBox().width;
-      rootGroup.remove();
-
-      //Get width of the largest label at the lowest level
-      const maxDepth = max(data, (d) => d.depth);
-      const labels = [];
-      for (const n of data) {
-        n.depth === maxDepth ? labels.push(n.data.label || "") : "";
-      }
-      const maxLabelGroup = this._chartArea.append("g");
-      maxLabelGroup
-        .selectAll("text")
-        .data(labels)
-        .enter()
-        .append("text")
-        .text((d) => d);
-      const maxLabelWidth = maxLabelGroup.node().getBBox().width;
-      maxLabelGroup.remove();
+      const { rootLabelWidth, maxLabelWidth } = await measureLabels(
+        this._chartArea,
+        treeDescendants,
+        data
+      );
 
       //Create each group
       const g = this._chartArea.append("g");
@@ -412,13 +394,14 @@ export default class Tree extends MetaStanza {
 
           //Drawing circles
           const nodeCirclesUpdate = gCircles
-            .selectAll("g")
-            .data(treeRoot.descendants(), (d) => d.id || (d.id = ++i));
+            .selectAll<SVGGElement, ExtendedHierarchyNode>("g")
+            .data(treeRoot.descendants(), (d) => d.id ?? String(++i));
 
           //Generate new elements of circle
           const nodeCirclesEnter = nodeCirclesUpdate
             .enter()
             .append("g")
+            .attr("class", "node")
             .attr("transform", () => {
               switch (layout) {
                 case HORIZONTAL:
@@ -446,7 +429,6 @@ export default class Tree extends MetaStanza {
                     selectedIds: this.selectedIds,
                     ...this.selectedEventParams,
                   });
-                  console.log(this.selectedIds);
                   if (this.params["event-outgoing_change_selected_nodes"]) {
                     emitSelectedEvent({
                       rootElement: this.element,
@@ -481,26 +463,33 @@ export default class Tree extends MetaStanza {
           //Decorate circle
           nodeCirclesEnter
             .append("circle")
-            .attr("data-tooltip", (d) => d.data.description)
+            .attr("data-tooltip", (d) => {
+              if (this.tooltips) {
+                return this.tooltips.compile(d.data.originalData);
+              } else {
+                return false;
+              }
+            })
             .attr("stroke", setColor)
             .style(colorModeProperty, colorModeValue)
-            .classed("with-children", (d) => d.children)
+            .classed("with-children", (d) => !!d.children)
             .attr("r", (d) =>
               data.some((d) => d.data.value)
                 ? nodeRadius(d.data.value)
-                : parseFloat(aveRadius)
+                : aveRadius
             )
             .attr("fill", setColor);
 
           //Drawing labels
           const nodeLabelsUpdate = gLabels
-            .selectAll("g")
-            .data(treeRoot.descendants(), (d) => d.id || (d.id = ++i));
+            .selectAll<SVGGElement, ExtendedHierarchyNode>("g")
+            .data(treeRoot.descendants(), (d) => d.id ?? String(++i));
 
           //Generate new elements of Labels
           const nodeLabelsEnter = nodeLabelsUpdate
             .enter()
             .append("g")
+            .attr("class", "node")
             .attr("transform", () => {
               switch (layout) {
                 case HORIZONTAL:
@@ -622,7 +611,7 @@ export default class Tree extends MetaStanza {
 
           //Remove extra elements of Labels
           nodeLabelsUpdate
-            .exit()
+            .exit<ExtendedHierarchyNode>()
             .attr("transform", (d) => {
               switch (layout) {
                 case HORIZONTAL:
@@ -657,16 +646,22 @@ export default class Tree extends MetaStanza {
 
           //Drawing path
           const link = g
-            .selectAll(".link")
+            .selectAll<SVGPathElement, d3.HierarchyLink<NodeData>>(".link")
             .data(treeRoot.links(), (d) => d.target.id);
 
           //Setting the path for each direction
           const getLinkFn = () => {
             switch (layout) {
               case HORIZONTAL:
-                return linkHorizontal();
+                return linkHorizontal<
+                  HierarchyNode<NodeData>,
+                  HierarchyLink<NodeData>
+                >();
               case VERTICAL:
-                return linkVertical();
+                return linkVertical<
+                  HierarchyNode<NodeData>,
+                  HierarchyLink<NodeData>
+                >();
             }
           };
 
@@ -678,11 +673,11 @@ export default class Tree extends MetaStanza {
             .attr(
               "d",
               layout === RADIAL
-                ? linkRadial().angle(source.x).radius(source.y)
+                ? (linkRadial() as any).angle(source.x).radius(source.y)
                 : getLinkFn().x(source.y0).y(source.x0)
             );
 
-          //Path transition
+          // //Path transition
           const linkUpdate = linkEnter;
           linkUpdate
             .transition()
@@ -690,12 +685,8 @@ export default class Tree extends MetaStanza {
             .attr(
               "d",
               layout === RADIAL
-                ? linkRadial()
-                    .angle((d) => d.x)
-                    .radius((d) => d.y)
-                : getLinkFn()
-                    .x((d) => d.y)
-                    .y((d) => d.x)
+                ? (linkRadial() as any).angle((d) => d.x).radius((d) => d.y)
+                : (getLinkFn() as any).x((d) => d.y).y((d) => d.x)
             );
 
           //Remove extra elements of path
@@ -716,6 +707,101 @@ export default class Tree extends MetaStanza {
             d.x0 = d.x;
             d.y0 = d.y;
           });
+
+          // Add hover functionality for tree nodes
+          const addTreeHighlightOnHover = () => {
+            const selectedIds = this.selectedIds;
+            const nodeGroups = g.selectAll<SVGGElement, ExtendedHierarchyNode>(
+              ".node"
+            );
+            const nodeLabels = g.selectAll<SVGGElement, ExtendedHierarchyNode>(
+              "g.labels g"
+            );
+            const links = g.selectAll<
+              SVGPathElement,
+              d3.HierarchyLink<NodeData>
+            >(".link");
+
+            nodeGroups.on("mouseover", function (e, d) {
+              select(this).select("circle").classed("-active", true);
+
+              // Find related nodes (parent and children)
+              const relatedNodeIds = new Set<number>();
+              relatedNodeIds.add(d.data.id);
+
+              // Add parent nodes
+              let current: ExtendedHierarchyNode = d;
+              while (current.parent) {
+                relatedNodeIds.add(current.parent.data.id);
+                current = current.parent as ExtendedHierarchyNode;
+              }
+
+              // Add child nodes
+              const addChildren = (node: ExtendedHierarchyNode) => {
+                if (node.children) {
+                  node.children.forEach((child: ExtendedHierarchyNode) => {
+                    relatedNodeIds.add(child.data.id);
+                    addChildren(child);
+                  });
+                }
+              };
+              addChildren(d);
+
+              // Apply fadeout and half-active to nodes (like force-graph)
+              nodeGroups
+                .classed("-active", (p) => p === d)
+                .classed(
+                  "-fadeout",
+                  (p) => d !== p && !relatedNodeIds.has(p.data.id)
+                )
+                .classed("-half-active", (p) => {
+                  // 選択されたアイテムには-half-activeを適用しない
+                  return (
+                    p !== d &&
+                    relatedNodeIds.has(p.data.id) &&
+                    !selectedIds.includes(p.data.id)
+                  );
+                });
+
+              nodeLabels
+                .classed("-active", (p) => p === d)
+                .classed(
+                  "-fadeout",
+                  (p) => d !== p && !relatedNodeIds.has(p.data.id)
+                )
+                .classed("-half-active", (p) => {
+                  // 選択されたアイテムには-half-activeを適用しない
+                  return (
+                    p !== d &&
+                    relatedNodeIds.has(p.data.id) &&
+                    !selectedIds.includes(p.data.id)
+                  );
+                });
+
+              // Apply fadeout to unrelated links
+              links.classed("-fadeout", (link) => {
+                const sourceId = (link.source as ExtendedHierarchyNode).data.id;
+                const targetId = (link.target as ExtendedHierarchyNode).data.id;
+                return (
+                  !relatedNodeIds.has(sourceId) || !relatedNodeIds.has(targetId)
+                );
+              });
+            });
+
+            nodeGroups.on("mouseleave", function () {
+              links.classed("-active", false).classed("-fadeout", false);
+              nodeGroups
+                .classed("-active", false)
+                .classed("-fadeout", false)
+                .classed("-half-active", false);
+              nodeLabels
+                .classed("-active", false)
+                .classed("-fadeout", false)
+                .classed("-half-active", false);
+            });
+          };
+
+          addTreeHighlightOnHover();
         };
         update(treeRoot);
       };
@@ -738,15 +824,15 @@ export default class Tree extends MetaStanza {
       }
     };
 
-    handleApiError({
-      stanzaData: this,
-      hasTooltip: true,
-      drawContent,
-    });
+    await drawContent();
+
+    if (this.tooltips) {
+      this.tooltips.setup(root.querySelectorAll("[data-tooltip]"));
+    }
   }
 
   handleEvent(event) {
-    const { selectedIds, dataUrl, targetId } = event.detail;
+    const { selectedIds, dataUrl } = event.detail;
 
     if (
       this.params["event-incoming_change_selected_nodes"] &&
@@ -756,9 +842,69 @@ export default class Tree extends MetaStanza {
       updateSelectedElementClassNameForD3({
         drawing: this._chartArea,
         selectedIds,
-        targetId,
         ...this.selectedEventParams,
       });
     }
   }
+}
+
+function generateTreeStructure(data: NodeData[]): ExtendedHierarchyNode {
+  return stratify<NodeData>()
+    .id((d) => String(d.id))
+    .parentId((d) => (d.parent !== undefined ? String(d.parent) : null))(data);
+}
+
+function createRadiusScale(
+  data: ExtendedHierarchyNode[],
+  minRadius: number,
+  maxRadius: number
+) {
+  const minVal = min(data, (d) => d.data.value);
+  const maxVal = max(data, (d) => d.data.value);
+  return scaleSqrt().domain([minVal, maxVal]).range([minRadius, maxRadius]);
+}
+
+function setupColorScale(
+  thisEl,
+  treeDescendants: ExtendedHierarchyNode[],
+  colorGroup
+) {
+  const colorDatas = treeDescendants.map((d) => d.data);
+  return getCirculateColor(thisEl, colorDatas, colorGroup);
+}
+
+async function measureLabels(
+  chartArea: d3.Selection<SVGGElement, unknown, SVGElement, undefined>,
+  treeDescendants: ExtendedHierarchyNode[],
+  data: ExtendedHierarchyNode[]
+) {
+  await document.fonts.ready;
+
+  const rootText = treeDescendants[0].data.label || "";
+  const rootGroup = chartArea
+    .append("text")
+    .text(rootText)
+    .attr("visibility", "hidden");
+  await new Promise(requestAnimationFrame);
+  const rootLabelWidth = rootGroup.node().getBBox().width;
+  rootGroup.remove();
+
+  const labels = data
+    .filter((n) => !n.children && !n._children)
+    .map((n) => n.data.label || "");
+  const textSelection = chartArea
+    .append("g")
+    .selectAll("text")
+    .data(labels)
+    .enter()
+    .append("text")
+    .text((d) => d)
+    .attr("visibility", "hidden");
+  await new Promise(requestAnimationFrame);
+
+  const widths = textSelection.nodes().map((el) => el.getBBox().width);
+  const maxLabelWidth = Math.max(...widths);
+  textSelection.remove();
+
+  return { rootLabelWidth, maxLabelWidth };
 }
