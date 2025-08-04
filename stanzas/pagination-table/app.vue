@@ -905,7 +905,12 @@ function searchByEachColumn(row) {
 
 function formattedValue(format, val) {
   try {
-    return sprintf(format, val);
+    // 数値に変換できない場合はそのまま返す
+    const numVal = Number(val);
+    if (isNaN(numVal)) {
+      return val;
+    }
+    return sprintf(format, numVal);
   } catch (e) {
     console.error(e);
     return val;
