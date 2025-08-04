@@ -1,4 +1,4 @@
-import { getCirculateColor } from "../../lib/ColorGenerator";
+import { getCirculateColor } from "@/lib/ColorGenerator";
 import {
   cluster,
   linkHorizontal,
@@ -19,13 +19,13 @@ import {
   downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
-import MetaStanza from "../../lib/MetaStanza";
+import MetaStanza from "@/lib/MetaStanza";
 import {
   emitSelectedEvent,
   toggleSelectIds,
   updateSelectedElementClassNameForD3,
-} from "../../lib/utils";
-import ToolTip from "../../lib/ToolTip";
+} from "@/lib/utils";
+import ToolTip from "@/lib/ToolTip";
 
 //Declaring constants
 const HORIZONTAL = "horizontal";
