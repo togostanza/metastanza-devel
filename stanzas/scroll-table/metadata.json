@@ -94,6 +94,12 @@
       "stanza:description": "Font family"
     },
     {
+      "stanza:key": "--togostanza-fonts-font_size",
+      "stanza:type": "number",
+      "stanza:default": 12,
+      "stanza:description": "Font size in px"
+    },
+    {
       "stanza:key": "--togostanza-table-border",
       "stanza:type": "text",
       "stanza:default": "2px solid #3c3744",
@@ -112,22 +118,10 @@
       "stanza:description": "Border bottom of table header"
     },
     {
-      "stanza:key": "--togostanza-table-thead-font-size",
-      "stanza:type": "text",
-      "stanza:default": "12px",
-      "stanza:description": "Font size of table header"
-    },
-    {
       "stanza:key": "--togostanza-table-thead-font_color",
       "stanza:type": "color",
       "stanza:default": "#3c3744",
       "stanza:description": "Font color of table header"
-    },
-    {
-      "stanza:key": "--togostanza-thead-font-weight",
-      "stanza:type": "text",
-      "stanza:default": "bold",
-      "stanza:description": "Font weight of table header"
     },
     {
       "stanza:key": "--togostanza-table-thead-background_color",
@@ -146,12 +140,6 @@
       "stanza:type": "color",
       "stanza:default": "#3c3744",
       "stanza:description": "Font color of table body"
-    },
-    {
-      "stanza:key": "--togostanza-tbody-font-size",
-      "stanza:type": "text",
-      "stanza:default": "12px",
-      "stanza:description": "Font size of table body"
     },
     {
       "stanza:key": "--togostanza-tbody-font-weight",
