@@ -277,10 +277,10 @@
           </tbody>
         </table>
         <div v-if="state.hasError" class="togostanza-table-error-message">
-          {{ error_message }}
+          {{ message_load_error }}
         </div>
         <div v-else-if="filteredRows && filteredRows.length === 0" class="togostanza-table-no-data">
-          {{ no_data_message }}
+          {{ message_not_found }}
         </div>
       </div>
     </div>
@@ -416,8 +416,8 @@ export default defineComponent({
       hasError: false,
     });
 
-    const no_data_message = ref(params.no_data_message);
-    const error_message = ref(params.error_message);
+    const message_not_found = ref(params["message-not_found"]);
+    const message_load_error = ref(params["message-load_error"]);
 
     const filteredRows = computed(() => {
       const queryForAllColumns = state.queryForAllColumns;
@@ -767,8 +767,8 @@ export default defineComponent({
     return {
       canvasWidth,
       canvasHeight,
-      no_data_message,
-      error_message,
+      message_not_found,
+      message_load_error,
       sliderPagination,
       pageSizeOption,
       state,

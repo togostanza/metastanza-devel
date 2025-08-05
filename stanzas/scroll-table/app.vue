@@ -73,10 +73,10 @@
       </tbody>
     </table>
     <div v-if="state.hasError" class="togostanza-table-error-message">
-      {{ error_message }}
+      {{ message_load_error }}
     </div>
     <div v-else-if="state.allRows && state.allRows.length === 0 && !state.isFetching" class="togostanza-table-no-data">
-      {{ no_data_message }}
+      {{ message_not_found }}
     </div>
   </div>
 </div>
@@ -107,8 +107,8 @@ export default defineComponent({
     const rootElement = ref(null);
     const canvasWidth = ref("100%");
     const canvasHeight = ref("");
-    const no_data_message = ref(params.no_data_message);
-    const error_message = ref(params.error_message);
+    const message_not_found = ref(params["message-not_found"]);
+    const message_load_error = ref(params["message-load_error"]);
 
     const state = reactive({
       columns: [],
@@ -224,8 +224,8 @@ export default defineComponent({
       canvasWidth,
       canvasHeight,
       thead,
-      no_data_message,
-      error_message,
+      message_not_found,
+      message_load_error,
     };
   },
 });

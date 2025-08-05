@@ -85,13 +85,13 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "no_data_message",
+      "stanza:key": "message-not_found",
       "stanza:type": "text",
       "stanza:example": "No data found.",
       "stanza:description": "Message displayed when filter results are empty"
     },
     {
-      "stanza:key": "error_message",
+      "stanza:key": "message-load_error",
       "stanza:type": "text",
       "stanza:example": "Failed to load data. Please try again.",
       "stanza:description": "Message displayed when data loading fails"
