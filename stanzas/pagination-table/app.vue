@@ -267,16 +267,19 @@
               </template>
             </tr>
             <tr v-if="state.isFetching">
-              <td :colspan="state.columns.length - 1" class="loadingWrapper">
-                <div class="dotTyping"></div>
+              <td 
+                :colspan="state.columns.length - 1" 
+                class="togostanza-table-loading-wrapper"
+              >
+                <div class="togostanza-table-loading-dots"></div>
               </td>
             </tr>
           </tbody>
         </table>
-        <div v-if="state.hasError" class="error-message">
+        <div v-if="state.hasError" class="togostanza-table-error-message">
           {{ error_message }}
         </div>
-        <div v-else-if="filteredRows && filteredRows.length === 0" class="no-data">
+        <div v-else-if="filteredRows && filteredRows.length === 0" class="togostanza-table-no-data">
           {{ no_data_message }}
         </div>
       </div>

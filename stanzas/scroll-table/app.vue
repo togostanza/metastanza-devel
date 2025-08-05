@@ -63,16 +63,19 @@
           </td>
         </tr>
         <tr v-if="state.isFetching">
-          <td :colspan="state.columns.length" class="loadingWrapper">
-            <div class="dotTyping"></div>
+          <td 
+            :colspan="state.columns.length" 
+            class="togostanza-table-loading-wrapper"
+          >
+            <div class="togostanza-table-loading-dots"></div>
           </td>
         </tr>
       </tbody>
     </table>
-    <div v-if="state.hasError" class="error-message">
+    <div v-if="state.hasError" class="togostanza-table-error-message">
       {{ error_message }}
     </div>
-    <div v-else-if="state.allRows && state.allRows.length === 0 && !state.isFetching" class="no-data">
+    <div v-else-if="state.allRows && state.allRows.length === 0 && !state.isFetching" class="togostanza-table-no-data">
       {{ no_data_message }}
     </div>
   </div>
@@ -167,6 +170,7 @@ export default defineComponent({
           });
         })
       );
+      
       state.isFetching = false;
       } catch (error) {
         console.error('Failed to fetch data:', error);
