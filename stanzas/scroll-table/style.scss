@@ -185,3 +185,17 @@ $x3: -$left-pos + $dot-spacing;
       $x3 0 0 0 $dot-after-color;
   }
 }
+
+.no-data {
+  text-align: center;
+  font-size: var(--togostanza-tbody-font-size);
+  color: var(--togostanza-tbody-font-color);
+  padding-top: 1em;
+}
+
+.error-message {
+  text-align: center;
+  font-size: var(--togostanza-tbody-font-size);
+  color: #d32f2f; /* Error color */
+  padding-top: 1em;
+}

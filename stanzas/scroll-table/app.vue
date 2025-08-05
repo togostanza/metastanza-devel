@@ -69,6 +69,12 @@
         </tr>
       </tbody>
     </table>
+    <div v-if="state.hasError" class="error-message">
+      {{ error_message }}
+    </div>
+    <div v-else-if="state.allRows && state.allRows.length === 0 && !state.isFetching" class="no-data">
+      {{ no_data_message }}
+    </div>
   </div>
 </div>
 </template>
@@ -98,6 +104,8 @@ export default defineComponent({
     const rootElement = ref(null);
     const canvasWidth = ref("100%");
     const canvasHeight = ref("");
+    const no_data_message = ref(params.no_data_message);
+    const error_message = ref(params.error_message);
 
     const state = reactive({
       columns: [],
@@ -106,21 +114,24 @@ export default defineComponent({
       offset: 0,
 
       isFetching: false,
+      hasError: false,
 
       thListWidth: [],
     });
 
     async function fetchData() {
       state.isFetching = true;
+      state.hasError = false;
 
-      const data = await loadData(
-        params.dataUrl,
-        params.dataType,
-        params.main,
-        undefined,
-        params.pageSize,
-        state.offset
-      );
+      try {
+        const data = await loadData(
+          params.dataUrl,
+          params.dataType,
+          params.main,
+          undefined,
+          params.pageSize,
+          state.offset
+        );
 
       if (params.columns) {
         state.columns = JSON.parse(params.columns).map((column, index) => {
@@ -157,6 +168,11 @@ export default defineComponent({
         })
       );
       state.isFetching = false;
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+        state.hasError = true;
+        state.isFetching = false;
+      }
     }
 
     function handleScroll(e) {
@@ -204,6 +220,8 @@ export default defineComponent({
       canvasWidth,
       canvasHeight,
       thead,
+      no_data_message,
+      error_message,
     };
   },
 });

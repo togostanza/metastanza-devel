@@ -273,7 +273,10 @@
             </tr>
           </tbody>
         </table>
-        <div v-if="filteredRows && filteredRows.length === 0" class="no-data">
+        <div v-if="state.hasError" class="error-message">
+          {{ error_message }}
+        </div>
+        <div v-else-if="filteredRows && filteredRows.length === 0" class="no-data">
           {{ no_data_message }}
         </div>
       </div>
@@ -407,9 +410,11 @@ export default defineComponent({
       lastSelectedRow: null,
 
       isFetching: false,
+      hasError: false,
     });
 
     const no_data_message = ref(params.no_data_message);
+    const error_message = ref(params.error_message);
 
     const filteredRows = computed(() => {
       const queryForAllColumns = state.queryForAllColumns;
@@ -607,10 +612,12 @@ export default defineComponent({
 
     async function fetchData() {
       state.isFetching = true;
+      state.hasError = false;
       
-      const data = await loadData(params.dataUrl, params.dataType, params.main);
+      try {
+        const data = await loadData(params.dataUrl, params.dataType, params.main);
 
-      state.responseJSON = data;
+        state.responseJSON = data;
       let columns;
       if (params.columns) {
         columns = JSON.parse(params.columns).map((column, index) => {
@@ -648,6 +655,11 @@ export default defineComponent({
       });
       
       state.isFetching = false;
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+        state.hasError = true;
+        state.isFetching = false;
+      }
     }
 
     onMounted(fetchData);
@@ -753,6 +765,7 @@ export default defineComponent({
       canvasWidth,
       canvasHeight,
       no_data_message,
+      error_message,
       sliderPagination,
       pageSizeOption,
       state,
