@@ -552,6 +552,75 @@
   padding-top: 1em;
 }
 
+// Loading animation styles
+$dot-width: 4px;
+$dot-color: var(--togostanza-fonts-font_color);
+$dot-spacing: $dot-width * 1.5;
+$dot-before-color: $dot-color;
+$dot-after-color: $dot-color;
+$left-pos: -9999px;
+$x1: -$left-pos - $dot-spacing;
+$x2: -$left-pos;
+$x3: -$left-pos + $dot-spacing;
+
+@mixin dot {
+  width: $dot-width;
+  height: $dot-width;
+  border-radius: 50%;
+  background-color: $dot-color;
+}
+
+.loadingWrapper {
+  text-align: center;
+}
+
+.dotTyping {
+  position: relative;
+  left: $left-pos;
+  display: inline-block;
+  @include dot;
+  box-shadow: $x1 0 0 0 $dot-before-color, $x2 0 0 0 $dot-color,
+    $x3 0 0 0 $dot-after-color;
+  animation: dot-typing 1.5s infinite linear;
+}
+
+@keyframes dot-typing {
+  0% {
+    box-shadow: $x1 0 0 0 $dot-before-color, $x2 0 0 0 $dot-color,
+      $x3 0 0 0 $dot-after-color;
+  }
+
+  16.667% {
+    box-shadow: $x1 -5px 0 0 $dot-before-color, $x2 0 0 0 $dot-color,
+      $x3 0 0 0 $dot-after-color;
+  }
+
+  33.333% {
+    box-shadow: $x1 0 0 0 $dot-before-color, $x2 0 0 0 $dot-color,
+      $x3 0 0 0 $dot-after-color;
+  }
+
+  50% {
+    box-shadow: $x1 0 0 0 $dot-before-color, $x2 -5px 0 0 $dot-color,
+      $x3 0 0 0 $dot-after-color;
+  }
+
+  66.667% {
+    box-shadow: $x1 0 0 0 $dot-before-color, $x2 0 0 0 $dot-color,
+      $x3 0 0 0 $dot-after-color;
+  }
+
+  83.333% {
+    box-shadow: $x1 0 0 0 $dot-before-color, $x2 0 0 0 $dot-color,
+      $x3 -5px 0 0 $dot-after-color;
+  }
+
+  100% {
+    box-shadow: $x1 0 0 0 $dot-before-color, $x2 0 0 0 $dot-color,
+      $x3 0 0 0 $dot-after-color;
+  }
+}
+
 .slider-base {
   position: relative;
   &::before {

@@ -266,6 +266,11 @@
                 </td>
               </template>
             </tr>
+            <tr v-if="state.isFetching">
+              <td :colspan="state.columns.length - 1" class="loadingWrapper">
+                <div class="dotTyping"></div>
+              </td>
+            </tr>
           </tbody>
         </table>
         <div v-if="filteredRows && filteredRows.length === 0" class="no-data">
@@ -400,6 +405,8 @@ export default defineComponent({
 
       selectedRows: [],
       lastSelectedRow: null,
+
+      isFetching: false,
     });
 
     const no_data_message = ref(params.no_data_message);
@@ -599,6 +606,8 @@ export default defineComponent({
     }
 
     async function fetchData() {
+      state.isFetching = true;
+      
       const data = await loadData(params.dataUrl, params.dataType, params.main);
 
       state.responseJSON = data;
@@ -637,6 +646,8 @@ export default defineComponent({
           };
         });
       });
+      
+      state.isFetching = false;
     }
 
     onMounted(fetchData);
