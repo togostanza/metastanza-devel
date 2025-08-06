@@ -190,12 +190,6 @@
       "stanza:description": "Background color of table body (even row)"
     },
     {
-      "stanza:key": "--togostanza-non-active-color",
-      "stanza:type": "color",
-      "stanza:default": "#00000044",
-      "stanza:description": "Non active color of control area"
-    },
-    {
       "stanza:key": "--togostanza-pagination-font-color",
       "stanza:type": "color",
       "stanza:default": "#002559",
