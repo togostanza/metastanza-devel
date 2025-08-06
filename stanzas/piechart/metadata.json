@@ -51,6 +51,12 @@
       "stanza:description": "Data key to use to define group color"
     },
     {
+      "stanza:key": "tooltip",
+      "stanza:type": "html",
+      "stanza:example": "{{#if url}}<a href={{url}}>{{count}}</a>{{else}}<span>{{count}}</span>{{/if}}",
+      "stanza:description": "A handlebars HTML template string to show in tooltip"
+    },
+    {
       "stanza:key": "legend-visible",
       "stanza:type": "boolean",
       "stanza:label": "Show legend",
@@ -62,12 +68,6 @@
       "stanza:type": "text",
       "stanza:example": "Population",
       "stanza:description": "Legend title"
-    },
-    {
-      "stanza:key": "tooltip",
-      "stanza:type": "html",
-      "stanza:example": "{{#if url}}<a href={{url}}>{{count}}</a>{{else}}<span>{{count}}</span>{{/if}}",
-      "stanza:description": "A handlebars HTML template string to show in tooltip"
     },
     {
       "stanza:key": "event-incoming_change_selected_nodes",
@@ -144,12 +144,6 @@
       "stanza:type": "color",
       "stanza:default": "#F75976",
       "stanza:description": "Group color 5"
-    },
-    {
-      "stanza:key": "--togostanza-theme-selected_border_color",
-      "stanza:type": "color",
-      "stanza:default": "#FF0000",
-      "stanza:description": "Color applied to the selected item"
     },
     {
       "stanza:key": "--togostanza-fonts-font_family",

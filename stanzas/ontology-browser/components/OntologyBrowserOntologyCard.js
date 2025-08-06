@@ -223,7 +223,6 @@ export class OntologyCard extends LitElement {
 
     .ontology-card:hover {
       background-color: var(--togostanza-node-hover_background_color);
-      border-color: var(--togostanza-node-selected_border_color);
     }
 
     .children-arrow {
@@ -263,7 +262,6 @@ export class OntologyCard extends LitElement {
 
     .selected {
       background-color: var(--togostanza-node-selected_background_color);
-      border-color: var(--togostanza-node-selected_border_color);
     }
 
     .hidden {

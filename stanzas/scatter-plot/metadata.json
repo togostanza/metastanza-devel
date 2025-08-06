@@ -27,14 +27,6 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "togostanza-custom_css_url",
-      "stanza:type": "text",
-      "stanza:example": "",
-      "stanza:default": "",
-      "stanza:description": "Stylesheet(css file) URL to override current style",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "axis-x-key",
       "stanza:type": "text",
       "stanza:example": "density",
@@ -241,17 +233,17 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "legend-visible",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:label": "Whether to show the legend"
-    },
-    {
       "stanza:key": "node-color_blend",
       "stanza:type": "single-choice",
       "stanza:choice": ["multiply", "screen", "normal"],
       "stanza:example": "normal",
       "stanza:description": "Set blend mode for nodes"
+    },
+    {
+      "stanza:key": "legend-visible",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:label": "Whether to show the legend"
     },
     {
       "stanza:key": "legend-title",
@@ -278,6 +270,14 @@
       "stanza:type": "boolean",
       "stanza:example": true,
       "stanza:label": "Emit a change event of selected nodes",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "togostanza-custom_css_url",
+      "stanza:type": "text",
+      "stanza:example": "",
+      "stanza:default": "",
+      "stanza:description": "Stylesheet(css file) URL to override current style",
       "stanza:required": false
     }
   ],
