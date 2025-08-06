@@ -53,11 +53,6 @@
       "stanza:description": "Message in case there is no data for data set by [node-value-key]"
     },
     {
-      "stanza:key": "togostanza-custom_css_url",
-      "stanza:example": "",
-      "stanza:description": "Stylesheet(css file) URL to override current style"
-    },
-    {
       "stanza:key": "event-incoming_change_selected_nodes",
       "stanza:type": "boolean",
       "stanza:example": true,
@@ -68,6 +63,11 @@
       "stanza:type": "boolean",
       "stanza:example": true,
       "stanza:label": "Emit a change event of selected nodes"
+    },
+    {
+      "stanza:key": "togostanza-custom_css_url",
+      "stanza:example": "",
+      "stanza:description": "Stylesheet(css file) URL to override current style"
     }
   ],
   "stanza:menu-placement": "bottom-right",

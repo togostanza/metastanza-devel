@@ -186,6 +186,13 @@
       "stanza:description": "Data key to group by data series. All data points wich includes that key will be considered as one data series. If not set, all points will be considered as of one data series."
     },
     {
+      "stanza:key": "tooltip",
+      "stanza:type": "html",
+      "stanza:example": "{{#if url}}<a href={{url}}>{{count}}</a>{{else}}<span>{{count}}</span>{{/if}}",
+      "stanza:description": "A handlebars HTML template string to show in tooltip",
+      "stanza:required": false
+    },
+    {
       "stanza:key": "legend-visible",
       "stanza:type": "boolean",
       "stanza:example": true,
@@ -199,13 +206,6 @@
       "stanza:example": "",
       "stanza:default": "",
       "stanza:description": "Legend title"
-    },
-    {
-      "stanza:key": "tooltip",
-      "stanza:type": "html",
-      "stanza:example": "{{#if url}}<a href={{url}}>{{count}}</a>{{else}}<span>{{count}}</span>{{/if}}",
-      "stanza:description": "A handlebars HTML template string to show in tooltip",
-      "stanza:required": false
     },
     {
       "stanza:key": "togostanza-custom_css_url",

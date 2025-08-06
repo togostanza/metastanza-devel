@@ -50,12 +50,6 @@
       "stanza:description": "Set color of the node based on data key"
     },
     {
-      "stanza:key": "togostanza-custom_css_url",
-      "stanza:example": "",
-      "stanza:description": "Stylesheet(css file) URL to override current style",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "event-incoming_change_selected_nodes",
       "stanza:type": "boolean",
       "stanza:example": true,
@@ -67,6 +61,12 @@
       "stanza:type": "boolean",
       "stanza:example": true,
       "stanza:label": "Emit a change event of selected nodes",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "togostanza-custom_css_url",
+      "stanza:example": "",
+      "stanza:description": "Stylesheet(css file) URL to override current style",
       "stanza:required": false
     }
   ],
