@@ -144,12 +144,6 @@
       "stanza:description": "Border color"
     },
     {
-      "stanza:key": "--togostanza-node-selected_border_color",
-      "stanza:type": "color",
-      "stanza:default": "#666666",
-      "stanza:description": "Selected border color"
-    },
-    {
       "stanza:key": "--togostanza-node-background_color",
       "stanza:type": "color",
       "stanza:default": "#ffffff",
