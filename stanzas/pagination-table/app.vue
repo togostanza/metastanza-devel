@@ -377,7 +377,7 @@ export default defineComponent({
         const heightFromCss = style.getPropertyValue("--togostanza-canvas-height").trim();
         canvasHeight.value = heightFromCss ? heightFromCss + "px" : "";
         const flexDirection = style.getPropertyValue(
-          "--togostanza-pagination-placement-vertical"
+          "--togostanza-pagination-placement_vertical"
         );
         rootElement.value.style.flexDirection = {
           top: "column-reverse",

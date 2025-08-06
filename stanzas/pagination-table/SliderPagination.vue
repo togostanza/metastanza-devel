@@ -134,7 +134,7 @@ export default defineComponent({
 
         const style = window.getComputedStyle(paginationWrapper.value);
         const value = style.getPropertyValue(
-          "--togostanza-pagination-placement-vertical"
+          "--togostanza-pagination-placement_vertical"
         );
         const tablePaginationOrder = {
           top: "column",

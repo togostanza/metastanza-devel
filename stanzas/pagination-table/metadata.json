@@ -190,67 +190,13 @@
       "stanza:description": "Background color of table body (even row)"
     },
     {
-      "stanza:key": "--togostanza-pagination-font-color",
-      "stanza:type": "color",
-      "stanza:default": "#002559",
-      "stanza:description": "Font color of pagination button"
-    },
-    {
-      "stanza:key": "--togostanza-pagination-font-size",
-      "stanza:type": "text",
-      "stanza:default": "10px",
-      "stanza:description": "Font size of pagination button"
-    },
-    {
-      "stanza:key": "--togostanza-pagination-background-color",
-      "stanza:type": "color",
-      "stanza:default": "#FFFFFF",
-      "stanza:description": "Background color of pagination button"
-    },
-    {
-      "stanza:key": "--togostanza-pagination-border",
-      "stanza:type": "text",
-      "stanza:default": "1px solid rgba(0, 0, 0, 0.1)",
-      "stanza:description": "Border style of pagination button"
-    },
-    {
-      "stanza:key": "--togostanza-pagination-border-radius",
-      "stanza:type": "text",
-      "stanza:default": "3px",
-      "stanza:description": "Border radius of pagination button"
-    },
-    {
-      "stanza:key": "--togostanza-pagination-padding",
-      "stanza:type": "text",
-      "stanza:default": "2px 8px",
-      "stanza:description": "Padding of pagination button"
-    },
-    {
-      "stanza:key": "--togostanza-pagination-current-font-color",
+      "stanza:key": "--togostanza-pagination-current_font_color",
       "stanza:type": "color",
       "stanza:default": "#FFFFFF",
       "stanza:description": "Font color of pagination button (at current page)"
     },
     {
-      "stanza:key": "--togostanza-pagination-current-background-color",
-      "stanza:type": "color",
-      "stanza:default": "#6590e6",
-      "stanza:description": "Background color of pagination button (at current page)"
-    },
-    {
-      "stanza:key": "--togostanza-pagination-current-border",
-      "stanza:type": "text",
-      "stanza:default": "1px solid #6590e6",
-      "stanza:description": "Border style of pagination button (at current page)"
-    },
-    {
-      "stanza:key": "--togostanza-pagination-arrow-color",
-      "stanza:type": "color",
-      "stanza:default": "#6590e6",
-      "stanza:description": "Color of pagination arrow button"
-    },
-    {
-      "stanza:key": "--togostanza-pagination-placement-vertical",
+      "stanza:key": "--togostanza-pagination-placement_vertical",
       "stanza:type": "single-choice",
       "stanza:choice": [
         "bottom",
@@ -260,7 +206,7 @@
       "stanza:description": "Vertical pacement of pagination"
     },
     {
-      "stanza:key": "--togostanza-pagination-placement-horizonal",
+      "stanza:key": "--togostanza-pagination-placement_horizonal",
       "stanza:type": "single-choice",
       "stanza:choice": [
         "left",
