@@ -21,7 +21,16 @@ main {
   box-sizing: border-box;
   margin: 0;
   list-style: none;
+  color: var(--togostanza-fonts-font_color);
   font-family: var(--togostanza-fonts-font_family);
+  font-size: var(--togostanza-fonts-font_size_secondary);
+}
+
+// FontAwesome SVG icons initial size control to prevent flash of large icons
+svg[data-icon] {
+  width: 1em !important;
+  height: 1em !important;
+  font-size: inherit !important;
 }
 
 #renderDiv {

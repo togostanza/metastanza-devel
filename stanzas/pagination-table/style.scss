@@ -43,6 +43,13 @@
   font-size: var(--togostanza-fonts-font_size_secondary);
 }
 
+// FontAwesome SVG icons initial size control to prevent flash of large icons
+svg[data-icon] {
+  width: 1em !important;
+  height: 1em !important;
+  font-size: inherit !important;
+}
+
 #renderDiv {
   width: 100%;
 }
