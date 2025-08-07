@@ -547,3 +547,34 @@
     opacity: 0.2;
   }
 }
+
+.line-clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--togostanza-line_clamp);
+  line-clamp: var(--togostanza-line_clamp);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.line-clamp-expanded {
+  cursor: pointer;
+  position: relative;
+  
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 2px;
+  }
+  
+  &:after {
+    content: " ▲";
+    opacity: 0.3;
+    font-size: 0.8em;
+    margin-left: 4px;
+  }
+}

@@ -239,16 +239,14 @@
                         cell.column.target ? `_${cell.column.target}` : '_blank'
                       "
                       :unescape="cell.column.unescape"
-                      :line-clamp="cell.column.lineClamp"
                       :char-clamp="cell.column.charClamp"
                       :char-clamp-on="cell.column.charClampOn"
                     />
                   </span>
                   <span
-                    v-else-if="cell.column.lineClamp || cell.column.charClamp"
+                    v-else-if="cell.column.charClamp"
                   >
                     <ClampCell
-                      :line-clamp="cell.column.lineClamp"
                       :char-clamp="cell.column.charClamp"
                       :char-clamp-on="cell.charClampOn"
                       :unescape="cell.column.unescape"
@@ -261,8 +259,20 @@
                   <span
                     v-else-if="cell.column.unescape"
                     v-html="cell.value"
+                    :class="{ 
+                      'line-clamp': cell.lineClampOn,
+                      'line-clamp-expanded': !cell.lineClampOn
+                    }"
+                    @click="toggleRowLineClamp(cell.rowIndex)"
                   ></span>
-                  <span v-else>{{ cell.value }}</span>
+                  <span 
+                    v-else 
+                    :class="{ 
+                      'line-clamp': cell.lineClampOn,
+                      'line-clamp-expanded': !cell.lineClampOn
+                    }"
+                    @click="toggleRowLineClamp(cell.rowIndex)"
+                  >{{ cell.value }}</span>
                 </td>
               </template>
             </tr>
@@ -580,6 +590,16 @@ export default defineComponent({
       column.rangeMax = column.inputtingRangeMax;
     }
 
+    function toggleRowLineClamp(rowIndex) {
+      const row = state.allRows[rowIndex];
+      if (row) {
+        const newState = !row[0].lineClampOn;
+        row.forEach(cell => {
+          cell.lineClampOn = newState;
+        });
+      }
+    }
+
     function showModal(column) {
       column.isSearchModalShowing = true;
     }
@@ -644,13 +664,15 @@ export default defineComponent({
         return createColumnState(column, values);
       });
 
-      state.allRows = data.map((row) => {
+      state.allRows = data.map((row, rowIndex) => {
         return state.columns.map((column) => {
           return {
             column,
             value: column.parseValue(row[column.id]),
             href: column.href ? row[column.href] : null,
             charClampOn: true,
+            lineClampOn: true,
+            rowIndex: rowIndex,
           };
         });
       });
@@ -778,6 +800,7 @@ export default defineComponent({
       setSorting,
       setFilters,
       setRangeFilters,
+      toggleRowLineClamp,
       showModal,
       closeModal,
       updateCurrentPage,
@@ -811,7 +834,6 @@ function createColumnState(columnDef, values) {
     align: columnDef.align,
     fixed: columnDef.fixed,
     target: columnDef.target,
-    lineClamp: columnDef["line-clamp"],
     charClamp: columnDef["char-clamp"],
     sprintf: columnDef["sprintf"],
   };

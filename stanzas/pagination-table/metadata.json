@@ -55,8 +55,15 @@
     },
     {
       "stanza:key": "columns",
-      "stanza:example": "[{\"id\":\"variant_and_risk_allele\",\"label\":\"rs# and risk allele\",\"escape\":false,\"line-clamp\":3},{\"id\":\"raf\",\"label\":\"RAF\",\"line-clamp\":3},{\"id\":\"p_value\",\"label\":\"P-value\",\"line-clamp\":3, \"type\":\"number\"},{\"id\":\"odds_ratio\",\"label\":\"OR\",\"sprintf\":\"%-9.3e\",\"line-clamp\":3},{\"id\":\"ci_text\",\"label\":\"CI\",\"line-clamp\":3},{\"id\":\"beta\",\"label\":\"Beta\",\"sprintf\":\"%-9.3e\",\"line-clamp\":3},{\"id\":\"beta_unit\",\"label\":\"Beta unit\",\"line-clamp\":3},{\"id\":\"mapped_trait\",\"label\":\"Trait(s)\",\"escape\":false,\"line-clamp\":3},{\"id\":\"pubmed_id\",\"label\":\"PubMed ID\",\"link\":\"pubmed_uri\",\"line-clamp\":3},{\"id\":\"study_detail\",\"label\":\"Study accession\",\"link\":\"study\",\"line-clamp\":3},{\"id\":\"initial_sample_size\",\"label\":\"Discovery sample description\",\"line-clamp\":3},{\"id\":\"replication_sample_size\",\"label\":\"Replication sample description\",\"line-clamp\":3}]",
+      "stanza:example": "[{\"id\":\"variant_and_risk_allele\",\"label\":\"rs# and risk allele\",\"escape\":false},{\"id\":\"raf\",\"label\":\"RAF\"},{\"id\":\"p_value\",\"label\":\"P-value\", \"type\":\"number\"},{\"id\":\"odds_ratio\",\"label\":\"OR\",\"sprintf\":\"%-9.3e\"},{\"id\":\"ci_text\",\"label\":\"CI\"},{\"id\":\"beta\",\"label\":\"Beta\",\"sprintf\":\"%-9.3e\"},{\"id\":\"beta_unit\",\"label\":\"Beta unit\"},{\"id\":\"mapped_trait\",\"label\":\"Trait(s)\",\"escape\":false},{\"id\":\"pubmed_id\",\"label\":\"PubMed ID\",\"link\":\"pubmed_uri\"},{\"id\":\"study_detail\",\"label\":\"Study accession\",\"link\":\"study\"},{\"id\":\"initial_sample_size\",\"label\":\"Discovery sample description\"},{\"id\":\"replication_sample_size\",\"label\":\"Replication sample description\"}]",
       "stanza:description": "Columns' options"
+    },
+    {
+      "stanza:key": "line-clamp",
+      "stanza:type": "number",
+      "stanza:example": 3,
+      "stanza:description": "Maximum number of lines to display in table cells",
+      "stanza:required": false
     },
     {
       "stanza:key": "show-axis-selector",
@@ -233,6 +240,12 @@
       "stanza:type": "color",
       "stanza:default": "#00DDFF44",
       "stanza:description": "Color applied to the selected item"
+    },
+    {
+      "stanza:key": "--togostanza-line_clamp",
+      "stanza:type": "number",
+      "stanza:default": 3,
+      "stanza:description": "Maximum number of lines to display in table cells"
     }
   ],
   "stanza:incomingEvent": [
