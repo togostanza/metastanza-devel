@@ -14,7 +14,7 @@
   "stanza:parameter": [
     {
       "stanza:key": "data-url",
-      "stanza:example": "https://sparql-support.dbcls.jp/sparqlist/api/metastanza_text?tax_id=9606&gene_id=BRCA1",
+      "stanza:example": "https://raw.githubusercontent.com/togostanza/togostanza-data/refs/heads/main/samples/json/text.md",
       "stanza:description": "Data source URL",
       "stanza:required": true
     },
@@ -30,12 +30,12 @@
       "stanza:key": "data-mode",
       "stanza:type": "single-choice",
       "stanza:choice": ["text", "markdown"],
-      "stanza:example": "text",
+      "stanza:example": "markdown",
       "stanza:description": "Mode"
     },
     {
       "stanza:key": "data-highlight_css_url",
-      "stanza:example": "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/atom-one-light.min.css",
+      "stanza:example": "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/a11y-dark.min.css",
       "stanza:description": "Stylesheet (css file) URL of highlight.js theme (only effective in markdown mode)"
     },
     {
