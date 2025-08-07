@@ -11,6 +11,8 @@
     "skipLibCheck": true,
     "paths": {
       "@/*": ["./*"]
-    }
-  }
+    },
+    "typeRoots": ["node_modules/@types"]
+  },
+  "include": ["stanzas", "types"]
 }

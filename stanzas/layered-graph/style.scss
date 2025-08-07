@@ -15,6 +15,19 @@ svg > defs > marker > path {
   transition-property: opacity, stroke-width, stroke-opacity;
 }
 
+svg > g {
+  &.-nodes-blend-multiply {
+    .node-g > circle {
+      mix-blend-mode: multiply;
+    }
+  }
+  &.-nodes-blend-screen {
+    .node-g > circle {
+      mix-blend-mode: screen;
+    }
+  }
+}
+
 g.node-g {
   cursor: pointer;
   > .node {

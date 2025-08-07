@@ -3,11 +3,12 @@
   "version": "0.0.1",
   "license": "MIT",
   "repository": "https://github.com/togostanza/metastanza-devel.git",
+  "type": "module",
   "scripts": {
     "lint": "npm-run-all --aggregate-output --continue-on-error --parallel 'lint:!(fix)'",
     "lint:fix": "npm-run-all --continue-on-error lint:*:fix",
-    "lint:eslint": "eslint . --ext .js,.vue --cache",
-    "lint:eslint:fix": "eslint . --ext .js,.vue --fix",
+    "lint:eslint": "eslint . --ext .js,.ts,.vue --cache",
+    "lint:eslint:fix": "eslint . --ext .js,.ts,.vue --fix",
     "lint:stylelint": "stylelint '**/*.scss'",
     "lint:stylelint:fix": "stylelint '**/*.scss' --fix",
     "lint:prettier": "prettier . --check",
@@ -15,10 +16,10 @@
     "lint:editorconfig": "editorconfig-checker"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^6.3.0",
-    "@fortawesome/fontawesome-svg-core": "^6.2.0",
-    "@fortawesome/free-solid-svg-icons": "^6.2.0",
-    "@fortawesome/vue-fontawesome": "^3.0.0-1",
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/vue-fontawesome": "^3.0.8",
     "@rollup/plugin-replace": "^5.0.1",
     "@types/d3": "^7.4.0",
     "@types/topojson-specification": "^1.0.5",
@@ -32,7 +33,7 @@
     "d3-collection": "^1.0.7",
     "dompurify": "^3.2.5",
     "handlebars": "^4.7.8",
-    "highlight.js": "^11.6.0",
+    "highlight.js": "^11.11.1",
     "immutable-ext": "^1.1.5",
     "katex": "^0.16.3",
     "lit": "^2.4.0",
@@ -56,21 +57,22 @@
   },
   "devDependencies": {
     "@types/topojson-client": "^3.1.4",
-    "@typescript-eslint/eslint-plugin": "^5.51.0",
+    "@typescript-eslint/eslint-plugin": "^8.35.0",
+    "@typescript-eslint/parser": "^8.35.0",
     "editorconfig-checker": "4.0.0",
-    "eslint": "^8.35.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-vue": "^9.7.0",
+    "eslint": "^9.30.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-vue": "^10.2.0",
     "npm-run-all": "^4.1.5",
-    "prettier": "^2.7.1",
+    "prettier": "^2.8.8",
     "stylelint": "^14.14.0",
     "stylelint-config-prettier": "^9.0.3",
     "stylelint-config-recommended-scss": "^8.0.0",
     "stylelint-scss": "^4.3.0",
-    "vue-eslint-parser": "^9.1.0"
+    "vue-eslint-parser": "^10.1.4"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=20"
   },
   "private": true
 }

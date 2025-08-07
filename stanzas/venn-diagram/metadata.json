@@ -50,13 +50,7 @@
       "stanza:description": "Legend title"
     },
     {
-      "stanza:key": "tooltips-key",
-      "stanza:type": "text",
-      "stanza:example": "name",
-      "stanza:description": "Data key to use as tooltip text"
-    },
-    {
-      "stanza:key": "tooltips-html",
+      "stanza:key": "tooltip",
       "stanza:type": "html",
       "stanza:example": "<p>Count: {{count}}</p>",
       "stanza:description": "Data key to use as tooltip text"

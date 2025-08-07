@@ -26,8 +26,8 @@ export default class Scorecard extends MetaStanza {
     const titleKey = this.params["data-title_key"].trim();
     const scoreValue = dataset[scoreKey];
     const titleText = dataset[titleKey];
-    const prefixText = this.params["affix-prefix"];
-    const suffixText = this.params["affix-suffix"];
+    const prefixText = this.params["data-prefix"]?.trim() || "";
+    const suffixText = this.params["data-suffix"]?.trim() || "";
     this._data = [{ [titleText]: scoreValue }];
     // Styles
     const width = parseFloat(this.css("--togostanza-canvas-width")) || 0;
@@ -45,8 +45,8 @@ export default class Scorecard extends MetaStanza {
     }
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.classList.add("svg");
-    svg.setAttribute("width", width);
-    svg.setAttribute("height", height);
+    svg.setAttribute("width", String(width));
+    svg.setAttribute("height", String(height));
     root.append(svg);
 
     const wrapper = document.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -95,11 +95,14 @@ export default class Scorecard extends MetaStanza {
     scoreWrapper.append(suffixSvg);
 
     if (titleText) {
-      titleSvg.setAttribute("y", fontSizeSecondary);
-      scoreWrapper.setAttribute("y", fontSizePrimary + fontSizeSecondary);
+      titleSvg.setAttribute("y", String(fontSizeSecondary));
+      scoreWrapper.setAttribute(
+        "y",
+        String(fontSizePrimary + fontSizeSecondary)
+      );
     } else {
       titleSvg.setAttribute(`style`, `display: none;`);
-      scoreWrapper.setAttribute("y", fontSizePrimary);
+      scoreWrapper.setAttribute("y", String(fontSizePrimary));
     }
 
     const wrapperWidth = wrapper.getBoundingClientRect().width;

@@ -62,20 +62,26 @@
       "stanza:key": "show-axis-selector",
       "stanza:type": "boolean",
       "stanza:example": false,
-      "stanza:description": "Show axis selector button"
+      "stanza:label": "Show axis selector button"
+    },
+    {
+      "stanza:key": "no_data_message",
+      "stanza:type": "text",
+      "stanza:example": "No data found.",
+      "stanza:description": "Message displayed when there are zero data"
     },
     {
       "stanza:key": "event-incoming_change_selected_nodes",
       "stanza:type": "boolean",
       "stanza:example": true,
-      "stanza:description": "Receive a change event of selected nodes",
+      "stanza:label": "Receive a change event of selected nodes",
       "stanza:required": false
     },
     {
       "stanza:key": "event-outgoing_change_selected_nodes",
       "stanza:type": "boolean",
       "stanza:example": true,
-      "stanza:description": "Emit a change event of selected nodes",
+      "stanza:label": "Emit a change event of selected nodes",
       "stanza:required": false
     },
     {

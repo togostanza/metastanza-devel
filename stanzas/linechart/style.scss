@@ -18,8 +18,44 @@ svg {
   background-color: var(--togostanza-theme-background_color);
 
   > .chart {
+    > .axis-container {
+      > .grid-lines {
+        line {
+          stroke: var(--togostanza-grid-color);
+          &.zero-line {
+            stroke-width: calc(var(--togostanza-axis-zero_line_width) * 1px);
+            stroke: var(--togostanza-axis-zero_line_color);
+          }
+        }
+      }
+      > .axis {
+        > .tick {
+          font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+          > text {
+            font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+            font-family: var(--togostanza-fonts-font_family);
+          }
+          > line {
+            stroke: var(--togostanza-border-color);
+            stroke-width: 1px;
+          }
+        }
+
+        > path {
+          stroke: var(--togostanza-border-color);
+          stroke-width: 1px;
+        }
+      }
+      > .title-container {
+        text.title {
+          font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+        }
+      }
+    }
+
     > .chart-line-group {
       transition: var(--togostanza-fadeout-transition);
+
       &.-highlight {
         opacity: 1;
       }
@@ -31,42 +67,17 @@ svg {
         stroke-width: 1px;
         stroke-opacity: 1;
       }
-      > .symbol-g > path.symbol {
-        cursor: pointer;
-      }
-    }
-  }
-  > .axis-container {
-    > .grid-lines {
-      line {
-        stroke: var(--togostanza-grid-color);
-        &.zero-line {
-          stroke-width: calc(var(--togostanza-axis-zero_line_width) * 1px);
-          stroke: var(--togostanza-axis-zero_line_color);
+      > .symbol-g {
+        > path.symbol {
+          cursor: pointer;
         }
-      }
-    }
-    > .axis {
-      > .tick {
-        font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
-        > text {
-          font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
-          font-family: var(--togostanza-fonts-font_family);
-        }
-        > line {
+
+        > .error-bar > line {
           stroke: var(--togostanza-border-color);
           stroke-width: 1px;
+          opacity: 0.8;
+          transition: stroke-opacity 0.3s ease-out;
         }
-      }
-
-      > path {
-        stroke: var(--togostanza-border-color);
-        stroke-width: 1px;
-      }
-    }
-    > .title-container {
-      text.title {
-        font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
       }
     }
   }

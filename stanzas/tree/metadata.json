@@ -27,119 +27,90 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "sort-key",
-      "stanza:type": "text",
-      "stanza:example": "id",
-      "stanza:description": "Sort data points by this data key"
-    },
-    {
-      "stanza:key": "sort-order",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["ascending", "descending"],
-      "stanza:example": "ascending",
-      "stanza:description": "Sorting order"
-    },
-    {
-      "stanza:key": "graph-align_leaf_nodes",
+      "stanza:key": "layout-align_leaf_nodes",
       "stanza:type": "boolean",
       "stanza:label": "Align leaf nodes",
-      "stanza:example": false,
+      "stanza:example": true,
       "stanza:description": "Whether to align leaf nodes"
     },
     {
-      "stanza:key": "graph-layout",
+      "stanza:key": "layout-orientation",
       "stanza:type": "single-choice",
-      "stanza:choice": ["horizontal", "vertical", "radial"],
-      "stanza:example": "horizontal",
+      "stanza:choice": ["radial", "horizontal", "vertical"],
+      "stanza:example": "radial",
       "stanza:description": "Tree layout"
     },
     {
-      "stanza:key": "node-label-key",
+      "stanza:key": "node-label_key",
       "stanza:type": "text",
       "stanza:example": "name",
       "stanza:description": "Data key to map labels"
     },
     {
-      "stanza:key": "node-label-margin",
+      "stanza:key": "node-label_margin",
       "stanza:type": "number",
       "stanza:example": 8,
       "stanza:description": "Margin in px from point to label"
     },
     {
-      "stanza:key": "node-size-key",
+      "stanza:key": "node-size_key",
       "stanza:type": "text",
       "stanza:example": "size",
       "stanza:description": "What data key value to use to scale size of the node"
     },
     {
-      "stanza:key": "node-size-min",
+      "stanza:key": "node-size_min",
       "stanza:type": "number",
       "stanza:example": 8,
       "stanza:description": "Minimum node diameter in px"
     },
     {
-      "stanza:key": "node-size-max",
+      "stanza:key": "node-size_max",
       "stanza:type": "number",
       "stanza:example": 8,
       "stanza:description": "Maximum node diameter in px"
     },
     {
-      "stanza:key": "node-color-key",
+      "stanza:key": "node-color_key",
       "stanza:type": "text",
       "stanza:example": "color",
       "stanza:description": "Data key to color the data points. if all data keys values includes hex color, use that color, otherwise use ordinal scale from the theme colors."
     },
     {
-      "stanza:key": "node-color-group",
+      "stanza:key": "group-key",
       "stanza:type": "text",
       "stanza:example": "group",
       "stanza:description": "Data key to use to define group color"
     },
     {
-      "stanza:key": "node-color-blend",
+      "stanza:key": "node-color_blend",
       "stanza:type": "single-choice",
       "stanza:choice": ["normal", "translucent", "multiply", "screen"],
       "stanza:example": "normal",
       "stanza:description": "Blend mode for overlaying nodes"
     },
     {
-      "stanza:key": "tooltips-key",
-      "stanza:type": "text",
-      "stanza:example": "name",
-      "stanza:description": "Data key to use as tooltip text"
+      "stanza:key": "tooltip",
+      "stanza:type": "html",
+      "stanza:example": "{{#if url}}<a href={{url}}>{{name}}</a>{{else}}<span>{{name}}</span>{{/if}}",
+      "stanza:description": "A handlebars HTML template string to show in tooltip"
+    },
+    {
+      "stanza:key": "event-incoming_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:label": "Receive a change event of selected nodes"
+    },
+    {
+      "stanza:key": "event-outgoing_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:label": "Emit a change event of selected nodes"
     },
     {
       "stanza:key": "togostanza-custom_css_url",
       "stanza:example": "",
       "stanza:description": "Custom css to apply"
-    },
-    {
-      "stanza:key": "event-incoming_change_selected_nodes",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:description": "Receive a change event of selected nodes",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "event-outgoing_change_selected_nodes",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:description": "Emit a change event of selected nodes",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "event-incoming_change_selected_nodes",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:description": "Receive a change event of selected nodes",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "event-outgoing_change_selected_nodes",
-      "stanza:type": "boolean",
-      "stanza:example": true,
-      "stanza:description": "Emit a change event of selected nodes",
-      "stanza:required": false
     }
   ],
   "stanza:menu-placement": "bottom-right",
@@ -153,7 +124,7 @@
     {
       "stanza:key": "--togostanza-canvas-height",
       "stanza:type": "number",
-      "stanza:default": 1800,
+      "stanza:default": 600,
       "stanza:description": "Canvas height"
     },
     {
@@ -203,12 +174,6 @@
       "stanza:type": "color",
       "stanza:default": "rgba(255,255,255,0)",
       "stanza:description": "Background color"
-    },
-    {
-      "stanza:key": "--togostanza-theme-selected_border_color",
-      "stanza:type": "color",
-      "stanza:default": "#FF0000",
-      "stanza:description": "Color applied to the selected item"
     },
     {
       "stanza:key": "--togostanza-fonts-font_family",

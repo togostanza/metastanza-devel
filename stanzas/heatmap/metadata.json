@@ -68,7 +68,7 @@
       "stanza:description": "Title and X axis gap in px"
     },
     {
-      "stanza:key": "axis-x-ticks_labels_angle",
+      "stanza:key": "axis-x-ticks_label_angle",
       "stanza:type": "number",
       "stanza:example": 0,
       "stanza:description": "X ticks labels angle (in degree)"
@@ -100,7 +100,7 @@
       "stanza:description": "Title and Y axis gap in px"
     },
     {
-      "stanza:key": "axis-y-ticks_labels_angle",
+      "stanza:key": "axis-y-ticks_label_angle",
       "stanza:type": "number",
       "stanza:example": 0,
       "stanza:description": "Y ticks labels angle (in degree)"
@@ -121,19 +121,19 @@
     },
     {
       "stanza:key": "cell-color_min",
-      "stanza:type": "text",
+      "stanza:type": "color",
       "stanza:example": "#6590e6",
       "stanza:description": "Cell color range min"
     },
     {
       "stanza:key": "cell-color_mid",
-      "stanza:type": "text",
+      "stanza:type": "color",
       "stanza:example": "#ffffff",
       "stanza:description": "Cell color range mid"
     },
     {
       "stanza:key": "cell-color_max",
-      "stanza:type": "text",
+      "stanza:type": "color",
       "stanza:example": "#F75976",
       "stanza:description": "Cell color range max"
     },
@@ -156,10 +156,10 @@
       "stanza:description": "Cell color domain max"
     },
     {
-      "stanza:key": "tooltips-key",
-      "stanza:type": "text",
-      "stanza:example": "value",
-      "stanza:description": "Data key to use as tooltip"
+      "stanza:key": "tooltip",
+      "stanza:type": "html",
+      "stanza:example": "{{#if url}}<a href={{url}}>{{value}}</a>{{else}}<span>{{value}}</span>{{/if}}",
+      "stanza:description": "A handlebars HTML template string to show in tooltip"
     },
     {
       "stanza:key": "event-incoming_change_selected_nodes",
@@ -237,12 +237,6 @@
       "stanza:type": "color",
       "stanza:default": "#F75976",
       "stanza:description": "Depth color 5"
-    },
-    {
-      "stanza:key": "--togostanza-theme-selected_border_color",
-      "stanza:type": "color",
-      "stanza:default": "#FF0000",
-      "stanza:description": "Color applied to the selected item"
     },
     {
       "stanza:key": "--togostanza-theme-background_color",

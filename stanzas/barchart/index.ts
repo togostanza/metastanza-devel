@@ -17,11 +17,8 @@ import { emitSelectedEvent, toggleSelectedIdsMultiple } from "../../lib/utils";
 export default class Barchart extends MetaStanza {
   xAxisGen: Axis;
   yAxisGen: Axis;
-  // eslint-disable-next-line @typescript-eslint/ban-types
   _graphArea: d3.Selection<SVGGElement, {}, SVGElement, unknown>;
-  // eslint-disable-next-line @typescript-eslint/ban-types
   _dataByGroup: Map<string | number, {}[]>;
-  // eslint-disable-next-line @typescript-eslint/ban-types
   _dataByX: Map<string | number, {}[]>;
   legend: Legend;
   tooltips: ToolTip;
@@ -76,12 +73,12 @@ export default class Barchart extends MetaStanza {
 
     const xKeyName = this.params["axis-x-key"];
     const yKeyName = this.params["axis-y-key"];
-    const groupKeyName = this.params["grouping-key"];
-    const grouingArrangement = this.params["grouping-arrangement"];
+    const groupKeyName = this.params["group-key"];
+    const grouingArrangement = this.params["group-arrangement"];
 
     const errorKeyName = this.params["errorbar-key"];
     const showErrorBars = this._data.some((d) => d[errorKeyName]);
-    const barColorKey = this.params["color_by-key"];
+    const barColorKey = this.params["node-color_key"];
     const tooltipKey = this.params["tooltips-key"];
     const showLegend = this.params["legend-visible"];
     const legendTitle = this.params["legend-title"];
@@ -101,9 +98,7 @@ export default class Barchart extends MetaStanza {
       return;
     }
 
-    // eslint-disable-next-line @typescript-eslint/ban-types
     this._dataByGroup = values.reduce(
-      // eslint-disable-next-line @typescript-eslint/ban-types
       (map: Map<unknown, {}[]>, curr: { [x: string]: unknown }) => {
         if (!map.has(curr[groupKeyName])) {
           return map.set(curr[groupKeyName], [curr]);
@@ -186,10 +181,8 @@ export default class Barchart extends MetaStanza {
 
     let barGroup: d3.Selection<
       SVGGElement,
-      // eslint-disable-next-line @typescript-eslint/ban-types
       [string | number, {}[]],
       SVGGElement,
-      // eslint-disable-next-line @typescript-eslint/ban-types
       {}
     >;
     let groupScale;
@@ -473,7 +466,6 @@ function drawStackedBars(
 
 function addErrorBars(
   this: Barchart,
-  // eslint-disable-next-line @typescript-eslint/ban-types
   rect: d3.Selection<SVGGElement, {}, BaseType, unknown>,
   errorKeyName: string,
   groupKeyName: string,

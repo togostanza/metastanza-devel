@@ -43,4 +43,17 @@ svg {
       }
     }
   }
+
+  & > .chart-content {
+    &.-nodes-blend-multiply {
+      .chart-node {
+        mix-blend-mode: multiply;
+      }
+    }
+    &.-nodes-blend-screen {
+      .chart-node {
+        mix-blend-mode: screen;
+      }
+    }
+  }
 }

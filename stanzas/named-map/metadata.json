@@ -57,25 +57,6 @@
       "stanza:description": "The topojson property that you want to match against the \"data-url\" key (\"area-color_key\"). e.g.) id, properties.name. (If the hierarchy is one level deeper, separate it with \".\")"
     },
     {
-      "stanza:key": "legend-visible",
-      "stanza:type": "boolean",
-      "stanza:label": "Show legend",
-      "stanza:example": true,
-      "stanza:description": "Whether show the legend"
-    },
-    {
-      "stanza:key": "legend-title",
-      "stanza:type": "text",
-      "stanza:example": "value",
-      "stanza:description": "Legend title"
-    },
-    {
-      "stanza:key": "legend-levels_number",
-      "stanza:type": "number",
-      "stanza:example": 5,
-      "stanza:description": "Number of gradation colors between color-min and color-max"
-    },
-    {
       "stanza:key": "area-color_key",
       "stanza:type": "text",
       "stanza:example": "id",
@@ -89,19 +70,19 @@
     },
     {
       "stanza:key": "area-color_min",
-      "stanza:type": "text",
+      "stanza:type": "color",
       "stanza:example": "#6590e6",
       "stanza:description": "Area color range min"
     },
     {
       "stanza:key": "area-color_mid",
-      "stanza:type": "text",
+      "stanza:type": "color",
       "stanza:example": "#ffffff",
       "stanza:description": "Area color range mid"
     },
     {
       "stanza:key": "area-color_max",
-      "stanza:type": "text",
+      "stanza:type": "color",
       "stanza:example": "#F75976",
       "stanza:description": "Area color range max"
     },
@@ -124,10 +105,29 @@
       "stanza:description": "Area color domain max"
     },
     {
-      "stanza:key": "tooltips-key",
+      "stanza:key": "tooltip",
+      "stanza:type": "html",
+      "stanza:example": "{{#if url}}<a href={{url}}>{{rate}}</a>{{else}}<span>{{rate}}</span>{{/if}}",
+      "stanza:description": "A handlebars HTML template string to show in tooltip"
+    },
+    {
+      "stanza:key": "legend-visible",
+      "stanza:type": "boolean",
+      "stanza:label": "Show legend",
+      "stanza:example": true,
+      "stanza:description": "Whether show the legend"
+    },
+    {
+      "stanza:key": "legend-title",
       "stanza:type": "text",
-      "stanza:example": "rate",
-      "stanza:description": "Data key to use as tooltip"
+      "stanza:example": "value",
+      "stanza:description": "Legend title"
+    },
+    {
+      "stanza:key": "legend-levels_number",
+      "stanza:type": "number",
+      "stanza:example": 5,
+      "stanza:description": "Number of gradation colors between color-min and color-max"
     },
     {
       "stanza:key": "event-incoming_change_selected_nodes",
@@ -205,12 +205,6 @@
       "stanza:type": "color",
       "stanza:default": "#F75976",
       "stanza:description": "Category color 5"
-    },
-    {
-      "stanza:key": "--togostanza-theme-selected_border_color",
-      "stanza:type": "color",
-      "stanza:default": "#FF0000",
-      "stanza:description": "Color applied to the selected item"
     },
     {
       "stanza:key": "--togostanza-theme-background_color",

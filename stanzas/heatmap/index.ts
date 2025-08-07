@@ -7,7 +7,6 @@ import {
   downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
-import { handleApiError } from "../../lib/apiError";
 import { Axis } from "../../lib/AxisMixin";
 import { getGradationColor } from "../../lib/ColorGenerator";
 import MetaStanza from "../../lib/MetaStanza";
@@ -16,6 +15,8 @@ import {
   toggleSelectIds,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
+import ToolTip from "../../lib/ToolTip";
+import Legend from "../../lib/Legend2.js";
 
 interface DataItem {
   [key: string]: string | number;
@@ -31,6 +32,8 @@ export default class Heatmap extends MetaStanza {
   selectedIds: Array<string | number> = [];
   xAxisGen = null;
   yAxisGen = null;
+  legend: Legend;
+  tooltips: ToolTip;
 
   selectedEventParams = {
     targetElementSelector: ".rect",
@@ -58,9 +61,9 @@ export default class Heatmap extends MetaStanza {
 
     // Color scale
     const cellColorKey: string = this.params["cell-color_key"].trim();
-    const cellColorMin: number = this.params["cell-color_min"];
-    const cellColorMid: number = this.params["cell-color_mid"];
-    const cellColorMax: number = this.params["cell-color_max"];
+    const cellColorMin: string = this.params["cell-color_min"];
+    const cellColorMid: string = this.params["cell-color_mid"];
+    const cellColorMax: string = this.params["cell-color_max"];
     let cellDomainMin = parseFloat(this.params["cell-value_min"]);
     let cellDomainMid = parseFloat(this.params["cell-value_mid"]);
     let cellDomainMax = parseFloat(this.params["cell-value_max"]);
@@ -102,7 +105,7 @@ export default class Heatmap extends MetaStanza {
     };
 
     // Tooltip
-    const tooltipKey = this.params["tooltips-key"].trim();
+    const tooltipString = this.params["tooltip"].trim();
 
     // Styles
     const width = parseFloat(this.css("--togostanza-canvas-width")) || 0;
@@ -121,7 +124,7 @@ export default class Heatmap extends MetaStanza {
       placement: this.params["axis-x-placement"],
       domain: [...new Set(dataset.map((d) => d[xKey]))],
       drawArea: axisArea,
-      tickLabelsAngle: this.params["axis-x-ticks_labels_angle"] || 0,
+      tickLabelsAngle: this.params["axis-x-ticks_label_angle"] || 0,
       title: this.params["axis-x-title"] || xKey,
       titlePadding: this.params["axis-x-title_padding"] || 0,
       scale: "ordinal",
@@ -138,7 +141,7 @@ export default class Heatmap extends MetaStanza {
       placement: this.params["axis-y-placement"],
       domain: [...new Set(dataset.map((d) => d[yKey]))],
       drawArea: axisArea,
-      tickLabelsAngle: this.params["axis-y-ticks_labels_angle"] || 0,
+      tickLabelsAngle: this.params["axis-y-ticks_label_angle"] || 0,
       title: this.params["axis-y-title"] || yKey,
       titlePadding: this.params["axis-y-title_padding"] || 0,
       scale: "ordinal",
@@ -166,12 +169,21 @@ export default class Heatmap extends MetaStanza {
       this.yAxisGen = null;
     }
 
-    const drawContent = () => {
+    const drawContent = async () => {
       this._chartArea = select(root)
         .append("svg")
         .classed("svg", true)
         .attr("width", width)
         .attr("height", height);
+
+      // Append tooltips
+      if (tooltipString) {
+        if (!this.tooltips) {
+          this.tooltips = new ToolTip();
+          root.append(this.tooltips);
+        }
+        this.tooltips.setTemplate(tooltipString);
+      }
 
       //Drawing axis
       if (!this.xAxisGen) {
@@ -204,7 +216,13 @@ export default class Heatmap extends MetaStanza {
         .classed("rect", true)
         .attr("x", (d) => this.xAxisGen.scale(d[xKey]))
         .attr("y", (d) => this.yAxisGen.scale(d[yKey]))
-        .attr("data-tooltip", (d) => d[tooltipKey])
+        .attr("data-tooltip", (d) => {
+          if (this.tooltips) {
+            return this.tooltips.compile(d);
+          } else {
+            return false;
+          }
+        })
         .attr("width", this.xAxisGen.scale.bandwidth())
         .attr("height", this.yAxisGen.scale.bandwidth())
         .style("fill", (d) => {
@@ -249,18 +267,22 @@ export default class Heatmap extends MetaStanza {
       this.yAxisGen._g.raise();
     };
 
-    const legendOptions = {
-      isLegendVisible,
-      legendConfiguration,
-    };
-    // Draw content and handle api errors
-    handleApiError({
-      stanzaData: this,
-      drawContent,
-      hasLegend: true,
-      hasTooltip: true,
-      legendOptions,
-    });
+    await drawContent();
+
+    if (isLegendVisible) {
+      if (!this.legend) {
+        this.legend = new Legend();
+        this.root.append(this.legend);
+      }
+      this.legend.setup(legendConfiguration);
+    } else {
+      this.legend?.remove();
+      this.legend = null;
+    }
+
+    if (this.tooltips) {
+      this.tooltips.setup(root.querySelectorAll("[data-tooltip]"));
+    }
 
     // TODO: add color type. ScaleLinear<string, number>.
     // check https://github.com/d3/d3-scale/issues/111, https://github.com/DefinitelyTyped/DefinitelyTyped/issues/38574
