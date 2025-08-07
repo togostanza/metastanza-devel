@@ -63,8 +63,8 @@
           </td>
         </tr>
         <tr v-if="state.isFetching">
-          <td 
-            :colspan="state.columns.length" 
+          <td
+            :colspan="state.columns.length"
             class="togostanza-table-loading-wrapper"
           >
             <div class="togostanza-table-loading-dots"></div>
@@ -170,7 +170,7 @@ export default defineComponent({
           });
         })
       );
-      
+
       state.isFetching = false;
       } catch (error) {
         console.error('Failed to fetch data:', error);
@@ -205,7 +205,7 @@ export default defineComponent({
         const heightFromCss = style.getPropertyValue("--togostanza-canvas-height").trim();
         canvasHeight.value = heightFromCss ? heightFromCss + "px" : "";
       });
-      
+
       fetchData();
     });
 
