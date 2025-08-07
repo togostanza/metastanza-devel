@@ -31,9 +31,7 @@ export default class Text extends MetaStanza {
   private static readonly CONTAINER_CLASS = "container";
   private static readonly PARAGRAPH_CLASS = "paragraph";
   private static readonly HIGHLIGHT_CSS_ATTRIBUTE =
-    "data-togostanza-highlight_css_url";
-  private static readonly HIGHLIGHT_CSS_DATA_ATTRIBUTE =
-    "data-togostanza-highlight-css";
+    "data-togostanza-highlight_css";
 
   /**
    * Creates a new Text stanza instance
@@ -261,7 +259,7 @@ export default class Text extends MetaStanza {
     const link = document.createElement("link");
     link.setAttribute("rel", "stylesheet");
     link.setAttribute("href", url);
-    link.setAttribute(Text.HIGHLIGHT_CSS_DATA_ATTRIBUTE, "");
+    link.setAttribute(Text.HIGHLIGHT_CSS_ATTRIBUTE, "");
     return link;
   }
 }
