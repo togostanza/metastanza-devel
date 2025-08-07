@@ -85,7 +85,7 @@ export default class Tree extends MetaStanza {
     }
 
     //Define from params
-    const nodeGroupKey = this.params["node-color_group"].trim();
+    const nodeGroupKey = this.params["group-key"].trim();
     const width = parseFloat(this.css("--togostanza-canvas-width")) || 0;
     const height = parseFloat(this.css("--togostanza-canvas-height")) || 0;
     const minRadius = this.params["node-size_min"] / 2;

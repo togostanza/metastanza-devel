@@ -68,7 +68,7 @@
       "stanza:description": "Title and X axis gap in px"
     },
     {
-      "stanza:key": "axis-x-ticks_labels_angle",
+      "stanza:key": "axis-x-ticks_label_angle",
       "stanza:type": "number",
       "stanza:example": 0,
       "stanza:description": "X ticks labels angle (in degree)"
@@ -100,7 +100,7 @@
       "stanza:description": "Title and Y axis gap in px"
     },
     {
-      "stanza:key": "axis-y-ticks_labels_angle",
+      "stanza:key": "axis-y-ticks_label_angle",
       "stanza:type": "number",
       "stanza:example": 0,
       "stanza:description": "Y ticks labels angle (in degree)"
