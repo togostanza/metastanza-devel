@@ -672,7 +672,7 @@ export default defineComponent({
             href: column.href ? row[column.href] : null,
             charClampOn: true,
             lineClampOn: true,
-            rowIndex: rowIndex,
+            rowIndex,
           };
         });
       });
