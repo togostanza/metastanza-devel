@@ -44,7 +44,7 @@ svg[data-icon] {
 
 .tableWrapper {
   overflow: auto;
-  background-color: var(--togostanza-background-color);
+  background-color: var(--togostanza-theme-background_color_body);
   > table {
     margin: 0;
     > thead {
@@ -81,7 +81,7 @@ svg[data-icon] {
           &.fixed {
             position: sticky;
             z-index: 10;
-            background-color: var(--togostanza-background-color);
+            background-color: var(--togostanza-theme-background_color_body);
           }
           &.center {
             text-align: center;

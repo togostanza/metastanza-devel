@@ -111,7 +111,7 @@
 }
 
 svg {
-  background-color: var(--togostanza-background-color);
+  background-color: var(--togostanza-theme-background_color);
 
   :has(.-selected) {
     .node {

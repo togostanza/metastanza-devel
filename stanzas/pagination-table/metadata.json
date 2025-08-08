@@ -209,7 +209,7 @@
       "stanza:description": "Horizonal placement of pagination"
     },
     {
-      "stanza:key": "--togostanza-background-color",
+      "stanza:key": "--togostanza-theme-background_color_body",
       "stanza:type": "color",
       "stanza:default": "#FFFFFF",
       "stanza:description": "Background color"
