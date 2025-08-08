@@ -37,12 +37,12 @@ export class Breadcrumbs extends LitElement {
     applyConstructor.call(this, params);
 
     //check if nodes without parents are present
-    if (this.data.some((d) => d[this.nodeKey])) {
+    if (this.data.some((d) => d[this.nodeIdKey])) {
       this.data.forEach((d) => {
         d.parent =
           typeof d.parent === "undefined" ? undefined : d.parent.toString();
-        d[this.nodeKey] = d[this.nodeKey].toString();
-        this.nodesMap.set(d[this.nodeKey], d);
+        d[this.nodeIdKey] = d[this.nodeIdKey].toString();
+        this.nodesMap.set(d[this.nodeIdKey], d);
 
         d[tooltipKeySym] =
           this.tooltipParams?.tooltipsInstance?.compile(d) || null;
@@ -57,14 +57,14 @@ export class Breadcrumbs extends LitElement {
 
     this.nodesMap.forEach((d) => {
       if (typeof d.parent === "undefined") {
-        idsWithoutParent.push(d[this.nodeKey]);
+        idsWithoutParent.push(d[this.nodeIdKey]);
       }
     });
 
     if (idsWithoutParent.length > 1) {
       this.rootNodeId = "root";
       const rootNode = {
-        [this.nodeKey]: this.rootNodeId,
+        [this.nodeIdKey]: this.rootNodeId,
         [this.nodeLabelKey]: this.rootNodeLabelText,
       };
       this.nodesMap.set(this.rootNodeId, rootNode);
@@ -140,12 +140,12 @@ export class Breadcrumbs extends LitElement {
     const node = this.nodesMap.get("" + id);
     const parentId = node.parent;
     const siblings = this._getByParent(parentId).filter(
-      (d) => "" + d[this.nodeKey] !== "" + id
+      (d) => "" + d[this.nodeIdKey] !== "" + id
     );
 
     this.currentMenuItems = siblings.map((d) => ({
       label: d[this.nodeLabelKey],
-      id: d[this.nodeKey],
+      id: d[this.nodeIdKey],
     }));
   }
 
@@ -192,10 +192,10 @@ export class Breadcrumbs extends LitElement {
           <breadcrumbs-node
             @node-hover=${this._handleNodeHover}
             @click=${() => {
-              this.currentId = "" + node[this.nodeKey];
+              this.currentId = "" + node[this.nodeIdKey];
               this.dispatchEvent(
                 new CustomEvent("selectedDatumChanged", {
-                  detail: { id: "" + node[this.nodeKey] },
+                  detail: { id: "" + node[this.nodeIdKey] },
                   bubbles: true,
                   composed: true,
                 })
@@ -203,23 +203,23 @@ export class Breadcrumbs extends LitElement {
             }}
             @menu-item-clicked=${({ detail }) =>
               (this.currentId = "" + detail.id)}
-            data-id="${node[this.nodeKey]}"
+            data-id="${node[this.nodeIdKey]}"
             .tooltip="${node[tooltipKeySym]}"
             .node="${{
               label: node[this.nodeLabelKey],
-              id: node[this.nodeKey],
+              id: node[this.nodeIdKey],
               url: node[this.nodeUrlKey],
             }}"
             .menuItems=${this._getByParent(node.parent)
-              .filter((d) => d[this.nodeKey] !== node[this.nodeKey])
+              .filter((d) => d[this.nodeIdKey] !== node[this.nodeIdKey])
               .map((node) => {
                 return {
                   label: node[this.nodeLabelKey],
-                  id: node[this.nodeKey],
+                  id: node[this.nodeIdKey],
                 };
               })}
             .showDropdown=${this.nodeShowDropdown}
-            .iconName=${node[this.nodeKey] === this.rootNodeId
+            .iconName=${node[this.nodeIdKey] === this.rootNodeId
               ? this.rootNodeLabelIcon
               : null}
           />
