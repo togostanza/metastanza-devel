@@ -82,6 +82,12 @@
       "stanza:label": "Outgoing event",
       "stanza:example": true,
       "stanza:description": "Emit a change event of selected nodes"
+    },
+    {
+      "stanza:key": "togostanza-custom_css_url",
+      "stanza:example": "",
+      "stanza:description": "Stylesheet(scss file) URL to override current style",
+      "stanza:required": false
     }
   ],
   "stanza:style": [
