@@ -62,12 +62,7 @@
       "stanza:example": "normal",
       "stanza:description": "Blend mode for node colors"
     },
-    {
-      "stanza:key": "node-levels_gap_width",
-      "stanza:type": "number",
-      "stanza:example": 2,
-      "stanza:description": "Width of gap between different levels"
-    },
+
     {
       "stanza:key": "node-gap_width",
       "stanza:type": "number",
