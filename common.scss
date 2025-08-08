@@ -3,6 +3,8 @@
   --togostanza-fadeout-transition: opacity 0.2s ease-in,
     background-color 0.2s ease-in;
 
+  --togostanza-edge-opacity: 0.75;
+
   display: block;
   background-color: var(--togostanza-theme-background_color);
   font-family: var(--togostanza-fonts-font_family);
@@ -52,53 +54,53 @@ $togostanza-x3: -$togostanza-left-pos + $togostanza-dot-spacing;
   left: $togostanza-left-pos;
   display: inline-block;
   @include togostanza-table-loading-dot;
-  box-shadow: $togostanza-x1 0 0 0 $togostanza-dot-before-color, 
-              $togostanza-x2 0 0 0 $togostanza-dot-color,
-              $togostanza-x3 0 0 0 $togostanza-dot-after-color;
+  box-shadow: $togostanza-x1 0 0 0 $togostanza-dot-before-color,
+    $togostanza-x2 0 0 0 $togostanza-dot-color,
+    $togostanza-x3 0 0 0 $togostanza-dot-after-color;
   animation: togostanza-dot-typing 1.5s infinite linear;
 }
 
 @keyframes togostanza-dot-typing {
   0% {
-    box-shadow: $togostanza-x1 0 0 0 $togostanza-dot-before-color, 
-                $togostanza-x2 0 0 0 $togostanza-dot-color,
-                $togostanza-x3 0 0 0 $togostanza-dot-after-color;
+    box-shadow: $togostanza-x1 0 0 0 $togostanza-dot-before-color,
+      $togostanza-x2 0 0 0 $togostanza-dot-color,
+      $togostanza-x3 0 0 0 $togostanza-dot-after-color;
   }
 
   16.667% {
-    box-shadow: $togostanza-x1 -5px 0 0 $togostanza-dot-before-color, 
-                $togostanza-x2 0 0 0 $togostanza-dot-color,
-                $togostanza-x3 0 0 0 $togostanza-dot-after-color;
+    box-shadow: $togostanza-x1 -5px 0 0 $togostanza-dot-before-color,
+      $togostanza-x2 0 0 0 $togostanza-dot-color,
+      $togostanza-x3 0 0 0 $togostanza-dot-after-color;
   }
 
   33.333% {
-    box-shadow: $togostanza-x1 0 0 0 $togostanza-dot-before-color, 
-                $togostanza-x2 0 0 0 $togostanza-dot-color,
-                $togostanza-x3 0 0 0 $togostanza-dot-after-color;
+    box-shadow: $togostanza-x1 0 0 0 $togostanza-dot-before-color,
+      $togostanza-x2 0 0 0 $togostanza-dot-color,
+      $togostanza-x3 0 0 0 $togostanza-dot-after-color;
   }
 
   50% {
-    box-shadow: $togostanza-x1 0 0 0 $togostanza-dot-before-color, 
-                $togostanza-x2 -5px 0 0 $togostanza-dot-color,
-                $togostanza-x3 0 0 0 $togostanza-dot-after-color;
+    box-shadow: $togostanza-x1 0 0 0 $togostanza-dot-before-color,
+      $togostanza-x2 -5px 0 0 $togostanza-dot-color,
+      $togostanza-x3 0 0 0 $togostanza-dot-after-color;
   }
 
   66.667% {
-    box-shadow: $togostanza-x1 0 0 0 $togostanza-dot-before-color, 
-                $togostanza-x2 0 0 0 $togostanza-dot-color,
-                $togostanza-x3 0 0 0 $togostanza-dot-after-color;
+    box-shadow: $togostanza-x1 0 0 0 $togostanza-dot-before-color,
+      $togostanza-x2 0 0 0 $togostanza-dot-color,
+      $togostanza-x3 0 0 0 $togostanza-dot-after-color;
   }
 
   83.333% {
-    box-shadow: $togostanza-x1 0 0 0 $togostanza-dot-before-color, 
-                $togostanza-x2 0 0 0 $togostanza-dot-color,
-                $togostanza-x3 -5px 0 0 $togostanza-dot-after-color;
+    box-shadow: $togostanza-x1 0 0 0 $togostanza-dot-before-color,
+      $togostanza-x2 0 0 0 $togostanza-dot-color,
+      $togostanza-x3 -5px 0 0 $togostanza-dot-after-color;
   }
 
   100% {
-    box-shadow: $togostanza-x1 0 0 0 $togostanza-dot-before-color, 
-                $togostanza-x2 0 0 0 $togostanza-dot-color,
-                $togostanza-x3 0 0 0 $togostanza-dot-after-color;
+    box-shadow: $togostanza-x1 0 0 0 $togostanza-dot-before-color,
+      $togostanza-x2 0 0 0 $togostanza-dot-color,
+      $togostanza-x3 0 0 0 $togostanza-dot-after-color;
   }
 }
 
