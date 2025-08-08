@@ -30,7 +30,7 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "color-blend",
+      "stanza:key": "area-color-blend",
       "stanza:type": "single-choice",
       "stanza:choice": ["normal", "multiply", "screen"],
       "stanza:example": "screen",
