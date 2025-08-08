@@ -132,10 +132,10 @@ export default class ForceGraph extends MetaStanza {
       };
 
       const nodeSizeParams = {
-        dataKey: this.params["node-size-key"] || "",
-        minSize: setFallbackNumVal(this.params["node-size-min"], 3),
-        maxSize: this.params["node-size-max"],
-        scale: this.params["node-size-scale"] || "linear",
+        dataKey: this.params["node-size_key"] || "",
+        minSize: setFallbackNumVal(this.params["node-size_min"], 3),
+        maxSize: this.params["node-size_max"],
+        scale: this.params["node-size_scale"] || "linear",
       };
 
       const nodeColorParams = {
