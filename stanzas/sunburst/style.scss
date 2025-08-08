@@ -41,5 +41,26 @@ g {
     &.selectable {
       cursor: pointer;
     }
+
+    // Add smooth transition for fill color changes
+    transition: fill 0.75s ease;
+  }
+
+  &.-nodes-blend-multiply {
+    path {
+      mix-blend-mode: multiply;
+    }
+    circle {
+      mix-blend-mode: multiply;
+    }
+  }
+
+  &.-nodes-blend-screen {
+    path {
+      mix-blend-mode: screen;
+    }
+    circle {
+      mix-blend-mode: screen;
+    }
   }
 }
