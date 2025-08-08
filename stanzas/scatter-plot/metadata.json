@@ -351,6 +351,12 @@
       "stanza:description": "Border color"
     },
     {
+      "stanza:key": "--togostanza-grid-color",
+      "stanza:type": "color",
+      "stanza:default": "#4E5059",
+      "stanza:description": "Gridlines color"
+    },
+    {
       "stanza:key": "--togostanza-border-width",
       "stanza:type": "number",
       "stanza:default": 0.5,
