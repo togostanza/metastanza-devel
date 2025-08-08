@@ -26,25 +26,12 @@
       "stanza:description": "Data type",
       "stanza:required": true
     },
-    {
-      "stanza:key": "data-interpretation",
-      "stanza:type": "single-choice",
-      "stanza:choice": ["categorical", "distribution"],
-      "stanza:example": "categorical",
-      "stanza:description": "\"categorical\" is interpreted as a so-called bar chart, and \"distribution\" as a histogram."
-    },
-    {
-      "stanza:key": "data-bin-count",
-      "stanza:type": "number",
-      "stanza:example": 20,
-      "stanza:default": 20,
-      "stanza:description": "Specifies the number of histograms. Valid when \"distribution\" is selected for \"data-interpretation\"."
-    },
+    
     {
       "stanza:key": "axis-x-key",
       "stanza:type": "text",
       "stanza:example": "chromosome",
-      "stanza:description": "X axis data key",
+  "stanza:description": "X axis data key (categorical)",
       "stanza:required": true
     },
     {
@@ -120,7 +107,7 @@
     {
       "stanza:key": "axis-y-title",
       "stanza:type": "text",
-      "stanza:example": "Data",
+  "stanza:example": "Value",
       "stanza:computed": true,
       "stanza:description": "Axis title",
       "stanza:required": false

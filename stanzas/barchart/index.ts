@@ -1,4 +1,4 @@
-import { BaseType, bin, scaleBand, scaleOrdinal, select, Selection } from "d3";
+import { BaseType, scaleBand, scaleOrdinal, select, Selection } from "d3";
 import { AxisDomain } from "d3-axis";
 import {
   downloadCSVMenuItem,
@@ -57,15 +57,8 @@ export default class Barchart extends MetaStanza {
       this.tooltips.setTemplate(tooltipString);
     }
 
-    // If "binKey" is specified, this component behaves as a histogram; if not, it behaves as a bar chart.
-    switch (this.params["data-interpretation"]) {
-      case "categorical":
-        this.drawBarChart(svg);
-        break;
-      case "distribution":
-        this.drawHistogram(svg);
-        break;
-    }
+  // Always behave as a bar chart
+  this.drawBarChart(svg);
   }
 
   drawBarChart(svg: Selection<SVGSVGElement, unknown, null, undefined>) {
@@ -252,101 +245,7 @@ export default class Barchart extends MetaStanza {
     }
   }
 
-  drawHistogram(svg: Selection<SVGSVGElement, unknown, null, undefined>) {
-    const xKeyName = this.params["axis-x-key"];
-
-    const values: Record<string, number>[] = structuredClone(this._data);
-
-    try {
-      paramsModel.parse(this.params);
-    } catch (error) {
-      console.log(error);
-      return;
-    }
-
-    const data = values.map((d) => +d[xKeyName]);
-    const height =
-      +this.css("--togostanza-canvas-height") -
-      this.MARGIN.TOP -
-      this.MARGIN.BOTTOM;
-
-    this._graphArea = svg.append("g").attr("class", "chart");
-
-    // ビンの設定
-    const bins = bin().thresholds(+this.params["data-bin-count"] || 10)(data);
-
-    bins.forEach((bin) => {
-      // 各ビンにデータ元のデータを追加
-      bin["__values__"] = values.filter(
-        (value) => value[xKeyName] >= bin.x0 && value[xKeyName] < bin.x1
-      );
-    });
-
-    if (!this.xAxisGen) {
-      this.xAxisGen = new Axis(svg.node());
-    }
-    if (!this.yAxisGen) {
-      this.yAxisGen = new Axis(svg.node());
-    }
-
-    // X軸のスケールをビンのデータに合わせて設定
-    const xAxisDomain = [bins[0].x0, bins.at(-1).x1];
-    const xParams = getXAxisParams.apply(this, [xAxisDomain, "linear"]);
-
-    this.xAxisGen.update(xParams);
-
-    // Y軸のスケールをビンのデータに合わせて設定
-    const yParams = getYAxis.apply(this, [
-      [0, Math.max(...bins.map((d) => d.length)) * 1.02],
-    ]);
-
-    this.yAxisGen.update(yParams);
-
-    this._graphArea.attr(
-      "transform",
-      `translate(${this.xAxisGen.axisArea.x},${this.xAxisGen.axisArea.y})`
-    );
-
-    // バーを描画
-    const bar = this._graphArea
-      .selectAll(".bar")
-      .data(bins)
-      .enter()
-      .append("g")
-      .attr("class", "bar")
-      .attr(
-        "transform",
-        (d) => `translate(${this.xAxisGen.axisGen.scale()(d.x0) + 1},0)`
-      );
-
-    const css = (key) => getComputedStyle(this.element).getPropertyValue(key);
-    const fill = css("--togostanza-theme-series_0_color");
-
-    bar
-      .append("rect")
-      .attr("y", (d) => this.yAxisGen.scale(d.length))
-      .attr(
-        "width",
-        this.xAxisGen.scale(bins[0].x1) - this.xAxisGen.scale(bins[0].x0) - 2
-      )
-      .attr("height", (d) => height - this.yAxisGen.scale(d.length))
-      .attr("fill", fill);
-
-    if (this.params["event-outgoing_change_selected_nodes"]) {
-      bar.on("click", (_, d) => {
-        const ids = d["__values__"].map((value) => value["__togostanza_id__"]);
-        toggleSelectedIdsMultiple({
-          selectedIds: this.selectedIds,
-          targetIds: ids,
-        });
-
-        emitSelectedEventByHistogram.apply(this, [
-          this.selectedIds,
-          this.params["data-url"],
-        ]);
-      });
-    }
-  }
+  // drawHistogram is removed in the separated histogram stanza
 
   handleEvent(event) {
     const { selectedIds, dataUrl } = event.detail;
@@ -531,44 +430,14 @@ function emitSelectedEventByBarChart(
   });
   changeSelectedStyle.apply(this, [ids]);
 }
-function emitSelectedEventByHistogram(
-  this: Barchart,
-  ids: unknown[],
-  dataUrl: string
-) {
-  // dispatch event
-  emitSelectedEvent({
-    rootElement: this.element,
-    targetId: ids[0],
-    selectedIds: ids,
-    dataUrl,
-  });
-
-  changeSelectedStyle.apply(this, [ids]);
-}
+// emitSelectedEventByHistogram is removed
 
 function changeSelectedStyle(this: Barchart, ids: (string | number)[]) {
-  switch (this.params["data-interpretation"]) {
-    case "categorical":
-      {
-        const barGroups = this._graphArea.selectAll("g.bar-group");
-        barGroups.classed(
-          "-selected",
-          (d) => ids.indexOf(d[1][0].__togostanza_id__) !== -1
-        );
-      }
-      break;
-    case "distribution":
-      {
-        const bars = this._graphArea.selectAll("g.bar");
-        bars.classed("-selected", (d) =>
-          d["__values__"].some((value) =>
-            ids.includes(value["__togostanza_id__"])
-          )
-        );
-      }
-      break;
-  }
+  const barGroups = this._graphArea.selectAll("g.bar-group");
+  barGroups.classed(
+    "-selected",
+    (d) => ids.indexOf(d[1][0].__togostanza_id__) !== -1
+  );
 }
 
 /**

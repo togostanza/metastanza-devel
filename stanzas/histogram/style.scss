@@ -1,0 +1,46 @@
+@use "@/common.scss";
+
+svg {
+  .tick > text {
+    font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+    font-family: var(--togostanza-fonts-font_family);
+  }
+
+  line.grid-line {
+    stroke: var(--togostanza-grid-color);
+  }
+
+  text.title {
+    font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+  }
+
+  .bar {
+    > rect {
+      stroke-width: 0.5px;
+      stroke: var(--togostanza-border-color);
+      transition: var(--togostanza-fadeout-transition);
+      cursor: pointer;
+    }
+
+    &.-selected,
+    &:hover {
+      > rect {
+        opacity: 1 !important;
+      }
+    }
+  }
+
+  &:has(.bar.-selected) {
+    .bar > rect {
+      opacity: var(--togostanza-fadeout-opacity);
+    }
+  }
+}
+
+.axis-container {
+  pointer-events: none;
+}
+
+main {
+  background-color: var(--togostanza-theme-background_color);
+}
