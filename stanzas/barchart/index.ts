@@ -46,6 +46,13 @@ export default class Barchart extends MetaStanza {
       .attr("width", +this.css("--togostanza-canvas-width"))
       .attr("height", +this.css("--togostanza-canvas-height"));
 
+    // Backward compatibility notice: data-interpretation is no longer supported in barchart
+    if (this.params["data-interpretation"]) {
+      console.warn(
+        "[barchart] 'data-interpretation' is deprecated. Use 'histogram' stanza for distributions."
+      );
+    }
+
     const tooltipString = this.params["tooltip"];
 
     if (tooltipString) {

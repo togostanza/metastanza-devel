@@ -68,3 +68,9 @@ If the data grouping key is not present, all bars with the same `axis-x-key` wou
 #### Grouped
 
 If the data grouping key is not present, grouping will result in showing add data with same `axis-x-key` on top of each other, with default color.
+
+## Migration notes
+
+- Parameter `data-interpretation` has been removed from barchart.
+- If you were using `data-interpretation: distribution`, please switch to the new `histogram` stanza.
+- `data-bin-count` moved to `histogram` stanza.
