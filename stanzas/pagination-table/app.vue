@@ -679,7 +679,11 @@ export default defineComponent({
       
       state.isFetching = false;
       } catch (error) {
-        console.error('Failed to fetch data:', error);
+        if (process.env.NODE_ENV !== 'production') {
+          console.error('Failed to fetch data:', error);
+        } else {
+          console.error('Failed to fetch data');
+        }
         state.hasError = true;
         state.isFetching = false;
       }
@@ -952,7 +956,7 @@ function searchByEachColumn(row) {
 
 function formattedValue(format, val) {
   try {
-    // 数値に変換できない場合はそのまま返す
+    // If it cannot be converted to a number, return it as is
     const numVal = Number(val);
     if (isNaN(numVal)) {
       return val;

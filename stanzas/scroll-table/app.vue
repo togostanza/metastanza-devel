@@ -173,7 +173,11 @@ export default defineComponent({
 
       state.isFetching = false;
       } catch (error) {
-        console.error('Failed to fetch data:', error);
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Failed to fetch data:', error);
+        } else {
+          console.error('Failed to fetch data.');
+        }
         state.hasError = true;
         state.isFetching = false;
       }
@@ -197,7 +201,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      // CSS変数を読み取り、キャンバスサイズを設定
+      // Read CSS variables and set canvas size
       requestAnimationFrame(() => {
         const style = window.getComputedStyle(rootElement.value);
         const widthFromCss = style.getPropertyValue("--togostanza-canvas-width").trim();
