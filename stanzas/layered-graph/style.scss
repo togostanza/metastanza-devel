@@ -15,6 +15,12 @@ svg > defs > marker > path {
   transition-property: opacity, stroke-width, stroke-opacity;
 }
 
+:host {
+  --active-stroke-width: calc(var(--togostanza-border-width) * 2.5px);
+  --half-active-opacity: calc(var(--togostanza-fadeout-opacity) + 0.3);
+  --half-active-stroke-width: calc(var(--togostanza-border-width) * 1.6px);
+}
+
 svg > g {
   &.-nodes-blend-multiply {
     .node-g > circle {
@@ -40,27 +46,23 @@ g.node-g {
     opacity: 1 !important;
   }
 
-  & > a > .node-label {
-    text-decoration: underline;
-  }
-
   &.-active {
     > .node-label {
       opacity: 1;
     }
     > .node {
       opacity: 1;
-      stroke-width: calc(var(--togostanza-border-width) * 2.5px);
+      stroke-width: var(--active-stroke-width);
     }
   }
 
   &.-half-active {
     > .node-label {
-      stroke-opacity: calc(var(--togostanza-fadeout-opacity) + 0.3);
+      stroke-opacity: var(--half-active-opacity);
     }
     > .node {
-      stroke-opacity: calc(var(--togostanza-fadeout-opacity) + 0.3);
-      stroke-width: calc(var(--togostanza-border-width) * 1.5px);
+      stroke-opacity: var(--half-active-opacity);
+      stroke-width: var(--half-active-stroke-width);
     }
   }
 
@@ -81,7 +83,7 @@ g.node-g {
     opacity: 0.4;
   }
   &.-half-active {
-    opacity: calc(var(--togostanza-fadeout-opacity) + 0.3);
+    opacity: var(--half-active-opacity);
   }
   &.-fadeout {
     opacity: var(--togostanza-fadeout-opacity);
@@ -92,7 +94,7 @@ g.node-g {
   opacity: calc(var(--togostanza-fadeout-opacity) * 0.2);
   stroke: var(--togostanza-outline-color);
   stroke-linejoin: round;
-  stroke-width: calc(var(--togostanza-border-width) * 1.5px);
+  stroke-width: var(--half-active-stroke-width);
   fill: var(--togostanza-group_plane-color);
   stroke-opacity: 0.2;
   &.-active {
@@ -117,9 +119,25 @@ svg {
   :has(.-selected) {
     .node-g {
       opacity: var(--togostanza-fadeout-opacity);
+
+      &.-active {
+        opacity: 1;
+      }
+      &.-half-active {
+        opacity: var(--half-active-opacity);
+        stroke-width: var(--half-active-stroke-width);
+      }
     }
     .link {
       opacity: var(--togostanza-fadeout-opacity);
+
+      &.-active {
+        fill-opacity: var(--togostanza-edge-opacity);
+        stroke: var(--togostanza-edge-color);
+        stroke-width: 0.5px;
+        stroke-opacity: var(--togostanza-edge-opacity);
+        opacity: 1;
+      }
     }
   }
 }
