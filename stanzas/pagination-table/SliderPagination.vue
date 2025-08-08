@@ -48,7 +48,7 @@
         of {{ totalPages }}
       </div>
     </div>
-    <template v-if="isSliderOn === 'true' && totalPages > 5">
+    <template v-if="isSliderOn && totalPages > 5">
       <canvas ref="canvas" class="canvas"></canvas>
       <Slider
         v-model="inputtingCurrentPage"
@@ -93,8 +93,8 @@ export default defineComponent({
       default: 1,
     },
     isSliderOn: {
-      type: String,
-      default: "true",
+      type: Boolean,
+      default: true,
     },
   },
   emits: ["updateCurrentPage"],
@@ -134,7 +134,7 @@ export default defineComponent({
 
         const style = window.getComputedStyle(paginationWrapper.value);
         const value = style.getPropertyValue(
-          "--togostanza-pagination-placement-vertical"
+          "--togostanza-pagination-placement_vertical"
         );
         const tablePaginationOrder = {
           top: "column",
@@ -179,7 +179,7 @@ export default defineComponent({
       context.emit("updateCurrentPage", num);
     }
 
-    if (props.isSliderOn === "true") {
+    if (props.isSliderOn) {
       onUpdated(drawKnobArrow);
     }
 

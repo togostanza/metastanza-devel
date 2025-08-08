@@ -1,10 +1,10 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <div
-    class="tableWrapper"
-    :style="`width: ${width}px; height: ${height}px;`"
-    @scroll="handleScroll"
-  >
+  <div ref="rootElement" class="wrapper" :style="`width: ${canvasWidth}; height: ${canvasHeight};`">
+    <div
+      class="tableWrapper"
+      @scroll="handleScroll"
+    >
     <table v-if="state.allRows">
       <thead ref="thead">
         <tr>
@@ -63,13 +63,23 @@
           </td>
         </tr>
         <tr v-if="state.isFetching">
-          <td :colspan="state.columns.length" class="loadingWrapper">
-            <div class="dotTyping"></div>
+          <td
+            :colspan="state.columns.length"
+            class="togostanza-table-loading-wrapper"
+          >
+            <div class="togostanza-table-loading-dots"></div>
           </td>
         </tr>
       </tbody>
     </table>
+    <div v-if="state.hasError" class="togostanza-table-error-message">
+      {{ message_load_error }}
+    </div>
+    <div v-else-if="state.allRows && state.allRows.length === 0 && !state.isFetching" class="togostanza-table-no-data">
+      {{ message_not_found }}
+    </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -94,6 +104,12 @@ export default defineComponent({
   },
   props: metadata["stanza:parameter"].map((p) => p["stanza:key"]),
   setup(params) {
+    const rootElement = ref(null);
+    const canvasWidth = ref("100%");
+    const canvasHeight = ref("");
+    const message_not_found = ref(params["message-not_found"]);
+    const message_load_error = ref(params["message-load_error"]);
+
     const state = reactive({
       columns: [],
       allRows: [],
@@ -101,21 +117,24 @@ export default defineComponent({
       offset: 0,
 
       isFetching: false,
+      hasError: false,
 
       thListWidth: [],
     });
 
     async function fetchData() {
       state.isFetching = true;
+      state.hasError = false;
 
-      const data = await loadData(
-        params.dataUrl,
-        params.dataType,
-        params.main,
-        undefined,
-        params.pageSize,
-        state.offset
-      );
+      try {
+        const data = await loadData(
+          params.dataUrl,
+          params.dataType,
+          params.main,
+          undefined,
+          params.pageSize,
+          state.offset
+        );
 
       if (params.columns) {
         state.columns = JSON.parse(params.columns).map((column, index) => {
@@ -151,7 +170,17 @@ export default defineComponent({
           });
         })
       );
+
       state.isFetching = false;
+      } catch (error) {
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Failed to fetch data:', error);
+        } else {
+          console.error('Failed to fetch data.');
+        }
+        state.hasError = true;
+        state.isFetching = false;
+      }
     }
 
     function handleScroll(e) {
@@ -172,6 +201,15 @@ export default defineComponent({
     }
 
     onMounted(() => {
+      // Read CSS variables and set canvas size
+      requestAnimationFrame(() => {
+        const style = window.getComputedStyle(rootElement.value);
+        const widthFromCss = style.getPropertyValue("--togostanza-canvas-width").trim();
+        canvasWidth.value = widthFromCss ? widthFromCss + "px" : "100%";
+        const heightFromCss = style.getPropertyValue("--togostanza-canvas-height").trim();
+        canvasHeight.value = heightFromCss ? heightFromCss + "px" : "";
+      });
+
       fetchData();
     });
 
@@ -186,10 +224,12 @@ export default defineComponent({
     return {
       state,
       handleScroll,
-      width: params.width,
-      height: params.height,
-      padding: params.padding,
+      rootElement,
+      canvasWidth,
+      canvasHeight,
       thead,
+      message_not_found,
+      message_load_error,
     };
   },
 });

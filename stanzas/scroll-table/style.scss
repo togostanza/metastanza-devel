@@ -21,7 +21,16 @@ main {
   box-sizing: border-box;
   margin: 0;
   list-style: none;
-  font-family: var(--togostanza-font-family);
+  color: var(--togostanza-fonts-font_color);
+  font-family: var(--togostanza-fonts-font_family);
+  font-size: var(--togostanza-fonts-font_size_secondary);
+}
+
+// FontAwesome SVG icons initial size control to prevent flash of large icons
+svg[data-icon] {
+  width: 1em !important;
+  height: 1em !important;
+  font-size: inherit !important;
 }
 
 #renderDiv {
@@ -38,49 +47,37 @@ main {
   background-color: var(--togostanza-background-color);
   > table {
     margin: 0;
-    border-bottom: var(--togostanza-table-border);
-    box-shadow: var(--togostanza-table-shadow);
     > thead {
-      background-color: var(--togostanza-thead-background-color);
-      font-size: var(--togostanza-thead-font-size);
-      color: var(--togostanza-thead-font-color);
+      background-color: var(--togostanza-table-thead-background_color);
+      font-size: calc(var(--togostanza-fonts-font_size) * 1px);
+      color: var(--togostanza-table-thead-font_color);
       margin-bottom: 0;
       > tr {
         > th {
-          color: var(--togostanza-thead-font-color);
-          font-weight: var(--togostanza-thead-font-weight);
-          background-color: var(--togostanza-thead-background-color);
+          color: var(--togostanza-table-thead-font_color);
+          font-weight: bold;
+          background-color: var(--togostanza-table-thead-background_color);
           position: sticky;
           top: 0;
           &.fixed {
             position: sticky;
             z-index: 20;
           }
-          &:before {
-            border-bottom: var(--togostanza-table-border);
-          }
-          &:after {
-            border-bottom: var(--togostanza-thead-border-bottom);
-          }
         }
       }
     }
     > tbody {
-      font-size: var(--togostanza-tbody-font-size);
+      font-size: calc(var(--togostanza-fonts-font_size) * 1px);
       color: var(--togostanza-tbody-font-color);
-      border-right: var(--tbody-border-right);
-      border-bottom: var(--togostanza-tbody-border-bottom);
-      border-left: var(--tbody-border-left);
       > tr {
         &:nth-child(odd) {
-          background-color: var(--togostanza-tbody-odd-background-color);
+          background-color: var(--togostanza-table-tbody-odd_background_color);
         }
         &:nth-child(even) {
-          background-color: var(--togostanza-tbody-even-background-color);
+          background-color: var(--togostanza-table-tbody-even_background_color);
         }
         > td {
-          font-size: var(--togostanza-tbody-font-size);
-          border-bottom: var(--togostanza-tbody-border-bottom);
+          font-size: calc(var(--togostanza-fonts-font_size) * 1px);
           &.fixed {
             position: sticky;
             z-index: 10;
@@ -112,76 +109,7 @@ main {
             display: block;
           }
         }
-        &:last-of-type {
-          > td {
-            border-bottom: none;
-          }
-        }
       }
     }
-  }
-}
-
-$dot-width: 4px;
-$dot-color: var(--togostanza-tbody-font-color);
-$dot-spacing: $dot-width * 1.5 !default;
-$dot-before-color: $dot-color !default;
-$dot-after-color: $dot-color !default;
-$left-pos: -9999px;
-$x1: -$left-pos - $dot-spacing;
-$x2: -$left-pos;
-$x3: -$left-pos + $dot-spacing;
-
-@mixin dot {
-  width: $dot-width;
-  height: $dot-width;
-  border-radius: 50%;
-  background-color: $dot-color;
-}
-
-.dotTyping {
-  position: relative;
-  left: $left-pos;
-  display: inline-block;
-  @include dot;
-  box-shadow: $x1 0 0 0 $dot-before-color, $x2 0 0 0 $dot-color,
-    $x3 0 0 0 $dot-after-color;
-  animation: dot-typing 1.5s infinite linear;
-}
-
-@keyframes dot-typing {
-  0% {
-    box-shadow: $x1 0 0 0 $dot-before-color, $x2 0 0 0 $dot-color,
-      $x3 0 0 0 $dot-after-color;
-  }
-
-  16.667% {
-    box-shadow: $x1 -5px 0 0 $dot-before-color, $x2 0 0 0 $dot-color,
-      $x3 0 0 0 $dot-after-color;
-  }
-
-  33.333% {
-    box-shadow: $x1 0 0 0 $dot-before-color, $x2 0 0 0 $dot-color,
-      $x3 0 0 0 $dot-after-color;
-  }
-
-  50% {
-    box-shadow: $x1 0 0 0 $dot-before-color, $x2 -5px 0 0 $dot-color,
-      $x3 0 0 0 $dot-after-color;
-  }
-
-  66.667% {
-    box-shadow: $x1 0 0 0 $dot-before-color, $x2 0 0 0 $dot-color,
-      $x3 0 0 0 $dot-after-color;
-  }
-
-  83.333% {
-    box-shadow: $x1 0 0 0 $dot-before-color, $x2 0 0 0 $dot-color,
-      $x3 -5px 0 0 $dot-after-color;
-  }
-
-  100% {
-    box-shadow: $x1 0 0 0 $dot-before-color, $x2 0 0 0 $dot-color,
-      $x3 0 0 0 $dot-after-color;
   }
 }

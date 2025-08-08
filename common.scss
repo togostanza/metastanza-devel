@@ -24,3 +24,95 @@ svg {
 .legend .title {
   font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
 }
+
+// Common loading animation styles for table components
+$togostanza-dot-width: 4px;
+$togostanza-dot-color: var(--togostanza-fonts-font_color);
+$togostanza-dot-spacing: $togostanza-dot-width * 1.5;
+$togostanza-dot-before-color: $togostanza-dot-color;
+$togostanza-dot-after-color: $togostanza-dot-color;
+$togostanza-left-pos: -9999px;
+$togostanza-x1: -$togostanza-left-pos - $togostanza-dot-spacing;
+$togostanza-x2: -$togostanza-left-pos;
+$togostanza-x3: -$togostanza-left-pos + $togostanza-dot-spacing;
+
+@mixin togostanza-table-loading-dot {
+  width: $togostanza-dot-width;
+  height: $togostanza-dot-width;
+  border-radius: 50%;
+  background-color: $togostanza-dot-color;
+}
+
+.togostanza-table-loading-wrapper {
+  text-align: center;
+}
+
+.togostanza-table-loading-dots {
+  position: relative;
+  left: $togostanza-left-pos;
+  display: inline-block;
+  @include togostanza-table-loading-dot;
+  box-shadow: $togostanza-x1 0 0 0 $togostanza-dot-before-color, 
+              $togostanza-x2 0 0 0 $togostanza-dot-color,
+              $togostanza-x3 0 0 0 $togostanza-dot-after-color;
+  animation: togostanza-dot-typing 1.5s infinite linear;
+}
+
+@keyframes togostanza-dot-typing {
+  0% {
+    box-shadow: $togostanza-x1 0 0 0 $togostanza-dot-before-color, 
+                $togostanza-x2 0 0 0 $togostanza-dot-color,
+                $togostanza-x3 0 0 0 $togostanza-dot-after-color;
+  }
+
+  16.667% {
+    box-shadow: $togostanza-x1 -5px 0 0 $togostanza-dot-before-color, 
+                $togostanza-x2 0 0 0 $togostanza-dot-color,
+                $togostanza-x3 0 0 0 $togostanza-dot-after-color;
+  }
+
+  33.333% {
+    box-shadow: $togostanza-x1 0 0 0 $togostanza-dot-before-color, 
+                $togostanza-x2 0 0 0 $togostanza-dot-color,
+                $togostanza-x3 0 0 0 $togostanza-dot-after-color;
+  }
+
+  50% {
+    box-shadow: $togostanza-x1 0 0 0 $togostanza-dot-before-color, 
+                $togostanza-x2 -5px 0 0 $togostanza-dot-color,
+                $togostanza-x3 0 0 0 $togostanza-dot-after-color;
+  }
+
+  66.667% {
+    box-shadow: $togostanza-x1 0 0 0 $togostanza-dot-before-color, 
+                $togostanza-x2 0 0 0 $togostanza-dot-color,
+                $togostanza-x3 0 0 0 $togostanza-dot-after-color;
+  }
+
+  83.333% {
+    box-shadow: $togostanza-x1 0 0 0 $togostanza-dot-before-color, 
+                $togostanza-x2 0 0 0 $togostanza-dot-color,
+                $togostanza-x3 -5px 0 0 $togostanza-dot-after-color;
+  }
+
+  100% {
+    box-shadow: $togostanza-x1 0 0 0 $togostanza-dot-before-color, 
+                $togostanza-x2 0 0 0 $togostanza-dot-color,
+                $togostanza-x3 0 0 0 $togostanza-dot-after-color;
+  }
+}
+
+// Common message styles for table components
+.togostanza-table-no-data {
+  text-align: center;
+  font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+  color: var(--togostanza-fonts-font_color);
+  padding-top: 1em;
+}
+
+.togostanza-table-error-message {
+  text-align: center;
+  font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+  color: #d32f2f; /* Error color */
+  padding-top: 1em;
+}

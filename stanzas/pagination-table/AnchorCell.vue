@@ -1,19 +1,35 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <a v-if="unescape && lineClamp" :href="href" :target="target">
+  <a v-if="unescape && (lineClamp || charClamp)" :href="href" :target="target">
+    <ClampCell
+      v-if="charClamp"
+      :line-clamp="lineClamp"
+      :char-clamp="charClamp"
+      :char-clamp-on="charClampOn"
+      :unescape="unescape"
+      :value="value"
+      @toggle-char-clamp-on="$emit('toggleCharClampOn')"
+    />
     <LineClampCell
+      v-else
       :line-clamp="lineClamp"
       :unescape="unescape"
       :value="value"
     />
   </a>
   <!-- eslint-disable-next-line vue/no-v-html -->
-  <a v-if="unescape && !lineClamp" :href="href" :target="target" v-html="value">
+  <a v-else-if="unescape && !lineClamp && !charClamp" :href="href" :target="target" v-html="value">
   </a>
   <a v-else :href="href" :target="target">
-    <template v-if="lineClamp">
-      <LineClampCell :line-clamp="lineClamp" :value="value" />
-    </template>
+    <ClampCell
+      v-if="charClamp"
+      :line-clamp="lineClamp"
+      :char-clamp="charClamp"
+      :char-clamp-on="charClampOn"
+      :value="value"
+      @toggle-char-clamp-on="$emit('toggleCharClampOn')"
+    />
+    <LineClampCell v-else-if="lineClamp" :line-clamp="lineClamp" :value="value" />
     <template v-else>
       {{ value }}
     </template>
@@ -23,10 +39,12 @@
 <script>
 import { defineComponent } from "vue";
 import LineClampCell from "./LineClampCell.vue";
+import ClampCell from "./ClampCell.vue";
 
 export default defineComponent({
   components: {
     LineClampCell,
+    ClampCell,
   },
   props: {
     // id: {
@@ -53,6 +71,15 @@ export default defineComponent({
       type: Number,
       default: null,
     },
+    charClamp: {
+      type: Number,
+      default: null,
+    },
+    charClampOn: {
+      type: Boolean,
+      default: true,
+    },
   },
+  emits: ["toggleCharClampOn"],
 });
 </script>

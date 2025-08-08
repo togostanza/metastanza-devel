@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <div ref="rootElement" class="wrapper" :style="`width: ${width};`">
+  <div ref="rootElement" class="wrapper" :style="`width: ${canvasWidth}; height: ${canvasHeight};`">
     <div class="tableOptionWrapper">
       <div class="tableOption">
         <input
@@ -19,7 +19,7 @@
           entries
         </p>
       </div>
-      <div class="tableWrapper" :style="`width: ${width};`">
+      <div class="tableWrapper" :style="`width: ${canvasWidth};`">
         <table
           v-if="state.allRows"
           ref="table"
@@ -186,8 +186,8 @@
                   </transition>
 
                   <font-awesome-icon
-                    v-if="showAxisSelector"
-                    :class="['icon', 'search']"
+                    v-if="showAxisSelector === true"
+                    :class="['icon', 'chart-bar']"
                     icon="chart-bar"
                     @click="handleAxisSelectorButton(column)"
                   />
@@ -239,16 +239,14 @@
                         cell.column.target ? `_${cell.column.target}` : '_blank'
                       "
                       :unescape="cell.column.unescape"
-                      :line-clamp="cell.column.lineClamp"
                       :char-clamp="cell.column.charClamp"
                       :char-clamp-on="cell.column.charClampOn"
                     />
                   </span>
                   <span
-                    v-else-if="cell.column.lineClamp || cell.column.charClamp"
+                    v-else-if="cell.column.charClamp"
                   >
                     <ClampCell
-                      :line-clamp="cell.column.lineClamp"
                       :char-clamp="cell.column.charClamp"
                       :char-clamp-on="cell.charClampOn"
                       :unescape="cell.column.unescape"
@@ -261,15 +259,38 @@
                   <span
                     v-else-if="cell.column.unescape"
                     v-html="cell.value"
+                    :class="{ 
+                      'line-clamp': cell.lineClampOn,
+                      'line-clamp-expanded': !cell.lineClampOn
+                    }"
+                    @click="toggleRowLineClamp(cell.rowIndex)"
                   ></span>
-                  <span v-else>{{ cell.value }}</span>
+                  <span 
+                    v-else 
+                    :class="{ 
+                      'line-clamp': cell.lineClampOn,
+                      'line-clamp-expanded': !cell.lineClampOn
+                    }"
+                    @click="toggleRowLineClamp(cell.rowIndex)"
+                  >{{ cell.value }}</span>
                 </td>
               </template>
             </tr>
+            <tr v-if="state.isFetching">
+              <td 
+                :colspan="state.columns.length - 1" 
+                class="togostanza-table-loading-wrapper"
+              >
+                <div class="togostanza-table-loading-dots"></div>
+              </td>
+            </tr>
           </tbody>
         </table>
-        <div v-if="filteredRows && filteredRows.length === 0" class="no-data">
-          {{ no_data_message }}
+        <div v-if="state.hasError" class="togostanza-table-error-message">
+          {{ message_load_error }}
+        </div>
+        <div v-else-if="filteredRows && filteredRows.length === 0" class="togostanza-table-no-data">
+          {{ message_not_found }}
         </div>
       </div>
     </div>
@@ -353,16 +374,23 @@ export default defineComponent({
   ],
 
   setup(params) {
+    const canvasWidth = ref("100%");
+    const canvasHeight = ref("");
+
     onMounted(() => {
       requestAnimationFrame(() => {
         const style = window.getComputedStyle(rootElement.value);
-        const value = style.getPropertyValue(
-          "--togostanza-pagination-placement-vertical"
+        const widthFromCss = style.getPropertyValue("--togostanza-canvas-width").trim();
+        canvasWidth.value = widthFromCss ? widthFromCss + "px" : "100%";
+        const heightFromCss = style.getPropertyValue("--togostanza-canvas-height").trim();
+        canvasHeight.value = heightFromCss ? heightFromCss + "px" : "";
+        const flexDirection = style.getPropertyValue(
+          "--togostanza-pagination-placement_vertical"
         );
         rootElement.value.style.flexDirection = {
           top: "column-reverse",
           bottom: "column",
-        }[value];
+        }[flexDirection];
       });
     });
 
@@ -391,9 +419,13 @@ export default defineComponent({
 
       selectedRows: [],
       lastSelectedRow: null,
+
+      isFetching: false,
+      hasError: false,
     });
 
-    const no_data_message = ref(params.no_data_message);
+    const message_not_found = ref(params["message-not_found"]);
+    const message_load_error = ref(params["message-load_error"]);
 
     const filteredRows = computed(() => {
       const queryForAllColumns = state.queryForAllColumns;
@@ -558,6 +590,16 @@ export default defineComponent({
       column.rangeMax = column.inputtingRangeMax;
     }
 
+    function toggleRowLineClamp(rowIndex) {
+      const row = state.allRows[rowIndex];
+      if (row) {
+        const newState = !row[0].lineClampOn;
+        row.forEach(cell => {
+          cell.lineClampOn = newState;
+        });
+      }
+    }
+
     function showModal(column) {
       column.isSearchModalShowing = true;
     }
@@ -590,9 +632,13 @@ export default defineComponent({
     }
 
     async function fetchData() {
-      const data = await loadData(params.dataUrl, params.dataType, params.main);
+      state.isFetching = true;
+      state.hasError = false;
+      
+      try {
+        const data = await loadData(params.dataUrl, params.dataType, params.main);
 
-      state.responseJSON = data;
+        state.responseJSON = data;
       let columns;
       if (params.columns) {
         columns = JSON.parse(params.columns).map((column, index) => {
@@ -618,16 +664,29 @@ export default defineComponent({
         return createColumnState(column, values);
       });
 
-      state.allRows = data.map((row) => {
+      state.allRows = data.map((row, rowIndex) => {
         return state.columns.map((column) => {
           return {
             column,
             value: column.parseValue(row[column.id]),
             href: column.href ? row[column.href] : null,
             charClampOn: true,
+            lineClampOn: true,
+            rowIndex,
           };
         });
       });
+      
+      state.isFetching = false;
+      } catch (error) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.error('Failed to fetch data:', error);
+        } else {
+          console.error('Failed to fetch data');
+        }
+        state.hasError = true;
+        state.isFetching = false;
+      }
     }
 
     onMounted(fetchData);
@@ -730,8 +789,10 @@ export default defineComponent({
     };
 
     return {
-      width: params.width ? params.width + "px" : "100%",
-      no_data_message,
+      canvasWidth,
+      canvasHeight,
+      message_not_found,
+      message_load_error,
       sliderPagination,
       pageSizeOption,
       state,
@@ -743,6 +804,7 @@ export default defineComponent({
       setSorting,
       setFilters,
       setRangeFilters,
+      toggleRowLineClamp,
       showModal,
       closeModal,
       updateCurrentPage,
@@ -776,7 +838,6 @@ function createColumnState(columnDef, values) {
     align: columnDef.align,
     fixed: columnDef.fixed,
     target: columnDef.target,
-    lineClamp: columnDef["line-clamp"],
     charClamp: columnDef["char-clamp"],
     sprintf: columnDef["sprintf"],
   };
@@ -895,7 +956,12 @@ function searchByEachColumn(row) {
 
 function formattedValue(format, val) {
   try {
-    return sprintf(format, val);
+    // If it cannot be converted to a number, return it as is
+    const numVal = Number(val);
+    if (isNaN(numVal)) {
+      return val;
+    }
+    return sprintf(format, numVal);
   } catch (e) {
     console.error(e);
     return val;

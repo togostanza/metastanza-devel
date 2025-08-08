@@ -4,7 +4,24 @@ table {
   width: 100%;
   text-align: left;
   border-collapse: collapse;
+  border: solid 0 var(--togostanza-border-color);
+  color: var(--togostanza-fonts-font_color);
+  line-height: 1.2;
+  main[data-border-horizontal="true"] & {
+    border-top-width: calc(var(--togostanza-border-width) * 1px);
+    border-bottom-width: calc(var(--togostanza-border-width) * 1px);
+  }
+  main[data-border-vertical="true"] & {
+    border-right-width: calc(var(--togostanza-border-width) * 1px);
+    border-left-width: calc(var(--togostanza-border-width) * 1px);
+  }
   > thead {
+    border-bottom: solid 0 var(--togostanza-border-color);
+    color: var(--togostanza-table-thead-font_color);
+    background-color: var(--togostanza-table-thead-background_color);
+    main[data-border-horizontal="true"] & {
+      border-bottom-width: calc(var(--togostanza-border-width) * 1px);
+    }
     > tr {
       > th,
       > td {
@@ -25,15 +42,55 @@ table {
         }
       }
       > th {
+        border-right: solid 0 var(--togostanza-border-color);
+        color: var(--togostanza-table-thead-font_color);
+        font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
         font-weight: bold;
+        main[data-border-vertical="true"] & {
+          border-right-width: calc(var(--togostanza-border-width) * 0.5px);
+        }
+        
+        // Prevent FontAwesome icon flash during initial load
+        svg[data-icon] {
+          width: 1em !important;
+          height: 1em !important;
+          font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px) !important;
+          opacity: 0;
+          animation: fadeInIcon 0.2s ease-in-out 0.1s forwards;
+        }
+
+        @keyframes fadeInIcon {
+          to {
+            opacity: 1;
+          }
+        }
       }
     }
   }
   > tbody {
     > tr {
+      &:nth-child(odd) {
+        background-color: var(--togostanza-table-tbody-odd_background_color);
+      }
+      &:nth-child(even) {
+        background-color: var(--togostanza-table-tbody-even_background_color);
+      }
       > th,
       > td {
         padding: var(--padding-block) var(--padding-inline);
+      }
+      > td {
+        border-bottom: solid 0 var(--togostanza-border-color);
+        border-left: solid 0 var(--togostanza-border-color);
+        border-collapse: collapse;
+        main[data-border-horizontal="true"] & {
+          border-top-width: calc(var(--togostanza-border-width) * 0.5px);
+          border-bottom-width: calc(var(--togostanza-border-width) * 0.5px);
+        }
+        main[data-border-vertical="true"] & {
+          border-right-width: calc(var(--togostanza-border-width) * 0.5px);
+          border-left-width: calc(var(--togostanza-border-width) * 0.5px);
+        }
       }
     }
   }
