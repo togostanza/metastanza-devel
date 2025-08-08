@@ -121,6 +121,8 @@ export default class Sunburst extends MetaStanza {
     const nodesGapWidth = this.params["node-gap_width"] || 8;
     const cornerRadius = this.params["node-corner_radius"] || 0;
     const scalingMethod = this.params["scaling"] || "By value";
+    const nodeColorKey = this.params["node-color_key"] || "";
+    const nodeColorBlend = this.params["node-color_blend"] || "normal";
     let depthLim =
       parseFloat(this.params["max_depth"]) > 0
         ? parseFloat(this.params["max_depth"])
@@ -298,7 +300,16 @@ export default class Sunburst extends MetaStanza {
     const CHAR_SPACE = testText.node().getComputedTextLength();
     testText.remove();
 
-    const g = this._chartArea.append("g");
+    const g = this._chartArea
+      .append("g")
+      .attr(
+        "class",
+        nodeColorBlend === "multiply"
+          ? "-nodes-blend-multiply"
+          : nodeColorBlend === "screen"
+          ? "-nodes-blend-screen"
+          : ""
+      );
 
     path = g
       .append("g")
@@ -307,14 +318,27 @@ export default class Sunburst extends MetaStanza {
       .join("path")
       .classed("selectable", true)
       .attr("fill", (d) => {
-        while (d.depth > 1) {
-          d = d.parent;
-        }
         if (d.data.data.id === -1) {
           return "none";
         }
 
-        return color(d.data.data.id);
+        // Check if node has a specific color key
+        const hexColorRegex = /^#(?:[0-9a-f]{3}){1,2}$/i;
+        if (
+          nodeColorKey &&
+          d.data.data[nodeColorKey] &&
+          hexColorRegex.test(d.data.data[nodeColorKey])
+        ) {
+          return d.data.data[nodeColorKey].toUpperCase();
+        }
+
+        // Fall back to group-based coloring
+        let colorNode = d;
+        while (colorNode.depth > 1) {
+          colorNode = colorNode.parent;
+        }
+
+        return color(colorNode.data.data.id);
       })
       .attr("fill-opacity", (d) =>
         arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0
@@ -461,18 +485,34 @@ export default class Sunburst extends MetaStanza {
       while (b.depth > 1) {
         b = b.parent;
       }
-      parent
-        .transition(t)
-        .attr("fill", () => {
-          return b.data?.data?.label ? color(b.data.data.id) : "rgba(0,0,0,0)";
-        })
-        .end()
-        .then(() => {
-          parent.classed("selectable", () => b.data?.data?.label);
-          parent.classed("-selected", (d) =>
-            stanza.selectedIds.includes(d.data.data.id)
-          );
-        });
+      // Set fill immediately without D3 transition to avoid CSS variable interpolation issues
+      parent.attr("fill", () => {
+        // Only make transparent if it's the blank root node
+        if (b.data.data.id === -1) {
+          return "rgba(0,0,0,0)";
+        }
+
+        // Check if node has a specific color key
+        const hexColorRegex = /^#(?:[0-9a-f]{3}){1,2}$/i;
+        if (
+          nodeColorKey &&
+          b.data.data[nodeColorKey] &&
+          hexColorRegex.test(b.data.data[nodeColorKey])
+        ) {
+          return b.data.data[nodeColorKey].toUpperCase();
+        }
+
+        // Fall back to group-based coloring
+        return color(b.data.data.id);
+      });
+
+      // Handle other transition effects
+      Promise.resolve().then(() => {
+        parent.classed("selectable", () => b.data.data.id !== -1);
+        parent.classed("-selected", (d) =>
+          stanza.selectedIds.includes(d.data.data.id)
+        );
+      });
 
       textLabels
         .filter(function (d) {

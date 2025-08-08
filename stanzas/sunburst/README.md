@@ -14,12 +14,14 @@ The data should be hierarchy tree-like data of the format:
     "id": 1,
     "value": "some_value",
     "label": "Some label",
+    "color": "#ff5733",
     "children": [2, 19, 25, 29, 30],
   },
   {
     "id": 2,
     "value": "some_value",
     "label": "Some another label",
+    "color": "#33c4ff",
     "children": [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
     "parent": 1,
   },
@@ -31,6 +33,16 @@ The data should be hierarchy tree-like data of the format:
 
 The tree nodes that does not have any children should contain number value
 `"n": 12345` (where `12345` is a "size" of a node) as well.
+
+### Node Colors
+
+Individual node colors can be specified using the `node-color_key` parameter. If a node has a color property with a valid hex color value (e.g., "#ff5733"), that color will override the default group-based coloring.
+
+The `node-color_blend` parameter allows you to control how custom colors blend with the background:
+
+- `normal` (default): Standard color rendering
+- `multiply`: Colors are multiplied with the background
+- `screen`: Colors are screened with the background
 
 ### Copying current path
 

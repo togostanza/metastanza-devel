@@ -50,6 +50,19 @@
       "stanza:description": "Show numbers under labels"
     },
     {
+      "stanza:key": "node-color_key",
+      "stanza:type": "string",
+      "stanza:example": "color",
+      "stanza:description": "Set color of the node based on data key"
+    },
+    {
+      "stanza:key": "node-color_blend",
+      "stanza:type": "single-choice",
+      "stanza:choice": ["multiply", "screen", "normal"],
+      "stanza:example": "normal",
+      "stanza:description": "Blend mode for node colors"
+    },
+    {
       "stanza:key": "node-levels_gap_width",
       "stanza:type": "number",
       "stanza:example": 2,
