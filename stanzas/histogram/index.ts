@@ -65,7 +65,9 @@ export default class Histogram extends MetaStanza {
       return;
     }
 
-    const data = values.map((d) => +d[xKeyName]);
+    const data = values
+      .map((d) => Number(d[xKeyName]))
+      .filter((v) => Number.isFinite(v));
     const height =
       +this.css("--togostanza-canvas-height") -
       this.MARGIN.TOP -
@@ -90,9 +92,30 @@ export default class Histogram extends MetaStanza {
       this.yAxisGen = new Axis(svg.node());
     }
 
+    // データが空の場合のガード
+    if (!bins.length) {
+      const xParams = getXAxisParams.apply(this, [
+        [0, 1] as unknown as AxisDomain[],
+        "linear",
+      ]);
+      this.xAxisGen.update(xParams);
+
+      const yParams = getYAxis.apply(this, [[0, 1] as unknown as AxisDomain[]]);
+      this.yAxisGen.update(yParams);
+
+      this._graphArea.attr(
+        "transform",
+        `translate(${this.xAxisGen.axisArea.x},${this.xAxisGen.axisArea.y})`
+      );
+      return;
+    }
+
     // X軸のスケールをビンのデータに合わせて設定
-  const xAxisDomain: AxisDomain[] = [bins[0].x0 as AxisDomain, bins.at(-1).x1 as AxisDomain];
-  const xParams = getXAxisParams.apply(this, [xAxisDomain, "linear"]);
+    const xAxisDomain: AxisDomain[] = [
+      bins[0].x0 as AxisDomain,
+      bins[bins.length - 1].x1 as AxisDomain,
+    ];
+    const xParams = getXAxisParams.apply(this, [xAxisDomain, "linear"]);
     this.xAxisGen.update(xParams);
 
     // Y軸のスケールをビンのデータに合わせて設定
@@ -135,13 +158,21 @@ export default class Histogram extends MetaStanza {
         if (this.tooltips) {
           return this.tooltips.compile(d);
         } else {
-          return false as unknown as string;
+          return null as unknown as string;
         }
       });
 
+    // ツールチップのターゲット登録
+    if (this.tooltips) {
+      const nodesWithTooltips = this._main.querySelectorAll("[data-tooltip]");
+      this.tooltips.setup(nodesWithTooltips);
+    }
+
     if (this.params["event-outgoing_change_selected_nodes"]) {
       bar.on("click", (_, d: any) => {
-        const ids = d["__values__"].map((value: any) => value["__togostanza_id__"]);
+        const ids = d["__values__"].map(
+          (value: any) => value["__togostanza_id__"]
+        );
         toggleSelectedIdsMultiple({
           selectedIds: this.selectedIds,
           targetIds: ids,
@@ -186,7 +217,9 @@ function emitSelectedEventByHistogram(
 function changeSelectedStyle(this: Histogram, ids: (string | number)[]) {
   const bars = this._graphArea.selectAll("g.bar");
   bars.classed("-selected", (d: any) =>
-    d["__values__"].some((value: any) => ids.includes(value["__togostanza_id__"]))
+    d["__values__"].some((value: any) =>
+      ids.includes(value["__togostanza_id__"])
+    )
   );
 }
 
@@ -259,7 +292,7 @@ function getYAxis(this: Histogram, domain: AxisDomain[]) {
     titlePadding: this.params["axis-y-title_padding"],
     scale: "linear",
     gridInterval: this.params["axis-y-gridlines_interval"],
-    gridIntervalUnits: this.params["axis-x-gridlines_interval_units"],
+    gridIntervalUnits: this.params["axis-y-gridlines_interval_units"],
     ticksInterval: this.params["axis-y-ticks_interval"],
     ticksIntervalUnits: this.params["axis-y-ticks_interval_units"],
     ticksLabelsFormat: this.params["axis-y-ticks_labels_format"],

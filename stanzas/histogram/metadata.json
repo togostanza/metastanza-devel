@@ -1,12 +1,17 @@
 {
-  "@context": { "stanza": "http://togostanza.org/resource/stanza#" },
+  "@context": {
+    "stanza": "http://togostanza.org/resource/stanza#"
+  },
   "@id": "histogram",
   "stanza:label": "Histogram",
   "stanza:definition": "Histogram MetaStanza",
   "stanza:license": "MIT",
   "stanza:author": "DBCLS",
   "stanza:address": "https://github.com/togostanza/metastanza",
-  "stanza:contributor": ["PENQE", "Einishi Tech"],
+  "stanza:contributor": [
+    "PENQE",
+    "Einishi Tech"
+  ],
   "stanza:created": "2025-08-08",
   "stanza:updated": "2025-08-08",
   "stanza:parameter": [
@@ -19,7 +24,12 @@
     {
       "stanza:key": "data-type",
       "stanza:type": "single-choice",
-      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
+      "stanza:choice": [
+        "json",
+        "tsv",
+        "csv",
+        "sparql-results-json"
+      ],
       "stanza:example": "json",
       "stanza:description": "Data type",
       "stanza:required": true
@@ -41,7 +51,10 @@
     {
       "stanza:key": "axis-x-placement",
       "stanza:type": "single-choice",
-      "stanza:choice": ["top", "bottom"],
+      "stanza:choice": [
+        "top",
+        "bottom"
+      ],
       "stanza:example": "bottom",
       "stanza:description": "X axis placement",
       "stanza:required": false
@@ -96,7 +109,10 @@
     {
       "stanza:key": "axis-y-placement",
       "stanza:type": "single-choice",
-      "stanza:choice": ["left", "right"],
+      "stanza:choice": [
+        "left",
+        "right"
+      ],
       "stanza:example": "left",
       "stanza:description": "Y axis placement",
       "stanza:required": false
@@ -152,7 +168,7 @@
     {
       "stanza:key": "tooltip",
       "stanza:type": "html",
-      "stanza:example": "{{count}} items",
+      "stanza:example": "{{x0}}–{{x1}}: {{length}} items",
       "stanza:description": "A handlebars HTML template string to show in tooltip",
       "stanza:required": false
     },
@@ -180,23 +196,89 @@
   ],
   "stanza:menu-placement": "bottom-right",
   "stanza:style": [
-    { "stanza:key": "--togostanza-canvas-width", "stanza:type": "number", "stanza:default": 500, "stanza:description": "Metastanza width in px" },
-    { "stanza:key": "--togostanza-canvas-height", "stanza:type": "number", "stanza:default": 400, "stanza:description": "Metastanza height in px" },
-    { "stanza:key": "--togostanza-canvas-padding", "stanza:type": "text", "stanza:default": "10 20 60 80", "stanza:description": "Metastanza padding CSS in px." },
-    { "stanza:key": "--togostanza-theme-series_0_color", "stanza:type": "color", "stanza:default": "#6590e6", "stanza:description": "Bar color" },
-    { "stanza:key": "--togostanza-fonts-font_family", "stanza:type": "text", "stanza:default": "Helvetica, Arial, sans-serif", "stanza:description": "Font family" },
-    { "stanza:key": "--togostanza-fonts-font_color", "stanza:type": "color", "stanza:default": "#4E5059", "stanza:description": "Font color" },
-    { "stanza:key": "--togostanza-fonts-font_size_primary", "stanza:type": "number", "stanza:default": 12, "stanza:description": "Primary font size in px" },
-    { "stanza:key": "--togostanza-fonts-font_size_secondary", "stanza:type": "number", "stanza:default": 9, "stanza:description": "Secondary font size in px" },
-    { "stanza:key": "--togostanza-grid-color", "stanza:type": "color", "stanza:default": "#333333", "stanza:description": "Grid color" },
-    { "stanza:key": "--togostanza-border-color", "stanza:type": "color", "stanza:default": "#4E5059", "stanza:description": "Border color" },
-    { "stanza:key": "--togostanza-border-width", "stanza:type": "number", "stanza:default": 0.5, "stanza:description": "Border width" },
-    { "stanza:key": "--togostanza-theme-background_color", "stanza:type": "color", "stanza:default": "rgba(255,255,255,0.0)", "stanza:description": "Background color" }
+    {
+      "stanza:key": "--togostanza-canvas-width",
+      "stanza:type": "number",
+      "stanza:default": 500,
+      "stanza:description": "Metastanza width in px"
+    },
+    {
+      "stanza:key": "--togostanza-canvas-height",
+      "stanza:type": "number",
+      "stanza:default": 400,
+      "stanza:description": "Metastanza height in px"
+    },
+    {
+      "stanza:key": "--togostanza-canvas-padding",
+      "stanza:type": "text",
+      "stanza:default": "10 20 60 80",
+      "stanza:description": "Metastanza padding CSS in px."
+    },
+    {
+      "stanza:key": "--togostanza-theme-series_0_color",
+      "stanza:type": "color",
+      "stanza:default": "#6590e6",
+      "stanza:description": "Bar color"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_family",
+      "stanza:type": "text",
+      "stanza:default": "Helvetica, Arial, sans-serif",
+      "stanza:description": "Font family"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_color",
+      "stanza:type": "color",
+      "stanza:default": "#4E5059",
+      "stanza:description": "Font color"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_size_primary",
+      "stanza:type": "number",
+      "stanza:default": 12,
+      "stanza:description": "Primary font size in px"
+    },
+    {
+      "stanza:key": "--togostanza-fonts-font_size_secondary",
+      "stanza:type": "number",
+      "stanza:default": 9,
+      "stanza:description": "Secondary font size in px"
+    },
+    {
+      "stanza:key": "--togostanza-grid-color",
+      "stanza:type": "color",
+      "stanza:default": "#333333",
+      "stanza:description": "Grid color"
+    },
+    {
+      "stanza:key": "--togostanza-border-color",
+      "stanza:type": "color",
+      "stanza:default": "#4E5059",
+      "stanza:description": "Border color"
+    },
+    {
+      "stanza:key": "--togostanza-border-width",
+      "stanza:type": "number",
+      "stanza:default": 0.5,
+      "stanza:description": "Border width"
+    },
+    {
+      "stanza:key": "--togostanza-theme-background_color",
+      "stanza:type": "color",
+      "stanza:default": "rgba(255,255,255,0.0)",
+      "stanza:description": "Background color"
+    }
   ],
   "stanza:incomingEvent": [
-    { "stanza:key": "changeSelectedNodes", "stanza:description": "Event that fires when the selected node is changed" }
+    {
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
+    }
   ],
   "stanza:outgoingEvent": [
-    { "stanza:key": "changeSelectedNodes", "stanza:description": "Event that fires when the selected node is changed" }
+    {
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
+    }
   ]
 }
