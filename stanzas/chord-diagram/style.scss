@@ -12,6 +12,12 @@
   transition-property: opacity, stroke-width, stroke-opacity, fill-opacity;
 }
 
+:host {
+  --active-stroke-width: calc(var(--togostanza-border-width) * 2.5px);
+  --half-active-opacity: calc(var(--togostanza-fadeout-opacity) + 0.3);
+  --half-active-stroke-width: calc(var(--togostanza-border-width) * 1.6px);
+}
+
 .label {
   font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
   font-family: var(--togostanza-fonts-font_family);
@@ -31,13 +37,13 @@
 
   &.-active {
     opacity: 1;
-    stroke-width: calc(var(--togostanza-border-width) * 2.5px);
+    stroke-width: var(--active-stroke-width);
     stroke-opacity: 1;
   }
 
   &.-half-active {
-    opacity: calc(var(--togostanza-fadeout-opacity) + 0.3);
-    stroke-width: calc(var(--togostanza-border-width) * 1.6px);
+    opacity: var(--half-active-opacity);
+    stroke-width: var(--half-active-stroke-width);
   }
 
   &.-fadeout {
@@ -110,9 +116,25 @@ svg {
   :has(.-selected) {
     .node {
       opacity: var(--togostanza-fadeout-opacity);
+
+      &.-active {
+        opacity: 1;
+      }
+      &.-half-active {
+        opacity: var(--half-active-opacity);
+        stroke-width: var(--half-active-stroke-width);
+      }
     }
     .link {
       opacity: var(--togostanza-fadeout-opacity);
+
+      &.-active {
+        fill-opacity: var(--togostanza-edge-opacity);
+        stroke: var(--togostanza-edge-color);
+        stroke-width: 0.5px;
+        stroke-opacity: var(--togostanza-edge-opacity);
+        opacity: 1;
+      }
     }
   }
 }

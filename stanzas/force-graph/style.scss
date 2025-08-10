@@ -11,6 +11,12 @@
   transition-property: opacity, stroke-width, stroke-opacity;
 }
 
+:host {
+  --active-stroke-width: calc(var(--togostanza-border-width) * 2.5px);
+  --half-active-opacity: calc(var(--togostanza-fadeout-opacity) + 0.3);
+  --half-active-stroke-width: calc(var(--togostanza-border-width) * 1.6px);
+}
+
 .label {
   font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
 }
@@ -79,9 +85,22 @@ svg {
   &:has(.-selected) {
     .node {
       opacity: var(--togostanza-fadeout-opacity);
+
+      &.-active {
+        opacity: 1;
+      }
+      &.-half-active {
+        opacity: var(--half-active-opacity);
+        stroke-width: var(--half-active-stroke-width);
+      }
     }
     .link {
       opacity: var(--togostanza-fadeout-opacity);
+
+      &.-active {
+        stroke: var(--togostanza-edge-color);
+        opacity: var(--togostanza-edge-opacity);
+      }
     }
   }
 }
