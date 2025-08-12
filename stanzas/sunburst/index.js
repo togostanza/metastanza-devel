@@ -37,6 +37,11 @@ export default class Sunburst extends MetaStanza {
     idPath: "data.data.id",
   };
 
+  // was `nodes-levels_gap_width`. Radial distance between levels
+  static BORDER_WIDTH = 2;
+  // was `nodes-gap_width`. Angular distance between nodes
+  static NODES_GAP = 8;
+
   constructor(...args) {
     super(...args);
     this.state = {
@@ -111,7 +116,6 @@ export default class Sunburst extends MetaStanza {
     const padding = this.MARGIN;
 
     const showNumbers = this.params["node-values_visible"];
-    const borderWidth = 2;
     const nodesGapWidth = 8;
     const cornerRadius = this.params["node-corner_radius"] || 0;
     const scalingMethod = this.params["scaling"] || "By value";
@@ -195,11 +199,11 @@ export default class Sunburst extends MetaStanza {
     const arc = d3arc()
       .startAngle((d) => d.x0)
       .endAngle((d) => d.x1)
-      .padAngle((d) => Math.min((d.x1 - d.x0) / 2, nodesGapWidth / 500))
+      .padAngle((d) => Math.min((d.x1 - d.x0) / 2, Sunburst.NODES_GAP / 500))
       .padRadius(radius * 1.5)
       .innerRadius((d) => d.y0 * radius)
       .outerRadius((d) =>
-        Math.max(d.y0 * radius, d.y1 * radius - borderWidth / 2)
+        Math.max(d.y0 * radius, d.y1 * radius - Sunburst.BORDER_WIDTH / 2)
       )
       .cornerRadius(cornerRadius);
 
@@ -353,7 +357,7 @@ export default class Sunburst extends MetaStanza {
     const parent = g
       .append("circle")
       .datum(root)
-      .attr("r", radius - borderWidth / 2)
+      .attr("r", radius - Sunburst.BORDER_WIDTH / 2)
       .attr("fill", "none")
       .attr("pointer-events", "all");
 
