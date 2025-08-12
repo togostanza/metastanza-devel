@@ -51,13 +51,6 @@
       "stanza:description": "Columns' options"
     },
     {
-      "stanza:key": "line-clamp",
-      "stanza:type": "number",
-      "stanza:example": 3,
-      "stanza:description": "Maximum number of lines to display in table cells",
-      "stanza:required": false
-    },
-    {
       "stanza:key": "show-axis-selector",
       "stanza:type": "boolean",
       "stanza:example": false,
