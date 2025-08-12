@@ -46,13 +46,6 @@ export default class Barchart extends MetaStanza {
       .attr("width", +this.css("--togostanza-canvas-width"))
       .attr("height", +this.css("--togostanza-canvas-height"));
 
-    // Backward compatibility notice: data-interpretation is no longer supported in barchart
-    if (this.params["data-interpretation"]) {
-      console.warn(
-        "[barchart] 'data-interpretation' is deprecated. Use 'histogram' stanza for distributions."
-      );
-    }
-
     const tooltipString = this.params["tooltip"];
 
     if (tooltipString) {
@@ -255,6 +248,30 @@ export default class Barchart extends MetaStanza {
   // drawHistogram is removed in the separated histogram stanza
 
   handleEvent(event) {
+    // Centralized handling for xaxis changes
+    if (event.type === "xaxis") {
+      const newXKey = (event as CustomEvent<string>).detail;
+      console.log("[barchart] Received 'xaxis' with detail:", newXKey);
+      if (typeof newXKey !== "string" || newXKey.length === 0) {
+        console.warn("[barchart] Received 'xaxis' with invalid detail:", newXKey);
+        return;
+      }
+      const hasKey = Array.isArray(this._data) && this._data.some((d) => Object.prototype.hasOwnProperty.call(d, newXKey));
+      const hasValue = hasKey && this._data.some((d) => d?.[newXKey] !== undefined && d?.[newXKey] !== null);
+      console.log("[barchart] X axis key and value presence:", hasKey, hasValue);
+      if (!hasValue) {
+        console.warn(`[barchart] Key '${newXKey}' not found or all values are null/undefined in data.`);
+        return;
+      }
+      // Params are derived from attributes; update attributes to reflect changes
+      this.element.setAttribute("axis-x-key", newXKey);
+      if (!this.params["axis-x-title"]) {
+        this.element.setAttribute("axis-x-title", newXKey);
+      }
+  // Rerender is triggered by attribute change via Stanza runtime
+      return;
+    }
+
     const { selectedIds, dataUrl } = event.detail;
     if (
       this.params["event-incoming_change_selected_nodes"] &&
