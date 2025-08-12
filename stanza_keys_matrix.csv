@@ -112,7 +112,7 @@ Key,barchart,linechart,scatter-plot,heatmap,piechart,key-value,pagination-table,
 "root_node-label_icon",,,,,,,,,,,,,,,,,,,○,,,
 "root_node-label_text",,,,,,,,,,,,,,,,,,,○,,,
 "scaling",,,,,,,,,,,○,,,,,,,,,,,
-"show-axis-selector",,,,,,,○,,,,,,,,,,,,,,,
+"show-axis_selector",,,,,,,○,,,,,,,,,,,,,,,
 "togostanza-custom_css_url",○,○,○,○,○,○,○,○,○,○,○,○,○,○,○,○,○,○,○,○,○,○
 "tooltip",○,○,○,○,○,,,,,,,○,,○,○,○,,,○,○,○,○
 "--togostanza-axis-zero_line_color",,,○,,,,,,,,,,,,,,,,,,,

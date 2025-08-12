@@ -51,7 +51,7 @@
       "stanza:description": "Columns' options"
     },
     {
-      "stanza:key": "show-axis-selector",
+      "stanza:key": "show-axis_selector",
       "stanza:type": "boolean",
       "stanza:example": false,
       "stanza:label": "Show axis selector button"

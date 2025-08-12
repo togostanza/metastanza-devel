@@ -814,7 +814,7 @@ export default defineComponent({
       json,
       handleAxisSelectorButton,
       handleAxisSelected,
-      showAxisSelector: params.showAxisSelector,
+      showAxisSelector: params.showAxis_selector ?? false,
       handleRowClick,
       handleMouseDown,
       handleMouseUp,
