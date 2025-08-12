@@ -53,31 +53,6 @@
       "stanza:description": "Stanza inside canvas padding"
     },
     {
-      "stanza:key": "--togostanza-border-color",
-      "stanza:type": "color",
-      "stanza:default": "#999999",
-      "stanza:description": "Stanza border color"
-    },
-    {
-      "stanza:key": "--togostanza-border-width",
-      "stanza:type": "text",
-      "stanza:default": "1px",
-      "stanza:description": "Stanza border width"
-    },
-    {
-      "stanza:key": "--togostanza-table-column_count",
-      "stanza:type": "number",
-      "stanza:default": 1,
-      "stanza:description": "Column count"
-    },
-    {
-      "stanza:key": "--togostanza-theme-background_color",
-      "stanza:type": "color",
-      "stanza:default": "rgba(255,255,255,0)",
-      "stanza:description": "Stanza background color"
-    },
-
-    {
       "stanza:key": "--togostanza-fonts-font_family",
       "stanza:type": "text",
       "stanza:default": "Helvetica, Arial, sans-serif",
@@ -106,6 +81,36 @@
       "stanza:type": "text",
       "stanza:default": "12px",
       "stanza:description": "Font size of description text"
+    },
+    {
+      "stanza:key": "--togostanza-border-color",
+      "stanza:type": "color",
+      "stanza:default": "#999999",
+      "stanza:description": "Stanza border color"
+    },
+    {
+      "stanza:key": "--togostanza-border-width",
+      "stanza:type": "text",
+      "stanza:default": "1px",
+      "stanza:description": "Stanza border width"
+    },
+    {
+      "stanza:key": "--togostanza-theme-background_color_body",
+      "stanza:type": "color",
+      "stanza:default": "",
+      "stanza:description": "Background color"
+    },
+    {
+      "stanza:key": "--togostanza-table-column_count",
+      "stanza:type": "number",
+      "stanza:default": 1,
+      "stanza:description": "Column count"
+    },
+    {
+      "stanza:key": "--togostanza-table-thead-background_color",
+      "stanza:type": "color",
+      "stanza:default": "",
+      "stanza:description": "Background color of table header"
     },
     {
       "stanza:key": "--togostanza-table-key-width_percentage",
