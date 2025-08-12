@@ -8,10 +8,7 @@
   "stanza:license": "MIT",
   "stanza:author": "DBCLS",
   "stanza:address": "https://github.com/togostanza/metastanza",
-  "stanza:contributor": [
-    "PENQE",
-    "Enishi Tech"
-  ],
+  "stanza:contributor": ["PENQE", "Enishi Tech"],
   "stanza:created": "2020-12-09",
   "stanza:updated": "2020-12-09",
   "stanza:parameter": [
@@ -24,12 +21,7 @@
     {
       "stanza:key": "data-type",
       "stanza:type": "single-choice",
-      "stanza:choice": [
-        "json",
-        "tsv",
-        "csv",
-        "sparql-results-json"
-      ],
+      "stanza:choice": ["json", "tsv", "csv", "sparql-results-json"],
       "stanza:example": "json",
       "stanza:description": "Data type",
       "stanza:required": true
@@ -70,12 +62,6 @@
       "stanza:type": "boolean",
       "stanza:example": false,
       "stanza:label": "Show axis selector button"
-    },
-    {
-      "stanza:key": "no_data_message",
-      "stanza:type": "text",
-      "stanza:example": "No data found.",
-      "stanza:description": "Message displayed when there are zero data"
     },
     {
       "stanza:key": "event-incoming_change_selected_nodes",
@@ -137,19 +123,19 @@
       "stanza:description": "Font family"
     },
     {
-      "stanza:key": "--togostanza-fonts-font_color",
+      "stanza:key": "--togostanza-fonts-font_color_primary",
       "stanza:type": "color",
       "stanza:default": "#4E5059",
       "stanza:description": "Font color"
     },
     {
-      "stanza:key": "--togostanza-fonts-font_size_primary",
+      "stanza:key": "--togostanza-fonts-font_size_default",
       "stanza:type": "number",
       "stanza:default": 12,
       "stanza:description": "Primary font size in px"
     },
     {
-      "stanza:key": "--togostanza-fonts-font_size_secondary",
+      "stanza:key": "--togostanza-fonts-font_size_small",
       "stanza:type": "number",
       "stanza:default": 9,
       "stanza:description": "Secondary font size in px"
@@ -179,7 +165,7 @@
       "stanza:description": "Whether to draw vertical lines"
     },
     {
-      "stanza:key": "--togostanza-table-thead-font_color",
+      "stanza:key": "--togostanza-fonts-font_color_secondary",
       "stanza:type": "color",
       "stanza:default": "",
       "stanza:description": "Font color of table header"
@@ -211,26 +197,19 @@
     {
       "stanza:key": "--togostanza-pagination-placement_vertical",
       "stanza:type": "single-choice",
-      "stanza:choice": [
-        "bottom",
-        "top"
-      ],
+      "stanza:choice": ["bottom", "top"],
       "stanza:default": "bottom",
       "stanza:description": "Vertical pacement of pagination"
     },
     {
       "stanza:key": "--togostanza-pagination-placement_horizonal",
       "stanza:type": "single-choice",
-      "stanza:choice": [
-        "left",
-        "center",
-        "right"
-      ],
+      "stanza:choice": ["left", "center", "right"],
       "stanza:default": "center",
       "stanza:description": "Horizonal placement of pagination"
     },
     {
-      "stanza:key": "--togostanza-background-color",
+      "stanza:key": "--togostanza-theme-background_color_body",
       "stanza:type": "color",
       "stanza:default": "#FFFFFF",
       "stanza:description": "Background color"

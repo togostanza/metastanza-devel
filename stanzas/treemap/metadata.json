@@ -139,19 +139,19 @@
       "stanza:description": "Label font family"
     },
     {
-      "stanza:key": "--togostanza-fonts-font_color",
+      "stanza:key": "--togostanza-fonts-font_color_primary",
       "stanza:type": "color",
       "stanza:default": "#4E5059",
       "stanza:description": "Font color"
     },
     {
-      "stanza:key": "--togostanza-fonts-font_size_primary",
+      "stanza:key": "--togostanza-fonts-font_size_default",
       "stanza:type": "number",
       "stanza:default": 10,
       "stanza:description": "Label font size in px"
     },
     {
-      "stanza:key": "--togostanza-fonts-font_size_secondary",
+      "stanza:key": "--togostanza-fonts-font_size_small",
       "stanza:type": "number",
       "stanza:default": 8,
       "stanza:description": "Number font size in px"

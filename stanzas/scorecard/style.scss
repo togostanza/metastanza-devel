@@ -3,18 +3,15 @@
 
 .title {
   fill: var(--togostanza-fonts-font_color_secondary);
-  font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
-  font-weight: var(--togostanza-fonts-font_weight_secondary);
+  font-size: calc(var(--togostanza-fonts-font_size_small) * 1px);
 }
 
 .score {
   fill: var(--togostanza-fonts-font_color_primary);
-  font-weight: var(--togostanza-fonts-font_weight_primary);
 }
 
 .prefix,
 .suffix {
   fill: var(--togostanza-fonts-font_color_primary);
-  font-size: calc((var(--togostanza-fonts-font_size_primary) * 0.5) * 1px);
-  font-weight: var(--togostanza-fonts-font_weight_secondary);
+  font-size: calc((var(--togostanza-fonts-font_size_default) * 0.5) * 1px);
 }

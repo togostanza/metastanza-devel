@@ -30,7 +30,7 @@
       "stanza:required": true
     },
     {
-      "stanza:key": "color-blend",
+      "stanza:key": "area-color_blend",
       "stanza:type": "single-choice",
       "stanza:choice": ["normal", "multiply", "screen"],
       "stanza:example": "screen",
@@ -89,19 +89,19 @@
       "stanza:description": "Font family"
     },
     {
-      "stanza:key": "--togostanza-fonts-font_color",
+      "stanza:key": "--togostanza-fonts-font_color_primary",
       "stanza:type": "color",
       "stanza:default": "#000000",
       "stanza:description": "Label font color"
     },
     {
-      "stanza:key": "--togostanza-fonts-font_size_primary",
+      "stanza:key": "--togostanza-fonts-font_size_default",
       "stanza:type": "number",
       "stanza:default": 12,
       "stanza:description": "Label font size"
     },
     {
-      "stanza:key": "--togostanza-fonts-font_size_secondary",
+      "stanza:key": "--togostanza-fonts-font_size_small",
       "stanza:type": "number",
       "stanza:default": 16,
       "stanza:description": "Value font size"

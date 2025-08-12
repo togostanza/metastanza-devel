@@ -12,9 +12,9 @@ svg {
     }
 
     text {
-      font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+      font-size: calc(var(--togostanza-fonts-font_size_default) * 1px);
       > tspan.number-label {
-        font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+        font-size: calc(var(--togostanza-fonts-font_size_small) * 1px);
       }
     }
 

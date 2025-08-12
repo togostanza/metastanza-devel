@@ -219,7 +219,7 @@ export default class VennStanza extends MetaStanza {
     });
     if (targets.length > 1) {
       const ratio = (targets.length - 1) / (this.numberOfData - 1);
-      switch (this.params["color-blend"]) {
+      switch (this.params["area-color_blend"]) {
         case "multiply":
           blendedColor = blendedColor.saturate(ratio);
           blendedColor = blendedColor.darken(ratio * 0.5);

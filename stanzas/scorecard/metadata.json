@@ -96,16 +96,10 @@
       "stanza:description": "Font color for value"
     },
     {
-      "stanza:key": "--togostanza-fonts-font_size_primary",
+      "stanza:key": "--togostanza-fonts-font_size_default",
       "stanza:type": "number",
       "stanza:default": 36,
       "stanza:description": "Font size for value"
-    },
-    {
-      "stanza:key": "--togostanza-fonts-font_weight_primary",
-      "stanza:type": "number",
-      "stanza:default": 500,
-      "stanza:description": "Font weight for value"
     },
     {
       "stanza:key": "--togostanza-fonts-font_color_secondary",
@@ -114,16 +108,10 @@
       "stanza:description": "Font color for key"
     },
     {
-      "stanza:key": "--togostanza-fonts-font_size_secondary",
+      "stanza:key": "--togostanza-fonts-font_size_small",
       "stanza:type": "number",
       "stanza:default": 16,
       "stanza:description": "Font size for key"
-    },
-    {
-      "stanza:key": "--togostanza-fonts-font_weight_secondary",
-      "stanza:type": "number",
-      "stanza:default": 400,
-      "stanza:description": "Font weight for key"
     }
   ]
 }

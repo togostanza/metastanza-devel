@@ -71,25 +71,25 @@
       "stanza:description": "Set color of the node based on data key"
     },
     {
-      "stanza:key": "node-size-key",
+      "stanza:key": "node-size_key",
       "stanza:type": "string",
       "stanza:example": "group",
       "stanza:description": "Set size on the node based on data key"
     },
     {
-      "stanza:key": "node-size-min",
+      "stanza:key": "node-size_min",
       "stanza:type": "number",
       "stanza:example": 3,
       "stanza:description": "Minimum node radius in px"
     },
     {
-      "stanza:key": "node-size-max",
+      "stanza:key": "node-size_max",
       "stanza:type": "number",
       "stanza:example": 6,
       "stanza:description": "Maximum node radius in px"
     },
     {
-      "stanza:key": "node-size-scale",
+      "stanza:key": "node-size_scale",
       "stanza:type": "single-choice",
       "stanza:choice": ["linear", "sqrt", "log10"],
       "stanza:example": "sqrt",
@@ -164,13 +164,13 @@
       "stanza:description": "Font family"
     },
     {
-      "stanza:key": "--togostanza-fonts-font_color",
+      "stanza:key": "--togostanza-fonts-font_color_primary",
       "stanza:type": "color",
       "stanza:default": "#4E5059",
       "stanza:description": "Label font color"
     },
     {
-      "stanza:key": "--togostanza-fonts-font_size_primary",
+      "stanza:key": "--togostanza-fonts-font_size_default",
       "stanza:type": "number",
       "stanza:default": 9,
       "stanza:description": "Label font size"

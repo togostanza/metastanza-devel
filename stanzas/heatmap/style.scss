@@ -8,11 +8,11 @@ svg {
   }
   .text {
     font-family: var(--togostanza-fonts-font_family);
-    font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+    font-size: calc(var(--togostanza-fonts-font_size_default) * 1px);
   }
   .x-axis-label .tick .text,
   .y-axis-label .tick .text {
-    font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+    font-size: calc(var(--togostanza-fonts-font_size_small) * 1px);
   }
 
   rect {

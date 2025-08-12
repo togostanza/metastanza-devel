@@ -11,7 +11,7 @@ export default class ScrollTable extends MetaStanza {
 
     const main = this.root.querySelector("main");
     main.parentNode.style.backgroundColor =
-      "var(--togostanza-background-color)";
+      "var(--togostanza-theme-background_color_body)";
 
     // Set border styles from CSS variables
     const borderHorizontal = window

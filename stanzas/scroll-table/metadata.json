@@ -8,10 +8,7 @@
   "stanza:license": "MIT",
   "stanza:author": "DBCLS",
   "stanza:address": "https://github.com/togostanza/metastanza",
-  "stanza:contributor": [
-    "PENQE",
-    "Enishi Tech"
-  ],
+  "stanza:contributor": ["PENQE", "Enishi Tech"],
   "stanza:created": "2020-12-09",
   "stanza:updated": "2020-12-09",
   "stanza:parameter": [
@@ -94,7 +91,7 @@
       "stanza:description": "Font family"
     },
     {
-      "stanza:key": "--togostanza-fonts-font_size",
+      "stanza:key": "--togostanza-fonts-font_size_default",
       "stanza:type": "number",
       "stanza:default": 12,
       "stanza:description": "Font size in px"
@@ -124,7 +121,7 @@
       "stanza:description": "Whether to draw vertical lines"
     },
     {
-      "stanza:key": "--togostanza-table-thead-font_color",
+      "stanza:key": "--togostanza-fonts-font_color_secondary",
       "stanza:type": "color",
       "stanza:default": "#3c3744",
       "stanza:description": "Font color of table header"
@@ -136,7 +133,7 @@
       "stanza:description": "Background color of table header"
     },
     {
-      "stanza:key": "--togostanza-tbody-font-color",
+      "stanza:key": "--togostanza-fonts-font_color_primary",
       "stanza:type": "color",
       "stanza:default": "#3c3744",
       "stanza:description": "Font color of table body"
@@ -154,7 +151,7 @@
       "stanza:description": "Background color of table body (even row)"
     },
     {
-      "stanza:key": "--togostanza-background-color",
+      "stanza:key": "--togostanza-theme-background_color_body",
       "stanza:type": "color",
       "stanza:default": "#FFFFFF",
       "stanza:description": "Background color"

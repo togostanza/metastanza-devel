@@ -120,19 +120,19 @@
       "stanza:description": "Font family"
     },
     {
-      "stanza:key": "--togostanza-fonts-font_color",
+      "stanza:key": "--togostanza-fonts-font_color_primary",
       "stanza:type": "color",
       "stanza:default": "#4E5059",
       "stanza:description": "Card font color"
     },
     {
-      "stanza:key": "--togostanza-fonts-font_size_primary",
+      "stanza:key": "--togostanza-fonts-font_size_default",
       "stanza:type": "number",
       "stanza:default": 12,
       "stanza:description": "Card title font size"
     },
     {
-      "stanza:key": "--togostanza-fonts-font_size_secondary",
+      "stanza:key": "--togostanza-fonts-font_size_small",
       "stanza:type": "number",
       "stanza:default": 10,
       "stanza:description": "Card contents font size"
@@ -150,13 +150,13 @@
       "stanza:description": "Node background color"
     },
     {
-      "stanza:key": "--togostanza-node-selected_background_color",
+      "stanza:key": "--togostanza-node-background_color_selected",
       "stanza:type": "color",
       "stanza:default": "#C7EEFF",
       "stanza:description": "Selected node background color"
     },
     {
-      "stanza:key": "--togostanza-node-hover_background_color",
+      "stanza:key": "--togostanza-node-background_color_hover",
       "stanza:type": "color",
       "stanza:default": "#C7EEFF",
       "stanza:description": "Hover node background color"
