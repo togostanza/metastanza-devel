@@ -25,7 +25,11 @@ import getStanzaColors from "../../lib/ColorGenerator";
 import Legend from "../../lib/Legend2";
 import MetaStanza from "../../lib/MetaStanza";
 import ToolTip from "../../lib/ToolTip";
-import { MarginsI } from "../../lib/utils";
+import {
+  emitSelectedEvent,
+  toggleSelectIds,
+  updateSelectedElementClassNameForD3,
+} from "../../lib/utils";
 
 type TSymbols = {
   xSym: symbol;
@@ -58,6 +62,7 @@ const ySym = Symbol("y");
 const colorSym = Symbol("color");
 const tooltipSym = Symbol("tooltip");
 const errorSym = Symbol("error");
+const POINT_ID_KEY = "__togostanza_id__";
 
 export default class Linechart extends MetaStanza {
   xAxisGen: Axis;
@@ -66,6 +71,13 @@ export default class Linechart extends MetaStanza {
   tooltips: ToolTip;
   graphArea: TGSelection;
   dataByGroup: TDataByGroup;
+  selectedIds: Array<string | number> = [];
+  selectedEventParams = {
+    targetElementSelector: "path.symbol",
+    selectedElementClassName: "-selected",
+    selectedElementSelector: ".-selected",
+    idPath: POINT_ID_KEY,
+  };
 
   menu() {
     return [
@@ -250,21 +262,29 @@ export default class Linechart extends MetaStanza {
     this.xAxisGen.update(xParams);
     this.yAxisGen.update(yParams);
 
-    values.forEach((val) => {
+    values.forEach((val, i) => {
       val[xSym] =
         this.xAxisGen.scale(val[xKeyName]) +
         (this.xAxisGen.axisGen.scale()?.bandwidth?.() || 0) / 2;
 
       val[ySym] = this.yAxisGen.scale(val[yKeyName]);
       val[colorSym] = color(val[groupKeyName]);
-      val[tooltipSym] = this.tooltips.compile(val);
-      val[errorSym] = Array.isArray(val[errorKeyName]) &&
+      val[tooltipSym] = this.tooltips?.compile(val);
+
+      // Ensure every data point has a unique ID for selection
+      val[POINT_ID_KEY] = `linechart-${i}-${String(val[xKeyName]).replace(
+        /\s+/g,
+        ""
+      )}-${val[yKeyName]}`;
+
+      val[errorSym] =
+        Array.isArray(val[errorKeyName]) &&
         val[errorKeyName].length === 2 &&
         val[errorKeyName].every((d: any) => typeof d === "number")
-        ? val[errorKeyName].map(
-            (d: number) => this.yAxisGen.scale(d) - val[ySym]
-          )
-        : null;
+          ? val[errorKeyName].map(
+              (d: number) => this.yAxisGen.scale(d) - val[ySym]
+            )
+          : null;
     });
 
     this.graphArea.attr(
@@ -284,7 +304,7 @@ export default class Linechart extends MetaStanza {
 
     const lines = drawChart(this.graphArea, this.dataByGroup, symbols);
 
-    const dataPointSymbols = drawPoints(lines, pointSize, symbols);
+    const dataPointSymbols = drawPoints.call(this, lines, pointSize, symbols);
 
     addErrorbars(dataPointSymbols, errorSym);
 
@@ -300,6 +320,9 @@ export default class Linechart extends MetaStanza {
       )
       .remove();
 
+    // Selection events are now handled in the drawPoints function
+    // This ensures proper event binding to all data points
+
     if (showLegend) {
       addLegend.call(this, legendTitle, lines);
     } else {
@@ -309,6 +332,23 @@ export default class Linechart extends MetaStanza {
 
     if (tooltipParams.show && this.tooltips) {
       addTooltips.call(this);
+    }
+  }
+
+  handleEvent(event) {
+    const { selectedIds, dataUrl } = event.detail;
+    if (
+      this.params["event-incoming_change_selected_nodes"] &&
+      dataUrl === this.params["data-url"]
+    ) {
+      this.selectedIds = selectedIds;
+      if (this.graphArea) {
+        updateSelectedElementClassNameForD3({
+          drawing: this.graphArea,
+          selectedIds,
+          ...this.selectedEventParams,
+        });
+      }
     }
   }
 }
@@ -352,6 +392,7 @@ function drawChart(g: TGSelection, dataMap: TDataByGroup, symbols: TSymbols) {
 }
 
 function drawPoints(
+  this: Linechart,
   lines: d3.Selection<
     SVGGElement,
     [string, IDataByGroup],
@@ -376,12 +417,43 @@ function drawPoints(
       (d) => `translate(${d[symbols.xSym]}, ${d[symbols.ySym]})`
     );
 
-  enterSymbols
+  const symbolPaths = enterSymbols
     .append("path")
     .classed("symbol", true)
     .attr("d", symbolGen)
     .attr("fill", (d) => d[symbols.colorSym])
-    .attr("data-tooltip", (d) => d[symbols.tooltipSym]);
+    .attr("data-tooltip", (d) => d[symbols.tooltipSym])
+    .attr("data-id", (d) => d[POINT_ID_KEY])
+    .attr("cursor", "pointer");
+
+  // Add click event handlers if selection is enabled
+  const linechart = this;
+  if (
+    linechart.params &&
+    linechart.params["event-outgoing_change_selected_nodes"]
+  ) {
+    symbolPaths.on("click", function (event, d) {
+      event.stopPropagation();
+
+      toggleSelectIds({
+        selectedIds: linechart.selectedIds,
+        targetId: d[POINT_ID_KEY],
+      });
+
+      updateSelectedElementClassNameForD3({
+        drawing: linechart.graphArea,
+        selectedIds: linechart.selectedIds,
+        ...linechart.selectedEventParams,
+      });
+
+      emitSelectedEvent({
+        rootElement: linechart.element,
+        targetId: d[POINT_ID_KEY],
+        selectedIds: linechart.selectedIds,
+        dataUrl: linechart.params["data-url"],
+      });
+    });
+  }
 
   return enterSymbols;
 }
