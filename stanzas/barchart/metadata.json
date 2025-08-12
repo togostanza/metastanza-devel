@@ -336,6 +336,10 @@
     {
       "stanza:key": "xaxis",
       "stanza:description": "Set the X axis key dynamically (detail: column id string)"
+    },
+    {
+      "stanza:key": "yaxis",
+      "stanza:description": "Set the Y axis key dynamically (detail: column id string)"
     }
   ],
   "stanza:outgoingEvent": [
