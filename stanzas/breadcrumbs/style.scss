@@ -9,7 +9,7 @@ breadcrumbs-el {
   row-gap: 0.3em;
   align-items: start;
   width: 100%;
-  background-color: var(--togostanza-theme-background-color);
+  background-color: var(--togostanza-theme-background_color);
   line-height: 0;
   > breadcrumbs-node {
     position: relative;
@@ -27,12 +27,12 @@ breadcrumbs-el {
 
       .node-label {
         alignment-baseline: middle;
-        font-size: calc(var(--togostanza-fonts-font_size_primary));
+        font-size: calc(var(--togostanza-fonts-font_size_default));
       }
 
       .node-label,
       .home-icon {
-        fill: var(--togostanza-fonts-font_color);
+        fill: var(--togostanza-fonts-font_color_primary);
       }
 
       a .node-label {

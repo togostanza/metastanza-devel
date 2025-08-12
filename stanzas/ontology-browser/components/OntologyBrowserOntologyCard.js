@@ -9,8 +9,8 @@ export class OntologyCard extends LitElement {
       position: relative;
       --default-background_color: white;
       font-family: var(--togostanza-fonts-font_family);
-      font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
-      color: var(--togostanza-fonts-font_color);
+      font-size: calc(var(--togostanza-fonts-font_size_default) * 1px);
+      color: var(--togostanza-fonts-font_color_primary);
     }
 
     .-hero-right:before {
@@ -222,7 +222,7 @@ export class OntologyCard extends LitElement {
     }
 
     .ontology-card:hover {
-      background-color: var(--togostanza-node-hover_background_color);
+      background-color: var(--togostanza-node-background_color_hover);
     }
 
     .children-arrow {
@@ -246,7 +246,7 @@ export class OntologyCard extends LitElement {
     h3 {
       display: inline;
       margin: 0;
-      font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+      font-size: calc(var(--togostanza-fonts-font_size_default) * 1px);
     }
 
     .card-container {
@@ -261,7 +261,7 @@ export class OntologyCard extends LitElement {
     }
 
     .selected {
-      background-color: var(--togostanza-node-selected_background_color);
+      background-color: var(--togostanza-node-background_color_selected);
     }
 
     .hidden {
@@ -286,7 +286,7 @@ export class OntologyCard extends LitElement {
       width: 100%
       max-width: 10rem;
       table-layout: fixed;
-      font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+      font-size: calc(var(--togostanza-fonts-font_size_small) * 1px);
       border-spacing: 0;
       opacity: .7;
     }

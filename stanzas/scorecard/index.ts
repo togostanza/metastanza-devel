@@ -34,9 +34,9 @@ export default class Scorecard extends MetaStanza {
     const height = parseFloat(this.css("--togostanza-canvas-height")) || 0;
     const padding = this.MARGIN;
     const fontSizePrimary =
-      parseFloat(this.css("--togostanza-fonts-font_size_primary")) || 0;
+      parseFloat(this.css("--togostanza-fonts-font_size_default")) || 0;
     const fontSizeSecondary =
-      parseFloat(this.css("--togostanza-fonts-font_size_secondary")) || 0;
+      parseFloat(this.css("--togostanza-fonts-font_size_small")) || 0;
 
     //Drawing svg
     const existSvg = this.root.querySelectorAll(".svg");

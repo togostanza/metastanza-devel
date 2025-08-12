@@ -88,7 +88,7 @@ $search-field-height: calc(25px + 8px);
             margin-left: 6px;
             align-self: center;
             min-width: 5px;
-            width: calc(var(--togostanza-fonts-font_size_primary) * 0.6 * 1px);
+            width: calc(var(--togostanza-fonts-font_size_default) * 0.6 * 1px);
           }
         }
         &:hover,

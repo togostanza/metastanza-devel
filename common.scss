@@ -8,28 +8,28 @@
   display: block;
   background-color: var(--togostanza-theme-background_color);
   font-family: var(--togostanza-fonts-font_family);
-  font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
-  color: var(--togostanza-fonts-font_color);
+  font-size: calc(var(--togostanza-fonts-font_size_default) * 1px);
+  color: var(--togostanza-fonts-font_color_primary);
 }
 
 svg {
   font-family: var(--togostanza-fonts-font_family);
-  font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+  font-size: calc(var(--togostanza-fonts-font_size_default) * 1px);
   text {
-    fill: var(--togostanza-fonts-font_color);
+    fill: var(--togostanza-fonts-font_color_primary);
   }
 }
 .legend {
-  color: var(--togostanza-fonts-font_color);
-  font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+  color: var(--togostanza-fonts-font_color_primary);
+  font-size: calc(var(--togostanza-fonts-font_size_small) * 1px);
 }
 .legend .title {
-  font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+  font-size: calc(var(--togostanza-fonts-font_size_default) * 1px);
 }
 
 // Common loading animation styles for table components
 $togostanza-dot-width: 4px;
-$togostanza-dot-color: var(--togostanza-fonts-font_color);
+$togostanza-dot-color: var(--togostanza-fonts-font_color_primary);
 $togostanza-dot-spacing: $togostanza-dot-width * 1.5;
 $togostanza-dot-before-color: $togostanza-dot-color;
 $togostanza-dot-after-color: $togostanza-dot-color;
@@ -107,14 +107,14 @@ $togostanza-x3: -$togostanza-left-pos + $togostanza-dot-spacing;
 // Common message styles for table components
 .togostanza-table-no-data {
   text-align: center;
-  font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
-  color: var(--togostanza-fonts-font_color);
+  font-size: calc(var(--togostanza-fonts-font_size_small) * 1px);
+  color: var(--togostanza-fonts-font_color_primary);
   padding-top: 1em;
 }
 
 .togostanza-table-error-message {
   text-align: center;
-  font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+  font-size: calc(var(--togostanza-fonts-font_size_small) * 1px);
   color: #d32f2f; /* Error color */
   padding-top: 1em;
 }

@@ -251,19 +251,19 @@
       "stanza:description": "Font family"
     },
     {
-      "stanza:key": "--togostanza-fonts-font_color",
+      "stanza:key": "--togostanza-fonts-font_color_primary",
       "stanza:type": "color",
       "stanza:default": "#000000",
       "stanza:description": "Title font color"
     },
     {
-      "stanza:key": "--togostanza-fonts-font_size_primary",
+      "stanza:key": "--togostanza-fonts-font_size_default",
       "stanza:type": "number",
       "stanza:default": 12,
       "stanza:description": "Font size primary"
     },
     {
-      "stanza:key": "--togostanza-fonts-font_size_secondary",
+      "stanza:key": "--togostanza-fonts-font_size_small",
       "stanza:type": "number",
       "stanza:default": 10,
       "stanza:description": "Secondary (axes ticks, legend, tooltips) font size"

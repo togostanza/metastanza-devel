@@ -11,13 +11,13 @@
   }
 
   .search-icon {
-    left: calc(var(--togostanza-fonts-font_size_secondary) * 0.6 * 1px);
-    width: calc(var(--togostanza-fonts-font_size_secondary) * 1.1 * 1px);
+    left: calc(var(--togostanza-fonts-font_size_small) * 0.6 * 1px);
+    width: calc(var(--togostanza-fonts-font_size_small) * 1.1 * 1px);
     pointer-events: none;
   }
   .search-clear {
     right: 2.3rem;
-    width: calc(var(--togostanza-fonts-font_size_secondary) * 0.9 * 1px);
+    width: calc(var(--togostanza-fonts-font_size_small) * 0.9 * 1px);
     cursor: pointer;
   }
 
@@ -28,7 +28,7 @@
     border: solid 1px #999;
     padding: 0.3em 1em 0.3em 2.1em;
     border-radius: 1.6em;
-    font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+    font-size: calc(var(--togostanza-fonts-font_size_small) * 1px);
     &::placeholder {
       color: #ccc;
     }
@@ -57,7 +57,7 @@
         display: grid;
         padding: 0.4em 1em;
         list-style-type: none;
-        font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+        font-size: calc(var(--togostanza-fonts-font_size_small) * 1px);
 
         &:first-child {
           padding-top: 8px;

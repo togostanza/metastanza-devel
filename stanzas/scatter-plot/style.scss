@@ -13,11 +13,11 @@ togostanza--legend2 {
 
 svg {
   text.title {
-    font-size: calc(var(--togostanza-fonts-font_size_primary) * 1px);
+    font-size: calc(var(--togostanza-fonts-font_size_default) * 1px);
   }
   .tick > text {
     font-family: var(--togostanza-fonts-font_family);
-    font-size: calc(var(--togostanza-fonts-font_size_secondary) * 1px);
+    font-size: calc(var(--togostanza-fonts-font_size_small) * 1px);
   }
 
   line.grid-line {

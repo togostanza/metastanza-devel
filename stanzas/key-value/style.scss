@@ -31,13 +31,13 @@ main {
       }
       dt {
         width: var(--togostanza-table-key-width_percentage);
-        font-size: var(--togostanza-fonts-font_size_primary);
+        font-size: var(--togostanza-fonts-font_size_default);
         color: var(--togostanza-fonts-font_color_primary);
         font-weight: bold;
       }
       dd {
         width: calc(100% - var(--togostanza-table-key-width_percentage));
-        font-size: var(--togostanza-fonts-font_size_secondary);
+        font-size: var(--togostanza-fonts-font_size_small);
       }
     }
   }
