@@ -310,7 +310,7 @@ export default class ScatterPlot extends MetaStanza {
       .enter()
       .append("circle")
       .attr("class", "chart-node")
-      .attr("data-tooltip", (d) => this.tooltips.compile(d))
+      .attr("data-tooltip", (d) => this.tooltips?.compile(d) ?? "")
       .attr("cx", (d) => d[xSym])
       .attr("cy", (d) => d[ySym])
       .attr("r", (d) => d[sizeSym])

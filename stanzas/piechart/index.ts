@@ -95,7 +95,7 @@ export default class Piechart extends MetaStanza {
     });
 
     // Tooltip
-    const tooltipString = this.params["tooltip"].trim();
+    const tooltipString = this.params["tooltip"];
 
     if (!this._chartArea?.empty()) {
       this._chartArea?.remove();
