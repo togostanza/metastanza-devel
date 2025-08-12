@@ -269,7 +269,9 @@ export default class Linechart extends MetaStanza {
 
       val[ySym] = this.yAxisGen.scale(val[yKeyName]);
       val[colorSym] = color(val[groupKeyName]);
-      val[tooltipSym] = this.tooltips?.compile(val);
+      val[tooltipSym] = this.tooltips
+        ? this.tooltips.compile(val)
+        : "";
 
       // Ensure every data point has a unique ID for selection
       val[POINT_ID_KEY] = `linechart-${i}-${String(val[xKeyName]).replace(
