@@ -13,6 +13,7 @@ import Legend from "../../lib/Legend2";
 import MetaStanza from "../../lib/MetaStanza";
 import ToolTip from "../../lib/ToolTip";
 import { emitSelectedEvent, toggleSelectedIdsMultiple } from "../../lib/utils";
+import { handleAxisEvent } from "../../lib/AxisEvents";
 
 export default class Barchart extends MetaStanza {
   xAxisGen: Axis;
@@ -45,13 +46,6 @@ export default class Barchart extends MetaStanza {
     svg
       .attr("width", +this.css("--togostanza-canvas-width"))
       .attr("height", +this.css("--togostanza-canvas-height"));
-
-    // Backward compatibility notice: data-interpretation is no longer supported in barchart
-    if (this.params["data-interpretation"]) {
-      console.warn(
-        "[barchart] 'data-interpretation' is deprecated. Use 'histogram' stanza for distributions."
-      );
-    }
 
     const tooltipString = this.params["tooltip"];
 
@@ -254,7 +248,22 @@ export default class Barchart extends MetaStanza {
 
   // drawHistogram is removed in the separated histogram stanza
 
+  // Local axis updater removed; using shared lib/AxisEvents
+
   handleEvent(event) {
+    // Centralized handling for xaxis changes
+    if (event.type === "xaxis") {
+      handleAxisEvent(this.element, this._data, event, { supported: ["x", "y"] });
+  // Rerender is triggered by attribute change via Stanza runtime
+      return;
+    }
+
+    // Centralized handling for yaxis changes
+    if (event.type === "yaxis") {
+      handleAxisEvent(this.element, this._data, event, { supported: ["x", "y"] });
+      return;
+    }
+
     const { selectedIds, dataUrl } = event.detail;
     if (
       this.params["event-incoming_change_selected_nodes"] &&
