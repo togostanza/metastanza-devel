@@ -52,7 +52,7 @@ export default class BreadcrumbsLit extends MetaStanza {
       .filter(Boolean);
 
     if (nodes.length > 0) {
-      this.tooltips.setup(nodes);
+      this.tooltips?.setup(nodes);
     }
   };
 
