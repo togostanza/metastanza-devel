@@ -13,6 +13,7 @@ import Legend from "../../lib/Legend2";
 import MetaStanza from "../../lib/MetaStanza";
 import ToolTip from "../../lib/ToolTip";
 import { emitSelectedEvent, toggleSelectedIdsMultiple } from "../../lib/utils";
+import { handleAxisEvent } from "../../lib/AxisEvents";
 
 export default class Barchart extends MetaStanza {
   xAxisGen: Axis;
@@ -247,55 +248,19 @@ export default class Barchart extends MetaStanza {
 
   // drawHistogram is removed in the separated histogram stanza
 
-  private _updateAxisKey(axis: "x" | "y", newKey: string) {
-    if (typeof newKey !== "string" || newKey.length === 0) {
-      console.warn(`[barchart] Received '${axis}axis' with invalid detail:`, newKey);
-      return;
-    }
-    const hasKey = Array.isArray(this._data) && this._data.some((d) => Object.prototype.hasOwnProperty.call(d, newKey));
-    if (!hasKey) {
-      console.warn(`[barchart] Key '${newKey}' not found in data.`);
-      return;
-    }
-    let valid = true;
-    if (axis === "y") {
-      valid = this._data.some((d) => {
-        const v = d?.[newKey];
-        const n = +v;
-        return v !== undefined && v !== null && Number.isFinite(n);
-      });
-      if (!valid) {
-        console.warn(`[barchart] Key '${newKey}' has no numeric values for y-axis.`);
-        return;
-      }
-    } else {
-      valid = this._data.some((d) => d?.[newKey] !== undefined && d?.[newKey] !== null);
-      if (!valid) {
-        console.warn(`[barchart] Key '${newKey}' has no non-null values for x-axis.`);
-        return;
-      }
-    }
-
-    this.element.setAttribute(`axis-${axis}-key`, newKey);
-    const titleAttr = `axis-${axis}-title`;
-    if (!this.element.getAttribute(titleAttr)) {
-      this.element.setAttribute(titleAttr, newKey);
-    }
-  }
+  // Local axis updater removed; using shared lib/AxisEvents
 
   handleEvent(event) {
     // Centralized handling for xaxis changes
     if (event.type === "xaxis") {
-      const newXKey = (event as CustomEvent<string>).detail;
-      this._updateAxisKey("x", newXKey);
+      handleAxisEvent(this.element, this._data, event, { supported: ["x", "y"] });
   // Rerender is triggered by attribute change via Stanza runtime
       return;
     }
 
     // Centralized handling for yaxis changes
     if (event.type === "yaxis") {
-      const newYKey = (event as CustomEvent<string>).detail;
-      this._updateAxisKey("y", newYKey);
+      handleAxisEvent(this.element, this._data, event, { supported: ["x", "y"] });
       return;
     }
 
