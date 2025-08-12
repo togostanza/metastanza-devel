@@ -179,12 +179,6 @@
       "stanza:description": "Edges default color"
     },
     {
-      "stanza:key": "--togostanza-edge-opacity",
-      "stanza:type": "number",
-      "stanza:default": 0.7,
-      "stanza:description": "Edges opacity"
-    },
-    {
       "stanza:key": "--togostanza-theme-series_0_color",
       "stanza:type": "color",
       "stanza:default": "#6590e6",
