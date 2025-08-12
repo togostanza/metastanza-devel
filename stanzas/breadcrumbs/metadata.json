@@ -115,12 +115,7 @@
       "stanza:default": "#DDDCDA",
       "stanza:description": "Border color"
     },
-    {
-      "stanza:key": "--togostanza-node-background_color_hover",
-      "stanza:type": "color",
-      "stanza:default": "#16ADE3",
-      "stanza:description": "Background color of the nodes on mouseover"
-    },
+
     {
       "stanza:key": "--togostanza-node-background_color",
       "stanza:type": "color",
@@ -132,6 +127,12 @@
       "stanza:type": "color",
       "stanza:default": "rgba(255,255,255,0)",
       "stanza:description": "Background color"
+    },
+    {
+      "stanza:key": "--togostanza-theme-series_0_color",
+      "stanza:type": "color",
+      "stanza:default": "#6590e6",
+      "stanza:description": "Group color 0"
     }
   ],
   "stanza:incomingEvent": [
