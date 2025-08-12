@@ -118,7 +118,7 @@ export default class Sunburst extends MetaStanza {
 
     const showNumbers = this.params["node-values_visible"];
     const borderWidth = 2;
-    const nodesGapWidth = this.params["node-gap_width"] || 8;
+    const nodesGapWidth = 8;
     const cornerRadius = this.params["node-corner_radius"] || 0;
     const scalingMethod = this.params["scaling"] || "By value";
     const nodeColorKey = this.params["node-color_key"] || "";

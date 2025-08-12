@@ -64,12 +64,6 @@
     },
 
     {
-      "stanza:key": "node-gap_width",
-      "stanza:type": "number",
-      "stanza:example": 8,
-      "stanza:description": "Gap between chart nodes that are on same level, unitless coefficient"
-    },
-    {
       "stanza:key": "node-corner_radius",
       "stanza:type": "number",
       "stanza:example": 0,
