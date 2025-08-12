@@ -176,13 +176,13 @@
       "stanza:key": "--togostanza-edge-color",
       "stanza:type": "color",
       "stanza:default": "#999999",
-      "stanza:description": "Egdes default color"
+      "stanza:description": "Edges default color"
     },
     {
       "stanza:key": "--togostanza-edge-opacity",
       "stanza:type": "number",
       "stanza:default": 0.7,
-      "stanza:description": "Egdes opacity"
+      "stanza:description": "Edges opacity"
     },
     {
       "stanza:key": "--togostanza-theme-series_0_color",
