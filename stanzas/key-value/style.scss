@@ -13,7 +13,6 @@ main {
   .container {
     column-count: var(--togostanza-table-column_count);
     column-gap: 0;
-    background-color: var(--togostanza-theme-background_color);
     color: var(--togostanza-fonts-font_color_secondary);
     font-family: var(--togostanza-fonts-font_family);
     border-top: var(--togostanza-border-width) solid
@@ -23,21 +22,24 @@ main {
 
     dl {
       display: flex;
-      padding: 5px;
       break-inside: avoid-column;
       &:not(:last-child) {
         border-bottom: var(--togostanza-border-width) solid
           var(--togostanza-border-color);
       }
       dt {
+        padding: 5px;
         width: var(--togostanza-table-key-width_percentage);
         font-size: var(--togostanza-fonts-font_size_default);
         color: var(--togostanza-fonts-font_color_primary);
         font-weight: bold;
+        background-color: var(--togostanza-table-thead-background_color);
       }
       dd {
+        padding: 5px;
         width: calc(100% - var(--togostanza-table-key-width_percentage));
         font-size: var(--togostanza-fonts-font_size_small);
+        background-color: var(--togostanza-theme-background_color_body);
       }
     }
   }
