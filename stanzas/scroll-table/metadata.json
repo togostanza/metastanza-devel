@@ -85,6 +85,12 @@
       "stanza:description": "Metastanza height in px (fallback to content height if not specified)"
     },
     {
+      "stanza:key": "--togostanza-canvas-padding",
+      "stanza:type": "text",
+      "stanza:default": "0",
+      "stanza:description": "Padding of a stanza. CSS padding-like text (e.g. '10 20 10 20')"
+    },
+    {
       "stanza:key": "--togostanza-fonts-font_family",
       "stanza:type": "text",
       "stanza:default": "Helvetica, Arial, sans-serif",

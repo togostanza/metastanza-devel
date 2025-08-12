@@ -122,7 +122,7 @@ Key,barchart,linechart,scatter-plot,heatmap,piechart,key-value,pagination-table,
 "--togostanza-border-vertical",,,,,,,○,○,,,,,,,,,,,,,,
 "--togostanza-border-width",○,○,○,○,,○,○,○,,,,○,,○,○,○,,,,○,○,○
 "--togostanza-canvas-height",○,○,○,○,○,,○,○,○,○,○,○,○,○,○,○,○,○,,○,○,○
-"--togostanza-canvas-padding",○,○,○,○,○,○,,,○,○,○,○,○,○,○,○,○,○,,○,○,○
+"--togostanza-canvas-padding",○,○,○,○,○,○,○,○,○,○,○,○,○,○,○,○,○,○,,○,○,○
 "--togostanza-canvas-width",○,○,○,○,○,,○,○,○,,○,○,○,○,○,○,○,○,,○,○,○
 "--togostanza-column-background_color",,,,,,,,,○,,,,,,,,,,,,,
 "--togostanza-column-border_color",,,,,,,,,○,,,,,,,,,,,,,
