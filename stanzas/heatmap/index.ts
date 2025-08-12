@@ -91,7 +91,7 @@ export default class Heatmap extends MetaStanza {
     // Legend
     const legendTitle = this.params["legend-title"];
     const isLegendVisible = this.params["legend-visible"];
-    const legendGroups = this.params["legend-levels_number"];
+    const legendGroups = this.params["legend-color_steps"];
     const legendConfiguration = {
       items: intervals(setColor).map((interval) => ({
         id: interval.label,
