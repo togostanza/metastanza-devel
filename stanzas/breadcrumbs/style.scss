@@ -45,7 +45,7 @@ breadcrumbs-el {
           fill: var(--togostanza-fonts-font_color_hover);
         }
         .node-outline {
-          fill: var(--togostanza-node-background_color_hover);
+          fill: var(--togostanza-theme-series_0_color);
           transition: var(--togostanza-fadeout-transition);
           transition: fill 0.1s ease-in;
         }
@@ -104,7 +104,7 @@ breadcrumbs-el {
           padding: 0.5em;
           word-wrap: break-word;
           &:hover {
-            background-color: var(--togostanza-node-background_color_hover);
+            background-color: var(--togostanza-theme-series_0_color);
             color: var(--togostanza-fonts-font_color_hover);
           }
           &:active {
