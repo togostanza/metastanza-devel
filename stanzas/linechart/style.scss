@@ -66,10 +66,22 @@ svg {
         fill: none;
         stroke-width: 1px;
         stroke-opacity: 1;
+        transition: stroke-width 0.2s ease-out;
+
+        &.-selected {
+          stroke-width: 2.5px;
+        }
       }
       > .symbol-g {
         > path.symbol {
           cursor: pointer;
+          transition: stroke 0.2s ease-out, stroke-width 0.2s ease-out,
+            opacity 0.2s;
+
+          &.-selected {
+            stroke-opacity: 1;
+            opacity: 1;
+          }
         }
 
         > .error-bar > line {
@@ -79,6 +91,15 @@ svg {
           transition: stroke-opacity 0.3s ease-out;
         }
       }
+    }
+  }
+
+  :has(.-selected) {
+    path.symbol {
+      opacity: var(--togostanza-fadeout-opacity);
+    }
+    path.chart-line {
+      opacity: var(--togostanza-fadeout-opacity);
     }
   }
 }

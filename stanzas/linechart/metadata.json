@@ -10,7 +10,7 @@
   "stanza:address": "https://github.com/togostanza/metastanza",
   "stanza:contributor": ["PENQE"],
   "stanza:created": "2021-01-06",
-  "stanza:updated": "2022-11-01",
+  "stanza:updated": "2025-08-12",
   "stanza:parameter": [
     {
       "stanza:key": "data-url",
@@ -208,6 +208,20 @@
       "stanza:description": "Legend title"
     },
     {
+      "stanza:key": "event-incoming_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:label": "Receive a change event of selected nodes",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "event-outgoing_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:label": "Emit a change event of selected nodes",
+      "stanza:required": false
+    },
+    {
       "stanza:key": "togostanza-custom_css_url",
       "stanza:type": "text",
       "stanza:example": "",
@@ -318,6 +332,18 @@
       "stanza:type": "color",
       "stanza:default": "rgba(255,255,255,0.0)",
       "stanza:description": "Background color"
+    }
+  ],
+  "stanza:incomingEvent": [
+    {
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
+    }
+  ],
+  "stanza:outgoingEvent": [
+    {
+      "stanza:key": "changeSelectedNodes",
+      "stanza:description": "Event that fires when the selected node is changed"
     }
   ]
 }
