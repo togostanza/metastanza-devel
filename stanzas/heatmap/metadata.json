@@ -43,7 +43,7 @@
       "stanza:description": "Legend title"
     },
     {
-      "stanza:key": "legend-levels_number",
+      "stanza:key": "legend-color_steps",
       "stanza:type": "number",
       "stanza:example": 10,
       "stanza:description": "Number of gradation colors between color-min and color-max"

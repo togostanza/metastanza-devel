@@ -128,7 +128,7 @@ export default class regionGeographicMap extends MetaStanza {
     // Legend
     const isLegendVisible = this.params["legend-visible"];
     const legendTitle = this.params["legend-title"];
-    const legendLevelsNumber = parseFloat(this.params["legend-levels_number"]);
+    const legendLevelsNumber = parseFloat(this.params["legend-color_steps"]);
     const legendConfiguration = {
       items: intervals(setColor).map((interval) => ({
         id: interval.label,
