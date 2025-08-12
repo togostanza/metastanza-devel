@@ -34,7 +34,7 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "page-size-option",
+      "stanza:key": "page-size_option",
       "stanza:example": "10,20,50,100",
       "stanza:description": "Page size list",
       "stanza:required": true
