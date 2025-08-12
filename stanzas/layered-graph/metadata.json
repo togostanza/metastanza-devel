@@ -245,13 +245,13 @@
       "stanza:key": "--togostanza-edge-color",
       "stanza:type": "color",
       "stanza:default": "#999999",
-      "stanza:description": "Egdes default color"
+      "stanza:description": "Edges default color"
     },
     {
       "stanza:key": "--togostanza-group_plane-color",
       "stanza:type": "color",
       "stanza:default": "#333333",
-      "stanza:description": "Egdes default color"
+      "stanza:description": "Edges default color"
     },
     {
       "stanza:key": "--togostanza-theme-background_color",

@@ -214,7 +214,7 @@
       "stanza:key": "--togostanza-edge-color",
       "stanza:type": "color",
       "stanza:default": "#bdbdbd",
-      "stanza:description": "Egdes default color"
+      "stanza:description": "Edges default color"
     },
 
     {

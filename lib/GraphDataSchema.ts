@@ -14,7 +14,7 @@ const LayeredGraphNodesListModel = NodesListModel.extend({
   }),
 });
 
-const EgdesListModel = z
+const EdgesListModel = z
   .object({
     source: z.union([z.number(), z.string()]),
     target: z.union([z.number(), z.string()]),
@@ -27,7 +27,7 @@ export const GraphDataModel = z
       required_error: "key `nodes` is required",
       description: "Nodes array",
     }),
-    links: z.array(EgdesListModel, {
+    links: z.array(EdgesListModel, {
       required_error: "key `links` is required",
       description: "Links (edges) array",
     }),
