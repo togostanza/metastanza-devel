@@ -95,20 +95,18 @@ export default class ScatterPlot extends MetaStanza {
     const nodeColorKey = this.params["node-color_key"];
 
     const stanzaColors = getStanzaColors(this);
-    const color = scaleOrdinal<string, string>().range(
-      stanzaColors as string[]
-    );
+    const color = scaleOrdinal<string, string>()
+      .range(stanzaColors.slice(1))
+      .unknown(stanzaColors[0]);
 
-    let allGroupNames: string[] = [];
+    let groupNames: string[] = [];
     if (groupKey) {
       const rawGroupValues = Array.from(new Set(data.map((d) => d[groupKey])));
-      const definedGroupValues = rawGroupValues.filter(
-        (v) => v !== null && v !== undefined && v !== ""
-      ) as string[];
+      groupNames = rawGroupValues.filter(Boolean) as string[];
 
-      allGroupNames = definedGroupValues;
+      color.domain(groupNames);
 
-      color.domain(allGroupNames);
+      console.log("allGroupNames", groupNames);
     }
 
     const MARGINS: MarginsT = getMarginsFromCSSString(
@@ -244,9 +242,7 @@ export default class ScatterPlot extends MetaStanza {
         "" + i + datum[xKey] + datum[yKey] + datum[sizeKey] + xScale + yScale;
       datum[xSym] = this.xAxis.scale(parseFloat(datum[xKey]));
       datum[ySym] = this.yAxis.scale(parseFloat(datum[yKey]));
-      datum[colorSym] =
-        datum[nodeColorKey] ??
-        (groupKey ? color(datum[groupKey]) : stanzaColors[0]);
+      datum[colorSym] = datum[nodeColorKey] ?? color(datum[groupKey]);
     });
 
     if (showLegend && !this._error) {
@@ -257,11 +253,19 @@ export default class ScatterPlot extends MetaStanza {
 
       // Add color legend if groupKey is set
       if (groupKey) {
-        const colorLegendItems = allGroupNames.map((groupName) => ({
+        const colorLegendItems = groupNames.map((groupName) => ({
           id: `color-${groupName}`,
           value: groupName,
           color: color(groupName),
         }));
+
+        // add color item for undefined group
+        colorLegendItems.push({
+          id: `color-others`,
+          value: "",
+          color: color(""),
+        });
+
         legendItems.push(...colorLegendItems);
       }
 
