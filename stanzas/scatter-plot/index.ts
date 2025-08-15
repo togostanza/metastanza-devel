@@ -92,7 +92,6 @@ export default class ScatterPlot extends MetaStanza {
     const data = structuredClone(this._data);
 
     const groupKey = this.params["group-key"];
-    const defaultGroupName = this.params["group-default_value"];
     const nodeColorKey = this.params["node-color_key"];
 
     const stanzaColors = getStanzaColors(this);
@@ -106,14 +105,9 @@ export default class ScatterPlot extends MetaStanza {
       const definedGroupValues = rawGroupValues.filter(
         (v) => v !== null && v !== undefined && v !== ""
       ) as string[];
-      const hasUngroupedData = rawGroupValues.some(
-        (v) => v === null || v === undefined || v === ""
-      );
 
       allGroupNames = definedGroupValues;
-      if (hasUngroupedData) {
-        allGroupNames.push(defaultGroupName);
-      }
+
       color.domain(allGroupNames);
     }
 
@@ -252,9 +246,7 @@ export default class ScatterPlot extends MetaStanza {
       datum[ySym] = this.yAxis.scale(parseFloat(datum[yKey]));
       datum[colorSym] =
         datum[nodeColorKey] ??
-        (groupKey
-          ? color(datum[groupKey] || defaultGroupName)
-          : stanzaColors[0]);
+        (groupKey ? color(datum[groupKey]) : stanzaColors[0]);
     });
 
     if (showLegend && !this._error) {

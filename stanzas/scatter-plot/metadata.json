@@ -201,13 +201,7 @@
       "stanza:default": "",
       "stanza:description": "Data key to group by data points. All data points which has same value will be considered as one group, and colored according to color settings, and legend would show these group values. If not set, all points will be considered as of one data series, and legend would show distribution of sizes of nodes"
     },
-    {
-      "stanza:key": "group-default_value",
-      "stanza:type": "text",
-      "stanza:example": "Others",
-      "stanza:default": "Others",
-      "stanza:description": "Default group value applicable when data point doesn't have group value"
-    },
+
     {
       "stanza:key": "node-color_key",
       "stanza:type": "text",
