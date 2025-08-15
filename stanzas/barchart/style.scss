@@ -15,11 +15,6 @@ svg {
     font-size: calc(var(--togostanza-fonts-font_size_default) * 1px);
   }
 
-  line.zero-line {
-    stroke-width: calc(var(--togostanza-axis-zero_line_width) * 1px);
-    stroke: var(--togostanza-axis-zero_line_color);
-  }
-
   .bar-group,
   .bar {
     > rect {

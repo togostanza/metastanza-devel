@@ -361,18 +361,6 @@
       "stanza:type": "number",
       "stanza:default": 0.5,
       "stanza:description": "Border width"
-    },
-    {
-      "stanza:key": "--togostanza-axis-zero_line_color",
-      "stanza:type": "color",
-      "stanza:default": "#FF0000",
-      "stanza:description": "Axis zero gridline color"
-    },
-    {
-      "stanza:key": "--togostanza-axis-zero_line_width",
-      "stanza:type": "number",
-      "stanza:default": 2,
-      "stanza:description": "Axis zero gridline width in px"
     }
   ],
   "stanza:incomingEvent": [

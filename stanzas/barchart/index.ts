@@ -58,8 +58,8 @@ export default class Barchart extends MetaStanza {
       this.tooltips.setTemplate(tooltipString);
     }
 
-  // Always behave as a bar chart
-  this.drawBarChart(svg);
+    // Always behave as a bar chart
+    this.drawBarChart(svg);
   }
 
   drawBarChart(svg: Selection<SVGSVGElement, unknown, null, undefined>) {
@@ -253,14 +253,18 @@ export default class Barchart extends MetaStanza {
   handleEvent(event) {
     // Centralized handling for xaxis changes
     if (event.type === "xaxis") {
-      handleAxisEvent(this.element, this._data, event, { supported: ["x", "y"] });
-  // Rerender is triggered by attribute change via Stanza runtime
+      handleAxisEvent(this.element, this._data, event, {
+        supported: ["x", "y"],
+      });
+      // Rerender is triggered by attribute change via Stanza runtime
       return;
     }
 
     // Centralized handling for yaxis changes
     if (event.type === "yaxis") {
-      handleAxisEvent(this.element, this._data, event, { supported: ["x", "y"] });
+      handleAxisEvent(this.element, this._data, event, {
+        supported: ["x", "y"],
+      });
       return;
     }
 

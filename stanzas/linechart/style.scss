@@ -22,10 +22,6 @@ svg {
       > .grid-lines {
         line {
           stroke: var(--togostanza-grid-color);
-          &.zero-line {
-            stroke-width: calc(var(--togostanza-axis-zero_line_width) * 1px);
-            stroke: var(--togostanza-axis-zero_line_color);
-          }
         }
       }
       > .axis {
