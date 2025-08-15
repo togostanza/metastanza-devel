@@ -107,7 +107,7 @@ export default class ScatterPlot extends MetaStanza {
       );
       groupNames = rawGroupValues.filter(Boolean) as string[];
 
-      // if all groups are defined, din't use the color for undefined value
+      // if all groups are defined, don't use the color for undefined value
       if (rawGroupValues.length === groupNames.length) {
         color.range(stanzaColors);
       } else {
