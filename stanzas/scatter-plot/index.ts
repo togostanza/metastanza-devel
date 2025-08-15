@@ -100,13 +100,21 @@ export default class ScatterPlot extends MetaStanza {
       .unknown(stanzaColors[0]);
 
     let groupNames: string[] = [];
+    let isThereUndefinedGroup = false;
     if (groupKey) {
-      const rawGroupValues = Array.from(new Set(data.map((d) => d[groupKey])));
+      const rawGroupValues = Array.from(
+        new Set(data.map((d) => d[groupKey] ?? ""))
+      );
       groupNames = rawGroupValues.filter(Boolean) as string[];
 
-      color.domain(groupNames);
+      // if all groups are defined, din't use the color for undefined value
+      if (rawGroupValues.length === groupNames.length) {
+        color.range(stanzaColors);
+      } else {
+        isThereUndefinedGroup = true;
+      }
 
-      console.log("allGroupNames", groupNames);
+      color.domain(groupNames);
     }
 
     const MARGINS: MarginsT = getMarginsFromCSSString(
@@ -259,13 +267,14 @@ export default class ScatterPlot extends MetaStanza {
           color: color(groupName),
         }));
 
-        // add color item for undefined group
-        colorLegendItems.push({
-          id: `color-others`,
-          value: "",
-          color: color(""),
-        });
-
+        if (isThereUndefinedGroup) {
+          // add color item for undefined group
+          colorLegendItems.push({
+            id: `color-others`,
+            value: "",
+            color: color(""),
+          });
+        }
         legendItems.push(...colorLegendItems);
       }
 
