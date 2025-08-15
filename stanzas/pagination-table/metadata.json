@@ -34,7 +34,7 @@
       "stanza:required": false
     },
     {
-      "stanza:key": "page-size-option",
+      "stanza:key": "page-size_option",
       "stanza:example": "10,20,50,100",
       "stanza:description": "Page size list",
       "stanza:required": true
@@ -51,14 +51,7 @@
       "stanza:description": "Columns' options"
     },
     {
-      "stanza:key": "line-clamp",
-      "stanza:type": "number",
-      "stanza:example": 3,
-      "stanza:description": "Maximum number of lines to display in table cells",
-      "stanza:required": false
-    },
-    {
-      "stanza:key": "show-axis-selector",
+      "stanza:key": "show-axis_selector",
       "stanza:type": "boolean",
       "stanza:example": false,
       "stanza:label": "Show axis selector button"
@@ -109,6 +102,12 @@
       "stanza:type": "number",
       "stanza:default": 400,
       "stanza:description": "Metastanza height in px (fallback to content height if not specified)"
+    },
+    {
+      "stanza:key": "--togostanza-canvas-padding",
+      "stanza:type": "text",
+      "stanza:default": "0",
+      "stanza:description": "Padding of a stanza. CSS padding-like text (e.g. '10 20 10 20')"
     },
     {
       "stanza:key": "--togostanza-theme-series_0_color",

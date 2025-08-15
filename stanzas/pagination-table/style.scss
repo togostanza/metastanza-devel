@@ -75,6 +75,7 @@ svg[data-icon] {
 
 .wrapper {
   display: flex;
+  padding: var(--togostanza-canvas-padding, 0);
   > .tableOptionWrapper {
     > .tableOption {
       width: 100%;

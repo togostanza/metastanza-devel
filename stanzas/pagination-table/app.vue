@@ -395,7 +395,10 @@ export default defineComponent({
     });
 
     const sliderPagination = ref();
-    const pageSizeOption = params.pageSizeOption.split(",").map(Number);
+    const pageSizeOptionRaw = params.pageSize_option;
+    const pageSizeOption = (pageSizeOptionRaw || "10,20,50,100")
+      .split(",")
+      .map(Number);
 
     const state = reactive({
       responseJSON: null, // for download. may consume extra memory
@@ -814,7 +817,7 @@ export default defineComponent({
       json,
       handleAxisSelectorButton,
       handleAxisSelected,
-      showAxisSelector: params.showAxisSelector,
+      showAxisSelector: params.showAxis_selector ?? false,
       handleRowClick,
       handleMouseDown,
       handleMouseUp,

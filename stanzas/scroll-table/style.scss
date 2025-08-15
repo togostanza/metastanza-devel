@@ -45,6 +45,7 @@ svg[data-icon] {
 .tableWrapper {
   overflow: auto;
   background-color: var(--togostanza-theme-background_color_body);
+  padding: var(--togostanza-canvas-padding, 0);
   > table {
     margin: 0;
     > thead {
