@@ -92,29 +92,29 @@ export default class ScatterPlot extends MetaStanza {
     const data = structuredClone(this._data);
 
     const groupKey = this.params["group-key"];
-    const defaultGroupName = this.params["group-default_value"];
     const nodeColorKey = this.params["node-color_key"];
 
     const stanzaColors = getStanzaColors(this);
-    const color = scaleOrdinal<string, string>().range(
-      stanzaColors as string[]
-    );
+    const color = scaleOrdinal<string, string>()
+      .range(stanzaColors.slice(1))
+      .unknown(stanzaColors[0]);
 
-    let allGroupNames: string[] = [];
+    let groupNames: string[] = [];
+    let isThereUndefinedGroup = false;
     if (groupKey) {
-      const rawGroupValues = Array.from(new Set(data.map((d) => d[groupKey])));
-      const definedGroupValues = rawGroupValues.filter(
-        (v) => v !== null && v !== undefined && v !== ""
-      ) as string[];
-      const hasUngroupedData = rawGroupValues.some(
-        (v) => v === null || v === undefined || v === ""
+      const rawGroupValues = Array.from(
+        new Set(data.map((d) => d[groupKey] ?? ""))
       );
+      groupNames = rawGroupValues.filter(Boolean) as string[];
 
-      allGroupNames = definedGroupValues;
-      if (hasUngroupedData) {
-        allGroupNames.push(defaultGroupName);
+      // if all groups are defined, don't use the color for undefined value
+      if (rawGroupValues.length === groupNames.length) {
+        color.range(stanzaColors);
+      } else {
+        isThereUndefinedGroup = true;
       }
-      color.domain(allGroupNames);
+
+      color.domain(groupNames);
     }
 
     const MARGINS: MarginsT = getMarginsFromCSSString(
@@ -250,11 +250,7 @@ export default class ScatterPlot extends MetaStanza {
         "" + i + datum[xKey] + datum[yKey] + datum[sizeKey] + xScale + yScale;
       datum[xSym] = this.xAxis.scale(parseFloat(datum[xKey]));
       datum[ySym] = this.yAxis.scale(parseFloat(datum[yKey]));
-      datum[colorSym] =
-        datum[nodeColorKey] ??
-        (groupKey
-          ? color(datum[groupKey] || defaultGroupName)
-          : stanzaColors[0]);
+      datum[colorSym] = datum[nodeColorKey] ?? color(datum[groupKey]);
     });
 
     if (showLegend && !this._error) {
@@ -265,11 +261,20 @@ export default class ScatterPlot extends MetaStanza {
 
       // Add color legend if groupKey is set
       if (groupKey) {
-        const colorLegendItems = allGroupNames.map((groupName) => ({
+        const colorLegendItems = groupNames.map((groupName) => ({
           id: `color-${groupName}`,
           value: groupName,
           color: color(groupName),
         }));
+
+        if (isThereUndefinedGroup) {
+          // add color item for undefined group
+          colorLegendItems.push({
+            id: `color-others`,
+            value: "",
+            color: color(""),
+          });
+        }
         legendItems.push(...colorLegendItems);
       }
 
