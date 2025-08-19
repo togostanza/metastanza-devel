@@ -138,6 +138,7 @@
                         'modal',
                         { lastCol: state.columns.length - 1 === i },
                       ]"
+                      @click.stop
                     >
                       <p class="title">
                         <template v-if="column.searchType === 'number'">
@@ -193,7 +194,7 @@
                     v-if="showAxisSelector === true"
                     :class="['icon', 'chart-bar']"
                     icon="chart-bar"
-                    @click="handleAxisSelectorButton(column)"
+                    @click.stop="handleAxisSelectorButton(column)"
                   />
                   <AxisSelectorModal
                     :active="state.axisSelectorActiveColumn === column"
