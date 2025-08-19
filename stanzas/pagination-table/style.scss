@@ -219,29 +219,29 @@ svg[data-icon] {
               > .textSearchByColumnWrapper {
                 position: absolute;
                 top: calc(
-                  var(--togostanza-fonts-font_size_default) * 1px + 16px
+                  var(--togostanza-fonts-font_size_default) * 1px + 15px
                 );
                 left: 0;
                 z-index: 3;
                 background: #ffffff;
-                box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+                box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3);
                 &.lastCol {
                   left: auto;
                   right: 0;
                 }
                 > p.title {
                   display: block;
-                  padding: 6px 16px;
+                  padding: 8px 10px 4px;
                   background-color: var(
                     --togostanza-table-thead-background_color
                   );
                   color: var(--togostanza-fonts-font_color_secondary);
                 }
                 > input.textSearchInput[name="queryInputByColumn"] {
-                  margin: 20px 30px;
+                  margin: 0 10px 8px;
                 }
                 #slider {
-                  margin: 30px 40px 8px;
+                  margin: 10px 15px 8px;
                   width: 230px;
                   .slider-connect {
                     background-color: var(--togostanza-theme-series_0_color);
@@ -259,7 +259,7 @@ svg[data-icon] {
 
                 .rangeInput {
                   width: 242px;
-                  margin: 0 34px 30px;
+                  margin: 0 10px 8px;
                   display: flex;
                   justify-content: space-between;
                   align-items: flex-end;
