@@ -25,7 +25,7 @@ import {
   emitSelectedEvent,
   updateSelectedElementClassNameForD3,
 } from "../../lib/utils";
-
+import { SingleNodeSelection } from "../../lib/plugins/SingleNodeSelectionPlugin";
 let path;
 
 export default class Sunburst extends MetaStanza {
@@ -37,6 +37,8 @@ export default class Sunburst extends MetaStanza {
     idPath: "data.data.id",
   };
 
+  selectionPlugin;
+
   // was `nodes-levels_gap_width`. Radial distance between levels
   static BORDER_WIDTH = 2;
   // was `nodes-gap_width`. Angular distance between nodes
@@ -44,6 +46,8 @@ export default class Sunburst extends MetaStanza {
 
   constructor(...args) {
     super(...args);
+    this.selectionPlugin = new SingleNodeSelection();
+    this.use(this.selectionPlugin);
     this.state = {
       currentId: null,
     };
@@ -84,6 +88,7 @@ export default class Sunburst extends MetaStanza {
 
   async renderNext() {
     const that = this;
+
     this.state = new Proxy(this.state, {
       set(target, key, value) {
         if (key === "currentId") {
@@ -105,6 +110,15 @@ export default class Sunburst extends MetaStanza {
     const state = this.state;
     const dispatcher = this.element;
     const main = this._main;
+
+    select(main).on("dblclick", (e) => {
+      console.log("dblclick", e.target);
+    });
+
+    select(main).on("click", (e) => {
+      console.log("click", e.detail);
+    });
+
     const data = this.__data.asTree({
       nodeLabelKey: this.params["node-label_key"].trim(),
       nodeValueKey: this.params["node-value_key"].trim(),
@@ -321,7 +335,8 @@ export default class Sunburst extends MetaStanza {
       .attr("fill-opacity", (d) =>
         arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0
       )
-      .attr("d", (d) => arc(d.current));
+      .attr("d", (d) => arc(d.current))
+      .attr("data-node-id", (d) => d.data.data.id);
 
     path.append("title").text((d) => {
       return `${d
@@ -482,8 +497,10 @@ export default class Sunburst extends MetaStanza {
       // Handle other transition effects
       Promise.resolve().then(() => {
         parent.classed("selectable", () => b.data.data.id !== -1);
-        parent.classed("-selected", (d) =>
-          stanza.selectedIds.includes(d.data.data.id)
+        parent.classed(
+          "-selected",
+          (d) => that.selectionPlugin.isSelected(d.data.data)
+          //stanza.selectedIds.includes(d.data.data.id)
         );
       });
 
@@ -533,24 +550,8 @@ export default class Sunburst extends MetaStanza {
             .on("click", (e, d) => {
               if (e.detail === 1) {
                 timeout = setTimeout(() => {
-                  toggleSelectIds({
-                    selectedIds: stanza.selectedIds,
-                    targetId: d.data.data.id,
-                  });
-                  updateSelectedElementClassNameForD3({
-                    drawing: stanza._chartArea,
-                    selectedIds: stanza.selectedIds,
-                    ...stanza.selectedEventParams,
-                  });
-                  if (stanza.params["event-outgoing_change_selected_nodes"]) {
-                    emitSelectedEvent({
-                      rootElement: stanza.element,
-                      targetId: d.data.data.id,
-                      selectedIds: stanza.selectedIds,
-                      dataUrl: stanza.params["data-url"],
-                    });
-                  }
-                }, 500);
+                  that.handleSelection(e, d.data.data);
+                }, 300);
               }
             })
             .filter((d) => d.children)
@@ -575,31 +576,8 @@ export default class Sunburst extends MetaStanza {
               .on("click", (e, d) => {
                 if (e.detail === 1) {
                   timeout = setTimeout(() => {
-                    toggleSelectIds({
-                      selectedIds: stanza.selectedIds,
-                      targetId: d.data.data.id,
-                    });
-                    updateSelectedElementClassNameForD3({
-                      drawing: stanza._chartArea,
-                      selectedIds: stanza.selectedIds,
-                      targetElementSelector: "g circle.selectable",
-                      selectedElementClassName: "-selected",
-                      idPath: "data.data.id",
-                    });
-                    updateSelectedElementClassNameForD3({
-                      drawing: stanza._chartArea,
-                      selectedIds: stanza.selectedIds,
-                      ...stanza.selectedEventParams,
-                    });
-                    if (stanza.params["event-outgoing_change_selected_nodes"]) {
-                      emitSelectedEvent({
-                        rootElement: stanza.element,
-                        targetId: d.data.data.id,
-                        selectedIds: stanza.selectedIds,
-                        dataUrl: stanza.params["data-url"],
-                      });
-                    }
-                  }, 500);
+                    that.handleSelection(e, d.data.data);
+                  }, 300);
                 }
               })
               .on("dblclick", (e, d) => {
