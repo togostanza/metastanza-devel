@@ -230,6 +230,7 @@
                       ? `left: ${i === 0 ? 0 : state.thListWidth[i - 1]}px;`
                       : null
                   "
+                  class="clamp-td"
                 >
                   <span v-if="cell.href">
                     <AnchorCell
@@ -256,23 +257,35 @@
                       "
                     />
                   </span>
-                  <span
-                    v-else-if="cell.column.unescape"
-                    v-html="cell.value"
-                    :class="{ 
-                      'line-clamp': cell.lineClampOn,
-                      'line-clamp-expanded': !cell.lineClampOn
-                    }"
-                    @click="toggleRowLineClamp(cell.rowIndex)"
-                  ></span>
-                  <span 
-                    v-else 
-                    :class="{ 
-                      'line-clamp': cell.lineClampOn,
-                      'line-clamp-expanded': !cell.lineClampOn
-                    }"
-                    @click="toggleRowLineClamp(cell.rowIndex)"
-                  >{{ cell.value }}</span>
+                  <!-- Line clamp cell (unescaped) -->
+                  <template v-else-if="cell.column.unescape">
+                    <span
+                      v-html="cell.value"
+                      :class="{ 
+                        'line-clamp': cell.lineClampOn,
+                        'line-clamp-expanded': !cell.lineClampOn
+                      }"
+                      @click="toggleRowLineClamp(cell.rowIndex)"
+                    ></span>
+                  </template>
+                  <!-- Line clamp cell (escaped) -->
+                  <template v-else>
+                    <span 
+                      :class="{ 
+                        'line-clamp': cell.lineClampOn,
+                        'line-clamp-expanded': !cell.lineClampOn
+                      }"
+                      @click="toggleRowLineClamp(cell.rowIndex)"
+                    >{{ cell.value }}</span>
+                  </template>
+                  <button
+                    v-if="cell.lineClampOn !== undefined"
+                    class="clamp-toggle-button"
+                    type="button"
+                    :data-expanded="!cell.lineClampOn"
+                    :aria-label="cell.lineClampOn ? 'Expand content' : 'Collapse content'"
+                    @click.stop="toggleRowLineClamp(cell.rowIndex)"
+                  ></button>
                 </td>
               </template>
             </tr>
