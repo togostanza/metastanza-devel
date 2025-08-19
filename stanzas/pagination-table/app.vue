@@ -53,13 +53,13 @@
                     :icon="`sort-${
                       state.sorting.direction === 'asc' ? 'up' : 'down'
                     }`"
-                    @click="setSorting(column)"
+                    @click.stop="setSorting(column)"
                   />
                   <font-awesome-icon
                     v-else
                     class="icon sort"
                     icon="sort"
-                    @click="setSorting(column)"
+                    @click.stop="setSorting(column)"
                   />
 
                   <font-awesome-icon
@@ -69,7 +69,7 @@
                       { active: column.isSearchConditionGiven },
                     ]"
                     icon="search"
-                    @click="showModal(column)"
+                    @click.stop="showModal(column)"
                   />
                   <font-awesome-icon
                     v-if="column.searchType === 'category'"
@@ -84,7 +84,7 @@
                         ),
                       },
                     ]"
-                    @click="column.isFilterPopupShowing = true"
+                    @click.stop="column.isFilterPopupShowing = true"
                   />
                   <transition name="modal">
                     <div
@@ -807,7 +807,6 @@ export default defineComponent({
     };
 
     function clearSelection(event) {
-      console.log("clearSelection fired", event);
       state.selectedRows = [];
       state.lastSelectedRow = null;
     }
