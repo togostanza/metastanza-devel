@@ -265,7 +265,6 @@
                         'line-clamp': cell.lineClampOn,
                         'line-clamp-expanded': !cell.lineClampOn
                       }"
-                      @click="toggleRowLineClamp(cell.rowIndex)"
                     ></span>
                   </template>
                   <!-- Line clamp cell (escaped) -->
@@ -275,7 +274,6 @@
                         'line-clamp': cell.lineClampOn,
                         'line-clamp-expanded': !cell.lineClampOn
                       }"
-                      @click="toggleRowLineClamp(cell.rowIndex)"
                     >{{ cell.value }}</span>
                   </template>
                   <button

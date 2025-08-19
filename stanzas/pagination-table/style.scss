@@ -573,21 +573,12 @@ svg[data-icon] {
   line-clamp: var(--togostanza-line_clamp);
   overflow: hidden;
   text-overflow: ellipsis;
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: underline;
-  }
+  cursor: default;
 }
 
 .line-clamp-expanded {
-  cursor: pointer;
+  cursor: default;
   position: relative;
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-    border-radius: 2px;
-  }
 
   &:after {
     content: " ▲";
