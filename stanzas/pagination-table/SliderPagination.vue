@@ -39,12 +39,13 @@
       </div>
       <div class="pageNumber">
         Page
-        <input
-          :value="currentPage"
-          type="text"
-          class="jumpToNumberInput"
-          @input="updateCurrentPage(Number($event.target.value))"
-        />
+          <input
+            :value="currentPage"
+            type="text"
+            class="jumpToNumberInput"
+            @input="updateCurrentPage(Number($event.target.value))"
+            @click.stop
+          />
         of {{ totalPages }}
       </div>
     </div>
@@ -55,7 +56,8 @@
         :min="1"
         :max="totalPages"
         class="pageSlider"
-        @update="updateCurrentPage(inputtingCurrentPage)"
+        @update.stop="updateCurrentPage(inputtingCurrentPage)"
+          @click.stop
       >
       </Slider>
     </template>

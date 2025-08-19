@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <div ref="rootElement" class="wrapper" :style="`width: ${canvasWidth}; height: ${canvasHeight};`">
+  <div ref="rootElement" class="wrapper" :style="`width: ${canvasWidth}; height: ${canvasHeight};`" @click="clearSelection">
     <div class="tableOptionWrapper">
       <div class="tableOption">
         <input
@@ -8,10 +8,14 @@
           type="text"
           placeholder="Search for keywords..."
           class="textSearchInput"
+          @click.stop
         />
         <p class="entries">
           Show
-          <select v-model="state.pagination.perPage">
+          <select
+            v-model="state.pagination.perPage"
+            @click.stop
+          >
             <option v-for="size of pageSizeOption" :key="size" :value="size">
               {{ size }}
             </option>
@@ -208,7 +212,7 @@
                 selected: isSelectedRow(row),
                 selectable: eventOutgoing_change_selected_nodes,
               }"
-              @click="
+              @click.stop="
                 eventOutgoing_change_selected_nodes
                   ? handleRowClick($event, row_index, row)
                   : null
@@ -802,6 +806,12 @@ export default defineComponent({
       state.selectedRows = [...selectedIds.map((id) => id.toString())];
     };
 
+    function clearSelection(event) {
+      console.log("clearSelection fired", event);
+      state.selectedRows = [];
+      state.lastSelectedRow = null;
+    }
+
     return {
       canvasWidth,
       canvasHeight,
@@ -834,6 +844,7 @@ export default defineComponent({
       handleMouseUp,
       isSelectedRow,
       updateSelectedRows,
+      clearSelection,
       eventOutgoing_change_selected_nodes:
         params.eventOutgoing_change_selected_nodes,
     };
