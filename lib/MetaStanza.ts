@@ -2,6 +2,7 @@ import { appendCustomCss } from "togostanza-utils";
 import { Data } from "togostanza-utils/data";
 import Stanza from "togostanza/stanza";
 import { getMarginsFromCSSString, MarginsI } from "./utils";
+import { SelectionPlugin } from "./plugins/BaseSelectionPlugin";
 
 export default abstract class extends Stanza {
   _data: any;
@@ -11,12 +12,44 @@ export default abstract class extends Stanza {
   _apiError = false;
   _error: Error;
 
+  private plugins: Map<string, SelectionPlugin> = new Map();
+
   get MARGIN(): MarginsI {
     return getMarginsFromCSSString(this.css("--togostanza-canvas-padding"));
   }
 
   css(key: string) {
     return getComputedStyle(this.element).getPropertyValue(key);
+  }
+
+  emit(eventType: string, data: any) {
+    this.element.dispatchEvent(
+      new CustomEvent(eventType, {
+        detail: data,
+      })
+    );
+  }
+
+  use(plugin: SelectionPlugin) {
+    plugin.init(this);
+    this.plugins.set(plugin.name, plugin);
+    return this;
+  }
+
+  getPlugin<T extends SelectionPlugin>(name: string): T | undefined {
+    return this.plugins.get(name) as T;
+  }
+
+  protected handleSelection(event: MouseEvent, target: any): void {
+    const selectionPlugin = this.getPlugin("selection");
+
+    if (!selectionPlugin) return;
+
+    if (event.shiftKey) {
+      selectionPlugin.onShiftSelect(event, target);
+    } else {
+      selectionPlugin.onSelect(event, target);
+    }
   }
 
   async render() {
