@@ -1,10 +1,6 @@
 import { BaseSelectionPlugin, SelectableItem } from "./BaseSelectionPlugin";
 
 export class SingleNodeSelection extends BaseSelectionPlugin {
-  constructor() {
-    super();
-  }
-
   onSelect(event: MouseEvent, target: SelectableItem): void {
     const idString = target.id?.toString() ?? "";
 

@@ -54,7 +54,7 @@ export abstract class BaseSelectionPlugin implements SelectionPlugin {
   }
 
   protected notifyOutgoingSelection(): void {
-    const selectedIds = new Set(this.state.selectedItems.keys());
+    const selectedIds = new Set(this.state.selectedItems);
 
     // Notify other stanzas about our selection change
     this.stanza.emit("changeSelectedNodes", selectedIds);
