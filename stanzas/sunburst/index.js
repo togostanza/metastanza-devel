@@ -19,7 +19,7 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 import getStanzaColors from "../../lib/ColorGenerator";
-import MetaStanza from "../../lib/MetaStanza";
+import MetaStanza, { METASTANZA_DATA_ATTR } from "../../lib/MetaStanza";
 import { NodeSelectionPlugin } from "../../lib/plugins/NodeSelectionPlugin";
 let path;
 
@@ -289,7 +289,7 @@ export default class Sunburst extends MetaStanza {
         return arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0;
       })
       .attr("d", (d) => arc(d.current))
-      .attr("data-id", (d) => d.data.data.id);
+      .attr(METASTANZA_DATA_ATTR, (d) => d.data.data.id);
 
     path.append("title").text((d) => {
       return `${d
@@ -326,7 +326,7 @@ export default class Sunburst extends MetaStanza {
       .attr("r", radius - Sunburst.BORDER_WIDTH / 2)
       .attr("fill-opacity", 0)
       .attr("pointer-events", "all")
-      .attr("data-id", (d) => d.data.data.id);
+      .attr(METASTANZA_DATA_ATTR, (d) => d.data.data.id);
 
     //Text labels
     const textLabels = g
@@ -335,7 +335,7 @@ export default class Sunburst extends MetaStanza {
       .selectAll("text")
       .data(root.descendants())
       .join("text")
-      .attr("data-id", (d) => d.data.data.id)
+      .attr(METASTANZA_DATA_ATTR, (d) => d.data.data.id)
       .attr(
         "fill-opacity",
         (d) => +(labelVisible(d) && textFits(d, CHAR_SPACE, d.data.data.label))
@@ -353,7 +353,7 @@ export default class Sunburst extends MetaStanza {
       .data(root.descendants())
       .join("text")
       //Show only if label is supposed to be shown, label text fits into node
-      .attr("data-id", (d) => d.data.data.id)
+      .attr(METASTANZA_DATA_ATTR, (d) => d.data.data.id)
       .attr("data-id", (d) => d.data.data.id)
       .attr(
         "fill-opacity",
