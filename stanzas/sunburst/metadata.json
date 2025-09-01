@@ -43,13 +43,6 @@
       "stanza:description": "Data key to use as a title"
     },
     {
-      "stanza:key": "node-values_visible",
-      "stanza:type": "boolean",
-      "stanza:label": "Show values",
-      "stanza:example": true,
-      "stanza:description": "Show numbers under labels"
-    },
-    {
       "stanza:key": "node-color_key",
       "stanza:type": "string",
       "stanza:example": "color",
@@ -62,7 +55,6 @@
       "stanza:example": "normal",
       "stanza:description": "Blend mode for node colors"
     },
-
     {
       "stanza:key": "node-corner_radius",
       "stanza:type": "number",

@@ -115,8 +115,6 @@ export default class Sunburst extends MetaStanza {
     const height = parseFloat(this.css("--togostanza-canvas-height"));
     const padding = this.MARGIN;
 
-    const showNumbers = this.params["node-values_visible"];
-    const nodesGapWidth = 8;
     const cornerRadius = this.params["node-corner_radius"] || 0;
     const scalingMethod = this.params["scaling"] || "By value";
     const nodeColorKey = this.params["node-color_key"] || "";
@@ -384,15 +382,10 @@ export default class Sunburst extends MetaStanza {
       .selectAll("text")
       .data(root.descendants())
       .join("text")
-      //Show only if label is supposed to be shown, label text fits into node and showNumbers =true
+      //Show only if label is supposed to be shown, label text fits into node
       .attr(
         "fill-opacity",
-        (d) =>
-          +(
-            labelVisible(d) &&
-            textFits(d, CHAR_SPACE, d.data.data.label) &&
-            showNumbers
-          )
+        (d) => +(labelVisible(d) && textFits(d, CHAR_SPACE, d.data.data.label))
       )
       .append("textPath")
       .attr("startOffset", "50%")
@@ -522,8 +515,7 @@ export default class Sunburst extends MetaStanza {
           (d) =>
             +(
               labelVisible(d.target) &&
-              textFits(d.target, CHAR_SPACE, d.data.data.label) &&
-              showNumbers
+              textFits(d.target, CHAR_SPACE, d.data.data.label)
             )
         );
 
