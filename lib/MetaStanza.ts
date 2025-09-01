@@ -1,8 +1,27 @@
 import { appendCustomCss } from "togostanza-utils";
 import { Data } from "togostanza-utils/data";
 import Stanza from "togostanza/stanza";
+import { BasePlugin } from "./plugins/BasePlugin";
 import { getMarginsFromCSSString, MarginsI } from "./utils";
-import { SelectionPlugin } from "./plugins/BaseSelectionPlugin";
+
+/** Common event names used in MetaStanza */
+export const METASTANZA_EVENTS = {
+  CHANGE_SELECTED_NODES: "changeSelectedNodes",
+} as const;
+
+export const METASTANZA_ALLOWED_EVENTS = Object.values(METASTANZA_EVENTS);
+
+export type MetastanzaEvent =
+  | (typeof METASTANZA_EVENTS)[keyof typeof METASTANZA_EVENTS]
+  | (string & {});
+
+export const METASTANZA_COMMON_PARAMS = {
+  LISTEN_TO_SELECTION_EVENTS: "event-incoming_change_selected_nodes",
+  DISPATCH_SELECTION_EVENTS: "event-outgoing_change_selected_nodes",
+};
+
+/** Data-attribute that used to identify the element */
+export const METASTANZA_DATA_ATTR = "data-id" as const;
 
 export default abstract class extends Stanza {
   _data: any;
@@ -12,7 +31,7 @@ export default abstract class extends Stanza {
   _apiError = false;
   _error: Error;
 
-  private plugins: Map<string, SelectionPlugin> = new Map();
+  private plugins: Map<string, BasePlugin> = new Map();
 
   get MARGIN(): MarginsI {
     return getMarginsFromCSSString(this.css("--togostanza-canvas-padding"));
@@ -22,7 +41,7 @@ export default abstract class extends Stanza {
     return getComputedStyle(this.element).getPropertyValue(key);
   }
 
-  emit(eventType: string, data: any) {
+  emit(eventType: MetastanzaEvent, data: any) {
     this.element.dispatchEvent(
       new CustomEvent(eventType, {
         detail: data,
@@ -30,26 +49,14 @@ export default abstract class extends Stanza {
     );
   }
 
-  use(plugin: SelectionPlugin) {
+  use(plugin: BasePlugin) {
     plugin.init(this);
     this.plugins.set(plugin.name, plugin);
     return this;
   }
 
-  getPlugin<T extends SelectionPlugin>(name: string): T | undefined {
+  getPlugin<T extends BasePlugin>(name: string): T | undefined {
     return this.plugins.get(name) as T;
-  }
-
-  protected handleSelection(event: MouseEvent, target: any): void {
-    const selectionPlugin = this.getPlugin("selection");
-
-    if (!selectionPlugin) return;
-
-    if (event.shiftKey) {
-      selectionPlugin.onShiftSelect(event, target);
-    } else {
-      selectionPlugin.onSelect(event, target);
-    }
   }
 
   async render() {

@@ -1,4 +1,14 @@
-import MetaStanza from "../MetaStanza";
+import type MetaStanza from "../MetaStanza";
+import {
+  METASTANZA_EVENTS,
+  METASTANZA_COMMON_PARAMS,
+  METASTANZA_DATA_ATTR,
+} from "../MetaStanza";
+import type { BasePlugin } from "./BasePlugin";
+
+type SelectionPluginName = "selection";
+
+type SelectionNode = HTMLElement | SVGElement;
 
 export interface SelectableItem {
   id: string;
@@ -9,19 +19,19 @@ export interface SelectionState {
   lastSelected?: string;
 }
 
-export interface SelectionPlugin {
-  name: string;
+export interface SelectionPlugin extends BasePlugin {
+  name: SelectionPluginName;
   state: SelectionState;
   init(stanza: MetaStanza): void;
-  onSelect(event: MouseEvent, target: any): void;
-  onShiftSelect(event: MouseEvent, target: any): void;
+  onSelect(event: MouseEvent, target: SelectableItem): void;
+  onShiftSelect(event: MouseEvent, target: SelectableItem): void;
   handleIncomingSelection(selectedIds: Set<string>): void;
   getSelection(): any[];
   clearSelection(): void;
 }
 
 export abstract class BaseSelectionPlugin implements SelectionPlugin {
-  name: string;
+  name: SelectionPluginName;
   protected stanza: MetaStanza;
 
   state: SelectionState = {
@@ -36,9 +46,17 @@ export abstract class BaseSelectionPlugin implements SelectionPlugin {
   init(stanza: MetaStanza): void {
     this.stanza = stanza;
 
-    this.stanza.element.addEventListener("changeSelectedNodes", (e: Event) => {
-      this.handleIncomingSelection((e as CustomEvent<Set<string>>).detail);
-    });
+    this.stanza.element.addEventListener(
+      METASTANZA_EVENTS.CHANGE_SELECTED_NODES,
+      (e: Event) => {
+        this.handleIncomingSelection((e as CustomEvent<Set<string>>).detail);
+      }
+    );
+
+    this.stanza._main.addEventListener(
+      "click",
+      this.handleSelection.bind(this)
+    );
   }
 
   handleIncomingSelection(selectedIds: Set<string>): void {
@@ -56,12 +74,50 @@ export abstract class BaseSelectionPlugin implements SelectionPlugin {
   protected notifyOutgoingSelection(): void {
     const selectedIds = new Set(this.state.selectedItems);
 
-    // Notify other stanzas about our selection change
-    this.stanza.emit("changeSelectedNodes", selectedIds);
+    if (this.stanza.params[METASTANZA_COMMON_PARAMS.DISPATCH_SELECTION_EVENTS])
+      // Notify other stanzas about our selection change
+      this.stanza.emit(METASTANZA_EVENTS.CHANGE_SELECTED_NODES, selectedIds);
   }
 
-  abstract onSelect(event: MouseEvent, target: any): void;
-  abstract onShiftSelect(event: MouseEvent, target: any): void;
+  /** Event handler for node select */
+  handleSelection(event: MouseEvent): void {
+    const id = (event.target as SelectionNode)?.getAttribute(
+      METASTANZA_DATA_ATTR
+    );
+
+    if (
+      !this.stanza.params[METASTANZA_COMMON_PARAMS.LISTEN_TO_SELECTION_EVENTS]
+    )
+      return;
+
+    if (!id) return;
+
+    if (event.shiftKey) {
+      this.onShiftSelect(event, { id });
+    } else {
+      this.onSelect(event, { id });
+    }
+  }
+
+  /** Select handler - same for any selection plugin, because it's basic */
+  onSelect(event: MouseEvent, target: SelectableItem): void {
+    const idString = target.id?.toString() ?? "";
+
+    if (this.state.lastSelected === idString) {
+      this.clearSelection();
+    } else {
+      this.clearSelection();
+      this.state.selectedItems.add(idString);
+      this.state.lastSelected = idString;
+    }
+
+    // Trigger update event
+    this.notifyOutgoingSelection();
+
+    this.updateSelectionClasses();
+  }
+
+  abstract onShiftSelect(event: MouseEvent, target: SelectableItem): void;
   protected abstract updateSelectionClasses(): void;
 
   getSelection(): any[] {
