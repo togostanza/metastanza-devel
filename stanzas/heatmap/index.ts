@@ -29,13 +29,7 @@ export default class Heatmap extends MetaStanza {
   yAxisGen = null;
   legend: Legend;
   tooltips: ToolTip;
-  _selectionPlugin: NodeSelectionPlugin;
-
-  constructor(...args: any) {
-    // @ts-ignore
-    super(...args);
-    this._selectionPlugin = new NodeSelectionPlugin();
-  }
+  _selectionPlugin = new NodeSelectionPlugin();
 
   menu() {
     return [
