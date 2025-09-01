@@ -30,6 +30,13 @@
       "stanza:required": true
     },
     {
+      "stanza:key": "node-id_key",
+      "stanza:type": "text",
+      "stanza:example": "id",
+      "stanza:description": "Data key that stores node's uniqe id",
+      "stanza:required": true
+    },
+    {
       "stanza:key": "node-value_key",
       "stanza:type": "text",
       "stanza:example": "size",
