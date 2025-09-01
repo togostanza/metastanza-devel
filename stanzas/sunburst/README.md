@@ -55,9 +55,7 @@ Than could be done by using
 
 ```html
 <togostanza--data-source
-  url="{url"
-  to
-  data}
+  url="{url to data}"
   receiver="name_of_first_stanza, name_of_second_stanza"
   target-attribute="data-url"
 ></togostanza--data-source>
