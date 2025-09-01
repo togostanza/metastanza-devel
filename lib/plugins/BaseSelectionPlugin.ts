@@ -117,7 +117,7 @@ export abstract class BaseSelectionPlugin implements SelectionPlugin {
     this.updateSelectionClasses();
   }
 
-  abstract onShiftSelect(event: MouseEvent, target: any): void;
+  abstract onShiftSelect(event: MouseEvent, target: SelectableItem): void;
   protected abstract updateSelectionClasses(): void;
 
   getSelection(): any[] {

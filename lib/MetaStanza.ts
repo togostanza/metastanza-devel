@@ -59,18 +59,6 @@ export default abstract class extends Stanza {
     return this.plugins.get(name) as T;
   }
 
-  // protected handleSelection(event: MouseEvent, target: any): void {
-  //   const selectionPlugin = this.getPlugin<SelectionPlugin>("selection");
-
-  //   if (!selectionPlugin) return;
-
-  //   if (event.shiftKey) {
-  //     selectionPlugin.onShiftSelect(event, target);
-  //   } else {
-  //     selectionPlugin.onSelect(event, target);
-  //   }
-  // }
-
   async render() {
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
