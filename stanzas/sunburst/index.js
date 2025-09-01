@@ -27,11 +27,12 @@ const hexColorRegex = /^#(?:[0-9a-f]{3}){1,2}$/i;
 
 export default class Sunburst extends MetaStanza {
   _chartArea;
-
   // was `nodes-levels_gap_width`. Radial distance between levels
   static BORDER_WIDTH = 2;
   // was `nodes-gap_width`. Angular distance between nodes
   static NODES_GAP = 8;
+
+  _selectionPlugin = new NodeSelectionPlugin();
 
   constructor(...args) {
     super(...args);
@@ -52,6 +53,8 @@ export default class Sunburst extends MetaStanza {
   }
 
   async renderNext() {
+    this.use(this._selectionPlugin);
+
     const that = this;
 
     this.state = new Proxy(this.state, {
@@ -544,8 +547,6 @@ export default class Sunburst extends MetaStanza {
     }
 
     state.currentId = root.data.data.id;
-
-    this.use(new NodeSelectionPlugin());
   }
 }
 
