@@ -74,7 +74,7 @@ export abstract class BaseSelectionPlugin implements SelectionPlugin {
   protected notifyOutgoingSelection(): void {
     const selectedIds = new Set(this.state.selectedItems);
 
-    if (this.stanza.params[METASTANZA_COMMON_PARAMS.LISTEN_TO_SELECTION_EVENTS])
+    if (this.stanza.params[METASTANZA_COMMON_PARAMS.DISPATCH_SELECTION_EVENTS])
       // Notify other stanzas about our selection change
       this.stanza.emit(METASTANZA_EVENTS.CHANGE_SELECTED_NODES, selectedIds);
   }
@@ -85,7 +85,11 @@ export abstract class BaseSelectionPlugin implements SelectionPlugin {
       METASTANZA_DATA_ATTR
     );
 
-    console.log("id", id);
+    if (
+      !this.stanza.params[METASTANZA_COMMON_PARAMS.LISTEN_TO_SELECTION_EVENTS]
+    )
+      return;
+
     if (!id) return;
 
     if (event.shiftKey) {

@@ -16,7 +16,8 @@ export type MetastanzaEvent =
   | (string & {});
 
 export const METASTANZA_COMMON_PARAMS = {
-  LISTEN_TO_SELECTION_EVENTS: "incoming_change_selected_nodes",
+  LISTEN_TO_SELECTION_EVENTS: "event-incoming_change_selected_nodes",
+  DISPATCH_SELECTION_EVENTS: "event-outgoing_change_selected_nodes",
 };
 
 /** Data-attribute that used to identify the element */
