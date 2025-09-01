@@ -354,6 +354,7 @@ export default class Sunburst extends MetaStanza {
       .join("text")
       //Show only if label is supposed to be shown, label text fits into node
       .attr("data-id", (d) => d.data.data.id)
+      .attr("data-id", (d) => d.data.data.id)
       .attr(
         "fill-opacity",
         (d) => +(labelVisible(d) && textFits(d, CHAR_SPACE, d.data.data.label))
