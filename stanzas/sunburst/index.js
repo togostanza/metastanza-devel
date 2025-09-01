@@ -451,9 +451,6 @@ export default class Sunburst extends MetaStanza {
       // Handle other transition effects
       Promise.resolve().then(() => {
         parent.classed("selectable", () => b.data.data.id !== -1);
-        parent.classed("-selected", (d) =>
-          that.selectionPlugin.isSelected(d.data.data)
-        );
       });
 
       textLabels
