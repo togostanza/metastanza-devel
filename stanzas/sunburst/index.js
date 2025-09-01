@@ -328,8 +328,7 @@ export default class Sunburst extends MetaStanza {
       .datum(root)
       .attr("r", radius - Sunburst.BORDER_WIDTH / 2)
       .attr("fill-opacity", 0)
-      .attr("pointer-events", "all")
-      .attr(METASTANZA_DATA_ATTR, (d) => d.data.data.id);
+      .attr("pointer-events", "all");
 
     //Text labels
     const textLabels = g
@@ -378,11 +377,12 @@ export default class Sunburst extends MetaStanza {
         return;
       }
 
-      parent.datum(p.parent ? p : root);
-
-      parent.attr("cursor", (d) => {
-        return d === root ? "auto" : "pointer";
-      });
+      parent
+        .datum(p.parent ? p : root)
+        .attr("cursor", (d) => {
+          return d === root ? "auto" : "pointer";
+        })
+        .attr(METASTANZA_DATA_ATTR, (d) => d.data.data.id);
 
       root.each(
         (d) =>
