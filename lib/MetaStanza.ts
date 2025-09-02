@@ -18,7 +18,8 @@ export type MetastanzaEvent =
 export const METASTANZA_COMMON_PARAMS = {
   LISTEN_TO_SELECTION_EVENTS: "event-incoming_change_selected_nodes",
   DISPATCH_SELECTION_EVENTS: "event-outgoing_change_selected_nodes",
-};
+  DATA_URL: "data-url",
+} as const;
 
 /** Data-attribute that used to identify the element */
 export const METASTANZA_DATA_ATTR = "data-id" as const;
@@ -41,7 +42,7 @@ export default abstract class extends Stanza {
     return getComputedStyle(this.element).getPropertyValue(key);
   }
 
-  emit(eventType: MetastanzaEvent, data: any) {
+  emit<P extends unknown>(eventType: MetastanzaEvent, data: P) {
     this.element.dispatchEvent(
       new CustomEvent(eventType, {
         detail: data,
