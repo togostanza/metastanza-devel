@@ -23,24 +23,23 @@ g {
     stroke: none;
   }
 
-  .selectable {
+  [data-id] {
     transition: var(--togostanza-fadeout-transition);
+
     &:hover,
-    &.-selected:not([fill-opacity="0"]) {
+    &.-selected {
       opacity: 1 !important;
     }
   }
 
-  &:has(.selectable.-selected) {
-    .selectable {
+  &:has(.-selected) {
+    [data-id] {
       opacity: var(--togostanza-fadeout-opacity);
     }
   }
 
   circle {
-    &.selectable {
-      cursor: pointer;
-    }
+    cursor: pointer;
 
     // Add smooth transition for fill color changes
     transition: fill 0.75s ease;
