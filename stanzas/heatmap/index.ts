@@ -9,19 +9,15 @@ import {
 } from "togostanza-utils";
 import { Axis } from "../../lib/AxisMixin";
 import { getGradationColor } from "../../lib/ColorGenerator";
-import MetaStanza from "../../lib/MetaStanza";
-import {
-  emitSelectedEvent,
-  toggleSelectIds,
-  updateSelectedElementClassNameForD3,
-} from "../../lib/utils";
-import ToolTip from "../../lib/ToolTip";
 import Legend from "../../lib/Legend2.js";
+import MetaStanza, { METASTANZA_DATA_ATTR } from "../../lib/MetaStanza";
+import ToolTip from "../../lib/ToolTip";
+import { NodeSelectionPlugin } from "../../lib/plugins/NodeSelectionPlugin";
 
 interface DataItem {
   [key: string]: string | number;
-  __togostanza_id: number | string;
 }
+
 interface Interval {
   label: number;
   color: string;
@@ -29,18 +25,11 @@ interface Interval {
 
 export default class Heatmap extends MetaStanza {
   _chartArea: d3.Selection<SVGGElement, unknown, SVGElement, undefined>;
-  selectedIds: Array<string | number> = [];
   xAxisGen = null;
   yAxisGen = null;
   legend: Legend;
   tooltips: ToolTip;
-
-  selectedEventParams = {
-    targetElementSelector: ".rect",
-    selectedElementClassName: "-selected",
-    selectedElementSelector: ".-selected",
-    idPath: "__togostanza_id__",
-  };
+  _selectionPlugin = new NodeSelectionPlugin();
 
   menu() {
     return [
@@ -53,11 +42,12 @@ export default class Heatmap extends MetaStanza {
   }
 
   async renderNext() {
+    this.use(this._selectionPlugin);
+
     // Parameters
     const root = this._main;
     const dataset: DataItem[] = this._data;
     this._chartArea = select(root.querySelector("svg"));
-    this.selectedIds = [];
 
     // Color scale
     const cellColorKey: string = this.params["cell-color_key"].trim();
@@ -230,7 +220,8 @@ export default class Heatmap extends MetaStanza {
           const numericValue =
             typeof value === "number" ? value : parseFloat(value);
           return setColor(numericValue);
-        });
+        })
+        .attr(METASTANZA_DATA_ATTR, (d) => `${d[xKey]}:${d[yKey]}`);
 
       rectGroup.on("mouseenter", function () {
         const node = select(this);
@@ -239,28 +230,6 @@ export default class Heatmap extends MetaStanza {
       });
       rectGroup.on("mouseleave", function () {
         rectGroup.classed("-fadeout", false);
-      });
-
-      // Add event listener
-      rectGroup.on("click", (e, d) => {
-        select(e.target).raise();
-        toggleSelectIds({
-          selectedIds: this.selectedIds,
-          targetId: d["__togostanza_id__"],
-        });
-        updateSelectedElementClassNameForD3({
-          drawing: this._chartArea,
-          selectedIds: this.selectedIds,
-          ...this.selectedEventParams,
-        });
-        if (this.params["event-outgoing_change_selected_nodes"]) {
-          emitSelectedEvent({
-            rootElement: this.element,
-            dataUrl: this.params["data-url"],
-            targetId: d["__togostanza_id__"],
-            selectedIds: this.selectedIds,
-          });
-        }
       });
 
       this.xAxisGen._g.raise();
@@ -300,21 +269,6 @@ export default class Heatmap extends MetaStanza {
           label: legendSteps,
           color: color(legendSteps),
         };
-      });
-    }
-  }
-
-  handleEvent(event: CustomEvent) {
-    const { selectedIds, dataUrl } = event.detail;
-    if (
-      this.params["event-incoming_change_selected_nodes"] &&
-      dataUrl === this.params["data-url"]
-    ) {
-      this.selectedIds = selectedIds;
-      updateSelectedElementClassNameForD3({
-        drawing: this._chartArea,
-        selectedIds: event.detail.selectedIds,
-        ...this.selectedEventParams,
       });
     }
   }
