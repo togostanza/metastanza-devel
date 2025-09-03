@@ -6,6 +6,8 @@ import {
 } from "../MetaStanza";
 import type { BasePlugin } from "./BasePlugin";
 
+export const METASTANZA_SELECTED_CLASS = "-selected";
+
 type SelectionPluginName = "selection";
 
 type SelectionNode = HTMLElement | SVGElement;
@@ -19,13 +21,20 @@ export interface SelectionState {
   lastSelected?: string;
 }
 
+/** Interface for selection Event's `detail` */
+export interface SelectEventPayload {
+  selectedIds: string[];
+  dataUrl?: string;
+  targetId?: string;
+}
+
 export interface SelectionPlugin extends BasePlugin {
   name: SelectionPluginName;
   state: SelectionState;
   init(stanza: MetaStanza): void;
   onSelect(event: MouseEvent, target: SelectableItem): void;
   onShiftSelect(event: MouseEvent, target: SelectableItem): void;
-  handleIncomingSelection(selectedIds: Set<string>): void;
+  handleIncomingSelection(payload: SelectEventPayload): void;
   getSelection(): any[];
   clearSelection(): void;
 }
@@ -49,7 +58,9 @@ export abstract class BaseSelectionPlugin implements SelectionPlugin {
     this.stanza.element.addEventListener(
       METASTANZA_EVENTS.CHANGE_SELECTED_NODES,
       (e: Event) => {
-        this.handleIncomingSelection((e as CustomEvent<Set<string>>).detail);
+        this.handleIncomingSelection(
+          (e as CustomEvent<SelectEventPayload>).detail
+        );
       }
     );
 
@@ -59,12 +70,21 @@ export abstract class BaseSelectionPlugin implements SelectionPlugin {
     );
   }
 
-  handleIncomingSelection(selectedIds: Set<string>): void {
+  handleIncomingSelection(payload: SelectEventPayload): void {
+    // Ignore incoming events if the data is different
+    if (
+      payload.dataUrl !== this.stanza.params[METASTANZA_COMMON_PARAMS.DATA_URL]
+    )
+      return;
+
     // Replace current selection with incoming selection
-    this.state.selectedItems = new Set(selectedIds);
+    this.state.selectedItems = new Set(payload.selectedIds);
 
     // Update lastSelected if needed
-    if (this.state.lastSelected && !selectedIds.has(this.state.lastSelected)) {
+    if (
+      this.state.lastSelected &&
+      !this.state.selectedItems.has(this.state.lastSelected)
+    ) {
       this.state.lastSelected = undefined;
     }
 
@@ -72,11 +92,31 @@ export abstract class BaseSelectionPlugin implements SelectionPlugin {
   }
 
   protected notifyOutgoingSelection(): void {
-    const selectedIds = new Set(this.state.selectedItems);
-
     if (this.stanza.params[METASTANZA_COMMON_PARAMS.DISPATCH_SELECTION_EVENTS])
-      // Notify other stanzas about our selection change
-      this.stanza.emit(METASTANZA_EVENTS.CHANGE_SELECTED_NODES, selectedIds);
+      this.stanza.emit<SelectEventPayload>(
+        METASTANZA_EVENTS.CHANGE_SELECTED_NODES,
+        {
+          selectedIds: Array.from(this.state.selectedItems),
+          dataUrl: this.stanza.params[METASTANZA_COMMON_PARAMS.DATA_URL],
+          targetId: this.state.lastSelected,
+        }
+      );
+  }
+
+  /** Update selection classes on DOM nodes */
+  protected updateSelectionClasses(): void {
+    this.stanza._main
+      .querySelectorAll(`[${METASTANZA_DATA_ATTR}]`)
+      .forEach((element) => {
+        const nodeId = element.getAttribute(METASTANZA_DATA_ATTR);
+
+        if (nodeId) {
+          element.classList.toggle(
+            METASTANZA_SELECTED_CLASS,
+            this.state.selectedItems.has(nodeId)
+          );
+        }
+      });
   }
 
   /** Event handler for node select */
@@ -118,7 +158,6 @@ export abstract class BaseSelectionPlugin implements SelectionPlugin {
   }
 
   abstract onShiftSelect(event: MouseEvent, target: SelectableItem): void;
-  protected abstract updateSelectionClasses(): void;
 
   getSelection(): any[] {
     return Array.from(this.state.selectedItems);
