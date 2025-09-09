@@ -40,7 +40,7 @@ export interface SelectionPlugin extends BasePlugin {
 }
 
 export interface BaseSelectionPluginOptions {
-  handleUpdateRenderedSelection?: () => void;
+  handleUpdateRenderedSelection?: (state: SelectionState) => void;
 }
 
 export abstract class BaseSelectionPlugin implements SelectionPlugin {
