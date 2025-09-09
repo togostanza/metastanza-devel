@@ -1,6 +1,23 @@
-import { BaseSelectionPlugin, SelectableItem } from "./BaseSelectionPlugin";
+import {
+  BaseSelectionPlugin,
+  type BaseSelectionPluginOptions,
+  type SelectableItem,
+} from "./BaseSelectionPlugin";
 
 export class NodeSelectionPlugin extends BaseSelectionPlugin {
+  private static instance: NodeSelectionPlugin;
+
+  static getInstance(options?: BaseSelectionPluginOptions) {
+    if (!NodeSelectionPlugin.instance) {
+      NodeSelectionPlugin.instance = new NodeSelectionPlugin(options);
+    }
+    return NodeSelectionPlugin.instance;
+  }
+
+  private constructor(options?: BaseSelectionPluginOptions) {
+    super(options);
+  }
+
   onSelect(event: MouseEvent, target: SelectableItem): void {
     super.onSelect(event, target);
   }

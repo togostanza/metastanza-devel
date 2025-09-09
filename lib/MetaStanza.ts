@@ -64,7 +64,6 @@ export default abstract class extends Stanza {
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
     this._main = this.root.querySelector("main");
-
     // To maintain compatibility, we assign values to __data,
     // but in the future we would like to make _data the return value of Data.load itself.
     try {

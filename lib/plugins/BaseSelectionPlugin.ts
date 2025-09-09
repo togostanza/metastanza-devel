@@ -39,30 +39,36 @@ export interface SelectionPlugin extends BasePlugin {
   clearSelection(): void;
 }
 
+export interface BaseSelectionPluginOptions {
+  handleUpdateRenderedSelection?: () => void;
+}
+
 export abstract class BaseSelectionPlugin implements SelectionPlugin {
   name: SelectionPluginName;
   protected stanza: MetaStanza;
+  private handleUpdateRenderedSelection: (state: SelectionState) => void;
 
   state: SelectionState = {
     selectedItems: new Set(),
     lastSelected: undefined,
   };
 
-  constructor() {
+  constructor(options?: BaseSelectionPluginOptions) {
     this.name = "selection";
+    if (options?.handleUpdateRenderedSelection) {
+      this.handleUpdateRenderedSelection =
+        options.handleUpdateRenderedSelection;
+    }
   }
 
   init(stanza: MetaStanza): void {
     this.stanza = stanza;
-
-    this.stanza.element.addEventListener(
-      METASTANZA_EVENTS.CHANGE_SELECTED_NODES,
-      (e: Event) => {
-        this.handleIncomingSelection(
-          (e as CustomEvent<SelectEventPayload>).detail
-        );
+    //@ts-ignore
+    this.stanza.handleEvent = (event: CustomEvent<SelectEventPayload>) => {
+      if (event.type === METASTANZA_EVENTS.CHANGE_SELECTED_NODES) {
+        this.handleIncomingSelection(event.detail);
       }
-    );
+    };
 
     this.stanza._main.addEventListener(
       "click",
@@ -79,14 +85,7 @@ export abstract class BaseSelectionPlugin implements SelectionPlugin {
 
     // Replace current selection with incoming selection
     this.state.selectedItems = new Set(payload.selectedIds);
-
-    // Update lastSelected if needed
-    if (
-      this.state.lastSelected &&
-      !this.state.selectedItems.has(this.state.lastSelected)
-    ) {
-      this.state.lastSelected = undefined;
-    }
+    this.state.lastSelected = payload.targetId;
 
     this.updateSelectionClasses();
   }
@@ -105,25 +104,30 @@ export abstract class BaseSelectionPlugin implements SelectionPlugin {
 
   /** Update selection classes on DOM nodes */
   protected updateSelectionClasses(): void {
-    this.stanza._main
-      .querySelectorAll(`[${METASTANZA_DATA_ATTR}]`)
-      .forEach((element) => {
-        const nodeId = element.getAttribute(METASTANZA_DATA_ATTR);
+    if (this.handleUpdateRenderedSelection) {
+      // if provided with a custom function to update, use it
+      this.handleUpdateRenderedSelection(this.state);
+    } else {
+      this.stanza._main
+        .querySelectorAll(`[${METASTANZA_DATA_ATTR}]`)
+        .forEach((element) => {
+          const nodeId = element.getAttribute(METASTANZA_DATA_ATTR);
 
-        if (nodeId) {
-          element.classList.toggle(
-            METASTANZA_SELECTED_CLASS,
-            this.state.selectedItems.has(nodeId)
-          );
-        }
-      });
+          if (nodeId) {
+            element.classList.toggle(
+              METASTANZA_SELECTED_CLASS,
+              this.state.selectedItems.has(nodeId)
+            );
+          }
+        });
+    }
   }
 
   /** Event handler for node select */
   handleSelection(event: MouseEvent): void {
-    const id = (event.target as SelectionNode)?.getAttribute(
-      METASTANZA_DATA_ATTR
-    );
+    const id = (event.target as SelectionNode)
+      ?.closest(`[${METASTANZA_DATA_ATTR}]`)
+      ?.getAttribute(METASTANZA_DATA_ATTR);
 
     if (
       !this.stanza.params[METASTANZA_COMMON_PARAMS.LISTEN_TO_SELECTION_EVENTS]
