@@ -1,15 +1,22 @@
+import { METASTANZA_EVENTS } from "../../lib/MetaStanza";
 import { Breadcrumbs } from "./components/Breadcrumbs";
 import "./components/BreadcrumbsNode";
 import "./components/BreadcrumbsNodeMenu";
 import MetaStanza from "@/lib/MetaStanza";
 import Tooltip from "@/lib/ToolTip";
+import { NodeSelectionPlugin } from "@/lib/plugins/NodeSelectionPlugin";
 
 export default class BreadcrumbsLit extends MetaStanza {
+  _selectionPlugin;
+
   menu() {
     return [];
   }
 
   renderNext() {
+    if (this._error) {
+      return;
+    }
     const root = this._main;
 
     if (isExamplePage.apply(this)) {
@@ -33,6 +40,11 @@ export default class BreadcrumbsLit extends MetaStanza {
         show: !!this.params["tooltip"],
         tooltipsInstance: this.tooltips,
       },
+      selectionParams: {
+        onSelect: (event, id) => {
+          this._selectionPlugin.onSelect(event, { id });
+        },
+      },
     };
 
     this.breadcrumbs = new Breadcrumbs(root, breadcrumbsConfig);
@@ -40,6 +52,17 @@ export default class BreadcrumbsLit extends MetaStanza {
     this.breadcrumbs.updateParams(this.params, this._data);
 
     this.breadcrumbs.updateComplete.then(this.setupTooltips);
+
+    this._selectionPlugin = new NodeSelectionPlugin({
+      handleUpdateRenderedSelection: (state) => {
+        this.breadcrumbs.updateParams(
+          { ...this.params, ["node-selected_id"]: state.lastSelected },
+          this._data
+        );
+      },
+    });
+
+    this.use(this._selectionPlugin);
   }
 
   setupTooltips = () => {
@@ -55,12 +78,6 @@ export default class BreadcrumbsLit extends MetaStanza {
       this.tooltips?.setup(nodes);
     }
   };
-
-  handleEvent(e) {
-    if (e.details?.id) {
-      this.breadcrumbs.setAttribute("currendId", "" + e.details.id);
-    }
-  }
 }
 
 /**
