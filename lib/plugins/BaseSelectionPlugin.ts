@@ -46,7 +46,7 @@ export interface BaseSelectionPluginOptions {
 export abstract class BaseSelectionPlugin implements SelectionPlugin {
   name: SelectionPluginName;
   protected stanza: MetaStanza;
-  private handleUpdateRenderedSelection: (state: SelectionState) => void;
+  private handleUpdateRenderedSelection: (state: SelectionState) => void = () => {};
 
   state: SelectionState = {
     selectedItems: new Set(),
