@@ -1,4 +1,7 @@
-import { BaseSelectionPlugin, SelectableItem } from "./BaseSelectionPlugin";
+import {
+  BaseSelectionPlugin,
+  type SelectableItem,
+} from "./BaseSelectionPlugin";
 
 export class NodeSelectionPlugin extends BaseSelectionPlugin {
   onSelect(event: MouseEvent, target: SelectableItem): void {
