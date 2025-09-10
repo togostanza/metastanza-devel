@@ -5,7 +5,7 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 import { createApp, type ComponentPublicInstance } from "vue";
-import MetaStanza from "../../lib/MetaStanza";
+import MetaStanza, { METASTANZA_COMMON_PARAMS } from "../../lib/MetaStanza";
 import App from "./app.vue";
 import type { Tree, TreeItem } from "./types";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -63,8 +63,8 @@ export default class ColumnTree extends MetaStanza {
 
     // 条件に合う場合のみ同期処理を実行
     if (
-      this.params["event-incoming_change_selected_nodes"] &&
-      dataUrl === this.params["data-url"]
+      this.params[METASTANZA_COMMON_PARAMS.LISTEN_TO_SELECTION_EVENTS] &&
+      dataUrl === this.params[METASTANZA_COMMON_PARAMS.DATA_URL]
     ) {
       const targetElements = this._data.filter((d) =>
         selectedIds.includes(d.id)
