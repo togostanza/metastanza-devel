@@ -15,7 +15,7 @@
       <div class="inner" :class="`-${nodeValueAlignment}`">
         <input
           :id="`checkbox-${node.id}`"
-          :data-togostanza-id="node.id"
+          :data-id="node.id"
           class="selectable"
           :class="{ '-selected': checkedNodes.get(node.id) }"
           type="checkbox"
@@ -40,6 +40,7 @@
 </template>
 
 <script setup lang="ts">
+import { METASTANZA_EVENTS } from "@/lib/MetaStanza";
 import type { TreeItemWithPath } from "./types";
 
 // Props & Emits ------------------------------
@@ -82,11 +83,10 @@ function setParent(parentId: string | number) {
  * @param node チェック対象のツリーノード（TreeItemWithPath 型） */
 function handleCheckboxClick(node: TreeItemWithPath) {
   emit("setCheckedNode", node);
-
   if (props.isEventOutgoing) {
     const stanza = document.querySelector("togostanza-column-tree");
     stanza?.dispatchEvent(
-      new CustomEvent("changeSelectedNodes", {
+      new CustomEvent(METASTANZA_EVENTS.CHANGE_SELECTED_NODES, {
         detail: {
           selectedIds: [...props.checkedNodes.keys()],
           targetId: node.id,
