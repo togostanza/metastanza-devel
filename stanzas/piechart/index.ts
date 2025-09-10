@@ -10,6 +10,7 @@ import getStanzaColors, { getCirculateColor } from "../../lib/ColorGenerator";
 import MetaStanza, { METASTANZA_NODE_ID_KEY } from "../../lib/MetaStanza";
 import { SelectionPlugin } from "../../lib/plugins/SelectionPlugin";
 import { METASTANZA_DATA_ATTR } from "../../lib/MetaStanza";
+
 import Legend from "../../lib/Legend2";
 import ToolTip from "../../lib/ToolTip";
 
@@ -39,6 +40,7 @@ export default class Piechart extends MetaStanza {
 
     this._selectionPlugin = new SelectionPlugin({ stanza: this });
     this.use(this._selectionPlugin);
+
     const root = this._main;
     this._chartArea = select(this._main.querySelector("svg"));
     const width = parseInt(this.css("--togostanza-canvas-width"));
