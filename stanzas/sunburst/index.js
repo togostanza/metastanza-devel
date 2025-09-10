@@ -53,13 +53,16 @@ export default class Sunburst extends MetaStanza {
   }
 
   async renderNext() {
+    if (this._error) {
+      return;
+    }
     this.use(this._selectionPlugin);
 
     const that = this;
 
     this.state = new Proxy(this.state, {
       set(target, key, value) {
-        if (key === "currentId") {
+        if (key === "currentId" && !!value) {
           updateId(getNodeById(value), that);
         }
         return Reflect.set(target, key, value);
@@ -72,7 +75,7 @@ export default class Sunburst extends MetaStanza {
     const main = this._main;
 
     const clicked = (e, p) => {
-      state.currentId = p.data.data.id;
+      state.currentId = p?.data?.data?.id;
     };
 
     const data = this.__data.asTree({
