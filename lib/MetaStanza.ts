@@ -24,6 +24,8 @@ export const METASTANZA_COMMON_PARAMS = {
 /** Data-attribute that used to identify the element */
 export const METASTANZA_DATA_ATTR = "data-id" as const;
 
+export const METASTANZA_NODE_ID_KEY = "__togostanza_id__" as const;
+
 export default abstract class extends Stanza {
   _data: any;
   __data: Data;
