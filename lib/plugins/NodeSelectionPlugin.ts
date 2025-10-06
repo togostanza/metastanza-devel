@@ -9,10 +9,11 @@ export class NodeSelectionPlugin extends BaseSelectionPlugin {
   }
 
   onShiftSelect(event: MouseEvent, target: SelectableItem): void {
-    const idString = target.id?.toString() ?? "";
-    if (!this.state.selectedItems.has(idString)) {
-      this.state.selectedItems.add(idString);
-      this.state.lastSelected = idString;
+    if (!this.isSelected(target)) {
+      const idsString = target.ids?.map(String) ?? [];
+
+      this.addIdsToSelection(idsString);
+      this.state.lastSelected = idsString.at(-1);
 
       this.notifyOutgoingSelection();
     }
