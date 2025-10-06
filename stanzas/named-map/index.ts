@@ -8,7 +8,7 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 import { feature } from "topojson-client";
-import { Topology } from "topojson-specification";
+import type { Topology } from "topojson-specification";
 import { getGradationColor } from "../../lib/ColorGenerator";
 import MetaStanza from "../../lib/MetaStanza";
 import {
