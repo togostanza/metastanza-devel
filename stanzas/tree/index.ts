@@ -89,7 +89,7 @@ export default class Tree extends MetaStanza {
     const width = parseFloat(this.css("--togostanza-canvas-width")) || 0;
     const height = parseFloat(this.css("--togostanza-canvas-height")) || 0;
     const minRadius = this.params["node-size_min"] / 2 || 0;
-    const maxRadius = this.params["node-size_max"] / 2 || 0;
+    const maxRadius = (this.params["node-size_max"] || 0) / 2;
     const colorMode = this.params["node-color_blend"];
 
     const root = this._main;
