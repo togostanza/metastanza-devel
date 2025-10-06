@@ -142,7 +142,7 @@ export default class regionGeographicMap extends MetaStanza {
     };
 
     // Tooltip
-    const tooltipString = this.params["tooltip"].trim();
+    const tooltipString = this.params["tooltip"]?.trim();
 
     //Styles
     const width = parseFloat(this.css("--togostanza-canvas-width"));
