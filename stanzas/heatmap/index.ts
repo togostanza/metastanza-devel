@@ -45,11 +45,16 @@ export default class Heatmap extends MetaStanza {
   }
 
   async renderNext() {
+    this._selectionPlugin = new SelectionPlugin({
+      adapter: "vanilla",
+      stanza: this,
+    });
     this.use(this._selectionPlugin);
 
     // Parameters
     const root = this._main;
     const dataset: DataItem[] = this._data;
+
     this._chartArea = select(root.querySelector("svg"));
 
     // Color scale
@@ -224,7 +229,7 @@ export default class Heatmap extends MetaStanza {
             typeof value === "number" ? value : parseFloat(value);
           return setColor(numericValue);
         })
-        .attr(METASTANZA_DATA_ATTR, (d) => `${d[xKey]}:${d[yKey]}`);
+        .attr(METASTANZA_DATA_ATTR, (d) => d[METASTANZA_NODE_ID_KEY]);
 
       rectGroup.on("mouseenter", function () {
         const node = select(this);
