@@ -6,7 +6,7 @@ import MetaStanza, {
   METASTANZA_NODE_ID_KEY,
 } from "@/lib/MetaStanza";
 import ToolTip from "@/lib/ToolTip";
-import { NodeSelectionPlugin } from "@/lib/plugins/NodeSelectionPlugin";
+import { SelectionPlugin } from "@/lib/plugins/SelectionPlugin";
 import { getMarginsFromCSSString } from "@/lib/utils";
 import { extent, format, scaleOrdinal, scaleSqrt, select } from "d3";
 import {
@@ -36,7 +36,7 @@ export default class ScatterPlot extends MetaStanza {
   legend: Legend;
   tooltips: ToolTip;
   _graphArea: d3.Selection<SVGGElement, unknown, HTMLElement, unknown>;
-  _selectionPlugin = new NodeSelectionPlugin();
+  _selectionPlugin: SelectionPlugin;
 
   menu() {
     return [
@@ -52,6 +52,8 @@ export default class ScatterPlot extends MetaStanza {
     if (this._error) {
       return null;
     }
+
+    this._selectionPlugin = new SelectionPlugin({ stanza: this });
 
     this.use(this._selectionPlugin);
     let svg = select(this._main.querySelector("svg"));
