@@ -67,7 +67,10 @@ type VueSingle = {
   component: ComponentPublicInstance;
   stanza: MetaStanza;
   checkboxMode?: boolean;
-} & Omit<AdapterInitProps, "element" | "updateState">;
+} & Omit<
+  AdapterInitProps,
+  "element" | "updateState" | "mapIdsToTargets" | "mapTargetToIds"
+>;
 
 type VueRange = {
   adapter?: typeof ADAPTER_TYPE.VUE;
@@ -75,10 +78,14 @@ type VueRange = {
   component: ComponentPublicInstance;
   stanza: MetaStanza;
   getListElement?: (el: Element) => Element;
-  getChildElement?: (listEl: Element) => Element;
+  getTargetElement?: (listEl: Element) => Element;
   checkboxMode?: boolean;
-} & Omit<AdapterInitProps, "element" | "updateState">;
+} & Omit<
+  AdapterInitProps,
+  "element" | "updateState" | "mapIdsToTargets" | "mapTargetToIds"
+>;
 
+// Base types without custom methods
 type VanillaSingle = {
   adapter?: typeof ADAPTER_TYPE.VANILLA;
   mode?: typeof SELECTION_MODE.SINGLE;
@@ -91,9 +98,10 @@ type VanillaRange = {
   mode?: typeof SELECTION_MODE.RANGE;
   stanza: MetaStanza;
   getListElement?: (el: Element) => Element;
-  getChildElement?: (listEl: Element) => Element;
+  getTargetElement?: (listEl: Element) => Element;
   checkboxMode?: boolean;
 } & Omit<AdapterInitProps, "element" | "updateState">;
+
 // need parent list to be able to pap from index range to ids.
 // the thing is that there might be multilple lists! - try just get list element as a parent node! - mb add method to get?
 type SelectionPluginInitProps =
@@ -113,16 +121,22 @@ export class SelectionPlugin implements SelectionPluginI {
    */
   private getListElement: ((el: Element) => Element) | null = null;
   /**
-   * How to get a child element fromlist element
+   * How to get a child element from list child element
    */
-  private getChildElement: ((listEl: Element) => Element) | null = null;
+  private getTargetElement: ((listEl: Element) => Element) | null = null;
 
   static defaultGetListElement(el: Element) {
     return el.parentElement;
   }
 
-  static defaultGetChildElement(el: Element) {
-    return el.querySelector(`[${METASTANZA_DATA_ATTR}]`);
+  /**
+   * Default function to return eleme
+   * @param listChild - list element's child
+   * @returns element to update
+   */
+  static defaultGetTargetElement(listChild: Element) {
+    if (listChild.getAttribute(METASTANZA_DATA_ATTR)) return listChild;
+    return listChild.querySelector(`[${METASTANZA_DATA_ATTR}]`);
   }
 
   readonly mode: SelectionMode;
@@ -153,10 +167,10 @@ export class SelectionPlugin implements SelectionPluginI {
         this.getListElement = SelectionPlugin.defaultGetListElement;
       }
 
-      if (options.getChildElement) {
-        this.getChildElement = options.getChildElement;
+      if (options.getTargetElement) {
+        this.getTargetElement = options.getTargetElement;
       } else {
-        this.getChildElement = SelectionPlugin.defaultGetChildElement;
+        this.getTargetElement = SelectionPlugin.defaultGetTargetElement;
       }
     }
 
@@ -166,9 +180,13 @@ export class SelectionPlugin implements SelectionPluginI {
 
     switch (this.adapter) {
       case "vanilla": {
+        //@ts-ignore
         this.adapterInstance = new DomSelectionAdapter({
+          //@ts-ignore
           element: this.stanza._main,
-          ...options,
+          //@ts-ignore
+          ...(options as VanillaSingle | VanillaRange),
+          //@ts-ignore
           updateState: this.updateState.bind(this),
         });
         break;
@@ -278,14 +296,15 @@ export class SelectionPlugin implements SelectionPluginI {
 
     // Need to get the array of children every time because it may change;
     const arrayOfChildren = Array.from(listElement.children);
+
     const index1 = arrayOfChildren.findIndex(
       (el) =>
-        this.getChildElement(el).getAttribute(METASTANZA_DATA_ATTR) ===
+        this.getTargetElement(el).getAttribute(METASTANZA_DATA_ATTR) ===
         this.state.lastSelected
     );
     const index2 = arrayOfChildren.findIndex(
       (el) =>
-        this.getChildElement(el).getAttribute(METASTANZA_DATA_ATTR) ===
+        this.getTargetElement(el).getAttribute(METASTANZA_DATA_ATTR) ===
         selectedId
     );
 
@@ -297,7 +316,7 @@ export class SelectionPlugin implements SelectionPluginI {
     const newIds: string[] = [];
 
     for (let i = start; i <= end; i++) {
-      const child = this.getChildElement(arrayOfChildren[i]);
+      const child = this.getTargetElement(arrayOfChildren[i]);
       const id = child.getAttribute(METASTANZA_DATA_ATTR);
       if (id && id !== this.state.lastSelected) newIds.push(id);
     }
@@ -320,9 +339,14 @@ export class SelectionPlugin implements SelectionPluginI {
    * Adds last id to the state, if it is different from last selected. If same, the unselect all.s
    */
   onSelect(ids: string[]): void {
-    if (!this.checkboxMode && this.state.lastSelected !== ids[0]) {
+    if (!this.checkboxMode) {
+      if (this.state.lastSelected === ids.at(-1)) {
+        this.clearSelection();
+        return;
+      }
       this.clearSelection();
     }
+
     this._state.lastSelected = ids.at(-1);
 
     this.addIdsToSelection(ids);

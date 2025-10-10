@@ -10,25 +10,26 @@ interface UpdateStatePayload {
   shiftKey: boolean;
 }
 
-export interface AdapterInitProps {
-  // updateSelection: (state: SelectionState) => void;
-  /**
-   * Function that will update the state. Passed from the plugin.
-   * @param selected - interpreted data, ready to be passed to state updater.
-   * @returns
-   */
+export type AdapterInitProps = {
   updateState: (selected: UpdateStatePayload) => void;
+  element: HTMLElement;
   /**
    * Convert event target to array of data ids.
    * Needed, for example, in case of Histogram, where clicked target represents multiple data-id
    * @param target - event target
    * @returns array of datum ids
    */
-  mapTargetToIds?: (target: Element) => string[];
+  mapTargetToIds?: (target: Element) => string[] | undefined;
 
+  /**
+   * Convert incoming data-ids to selection targets
+   * @param ids - selected ids
+   * @returns array of selection targets
+   */
   mapIdsToTargets?: (ids: string[]) => Element[];
-  element: HTMLElement;
-}
+
+  passIdsToComponent?: (ids: string[]) => void;
+};
 
 export abstract class SelectionAdapter {
   private abortController: AbortController;
@@ -41,7 +42,7 @@ export abstract class SelectionAdapter {
    */
   abstract updateSelection(state: SelectionState): void;
 
-  protected mapTargetToIds: (target: Element) => string[];
+  protected mapTargetToIds: (target: Element) => string[] | undefined;
 
   protected mapIdsToTargets: (ids: string[]) => Element[];
 
@@ -94,12 +95,13 @@ export abstract class SelectionAdapter {
     this.element.addEventListener(
       "click",
       (e) => {
-        if (!(e.target as Element).closest(`[${METASTANZA_DATA_ATTR}]`)) return;
-        const ids = this.mapTargetToIds(e.target as Element);
-        // whether it is range or single selection - must be decided in the Plugin, not in here. Here is just getting ids
-        // Thats why passing shift key
-        //
-        updateState({ ids, shiftKey: e.shiftKey });
+        const target = e.target as Element | null | undefined;
+
+        const ids = this.mapTargetToIds(target);
+
+        if ((!ids || ids.length === 0) && e.shiftKey) return;
+
+        updateState({ ids: ids ?? [], shiftKey: e.shiftKey });
       },
       { signal: this.abortController.signal }
     );
@@ -110,18 +112,11 @@ export abstract class SelectionAdapter {
   }
 }
 
-interface VanillaSelectionAdapterInputProps extends AdapterInitProps {}
-
 export class DomSelectionAdapter extends SelectionAdapter {
-  constructor({ element, updateState }: VanillaSelectionAdapterInputProps) {
-    super({ element, updateState });
-  }
-
   /** @inheritdoc */
   updateSelection(state: SelectionState): void {
     const elements = this.mapIdsToTargets(Array.from(state.selectedItems));
 
-    console.log("updateSelection state", state);
     this.element
       .querySelectorAll(`.${METASTANZA_SELECTED_CLASS}`)
       .forEach((el) => {
@@ -129,13 +124,7 @@ export class DomSelectionAdapter extends SelectionAdapter {
       });
 
     elements.forEach((element) => {
-      const dataId = element.getAttribute(METASTANZA_DATA_ATTR);
-      if (dataId) {
-        element.classList.toggle(
-          METASTANZA_SELECTED_CLASS,
-          state.selectedItems.has(dataId)
-        );
-      }
+      element.classList.add(METASTANZA_SELECTED_CLASS);
     });
   }
 }
@@ -143,13 +132,33 @@ export class DomSelectionAdapter extends SelectionAdapter {
 interface VueSelectionAdapterInputProps
   extends Omit<AdapterInitProps, "element"> {
   component: ComponentPublicInstance;
+  passIdsToComponent?: (ids: string[]) => void;
 }
 
 export class VueSelectionAdapter extends SelectionAdapter {
   private component: ComponentPublicInstance;
+  private passIdsToComponent: (ids: string[]) => void;
 
-  constructor({ component, updateState }: VueSelectionAdapterInputProps) {
+  static defaultPassIdsToComponent(
+    component: ComponentPublicInstance,
+    ids: string[]
+  ) {
+    component.$.props.selectedIds = ids;
+  }
+
+  constructor({
+    component,
+    updateState,
+    passIdsToComponent,
+  }: VueSelectionAdapterInputProps) {
     super({ updateState, element: component.$el });
+
+    if (!passIdsToComponent) {
+      this.passIdsToComponent = (ids) =>
+        VueSelectionAdapter.defaultPassIdsToComponent(component, ids);
+    } else {
+      this.passIdsToComponent = passIdsToComponent;
+    }
 
     this.component = component;
   }
@@ -157,6 +166,6 @@ export class VueSelectionAdapter extends SelectionAdapter {
   /** @inheritdoc */
   updateSelection(state: SelectionState): void {
     // No way to update some abstract things. Let the Vue component hanlde this inside Vue.
-    this.component.$.props.selectedIds = Array.from(state.selectedItems);
+    this.passIdsToComponent(Array.from(state.selectedItems));
   }
 }
