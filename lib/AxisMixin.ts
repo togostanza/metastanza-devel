@@ -192,7 +192,7 @@ const proxyfy = (init: object, callbackMap: Map<string, (val) => void>) => {
             } else if (Array.isArray(pValue)) {
               const isChanged =
                 (pValue.length !== oldParams[pKey].length ||
-                  oldParams[pKey].toString() !== pValue.toString()) &&
+                  oldParams[pKey]?.toString() !== pValue?.toString()) &&
                 callbackMap.has(pKey);
               if (isChanged) {
                 target[key] = val;
@@ -453,6 +453,7 @@ export class Axis {
           val.toString();
       }
     }
+
     return (val: string | number | Date | { toString(): string }) =>
       val.toString();
   }
