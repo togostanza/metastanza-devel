@@ -65,6 +65,8 @@
 }
 
 svg {
+  user-select: none;
+
   & > defs > marker > path {
     fill: var(--togostanza-edge-color);
   }
