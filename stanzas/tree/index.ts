@@ -19,12 +19,8 @@ import {
   downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
-import MetaStanza from "@/lib/MetaStanza";
-import {
-  emitSelectedEvent,
-  toggleSelectIds,
-  updateSelectedElementClassNameForD3,
-} from "@/lib/utils";
+import MetaStanza, { METASTANZA_DATA_ATTR } from "@/lib/MetaStanza";
+import { SelectionPlugin } from "@/lib/plugins/SelectionPlugin";
 import ToolTip from "@/lib/ToolTip";
 
 //Declaring constants
@@ -60,12 +56,7 @@ interface ExtendedHierarchyNode extends HierarchyNode<NodeData> {
 
 export default class Tree extends MetaStanza {
   _chartArea: d3.Selection<SVGGElement, unknown, SVGElement, undefined>;
-  selectedIds: Array<string | number> = [];
-  selectedEventParams = {
-    targetElementSelector: ".node",
-    selectedElementClassName: "-selected",
-    idPath: "data.id",
-  };
+  _selectionPlugin: SelectionPlugin;
   tooltips: ToolTip;
 
   //Stanza download menu contents
@@ -80,6 +71,10 @@ export default class Tree extends MetaStanza {
   }
 
   async renderNext() {
+    if (this._error) return;
+
+    this._selectionPlugin = new SelectionPlugin({ stanza: this });
+    this.use(this._selectionPlugin);
     if (!this._chartArea?.empty()) {
       this._chartArea?.remove();
     }
@@ -402,6 +397,7 @@ export default class Tree extends MetaStanza {
             .enter()
             .append("g")
             .attr("class", "node")
+            .attr(METASTANZA_DATA_ATTR, (d) => d.data.id.toString())
             .attr("transform", () => {
               switch (layout) {
                 case HORIZONTAL:
@@ -416,43 +412,11 @@ export default class Tree extends MetaStanza {
 
           let timeout;
 
-          nodeCirclesEnter
-            .on("click", (e, d) => {
-              if (e.detail === 1) {
-                timeout = setTimeout(() => {
-                  toggleSelectIds({
-                    selectedIds: this.selectedIds,
-                    targetId: d.data.id,
-                  });
-                  updateSelectedElementClassNameForD3({
-                    drawing: this._chartArea,
-                    selectedIds: this.selectedIds,
-                    ...this.selectedEventParams,
-                  });
-                  if (this.params["event-outgoing_change_selected_nodes"]) {
-                    emitSelectedEvent({
-                      rootElement: this.element,
-                      targetId: d.data.id,
-                      selectedIds: this.selectedIds,
-                      dataUrl: this.params["data-url"],
-                    });
-                  }
-                }, 500);
-              }
-            })
-            .on("dblclick", (e, d) => {
-              clearTimeout(timeout);
-              toggle(d);
-              update(d);
-
-              updateSelectedElementClassNameForD3.apply(this, [
-                {
-                  drawing: this._chartArea,
-                  selectedIds: this.selectedIds,
-                  ...this.selectedEventParams,
-                },
-              ]);
-            });
+          nodeCirclesEnter.on("dblclick", (e, d) => {
+            clearTimeout(timeout);
+            toggle(d);
+            update(d);
+          });
 
           //Update circle color when opening and closing
           nodeCirclesUpdate
@@ -480,30 +444,8 @@ export default class Tree extends MetaStanza {
             )
             .attr("fill", setColor);
 
-          //Drawing labels
-          const nodeLabelsUpdate = gLabels
-            .selectAll<SVGGElement, ExtendedHierarchyNode>("g")
-            .data(treeRoot.descendants(), (d) => d.id ?? String(++i));
-
-          //Generate new elements of Labels
-          const nodeLabelsEnter = nodeLabelsUpdate
-            .enter()
-            .append("g")
-            .attr("class", "node")
-            .attr("transform", () => {
-              switch (layout) {
-                case HORIZONTAL:
-                case VERTICAL:
-                  return `translate(${source.y0}, ${source.x0})`;
-                case RADIAL:
-                  return `rotate(${
-                    (source.x0 * 180) / Math.PI - 90
-                  }) translate(${source.y0}, 0)`;
-              }
-            });
-
-          //Decorate labels
-          nodeLabelsEnter
+          // Add labels
+          nodeCirclesEnter
             .append("text")
             .attr("x", (d) => {
               switch (layout) {
@@ -518,16 +460,6 @@ export default class Tree extends MetaStanza {
               }
             })
             .attr("dy", "3")
-            .attr("transform", (d) => {
-              switch (layout) {
-                case HORIZONTAL:
-                  return "rotate(0)";
-                case VERTICAL:
-                  return "rotate(-90)";
-                case RADIAL:
-                  return `rotate(${d.x >= Math.PI ? 180 : 0})`;
-              }
-            })
             .attr("text-anchor", (d) => {
               switch (layout) {
                 case HORIZONTAL:
@@ -538,28 +470,23 @@ export default class Tree extends MetaStanza {
                   return d.x < Math.PI === !d.children ? "start" : "end";
               }
             })
+            .attr("transform", (d) => {
+              switch (layout) {
+                case HORIZONTAL:
+                  return "rotate(0)";
+                case VERTICAL:
+                  return "rotate(-90)";
+                case RADIAL: {
+                  if (d.x > Math.PI) return `rotate(180)`;
+                }
+              }
+            })
             .text((d) => d.data.label || "");
 
           const duration = 500;
 
           //Circle transition
           nodeCirclesEnter
-            .transition()
-            .duration(duration)
-            .attr("transform", (d) => {
-              switch (layout) {
-                case HORIZONTAL:
-                case VERTICAL:
-                  return `translate(${d.y}, ${d.x})`;
-                case RADIAL:
-                  return `rotate(${(d.x * 180) / Math.PI - 90}) translate(${
-                    d.y
-                  }, 0)`;
-              }
-            });
-
-          //Labels transition
-          nodeLabelsEnter
             .attr("transform", (d) => {
               switch (layout) {
                 case HORIZONTAL:
@@ -594,6 +521,7 @@ export default class Tree extends MetaStanza {
           //Remove extra elements of circle
           nodeCirclesUpdate
             .exit()
+
             .transition()
             .duration(duration)
             .attr("transform", () => {
@@ -605,41 +533,6 @@ export default class Tree extends MetaStanza {
                   return `rotate(${
                     (source.x * 180) / Math.PI - 90
                   }) translate(${source.y}, 0)`;
-              }
-            })
-            .remove();
-
-          //Remove extra elements of Labels
-          nodeLabelsUpdate
-            .exit<ExtendedHierarchyNode>()
-            .attr("transform", (d) => {
-              switch (layout) {
-                case HORIZONTAL:
-                case VERTICAL:
-                  return `translate(${d.y}, ${d.x})`;
-                case RADIAL:
-                  return `rotate(${(d.x * 180) / Math.PI - 90}) translate(${
-                    d.y
-                  }, 0)`;
-              }
-            })
-            .transition()
-            .duration(duration)
-            .attr("transform", (d) => {
-              switch (layout) {
-                case HORIZONTAL:
-                case VERTICAL:
-                  return `translate(${source.y}, ${source.x})`;
-                case RADIAL:
-                  if (source.y === 0) {
-                    return `rotate(${(d.x * 180) / Math.PI - 90}) translate(${
-                      source.y
-                    }, 0)`;
-                  } else {
-                    return `rotate(${
-                      (source.x * 180) / Math.PI - 90
-                    }) translate(${source.y}, 0)`;
-                  }
               }
             })
             .remove();
@@ -710,7 +603,7 @@ export default class Tree extends MetaStanza {
 
           // Add hover functionality for tree nodes
           const addTreeHighlightOnHover = () => {
-            const selectedIds = this.selectedIds;
+            const selectedIds = this._selectionPlugin?.getSelection() || [];
             const nodeGroups = g.selectAll<SVGGElement, ExtendedHierarchyNode>(
               ".node"
             );
@@ -759,7 +652,7 @@ export default class Tree extends MetaStanza {
                   return (
                     p !== d &&
                     relatedNodeIds.has(p.data.id) &&
-                    !selectedIds.includes(p.data.id)
+                    !selectedIds.includes(p.data.id.toString())
                   );
                 });
 
@@ -774,7 +667,7 @@ export default class Tree extends MetaStanza {
                   return (
                     p !== d &&
                     relatedNodeIds.has(p.data.id) &&
-                    !selectedIds.includes(p.data.id)
+                    !selectedIds.includes(p.data.id.toString())
                   );
                 });
 
@@ -832,19 +725,7 @@ export default class Tree extends MetaStanza {
   }
 
   handleEvent(event) {
-    const { selectedIds, dataUrl } = event.detail;
-
-    if (
-      this.params["event-incoming_change_selected_nodes"] &&
-      dataUrl === this.params["data-url"]
-    ) {
-      this.selectedIds = selectedIds;
-      updateSelectedElementClassNameForD3({
-        drawing: this._chartArea,
-        selectedIds,
-        ...this.selectedEventParams,
-      });
-    }
+    // Selection events are now handled by the NodeSelectionPlugin
   }
 }
 
