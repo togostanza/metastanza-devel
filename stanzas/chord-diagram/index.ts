@@ -11,13 +11,9 @@ import getStanzaColors from "@/lib/ColorGenerator";
 import MetaStanza from "@/lib/MetaStanza";
 import ToolTip from "@/lib/ToolTip";
 import prepareGraphData from "@/lib/prepareGraphData";
-import {
-  MarginsI,
-  emitSelectedEvent,
-  getMarginsFromCSSString,
-  toggleSelectIds,
-  updateSelectedElementClassNameForD3,
-} from "../../lib/utils";
+import { MarginsI, getMarginsFromCSSString } from "../../lib/utils";
+import { SelectionPlugin } from "../../lib/plugins/SelectionPlugin";
+import { METASTANZA_DATA_ATTR } from "../../lib/MetaStanza";
 import { drawChordDiagram } from "./drawChordDiagram";
 import drawCircleLayout from "./drawCircleLayout";
 
@@ -30,13 +26,7 @@ interface Datum {
 export default class ChordDiagram extends MetaStanza {
   tooltips: ToolTip;
   _chartArea: d3.Selection<SVGGElement, any, SVGElement, any>;
-  selectedIds: Array<string | number> = [];
-  selectedEventParams = {
-    targetElementSelector: "g.node",
-    selectedElementClassName: "-selected",
-    selectedElementSelector: ".-selected",
-    idPath: "id",
-  };
+  _selectionPlugin: SelectionPlugin;
 
   menu() {
     return [
@@ -49,6 +39,13 @@ export default class ChordDiagram extends MetaStanza {
   }
 
   async renderNext() {
+    this._selectionPlugin = new SelectionPlugin({
+      adapter: "vanilla",
+      stanza: this,
+    });
+
+    this.use(this._selectionPlugin);
+
     if (!this._chartArea?.empty()) {
       this._chartArea?.remove();
     }
@@ -210,52 +207,13 @@ export default class ChordDiagram extends MetaStanza {
         this.tooltips.setup(nodesList);
       }
 
-      // Add select/deselect event listeners
+      // Set data-id attributes for selection plugin
       this._chartArea
-        .selectAll(this.selectedEventParams.targetElementSelector)
-        .on("click", (_, d: Datum) => {
-          toggleSelectIds({
-            selectedIds: this.selectedIds,
-            targetId: d.id,
-          });
-          updateSelectedElementClassNameForD3({
-            drawing: this._chartArea,
-            selectedIds: this.selectedIds,
-            ...this.selectedEventParams,
-          });
-          if (this.params["event-outgoing_change_selected_nodes"]) {
-            emitSelectedEvent({
-              rootElement: this.element,
-              targetId: d.id,
-              selectedIds: this.selectedIds,
-              dataUrl: this.params["data-url"],
-            });
-          }
-        });
+        .selectAll("g.node")
+        .attr(METASTANZA_DATA_ATTR, (d: Datum) => d.id?.toString());
     };
 
     drawContent();
-
-    // handleApiError({
-    //   stanzaData: this,
-    //   hasTooltip: true,
-    //   drawContent,
-    // });
-  }
-
-  handleEvent(event) {
-    const { selectedIds, dataUrl } = event.detail;
-    if (
-      this.params["event-incoming_change_selected_nodes"] &&
-      dataUrl === this.params["data-url"]
-    ) {
-      this.selectedIds = selectedIds;
-      updateSelectedElementClassNameForD3({
-        drawing: this._chartArea,
-        selectedIds,
-        ...this.selectedEventParams,
-      });
-    }
   }
 }
 
