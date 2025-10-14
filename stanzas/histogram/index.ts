@@ -1,4 +1,4 @@
-import { bin, select, type Selection } from "d3";
+import { Bin, bin, select, type Selection } from "d3";
 import { AxisDomain } from "d3-axis";
 import {
   downloadCSVMenuItem,
@@ -8,16 +8,20 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 import { Axis, type AxisParamsI, paramsModel } from "../../lib/AxisMixin";
-import MetaStanza from "../../lib/MetaStanza";
+import MetaStanza, {
+  METASTANZA_DATA_ATTR,
+  METASTANZA_NODE_ID_KEY,
+} from "../../lib/MetaStanza";
 import ToolTip from "../../lib/ToolTip";
-import { emitSelectedEvent, toggleSelectedIdsMultiple } from "../../lib/utils";
+import { SelectionPlugin } from "@/lib/plugins/SelectionPlugin";
 
 export default class Histogram extends MetaStanza {
   xAxisGen: Axis;
   yAxisGen: Axis;
-  _graphArea: d3.Selection<SVGGElement, {}, SVGElement, unknown>;
+  _graphArea: d3.Selection<SVGGElement, unknown, SVGElement, unknown>;
   tooltips: ToolTip;
   selectedIds: Array<string | number> = [];
+  _selectionPlugin: SelectionPlugin;
 
   menu() {
     return [
@@ -30,6 +34,33 @@ export default class Histogram extends MetaStanza {
   }
 
   async renderNext() {
+    this._selectionPlugin = new SelectionPlugin({
+      adapter: "vanilla",
+      stanza: this,
+      mapTargetToIds: (target) => {
+        const datum = select(target).datum();
+
+        //@ts-ignore
+        return datum?.__values__.map((v) =>
+          String(v?.[METASTANZA_NODE_ID_KEY])
+        );
+      },
+      mapIdsToTargets: (ids) => {
+        const bars = this._graphArea
+          .selectAll(".bar")
+          .filter(function (d: Bin<number, number>) {
+            //@ts-ignore
+            return d.__values__.some((v) =>
+              ids.includes(String(v?.[METASTANZA_NODE_ID_KEY]))
+            );
+          });
+
+        return bars.nodes() as Element[];
+      },
+    });
+
+    this.use(this._selectionPlugin);
+
     let svg = select(this._main.querySelector("svg"));
     if (!svg.empty()) {
       svg.remove();
@@ -167,60 +198,7 @@ export default class Histogram extends MetaStanza {
       const nodesWithTooltips = this._main.querySelectorAll("[data-tooltip]");
       this.tooltips.setup(nodesWithTooltips);
     }
-
-    if (this.params["event-outgoing_change_selected_nodes"]) {
-      bar.on("click", (_, d: any) => {
-        const ids = d["__values__"].map(
-          (value: any) => value["__togostanza_id__"]
-        );
-        toggleSelectedIdsMultiple({
-          selectedIds: this.selectedIds,
-          targetIds: ids,
-        });
-
-        emitSelectedEventByHistogram.apply(this, [
-          this.selectedIds,
-          this.params["data-url"],
-        ]);
-      });
-    }
   }
-
-  handleEvent(event: CustomEvent) {
-    const { selectedIds, dataUrl } = event.detail as any;
-    if (
-      this.params["event-incoming_change_selected_nodes"] &&
-      dataUrl === this.params["data-url"]
-    ) {
-      this.selectedIds = selectedIds;
-      changeSelectedStyle.apply(this, [selectedIds]);
-    }
-  }
-}
-
-function emitSelectedEventByHistogram(
-  this: Histogram,
-  ids: unknown[],
-  dataUrl: string
-) {
-  // dispatch event
-  emitSelectedEvent({
-    rootElement: this.element,
-    targetId: ids[0],
-    selectedIds: ids,
-    dataUrl,
-  });
-
-  changeSelectedStyle.apply(this, [ids as (string | number)[]]);
-}
-
-function changeSelectedStyle(this: Histogram, ids: (string | number)[]) {
-  const bars = this._graphArea.selectAll("g.bar");
-  bars.classed("-selected", (d: any) =>
-    d["__values__"].some((value: any) =>
-      ids.includes(value["__togostanza_id__"])
-    )
-  );
 }
 
 /**
