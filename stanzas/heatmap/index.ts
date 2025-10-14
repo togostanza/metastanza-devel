@@ -10,9 +10,12 @@ import {
 import { Axis } from "../../lib/AxisMixin";
 import { getGradationColor } from "../../lib/ColorGenerator";
 import Legend from "../../lib/Legend2.js";
-import MetaStanza, { METASTANZA_DATA_ATTR } from "../../lib/MetaStanza";
+import MetaStanza, {
+  METASTANZA_DATA_ATTR,
+  METASTANZA_NODE_ID_KEY,
+} from "../../lib/MetaStanza";
 import ToolTip from "../../lib/ToolTip";
-import { NodeSelectionPlugin } from "../../lib/plugins/NodeSelectionPlugin";
+import { SelectionPlugin } from "../../lib/plugins/SelectionPlugin";
 
 interface DataItem {
   [key: string]: string | number;
@@ -29,7 +32,7 @@ export default class Heatmap extends MetaStanza {
   yAxisGen = null;
   legend: Legend;
   tooltips: ToolTip;
-  _selectionPlugin = new NodeSelectionPlugin();
+  _selectionPlugin: SelectionPlugin;
 
   menu() {
     return [
