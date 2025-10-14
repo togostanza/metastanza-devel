@@ -24,6 +24,8 @@ export const METASTANZA_COMMON_PARAMS = {
 /** Data-attribute that used to identify the element */
 export const METASTANZA_DATA_ATTR = "data-id" as const;
 
+export const METASTANZA_NODE_ID_KEY = "__togostanza_id__" as const;
+
 export default abstract class extends Stanza {
   _data: any;
   __data: Data;
@@ -63,8 +65,11 @@ export default abstract class extends Stanza {
   async render() {
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
 
-    this._main = this.root.querySelector("main");
+    this.plugins.forEach((pl) => {
+      pl.destroy?.();
+    });
 
+    this._main = this.root.querySelector("main");
     // To maintain compatibility, we assign values to __data,
     // but in the future we would like to make _data the return value of Data.load itself.
     try {
