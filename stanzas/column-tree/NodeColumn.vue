@@ -17,10 +17,10 @@
           :id="`checkbox-${node.id}`"
           :data-id="node.id"
           class="selectable"
-          :class="{ '-selected': checkedNodes.get(node.id) }"
+          :class="{ '-selected': selectedIds.includes(String(node.id)) }"
           type="checkbox"
-          :checked="!!checkedNodes.get(node.id)"
-          @input="handleCheckboxClick(node)"
+          :checked="selectedIds.includes(String(node.id))"
+          @change.prevent
         />
 
         <div class="label" :class="`-${nodeValueAlignment}`">
@@ -44,22 +44,27 @@ import { METASTANZA_EVENTS } from "@/lib/MetaStanza";
 import type { TreeItemWithPath } from "./types";
 
 // Props & Emits ------------------------------
-const props = defineProps<{
-  data: TreeItemWithPath[];
-  dataUrl: string;
-  layer: number;
-  nodes?: TreeItemWithPath[];
-  children?: boolean;
-  checkedNodes: Map<string | number, TreeItemWithPath>;
-  valueFallback: string;
-  highlightedNode?: number | string | null;
-  nodeValueAlignment?: string;
-  isEventOutgoing: boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    data: TreeItemWithPath[];
+    dataUrl: string;
+    layer: number;
+    nodes?: TreeItemWithPath[];
+    children?: boolean;
+    selectedIds: string[];
+    valueFallback: string;
+    highlightedNode?: number | string | null;
+    nodeValueAlignment?: string;
+    isEventOutgoing: boolean;
+  }>(),
+  {
+    selectedIds: () => [] as string[],
+  }
+);
 
 const emit = defineEmits<{
   (e: "setParent", value: [number, string | number]): void;
-  (e: "setCheckedNode", node: TreeItemWithPath): void;
+  // (e: "setCheckedNode", node: TreeItemWithPath): void;
 }>();
 
 // Methods ------------------------------
@@ -82,13 +87,13 @@ function setParent(parentId: string | number) {
  * - `props.isEventOutgoing` が true の場合、Stanza 向けに `changeSelectedNodes` イベントも dispatch
  * @param node チェック対象のツリーノード（TreeItemWithPath 型） */
 function handleCheckboxClick(node: TreeItemWithPath) {
-  emit("setCheckedNode", node);
+  // emit("setCheckedNode", node);
   if (props.isEventOutgoing) {
     const stanza = document.querySelector("togostanza-column-tree");
     stanza?.dispatchEvent(
       new CustomEvent(METASTANZA_EVENTS.CHANGE_SELECTED_NODES, {
         detail: {
-          selectedIds: [...props.checkedNodes.keys()],
+          selectedIds: props.selectedIds,
           targetId: node.id,
           dataUrl: props.dataUrl,
         },
