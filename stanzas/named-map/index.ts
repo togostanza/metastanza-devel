@@ -8,7 +8,7 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 import { feature } from "topojson-client";
-import { Topology } from "topojson-specification";
+import type { Topology } from "topojson-specification";
 import { getGradationColor } from "../../lib/ColorGenerator";
 import MetaStanza from "../../lib/MetaStanza";
 import {
@@ -142,7 +142,7 @@ export default class regionGeographicMap extends MetaStanza {
     };
 
     // Tooltip
-    const tooltipString = this.params["tooltip"].trim();
+    const tooltipString = this.params["tooltip"]?.trim();
 
     //Styles
     const width = parseFloat(this.css("--togostanza-canvas-width"));

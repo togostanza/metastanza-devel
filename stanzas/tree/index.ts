@@ -85,26 +85,26 @@ export default class Tree extends MetaStanza {
     }
 
     //Define from params
-    const nodeGroupKey = this.params["group-key"].trim();
+    const nodeGroupKey = this.params["group-key"]?.trim();
     const width = parseFloat(this.css("--togostanza-canvas-width")) || 0;
     const height = parseFloat(this.css("--togostanza-canvas-height")) || 0;
-    const minRadius = this.params["node-size_min"] / 2;
-    const maxRadius = this.params["node-size_max"] / 2;
+    const minRadius = this.params["node-size_min"] / 2 || 0;
+    const maxRadius = (this.params["node-size_max"] || 0) / 2;
     const colorMode = this.params["node-color_blend"];
 
     const root = this._main;
 
     const dataset: NodeData[] = this.__data.asTree({
-      nodeLabelKey: this.params["node-label_key"].trim(),
-      nodeColorKey: this.params["node-color_key"].trim(),
+      nodeLabelKey: this.params["node-label_key"]?.trim(),
+      nodeColorKey: this.params["node-color_key"]?.trim(),
       nodeGroupKey,
-      nodeValueKey: this.params["node-size_key"].trim(),
-      nodeDescriptionKey: this.params["tooltip"].trim(),
+      nodeValueKey: this.params["node-size_key"]?.trim(),
+      nodeDescriptionKey: this.params["tooltip"]?.trim(),
     }).data as NodeData[];
     const padding = this.MARGIN;
     const isLeafNodesAlign = this.params["layout-align_leaf_nodes"];
     const layout = this.params["layout-orientation"];
-    const labelMargin = this.params["node-label_margin"];
+    const labelMargin = this.params["node-label_margin"] || 0;
     const aveRadius = (minRadius + maxRadius) / 2;
     const colorGroup = nodeGroupKey; // NOTE Actually, this variable is not needed (because asTree does the property name conversion), but since we cannot remove this variable without changing the getCirculateColor interface, we have left it in.
 
@@ -117,7 +117,7 @@ export default class Tree extends MetaStanza {
     }
 
     // Tooltip
-    const tooltipString = this.params["tooltip"].trim();
+    const tooltipString = this.params["tooltip"]?.trim();
 
     const mergedDataset = dataset.map((item) => {
       const original = this.__data.data.find((d) => d.id === item.id);
