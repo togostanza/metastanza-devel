@@ -7,22 +7,22 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 import getStanzaColors, { getCirculateColor } from "../../lib/ColorGenerator";
-import MetaStanza from "../../lib/MetaStanza";
-import { NodeSelectionPlugin } from "../../lib/plugins/NodeSelectionPlugin";
+import MetaStanza, { METASTANZA_NODE_ID_KEY } from "../../lib/MetaStanza";
+import { SelectionPlugin } from "../../lib/plugins/SelectionPlugin";
 import { METASTANZA_DATA_ATTR } from "../../lib/MetaStanza";
 import Legend from "../../lib/Legend2";
 import ToolTip from "../../lib/ToolTip";
 
 interface DataItem {
   [key: string]: string | number;
-  __togostanza_id: string | number;
+  __togostanza_id__: string | number;
 }
 
 export default class Piechart extends MetaStanza {
   _chartArea: d3.Selection<SVGGElement, unknown, SVGElement, undefined>;
   legend: Legend;
   tooltips: ToolTip;
-  _selectionPlugin = new NodeSelectionPlugin();
+  _selectionPlugin: SelectionPlugin;
 
   menu() {
     return [
@@ -37,6 +37,7 @@ export default class Piechart extends MetaStanza {
   async renderNext() {
     if (this._error) return;
 
+    this._selectionPlugin = new SelectionPlugin({ stanza: this });
     this.use(this._selectionPlugin);
     const root = this._main;
     this._chartArea = select(this._main.querySelector("svg"));
@@ -166,7 +167,7 @@ export default class Piechart extends MetaStanza {
 
       // Set data-id attributes for pie slices to work with the selection plugin
       pieGroups.attr(METASTANZA_DATA_ATTR, (d) =>
-        d.data["__togostanza_id__"]?.toString()
+        d.data[METASTANZA_NODE_ID_KEY]?.toString()
       );
     };
 
