@@ -7,13 +7,16 @@ import {
   downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
-import { Axis, type AxisParamsI, paramsModel } from "../../lib/AxisMixin";
+import { handleAxisEvent } from "../../lib/AxisEvents";
+import { Axis, paramsModel, type AxisParamsI } from "../../lib/AxisMixin";
 import getStanzaColors from "../../lib/ColorGenerator";
 import Legend from "../../lib/Legend2";
-import MetaStanza from "../../lib/MetaStanza";
+import MetaStanza, {
+  METASTANZA_DATA_ATTR,
+  METASTANZA_NODE_ID_KEY,
+} from "../../lib/MetaStanza";
+import { SelectionPlugin } from "../../lib/plugins/SelectionPlugin";
 import ToolTip from "../../lib/ToolTip";
-import { emitSelectedEvent, toggleSelectedIdsMultiple } from "../../lib/utils";
-import { handleAxisEvent } from "../../lib/AxisEvents";
 
 export default class Barchart extends MetaStanza {
   xAxisGen: Axis;
@@ -23,7 +26,7 @@ export default class Barchart extends MetaStanza {
   _dataByX: Map<string | number, {}[]>;
   legend: Legend;
   tooltips: ToolTip;
-  selectedIds: Array<string | number> = [];
+  _selectionPlugin: SelectionPlugin;
 
   menu() {
     return [
@@ -36,6 +39,13 @@ export default class Barchart extends MetaStanza {
   }
 
   async renderNext() {
+    this._selectionPlugin = new SelectionPlugin({
+      adapter: "vanilla",
+      stanza: this,
+    });
+
+    this.use(this._selectionPlugin);
+
     let svg = select(this._main.querySelector("svg"));
     if (!svg.empty()) {
       svg.remove();
@@ -71,7 +81,7 @@ export default class Barchart extends MetaStanza {
     const grouingArrangement = this.params["group-arrangement"];
 
     const errorKeyName = this.params["errorbar-key"];
-    const showErrorBars = this._data.some((d) => d[errorKeyName]);
+    const showErrorBars = this._data?.some((d) => d[errorKeyName]);
     const barColorKey = this.params["node-color_key"];
     const tooltipKey = this.params["tooltips-key"];
     const showLegend = this.params["legend-visible"];
@@ -200,14 +210,10 @@ export default class Barchart extends MetaStanza {
           );
         }
     }
-    if (this.params["event-outgoing_change_selected_nodes"]) {
-      barGroup.on("click", (_, d) =>
-        emitSelectedEventByBarChart.apply(this, [
-          d[1][0]["__togostanza_id__"],
-          this.params["data-url"],
-        ])
-      );
-    }
+    // Bar chart selection is now handled through the selection plugin via data-id attributes
+    barGroup
+      .selectAll("rect")
+      .attr(METASTANZA_DATA_ATTR, (d) => d[METASTANZA_NODE_ID_KEY]?.toString());
 
     if (showLegend) {
       if (!this.legend) {
@@ -246,10 +252,6 @@ export default class Barchart extends MetaStanza {
     }
   }
 
-  // drawHistogram is removed in the separated histogram stanza
-
-  // Local axis updater removed; using shared lib/AxisEvents
-
   handleEvent(event) {
     // Centralized handling for xaxis changes
     if (event.type === "xaxis") {
@@ -266,15 +268,6 @@ export default class Barchart extends MetaStanza {
         supported: ["x", "y"],
       });
       return;
-    }
-
-    const { selectedIds, dataUrl } = event.detail;
-    if (
-      this.params["event-incoming_change_selected_nodes"] &&
-      dataUrl === this.params["data-url"]
-    ) {
-      this.selectedIds = selectedIds;
-      changeSelectedStyle.apply(this, [selectedIds]);
     }
   }
 }
@@ -423,42 +416,8 @@ function addErrorBars(
     .attr("x2", (d) => groupScale(d[groupKeyName]) + groupScale.bandwidth());
 }
 
-// emit selected event
-function emitSelectedEventByBarChart(
-  this: Barchart,
-  id: unknown,
-  dataUrl: string
-) {
-  // collect selected bars
-  const barGroups = this._graphArea.selectAll("g.bar-group");
-  const filteredBars = barGroups.filter(".-selected");
-  const ids = filteredBars
-    .data()
-    .map((datum) => datum[1][0]["__togostanza_id__"]);
-  const indexInSelectedBars = ids.indexOf(id);
-  if (indexInSelectedBars === -1) {
-    ids.push(id);
-  } else {
-    ids.splice(indexInSelectedBars, 1);
-  }
-  // dispatch event
-  emitSelectedEvent({
-    rootElement: this.element,
-    targetId: id,
-    selectedIds: ids,
-    dataUrl,
-  });
-  changeSelectedStyle.apply(this, [ids]);
-}
-// emitSelectedEventByHistogram is removed
-
-function changeSelectedStyle(this: Barchart, ids: (string | number)[]) {
-  const barGroups = this._graphArea.selectAll("g.bar-group");
-  barGroups.classed(
-    "-selected",
-    (d) => ids.indexOf(d[1][0].__togostanza_id__) !== -1
-  );
-}
+// Legacy selection functions have been removed
+// Selection is now handled by the NodeSelectionPlugin
 
 /**
  *

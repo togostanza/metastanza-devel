@@ -29,7 +29,10 @@ svg {
         opacity: var(--togostanza-fadeout-opacity);
       }
     }
-    &.-selected,
+    > rect.-selected {
+      opacity: 1 !important;
+    }
+
     &:hover {
       > rect {
         opacity: 1 !important;
@@ -51,14 +54,8 @@ svg {
     }
   }
 
-  &:has(.bar-group.-selected) {
-    .bar-group {
-      > rect {
-        opacity: var(--togostanza-fadeout-opacity);
-      }
-    }
-  }
-  &:has(.bar.-selected) {
+  &:has(.-selected) {
+    .bar-group,
     .bar {
       > rect {
         opacity: var(--togostanza-fadeout-opacity);

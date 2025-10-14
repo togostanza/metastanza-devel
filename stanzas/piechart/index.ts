@@ -7,30 +7,23 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 import getStanzaColors, { getCirculateColor } from "../../lib/ColorGenerator";
-import MetaStanza from "../../lib/MetaStanza";
-import {
-  emitSelectedEvent,
-  toggleSelectIds,
-  updateSelectedElementClassNameForD3,
-} from "../../lib/utils";
+import MetaStanza, { METASTANZA_NODE_ID_KEY } from "../../lib/MetaStanza";
+import { SelectionPlugin } from "../../lib/plugins/SelectionPlugin";
+import { METASTANZA_DATA_ATTR } from "../../lib/MetaStanza";
+
 import Legend from "../../lib/Legend2";
 import ToolTip from "../../lib/ToolTip";
 
 interface DataItem {
   [key: string]: string | number;
-  __togostanza_id: string | number;
+  __togostanza_id__: string | number;
 }
 
 export default class Piechart extends MetaStanza {
   _chartArea: d3.Selection<SVGGElement, unknown, SVGElement, undefined>;
-  selectedIds: Array<string | number> = [];
   legend: Legend;
   tooltips: ToolTip;
-  selectedEventParams = {
-    targetElementSelector: ".pie-slice",
-    selectedElementClassName: "-selected",
-    idPath: "data.__togostanza_id__",
-  };
+  _selectionPlugin: SelectionPlugin;
 
   menu() {
     return [
@@ -43,6 +36,11 @@ export default class Piechart extends MetaStanza {
   }
 
   async renderNext() {
+    if (this._error) return;
+
+    this._selectionPlugin = new SelectionPlugin({ stanza: this });
+    this.use(this._selectionPlugin);
+
     const root = this._main;
     this._chartArea = select(this._main.querySelector("svg"));
     const width = parseInt(this.css("--togostanza-canvas-width"));
@@ -169,25 +167,10 @@ export default class Piechart extends MetaStanza {
         pieGroups.classed("-fadeout", false);
       });
 
-      pieGroups.on("click", (_, d) => {
-        toggleSelectIds({
-          selectedIds: this.selectedIds,
-          targetId: d.data["__togostanza_id__"],
-        });
-        updateSelectedElementClassNameForD3({
-          drawing: this._chartArea,
-          selectedIds: this.selectedIds,
-          ...this.selectedEventParams,
-        });
-        if (this.params["event-outgoing_change_selected_nodes"]) {
-          emitSelectedEvent({
-            rootElement: this.element,
-            selectedIds: this.selectedIds,
-            targetId: d.data["__togostanza_id__"],
-            dataUrl: this.params["data-url"],
-          });
-        }
-      });
+      // Set data-id attributes for pie slices to work with the selection plugin
+      pieGroups.attr(METASTANZA_DATA_ATTR, (d) =>
+        d.data[METASTANZA_NODE_ID_KEY]?.toString()
+      );
     };
 
     await drawContent();
@@ -228,18 +211,6 @@ export default class Piechart extends MetaStanza {
   }
 
   handleEvent(event) {
-    const { selectedIds, dataUrl } = event.detail;
-
-    if (
-      this.params["event-incoming_change_selected_nodes"] &&
-      dataUrl === this.params["data-url"]
-    ) {
-      this.selectedIds = selectedIds;
-      updateSelectedElementClassNameForD3({
-        drawing: this._chartArea,
-        selectedIds,
-        ...this.selectedEventParams,
-      });
-    }
+    // Selection events are now handled by the NodeSelectionPlugin
   }
 }

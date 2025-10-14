@@ -8,8 +8,11 @@ import {
   downloadJSONMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
+import { SelectionPlugin } from "../../lib/plugins/SelectionPlugin";
 
 export default class PaginationTable extends MetaStanza {
+  _selectionPlugin;
+
   menu() {
     return [
       downloadJSONMenuItem(this, "table", this._component?.json()),
@@ -36,17 +39,26 @@ export default class PaginationTable extends MetaStanza {
     main.dataset.borderVertical = borderVertical;
 
     this._app?.unmount();
-    this._app = createApp(App, {
-      ...this.params,
-      main,
-      stanzaElement: this.element,
-    });
-    this._component = this._app.mount(main);
-  }
 
-  handleEvent(event) {
-    if (this.params["event-incoming_change_selected_nodes"]) {
-      this._component.updateSelectedRows(event.detail);
-    }
+    const drawContent = async () => {
+      this._app = createApp(App, {
+        ...this.params,
+        main,
+        stanzaElement: this.element,
+      });
+      this._component = this._app.mount(main);
+    };
+
+    await drawContent();
+
+    this._selectionPlugin = new SelectionPlugin({
+      mode: "range",
+      adapter: "vue",
+      component: this._component,
+      stanza: this,
+      passIdsToComponent: this._component.updateSelectedRows,
+    });
+
+    this.use(this._selectionPlugin);
   }
 }

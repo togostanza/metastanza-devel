@@ -22,6 +22,7 @@ svg > defs > marker > path {
 }
 
 svg > g {
+  user-select: none;
   &.-nodes-blend-multiply {
     .node-g > circle {
       mix-blend-mode: multiply;

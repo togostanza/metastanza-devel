@@ -99,10 +99,12 @@ type VanillaRange = {
   adapter?: typeof ADAPTER_TYPE.VANILLA;
   mode?: typeof SELECTION_MODE.RANGE;
   stanza: MetaStanza;
+
   getListElement?: (el: Element | undefined) => Element | undefined | null;
   getTargetElement?: (
     listEl: Element | undefined
   ) => Element | undefined | null;
+
   checkboxMode?: boolean;
 } & Omit<AdapterInitProps, "element" | "updateState">;
 
