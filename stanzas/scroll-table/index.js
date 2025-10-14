@@ -4,6 +4,7 @@ import { appendCustomCss } from "togostanza-utils";
 
 import { createApp } from "vue";
 import App from "./app.vue";
+import { SelectionPlugin } from "../../lib/plugins/SelectionPlugin";
 
 export default class ScrollTable extends MetaStanza {
   async renderNext() {
@@ -26,7 +27,22 @@ export default class ScrollTable extends MetaStanza {
     main.dataset.borderVertical = borderVertical;
 
     this._app?.unmount();
-    this._app = createApp(App, { ...this.params, main });
-    this._app.mount(main);
+
+    const drawContent = async () => {
+      this._app = createApp(App, { ...this.params, main });
+      this._component = this._app.mount(main);
+    };
+
+    await drawContent();
+
+    this._selectionPlugin = new SelectionPlugin({
+      adapter: "vue",
+      mode: "range",
+      component: this._component,
+      stanza: this,
+      passIdsToComponent: this._component.updateSelectedRows,
+    });
+
+    this.use(this._selectionPlugin);
   }
 }
