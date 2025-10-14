@@ -77,8 +77,10 @@ type VueRange = {
   mode?: typeof SELECTION_MODE.RANGE;
   component: ComponentPublicInstance;
   stanza: MetaStanza;
-  getListElement?: (el: Element) => Element;
-  getTargetElement?: (listEl: Element) => Element;
+  getListElement?: (el: Element | undefined) => Element | undefined | null;
+  getTargetElement?: (
+    listEl: Element | undefined
+  ) => Element | undefined | null;
   checkboxMode?: boolean;
 } & Omit<
   AdapterInitProps,
@@ -97,8 +99,10 @@ type VanillaRange = {
   adapter?: typeof ADAPTER_TYPE.VANILLA;
   mode?: typeof SELECTION_MODE.RANGE;
   stanza: MetaStanza;
-  getListElement?: (el: Element) => Element;
-  getTargetElement?: (listEl: Element) => Element;
+  getListElement?: (el: Element | undefined) => Element | undefined | null;
+  getTargetElement?: (
+    listEl: Element | undefined
+  ) => Element | undefined | null;
   checkboxMode?: boolean;
 } & Omit<AdapterInitProps, "element" | "updateState">;
 
@@ -119,14 +123,18 @@ export class SelectionPlugin implements SelectionPluginI {
   /**
    * How to get a list element from a child element
    */
-  private getListElement: ((el: Element) => Element) | null = null;
+  private getListElement:
+    | ((el: Element | undefined) => Element | undefined | null)
+    | null = null;
   /**
    * How to get a child element from list child element
    */
-  private getTargetElement: ((listEl: Element) => Element) | null = null;
+  private getTargetElement:
+    | ((listEl: Element) => Element | undefined | null)
+    | null = null;
 
-  static defaultGetListElement(el: Element) {
-    return el.parentElement;
+  static defaultGetListElement(el: Element | undefined | null) {
+    return el?.parentElement;
   }
 
   /**
@@ -267,7 +275,7 @@ export class SelectionPlugin implements SelectionPluginI {
   }
 
   /** Get element by data-id  */
-  private getElementFromId(id: string): Element {
+  private getElementFromId(id: string): Element | undefined {
     return this.stanza._main.querySelector(`[${METASTANZA_DATA_ATTR}="${id}"]`);
   }
 
