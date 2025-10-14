@@ -1,0 +1,106 @@
+<html>
+  <head>
+    <title>Metastanza event coupling test</title>
+    <script
+      type="module"
+      src="http://localhost:8080/column-tree.js"
+      async
+    ></script>
+
+    <script type="module" src="http://localhost:8080/tree.js" async></script>
+
+    <script type="module" src="http://localhost:8080/treemap.js" async></script>
+
+    <script
+      type="module"
+      src="http://localhost:8080/sunburst.js"
+      async
+    ></script>
+
+    <script
+      type="module"
+      src="http://localhost:8080/breadcrumbs.js"
+      async
+    ></script>
+  </head>
+  <body>
+    <h1>Metastanza event coupling test</h1>
+    <ul>
+      <li><a href="/">Home</a></li>
+    </ul>
+    <main>
+      <togostanza--container>
+        <togostanza--data-source
+          url="https://raw.githubusercontent.com/togostanza/togostanza-data/main/samples/json/tree.json"
+          receiver="togostanza-breadcrumbs, togostanza-column-tree, togostanza-tree, togostanza-treemap, togostanza-sunburst"
+          target-attribute="data-url"
+        >
+        </togostanza--data-source>
+        <togostanza-breadcrumbs
+          data-type="json"
+          node-url_key="url"
+          node-id_key="id"
+          node-selected_id="6"
+          node-label_key="name"
+          root_node-label_text="Home"
+          root_node-label_icon="Home"
+          tooltip="&lt;h3&gt;{{name}}&lt;/h3&gt;"
+          event-incoming_change_selected_nodes
+          event-outgoing_change_selected_nodes
+          togostanza-custom_css_url=""
+        ></togostanza-breadcrumbs>
+        <togostanza-column-tree
+          data-type="json"
+          node-label_key="name"
+          node-value_key="size"
+          node-value_alignment="horizontal"
+          node-value_fallback="no data"
+          event-incoming_change_selected_nodes
+          event-outgoing_change_selected_nodes
+          togostanza-custom_css_url=""
+        ></togostanza-column-tree>
+        <togostanza-tree
+          data-type="json"
+          layout-align_leaf_nodes
+          layout-orientation="radial"
+          node-label_key="name"
+          node-label_margin="8"
+          node-size_key="size"
+          node-size_min="8"
+          node-size_max="8"
+          node-color_key="color"
+          group-key="group"
+          node-color_blend="normal"
+          tooltip="{{#if url}}&lt;a href&#x3D;{{url}}&gt;{{name}}&lt;/a&gt;{{else}}&lt;span&gt;{{name}}&lt;/span&gt;{{/if}}"
+          event-incoming_change_selected_nodes
+          event-outgoing_change_selected_nodes
+          togostanza-custom_css_url=""
+        ></togostanza-tree>
+
+        <togostanza-treemap
+          data-type="json"
+          node-label_key="name"
+          node-value_key="size"
+          node-color_key="color"
+          event-incoming_change_selected_nodes
+          event-outgoing_change_selected_nodes
+          togostanza-custom_css_url=""
+        ></togostanza-treemap>
+        <togostanza-sunburst
+          data-type="json"
+          node-id_key="id"
+          node-value_key="size"
+          node-label_key="name"
+          node-color_key="color"
+          node-color_blend="normal"
+          node-corner_radius="0"
+          scaling="By value"
+          max_depth="3"
+          event-incoming_change_selected_nodes
+          event-outgoing_change_selected_nodes
+          togostanza-custom_css_url=""
+        ></togostanza-sunburst>
+      </togostanza--container>
+    </main>
+  </body>
+</html>
