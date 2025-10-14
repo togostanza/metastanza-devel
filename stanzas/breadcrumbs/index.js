@@ -4,7 +4,7 @@ import "./components/BreadcrumbsNode";
 import "./components/BreadcrumbsNodeMenu";
 import MetaStanza from "@/lib/MetaStanza";
 import Tooltip from "@/lib/ToolTip";
-import { NodeSelectionPlugin } from "@/lib/plugins/NodeSelectionPlugin";
+import { SelectionPlugin } from "@/lib/plugins/SelectionPlugin";
 
 export default class BreadcrumbsLit extends MetaStanza {
   _selectionPlugin;
@@ -17,6 +17,7 @@ export default class BreadcrumbsLit extends MetaStanza {
     if (this._error) {
       return;
     }
+
     const root = this._main;
 
     if (isExamplePage.apply(this)) {
@@ -42,7 +43,7 @@ export default class BreadcrumbsLit extends MetaStanza {
       },
       selectionParams: {
         onSelect: (event, id) => {
-          this._selectionPlugin.onSelect(event, { id });
+          this._selectionPlugin.onSelect([id]);
         },
       },
     };
@@ -53,13 +54,8 @@ export default class BreadcrumbsLit extends MetaStanza {
 
     this.breadcrumbs.updateComplete.then(this.setupTooltips);
 
-    this._selectionPlugin = new NodeSelectionPlugin({
-      handleUpdateRenderedSelection: (state) => {
-        this.breadcrumbs.updateParams(
-          { ...this.params, ["node-selected_id"]: state.lastSelected },
-          this._data
-        );
-      },
+    this._selectionPlugin = new SelectionPlugin({
+      stanza: this,
     });
 
     this.use(this._selectionPlugin);
