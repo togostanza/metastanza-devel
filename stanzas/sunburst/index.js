@@ -20,7 +20,7 @@ import {
 } from "togostanza-utils";
 import getStanzaColors from "../../lib/ColorGenerator";
 import MetaStanza, { METASTANZA_DATA_ATTR } from "../../lib/MetaStanza";
-import { NodeSelectionPlugin } from "../../lib/plugins/NodeSelectionPlugin";
+import { SelectionPlugin } from "../../lib/plugins/SelectionPlugin";
 let path;
 
 const hexColorRegex = /^#(?:[0-9a-f]{3}){1,2}$/i;
@@ -32,7 +32,7 @@ export default class Sunburst extends MetaStanza {
   // was `nodes-gap_width`. Angular distance between nodes
   static NODES_GAP = 8;
 
-  _selectionPlugin = new NodeSelectionPlugin();
+  _selectionPlugin;
 
   constructor(...args) {
     super(...args);
@@ -53,13 +53,14 @@ export default class Sunburst extends MetaStanza {
   }
 
   async renderNext() {
+    this._selectionPlugin = new SelectionPlugin({ stanza: this });
     this.use(this._selectionPlugin);
 
     const that = this;
 
     this.state = new Proxy(this.state, {
       set(target, key, value) {
-        if (key === "currentId") {
+        if (key === "currentId" && !!value) {
           updateId(getNodeById(value), that);
         }
         return Reflect.set(target, key, value);
@@ -72,7 +73,7 @@ export default class Sunburst extends MetaStanza {
     const main = this._main;
 
     const clicked = (e, p) => {
-      state.currentId = p.data.data.id;
+      state.currentId = p?.data?.data?.id;
     };
 
     const data = this.__data.asTree({

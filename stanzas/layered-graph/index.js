@@ -14,11 +14,8 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 import MetaStanza from "../../lib/MetaStanza";
-import {
-  emitSelectedEvent,
-  toggleSelectIds,
-  updateSelectedElementClassNameForD3,
-} from "../../lib/utils";
+import { METASTANZA_DATA_ATTR } from "../../lib/MetaStanza";
+import { SelectionPlugin } from "../../lib/plugins/SelectionPlugin";
 import { curvedLink, straightLink } from "./curvedLink";
 import ToolTip from "../../lib/ToolTip";
 
@@ -35,13 +32,6 @@ const arrowPoints = [
 
 export default class ForceGraph extends MetaStanza {
   _graphArea;
-  selectedEventParams = {
-    targetElementSelector: ".node-g._3d",
-    selectedElementClassName: "-selected",
-    selectedElementSelector: ".-selected",
-    idPath: "id",
-  };
-  selectedIds = [];
 
   menu() {
     return [
@@ -54,6 +44,8 @@ export default class ForceGraph extends MetaStanza {
   }
 
   async renderNext() {
+    this._selectionPlugin = new SelectionPlugin({ stanza: this });
+    this.use(this._selectionPlugin);
     if (!this._graphArea?.empty()) {
       this._graphArea?.remove();
     }
@@ -737,53 +729,11 @@ export default class ForceGraph extends MetaStanza {
         this.tooltips.setup(nodesList);
       }
 
-      const nodeGroups = this._graphArea
+      this._graphArea
         .selectAll(".node-g")
-        .selectAll(".node");
-
-      nodeGroups.on("click", (e) => {
-        // need to click onclick on circle, but only circle has no datum. So get the datum from parent
-
-        const g = d3.select(e.currentTarget.parentNode);
-
-        const d = g && g.datum();
-
-        toggleSelectIds({
-          selectedIds: this.selectedIds,
-          targetId: d.id,
-        });
-        updateSelectedElementClassNameForD3({
-          drawing: this._graphArea,
-          selectedIds: this.selectedIds,
-          ...this.selectedEventParams,
-        });
-        if (this.params["event-outgoing_change_selected_nodes"]) {
-          emitSelectedEvent({
-            rootElement: this.element,
-            targetId: d.id,
-            selectedIds: this.selectedIds,
-            dataUrl: this.params["data-url"],
-          });
-        }
-      });
+        .attr(METASTANZA_DATA_ATTR, (d) => d.id.toString());
     };
 
     drawContent();
-  }
-
-  handleEvent(event) {
-    const { selectedIds, dataUrl } = event.detail;
-
-    if (
-      this.params["event-incoming_change_selected_nodes"] &&
-      dataUrl === this.params["data-url"]
-    ) {
-      this.selectedIds = selectedIds;
-      updateSelectedElementClassNameForD3({
-        drawing: this._graphArea,
-        selectedIds,
-        ...this.selectedEventParams,
-      });
-    }
   }
 }

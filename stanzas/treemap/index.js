@@ -1,4 +1,4 @@
-import MetaStanza from "../../lib/MetaStanza";
+import MetaStanza, { METASTANZA_DATA_ATTR } from "../../lib/MetaStanza";
 import {
   select,
   scaleOrdinal,
@@ -22,20 +22,11 @@ import {
 import shadeColor from "./shadeColor";
 import { handleApiError } from "../../lib/apiError";
 import treemapBinaryLog from "./treemapBinaryLog";
-import {
-  toggleSelectIds,
-  emitSelectedEvent,
-  updateSelectedElementClassNameForD3,
-} from "../../lib/utils";
+import { SelectionPlugin } from "../../lib/plugins/SelectionPlugin";
 
 export default class TreeMapStanza extends MetaStanza {
   _chartArea;
-  selectedIds = [];
-  selectedEventParams = {
-    targetElementSelector: "g rect.selectable",
-    selectedElementClassName: "-selected",
-    idPath: "data.data.id",
-  };
+  _selectionPlugin;
 
   menu() {
     return [
@@ -48,6 +39,8 @@ export default class TreeMapStanza extends MetaStanza {
   }
 
   async renderNext() {
+    this._selectionPlugin = new SelectionPlugin({ stanza: this });
+    this.use(this._selectionPlugin);
     if (!this._chartArea?.empty()) {
       this._chartArea?.remove();
     }
@@ -94,23 +87,6 @@ export default class TreeMapStanza extends MetaStanza {
       hasTooltip: true,
       drawContent,
     });
-  }
-
-  handleEvent(event) {
-    const { selectedIds, dataUrl } = event.detail;
-
-    if (
-      this.params["event-incoming_change_selected_nodes"] &&
-      dataUrl === this.params["data-url"]
-    ) {
-      this.selectedIds = selectedIds;
-      updateSelectedElementClassNameForD3({
-        drawing: this._chartArea,
-        selectedIds,
-        targetId: event.detail.targetId,
-        ...this.selectedEventParams,
-      });
-    }
   }
 }
 
@@ -219,41 +195,12 @@ function draw(el, dataset, opts, stanza) {
     let timeout;
     node
       .attr("cursor", "pointer")
-      .on("click", (e, d) => {
-        if (e.detail === 1) {
-          timeout = setTimeout(() => {
-            toggleSelectIds({
-              selectedIds: stanza.selectedIds,
-              targetId: d.data.data.id,
-            });
-            updateSelectedElementClassNameForD3({
-              drawing: stanza._chartArea,
-              selectedIds: stanza.selectedIds,
-              ...stanza.selectedEventParams,
-            });
-            if (stanza.params["event-outgoing_change_selected_nodes"]) {
-              emitSelectedEvent({
-                rootElement: stanza.element,
-                targetId: d.data.data.id,
-                selectedIds: stanza.selectedIds,
-                dataUrl: stanza.params["data-url"],
-              });
-            }
-          }, 500);
-        }
-      })
       .filter((d) => {
         return d === root ? d.parent : d.children;
       })
       .on("dblclick", (e, d) => {
         clearTimeout(timeout);
         d === root ? zoomout(root) : zoomin(d);
-
-        updateSelectedElementClassNameForD3({
-          drawing: stanza._chartArea,
-          selectedIds: stanza.selectedIds,
-          ...stanza.selectedEventParams,
-        });
       });
 
     node
@@ -272,6 +219,7 @@ function draw(el, dataset, opts, stanza) {
       .append("rect")
       .classed("selectable", true)
       .classed("breadcrumb", (d) => d === root)
+      .attr(METASTANZA_DATA_ATTR, (d) => d.data?.data?.id?.toString())
       .attr("id", (d) => (d.leafUid = uid("leaf")).id)
       .attr("style", (d) => {
         if (d === root) {
@@ -296,6 +244,7 @@ function draw(el, dataset, opts, stanza) {
     innerNode
       .append("rect")
       .classed("selectable", true)
+      .attr(METASTANZA_DATA_ATTR, (d) => d.data.data.id.toString())
       .attr("id", (d) => (d.leafUid = uid("leaf")).id)
       .attr("fill", "none")
       .attr("stroke-width", 1)

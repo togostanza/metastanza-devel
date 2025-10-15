@@ -13,21 +13,12 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 import ToolTip from "../../lib/ToolTip";
-import {
-  emitSelectedEvent,
-  toggleSelectIds,
-  updateSelectedElementClassNameForD3,
-} from "../../lib/utils";
+import { METASTANZA_DATA_ATTR } from "../../lib/MetaStanza";
+import { SelectionPlugin } from "../../lib/plugins/SelectionPlugin";
 
 export default class ForceGraph extends MetaStanza {
   _graphArea;
-  selectedEventParams = {
-    targetElementSelector: ".node",
-    selectedElementClassName: "-selected",
-    selectedElementSelector: ".-selected",
-    idPath: "id",
-  };
-  selectedIds = [];
+  _selectionPlugin;
 
   menu() {
     return [
@@ -40,6 +31,13 @@ export default class ForceGraph extends MetaStanza {
   }
 
   async renderNext() {
+    this._selectionPlugin = new SelectionPlugin({
+      adapter: "vanilla",
+      stanza: this,
+    });
+
+    this.use(this._selectionPlugin);
+
     if (!this._graphArea?.empty()) {
       this._graphArea?.remove();
     }
@@ -166,48 +164,12 @@ export default class ForceGraph extends MetaStanza {
         this.tooltips.setup(nodesList);
       }
 
-      if (this.params["event-outgoing_change_selected_nodes"]) {
-        this._graphArea
-          .selectAll(".node")
-          .selectAll("circle")
-          .on("click", (_, d) => {
-            toggleSelectIds({
-              selectedIds: this.selectedIds,
-              targetId: d.id,
-            });
-            updateSelectedElementClassNameForD3({
-              drawing: this._graphArea,
-              selectedIds: this.selectedIds,
-              ...this.selectedEventParams,
-            });
-            if (this.params["event-outgoing_change_selected_nodes"]) {
-              emitSelectedEvent({
-                rootElement: this.element,
-                targetId: d.id,
-                selectedIds: this.selectedIds,
-                dataUrl: this.params["data-url"],
-              });
-            }
-          });
-      }
+      // Set data-id attributes for nodes to work with the selection plugin
+      this._graphArea
+        .selectAll(".node")
+        .attr(METASTANZA_DATA_ATTR, (d) => d.id.toString());
     };
 
     drawContent();
-  }
-
-  handleEvent(event) {
-    const { selectedIds, dataUrl } = event.detail;
-
-    if (
-      this.params["event-incoming_change_selected_nodes"] &&
-      dataUrl === this.params["data-url"]
-    ) {
-      this.selectedIds = selectedIds;
-      updateSelectedElementClassNameForD3({
-        drawing: this._graphArea,
-        selectedIds,
-        ...this.selectedEventParams,
-      });
-    }
   }
 }

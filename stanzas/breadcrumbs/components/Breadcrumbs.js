@@ -18,6 +18,7 @@ export class Breadcrumbs extends LitElement {
   observer = null;
   invisibleNode = createRef();
   tooltipParams = {};
+  selectionParams = {};
 
   static get properties() {
     return {
@@ -25,10 +26,11 @@ export class Breadcrumbs extends LitElement {
       data: { type: Array, state: true },
     };
   }
-  constructor(element, { tooltipParams } = {}) {
+  constructor(element, { tooltipParams, selectionParams } = {}) {
     super();
     element.append(this);
     this.tooltipParams = tooltipParams;
+    this.selectionParams = selectionParams;
   }
 
   updateParams(params, data) {
@@ -48,7 +50,7 @@ export class Breadcrumbs extends LitElement {
           this.tooltipParams?.tooltipsInstance?.compile(d) || null;
       });
 
-      this.currentId = this.nodeInitialId.toString();
+      this.currentId = this.nodeSelectedId?.toString();
     } else {
       throw new Error("Key not found");
     }
@@ -191,15 +193,10 @@ export class Breadcrumbs extends LitElement {
         return html`
           <breadcrumbs-node
             @node-hover=${this._handleNodeHover}
-            @click=${() => {
+            @click=${(event) => {
+              // need to send only the clicked id to the plugin. the plugin will handle selected state.
               this.currentId = "" + node[this.nodeIdKey];
-              this.dispatchEvent(
-                new CustomEvent("selectedDatumChanged", {
-                  detail: { id: "" + node[this.nodeIdKey] },
-                  bubbles: true,
-                  composed: true,
-                })
-              );
+              this.selectionParams?.onSelect(event, this.currentId);
             }}
             @menu-item-clicked=${({ detail }) =>
               (this.currentId = "" + detail.id)}

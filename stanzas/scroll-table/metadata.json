@@ -68,6 +68,20 @@
       "stanza:type": "text",
       "stanza:example": "Failed to load data. Please try again.",
       "stanza:description": "Message displayed when data loading fails"
+    },
+    {
+      "stanza:key": "event-incoming_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:label": "Receive a change event of selected nodes",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "event-outgoing_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:label": "Emit a change event of selected nodes",
+      "stanza:required": false
     }
   ],
   "stanza:menu-placement": "bottom-right",
@@ -161,6 +175,12 @@
       "stanza:type": "color",
       "stanza:default": "#FFFFFF",
       "stanza:description": "Background color"
+    },
+    {
+      "stanza:key": "--togostanza-theme-selected_background_color",
+      "stanza:type": "color",
+      "stanza:default": "#00DDFF44",
+      "stanza:description": "Color applied to the selected item"
     }
   ]
 }

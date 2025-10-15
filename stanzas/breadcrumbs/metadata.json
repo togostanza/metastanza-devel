@@ -38,21 +38,21 @@
     {
       "stanza:key": "node-id_key",
       "stanza:type": "string",
-      "stanza:description": "Key of node unique id",
+      "stanza:description": "Key of data element containing node's unique id",
       "stanza:example": "id",
       "stanza:required": false
     },
     {
-      "stanza:key": "node-initial_id",
+      "stanza:key": "node-selected_id",
       "stanza:type": "string",
-      "stanza:description": "Initial node id",
+      "stanza:description": "Selected node id",
       "stanza:example": "6",
       "stanza:required": false
     },
     {
       "stanza:key": "node-label_key",
       "stanza:type": "string",
-      "stanza:description": "Initial node id",
+      "stanza:description": "Node label key",
       "stanza:example": "label",
       "stanza:required": false
     },
@@ -75,6 +75,20 @@
       "stanza:type": "string",
       "stanza:example": "<h3>{{label}}</h3>",
       "stanza:description": "A handlebars HTML template string to show in tooltip"
+    },
+    {
+      "stanza:key": "event-incoming_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:label": "Receive a change event of selected nodes",
+      "stanza:required": false
+    },
+    {
+      "stanza:key": "event-outgoing_change_selected_nodes",
+      "stanza:type": "boolean",
+      "stanza:example": true,
+      "stanza:label": "Emit a change event of selected nodes",
+      "stanza:required": false
     },
     {
       "stanza:key": "togostanza-custom_css_url",
@@ -142,13 +156,13 @@
   ],
   "stanza:incomingEvent": [
     {
-      "stanza:key": "selectedDatumChanged",
+      "stanza:key": "changeSelectedNodes",
       "stanza:description": "An event, wich dispatches when user selects some node in other stanza"
     }
   ],
   "stanza:outgoingEvent": [
     {
-      "stanza:key": "selectedDatumChanged",
+      "stanza:key": "changeSelectedNodes",
       "stanza:description": "An event, wich dispatches when user selects some node in this stanza"
     }
   ]

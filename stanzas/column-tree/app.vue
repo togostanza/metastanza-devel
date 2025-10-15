@@ -16,41 +16,45 @@
         :data-url="props.dataUrl"
         :layer="index"
         :nodes="column"
-        :checked-nodes="state.checkedNodes"
+        :selected-ids="selectedIds"
         :value-fallback="nodeValueFallback"
         :highlighted-node="state.highligthedNodes[index]"
         :node-value-alignment="nodeValueAlignment"
         :is-event-outgoing="props.eventOutgoingChangeSelectedNodes"
         @set-parent="updatePartialColumnData"
-        @set-checked-node="updateCheckedNodes"
       />
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { reactive, watch } from "vue";
+import { reactive, watch, computed, withDefaults } from "vue";
 import SearchBox from "./SearchBox.vue";
 import NodeColumn from "./NodeColumn.vue";
 import type { TreeItem, TreeItemWithPath, TreePathNode } from "./types";
 
 // Props ------------------------------
-const props = defineProps<{
-  data: TreeItem[];
-  dataUrl: string;
-  nodeLabelKey: string;
-  nodeValueKey: string;
-  nodeValueAlignment: "horizontal" | "vertical";
-  nodeValueFallback: string;
-  eventOutgoingChangeSelectedNodes: boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    data: TreeItem[];
+    dataUrl: string;
+    nodeLabelKey: string;
+    nodeValueKey: string;
+    nodeValueAlignment: "horizontal" | "vertical";
+    nodeValueFallback: string;
+    eventOutgoingChangeSelectedNodes: boolean;
+    selectedIds: string[];
+  }>(),
+  {
+    selectedIds: () => [] as string[],
+  }
+);
 
 // State ------------------------------
 // アプリケーションの状態をまとめたreactiveオブジェクト
 const state = reactive({
   treeItemsWithPath: [] as TreeItemWithPath[],
   columnData: [] as TreeItemWithPath[][],
-  checkedNodes: new Map<string | number, TreeItemWithPath>(),
   highligthedNodes: [] as (string | number)[],
 });
 
@@ -63,7 +67,6 @@ watch(
       ...item,
       path: getPath(item),
     }));
-    state.checkedNodes = new Map();
   },
   { immediate: true }
 );
@@ -150,11 +153,6 @@ function selectNode(node: TreeItemWithPath) {
     ) ?? [];
 
   state.columnData = [rootNodes, ...pathColumns];
-
-  // チェック済みノードに追加
-  if (!state.checkedNodes.has(node.id)) {
-    state.checkedNodes.set(node.id, node);
-  }
 }
 
 /** 指定されたレイヤーと親 ID に基づき、子ノードの一覧を取得し、
@@ -172,22 +170,5 @@ function updatePartialColumnData([layer, parentId]: [
   state.columnData.splice(layer, state.columnData.length - layer, children);
 
   return children;
-}
-
-/** ノードのチェック状態をトグルする関数。
- * チェックされていなければ Map に追加し、チェック済みであれば削除する。
- * @param node チェック状態を変更する対象ノード（TreePath を含む） */
-function updateCheckedNodes(node: TreeItemWithPath) {
-  const target = props.data.find((item) => item.id === node.id);
-  if (!target) {
-    return;
-  }
-
-  const { id, ...rest } = target;
-
-  const isAlreadyChecked = state.checkedNodes.has(id);
-  isAlreadyChecked
-    ? state.checkedNodes.delete(id)
-    : state.checkedNodes.set(id, { id, ...rest });
 }
 </script>

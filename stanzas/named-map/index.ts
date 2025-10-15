@@ -10,14 +10,14 @@ import {
 import { feature } from "topojson-client";
 import type { Topology } from "topojson-specification";
 import { getGradationColor } from "../../lib/ColorGenerator";
-import MetaStanza from "../../lib/MetaStanza";
-import {
-  emitSelectedEvent,
-  toggleSelectIds,
-  updateSelectedElementClassNameForD3,
-} from "../../lib/utils";
+import MetaStanza, {
+  METASTANZA_DATA_ATTR,
+  METASTANZA_NODE_ID_KEY,
+} from "../../lib/MetaStanza";
+
 import ToolTip from "../../lib/ToolTip";
 import Legend from "../../lib/Legend2.js";
+import { SelectionPlugin } from "@/lib/plugins/SelectionPlugin";
 
 interface DataItem {
   [key: string]: string | number;
@@ -52,15 +52,9 @@ const REGION = new Map([
 
 export default class regionGeographicMap extends MetaStanza {
   _chartArea: d3.Selection<SVGGElement, unknown, SVGElement, undefined>;
-  selectedIds: Array<string | number> = [];
   legend: Legend;
   tooltips: ToolTip;
-  selectedEventParams = {
-    targetElementSelector: ".path",
-    selectedElementClassName: "-selected",
-    selectedElementSelector: ".-selected",
-    idPath: "__togostanza_id__",
-  };
+  _selectionPlugin: SelectionPlugin | null = null;
 
   menu() {
     return [
@@ -73,10 +67,11 @@ export default class regionGeographicMap extends MetaStanza {
   }
 
   async renderNext() {
+    this._selectionPlugin = new SelectionPlugin({ stanza: this });
+
     const root = this._main;
     const dataset = this._data;
     this._chartArea = select(root.querySelector("svg"));
-    this.selectedIds = [];
 
     // Parameters
     const region: string = this.params["data-region"];
@@ -201,7 +196,7 @@ export default class regionGeographicMap extends MetaStanza {
             const wrappedMatchData = matchData
               ? Object.fromEntries(
                   Object.entries(matchData).filter(
-                    ([key]) => key !== "__togostanza_id__"
+                    ([key]) => key !== METASTANZA_NODE_ID_KEY
                   )
                 )
               : {};
@@ -209,7 +204,7 @@ export default class regionGeographicMap extends MetaStanza {
             return {
               ...geoDatum,
               userData: wrappedMatchData,
-              __togostanza_id__: matchData?.__togostanza_id__,
+              [METASTANZA_NODE_ID_KEY]: matchData?.[METASTANZA_NODE_ID_KEY],
             };
           });
         }
@@ -229,6 +224,7 @@ export default class regionGeographicMap extends MetaStanza {
               return false;
             }
           })
+          .attr(METASTANZA_DATA_ATTR, (d) => d[METASTANZA_NODE_ID_KEY])
           .attr("fill", (d) =>
             switchProperty(d) ? setColor(d.userData[areaColorValue]) : "#555"
           );
@@ -240,28 +236,6 @@ export default class regionGeographicMap extends MetaStanza {
         });
         pathGroup.on("mouseleave", function () {
           pathGroup.classed("-fadeout", false);
-        });
-
-        // Add event listener
-        pathGroup.on("click", (e, d) => {
-          select(e.target).raise();
-          toggleSelectIds({
-            selectedIds: this.selectedIds,
-            targetId: d["__togostanza_id__"],
-          });
-          updateSelectedElementClassNameForD3({
-            drawing: this._chartArea,
-            selectedIds: this.selectedIds,
-            ...this.selectedEventParams,
-          });
-          if (this.params["event-outgoing_change_selected_nodes"]) {
-            emitSelectedEvent({
-              rootElement: this.element,
-              dataUrl: this.params["data-url"],
-              targetId: d["__togostanza_id__"],
-              selectedIds: this.selectedIds,
-            });
-          }
         });
 
         // Change scale and translate of group of paths
@@ -358,18 +332,4 @@ export default class regionGeographicMap extends MetaStanza {
   // TODO: add color type. ScaleLinear<string, number>.
   // check https://github.com/d3/d3-scale/issues/111, https://github.com/DefinitelyTyped/DefinitelyTyped/issues/38574
   // fix ColorGenerator to typescript
-  handleEvent(event: CustomEvent) {
-    const { selectedIds, dataUrl } = event.detail;
-    if (
-      this.params["event-incoming_change_selected_nodes"] &&
-      dataUrl === this.params["data-url"]
-    ) {
-      this.selectedIds = selectedIds;
-      updateSelectedElementClassNameForD3({
-        drawing: this._chartArea,
-        selectedIds: event.detail.selectedIds,
-        ...this.selectedEventParams,
-      });
-    }
-  }
 }

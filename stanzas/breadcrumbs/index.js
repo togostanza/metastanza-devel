@@ -3,13 +3,20 @@ import "./components/BreadcrumbsNode";
 import "./components/BreadcrumbsNodeMenu";
 import MetaStanza from "@/lib/MetaStanza";
 import Tooltip from "@/lib/ToolTip";
+import { SelectionPlugin } from "@/lib/plugins/SelectionPlugin";
 
 export default class BreadcrumbsLit extends MetaStanza {
+  _selectionPlugin;
+
   menu() {
     return [];
   }
 
   renderNext() {
+    if (this._error) {
+      return;
+    }
+
     const root = this._main;
 
     if (isExamplePage.apply(this)) {
@@ -33,6 +40,11 @@ export default class BreadcrumbsLit extends MetaStanza {
         show: !!this.params["tooltip"],
         tooltipsInstance: this.tooltips,
       },
+      selectionParams: {
+        onSelect: (event, id) => {
+          this._selectionPlugin.onSelect([id]);
+        },
+      },
     };
 
     this.breadcrumbs = new Breadcrumbs(root, breadcrumbsConfig);
@@ -40,6 +52,12 @@ export default class BreadcrumbsLit extends MetaStanza {
     this.breadcrumbs.updateParams(this.params, this._data);
 
     this.breadcrumbs.updateComplete.then(this.setupTooltips);
+
+    this._selectionPlugin = new SelectionPlugin({
+      stanza: this,
+    });
+
+    this.use(this._selectionPlugin);
   }
 
   setupTooltips = () => {
@@ -55,12 +73,6 @@ export default class BreadcrumbsLit extends MetaStanza {
       this.tooltips?.setup(nodes);
     }
   };
-
-  handleEvent(e) {
-    if (e.details?.id) {
-      this.breadcrumbs.setAttribute("currendId", "" + e.details.id);
-    }
-  }
 }
 
 /**

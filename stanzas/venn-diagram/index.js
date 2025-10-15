@@ -10,11 +10,14 @@ import {
   downloadTSVMenuItem,
 } from "togostanza-utils";
 import loadData from "togostanza-utils/load-data";
-import MetaStanza from "@/lib/MetaStanza";
+import MetaStanza, { METASTANZA_DATA_ATTR } from "@/lib/MetaStanza";
+import { SelectionPlugin } from "@/lib/plugins/SelectionPlugin";
 
 const LINE_HEIGHT = 1;
 
 export default class VennStanza extends MetaStanza {
+  _selectionPlugin;
+
   menu() {
     return [
       downloadSvgMenuItem(this, "vennstanza"),
@@ -26,6 +29,8 @@ export default class VennStanza extends MetaStanza {
   }
 
   async renderNext() {
+    this._selectionPlugin = new SelectionPlugin({ stanza: this });
+    this.use(this._selectionPlugin);
     appendCustomCss(this, this.params["togostanza-custom_css_url"]);
     this.colorSeries = this.getColorSeries();
 
@@ -166,6 +171,7 @@ export default class VennStanza extends MetaStanza {
       );
       // tooltip
       part.dataset.tooltip = `${labels.join("∩")}: ${count}`;
+      part.setAttribute(METASTANZA_DATA_ATTR, labels.join(","));
       //part.dataset.tooltipHtml = true;
     });
     this.tooltip.setTemplate(this.params["tooltip"]);

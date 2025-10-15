@@ -25,11 +25,11 @@ import getStanzaColors from "../../lib/ColorGenerator";
 import Legend from "../../lib/Legend2";
 import MetaStanza from "../../lib/MetaStanza";
 import ToolTip from "../../lib/ToolTip";
+import { SelectionPlugin } from "../../lib/plugins/SelectionPlugin";
 import {
-  emitSelectedEvent,
-  toggleSelectIds,
-  updateSelectedElementClassNameForD3,
-} from "../../lib/utils";
+  METASTANZA_DATA_ATTR,
+  METASTANZA_NODE_ID_KEY,
+} from "../../lib/MetaStanza";
 
 type TSymbols = {
   xSym: symbol;
@@ -62,7 +62,6 @@ const ySym = Symbol("y");
 const colorSym = Symbol("color");
 const tooltipSym = Symbol("tooltip");
 const errorSym = Symbol("error");
-const POINT_ID_KEY = "__togostanza_id__";
 
 export default class Linechart extends MetaStanza {
   xAxisGen: Axis;
@@ -71,13 +70,7 @@ export default class Linechart extends MetaStanza {
   tooltips: ToolTip;
   graphArea: TGSelection;
   dataByGroup: TDataByGroup;
-  selectedIds: Array<string | number> = [];
-  selectedEventParams = {
-    targetElementSelector: "path.symbol",
-    selectedElementClassName: "-selected",
-    selectedElementSelector: ".-selected",
-    idPath: POINT_ID_KEY,
-  };
+  _selectionPlugin: SelectionPlugin;
 
   menu() {
     return [
@@ -90,6 +83,8 @@ export default class Linechart extends MetaStanza {
   }
 
   async renderNext() {
+    this._selectionPlugin = new SelectionPlugin({ stanza: this });
+    this.use(this._selectionPlugin);
     const color = scaleOrdinal().range(getStanzaColors(this));
     const width = +this.css("--togostanza-canvas-width");
     const height = +this.css("--togostanza-canvas-height");
@@ -269,15 +264,7 @@ export default class Linechart extends MetaStanza {
 
       val[ySym] = this.yAxisGen.scale(val[yKeyName]);
       val[colorSym] = color(val[groupKeyName]);
-      val[tooltipSym] = this.tooltips
-        ? this.tooltips.compile(val)
-        : "";
-
-      // Ensure every data point has a unique ID for selection
-      val[POINT_ID_KEY] = `linechart-${i}-${String(val[xKeyName]).replace(
-        /\s+/g,
-        ""
-      )}-${val[yKeyName]}`;
+      val[tooltipSym] = this.tooltips ? this.tooltips.compile(val) : "";
 
       val[errorSym] =
         Array.isArray(val[errorKeyName]) &&
@@ -334,23 +321,6 @@ export default class Linechart extends MetaStanza {
 
     if (tooltipParams.show && this.tooltips) {
       addTooltips.call(this);
-    }
-  }
-
-  handleEvent(event) {
-    const { selectedIds, dataUrl } = event.detail;
-    if (
-      this.params["event-incoming_change_selected_nodes"] &&
-      dataUrl === this.params["data-url"]
-    ) {
-      this.selectedIds = selectedIds;
-      if (this.graphArea) {
-        updateSelectedElementClassNameForD3({
-          drawing: this.graphArea,
-          selectedIds,
-          ...this.selectedEventParams,
-        });
-      }
     }
   }
 }
@@ -414,6 +384,7 @@ function drawPoints(
     .enter()
     .append("g")
     .classed("symbol-g", true)
+    .attr(METASTANZA_DATA_ATTR, (d) => d[METASTANZA_NODE_ID_KEY])
     .attr(
       "transform",
       (d) => `translate(${d[symbols.xSym]}, ${d[symbols.ySym]})`
@@ -425,37 +396,7 @@ function drawPoints(
     .attr("d", symbolGen)
     .attr("fill", (d) => d[symbols.colorSym])
     .attr("data-tooltip", (d) => d[symbols.tooltipSym])
-    .attr("data-id", (d) => d[POINT_ID_KEY])
     .attr("cursor", "pointer");
-
-  // Add click event handlers if selection is enabled
-  const linechart = this;
-  if (
-    linechart.params &&
-    linechart.params["event-outgoing_change_selected_nodes"]
-  ) {
-    symbolPaths.on("click", function (event, d) {
-      event.stopPropagation();
-
-      toggleSelectIds({
-        selectedIds: linechart.selectedIds,
-        targetId: d[POINT_ID_KEY],
-      });
-
-      updateSelectedElementClassNameForD3({
-        drawing: linechart.graphArea,
-        selectedIds: linechart.selectedIds,
-        ...linechart.selectedEventParams,
-      });
-
-      emitSelectedEvent({
-        rootElement: linechart.element,
-        targetId: d[POINT_ID_KEY],
-        selectedIds: linechart.selectedIds,
-        dataUrl: linechart.params["data-url"],
-      });
-    });
-  }
 
   return enterSymbols;
 }

@@ -1,6 +1,10 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <div ref="rootElement" class="wrapper" :style="`width: ${canvasWidth}; height: ${canvasHeight};`">
+  <div
+    ref="rootElement"
+    class="wrapper"
+    :style="`width: ${canvasWidth}; height: ${canvasHeight};`"
+  >
     <div class="tableOptionWrapper">
       <div class="tableOption">
         <input
@@ -20,12 +24,7 @@
         </p>
       </div>
       <div class="tableWrapper" :style="`width: ${canvasWidth};`">
-        <table
-          v-if="state.allRows"
-          ref="table"
-          @mousedown="handleMouseDown"
-          @mouseup="handleMouseUp"
-        >
+        <table v-if="state.allRows" ref="table">
           <thead ref="thead">
             <tr>
               <template v-for="(column, i) in state.columns">
@@ -204,15 +203,11 @@
             <tr
               v-for="(row, row_index) in rowsInCurrentPage"
               :key="row.id"
+              :data-id="getRowDataId(row)"
               :class="{
                 selected: isSelectedRow(row),
-                selectable: eventOutgoing_change_selected_nodes,
+                selectable: eventOutgoingChangeSelectedNodes,
               }"
-              @click="
-                eventOutgoing_change_selected_nodes
-                  ? handleRowClick($event, row_index, row)
-                  : null
-              "
             >
               <template v-for="(cell, i) in row">
                 <td
@@ -230,6 +225,7 @@
                       ? `left: ${i === 0 ? 0 : state.thListWidth[i - 1]}px;`
                       : null
                   "
+                  @mousedown="handleMouseDown"
                 >
                   <span v-if="cell.href">
                     <AnchorCell
@@ -243,9 +239,7 @@
                       :char-clamp-on="cell.column.charClampOn"
                     />
                   </span>
-                  <span
-                    v-else-if="cell.column.charClamp"
-                  >
+                  <span v-else-if="cell.column.charClamp">
                     <ClampCell
                       :char-clamp="cell.column.charClamp"
                       :char-clamp-on="cell.charClampOn"
@@ -259,26 +253,27 @@
                   <span
                     v-else-if="cell.column.unescape"
                     v-html="cell.value"
-                    :class="{ 
+                    :class="{
                       'line-clamp': cell.lineClampOn,
-                      'line-clamp-expanded': !cell.lineClampOn
+                      'line-clamp-expanded': !cell.lineClampOn,
                     }"
                     @click="toggleRowLineClamp(cell.rowIndex)"
                   ></span>
-                  <span 
-                    v-else 
-                    :class="{ 
+                  <span
+                    v-else
+                    :class="{
                       'line-clamp': cell.lineClampOn,
-                      'line-clamp-expanded': !cell.lineClampOn
+                      'line-clamp-expanded': !cell.lineClampOn,
                     }"
                     @click="toggleRowLineClamp(cell.rowIndex)"
-                  >{{ cell.value }}</span>
+                    >{{ cell.value }}</span
+                  >
                 </td>
               </template>
             </tr>
             <tr v-if="state.isFetching">
-              <td 
-                :colspan="state.columns.length - 1" 
+              <td
+                :colspan="state.columns.length - 1"
                 class="togostanza-table-loading-wrapper"
               >
                 <div class="togostanza-table-loading-dots"></div>
@@ -289,7 +284,10 @@
         <div v-if="state.hasError" class="togostanza-table-error-message">
           {{ message_load_error }}
         </div>
-        <div v-else-if="filteredRows && filteredRows.length === 0" class="togostanza-table-no-data">
+        <div
+          v-else-if="filteredRows && filteredRows.length === 0"
+          class="togostanza-table-no-data"
+        >
           {{ message_not_found }}
         </div>
       </div>
@@ -347,6 +345,7 @@ import {
   faChartBar,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { METASTANZA_NODE_ID_KEY } from "@/lib/MetaStanza";
 
 library.add(
   faEllipsisH,
@@ -380,9 +379,13 @@ export default defineComponent({
     onMounted(() => {
       requestAnimationFrame(() => {
         const style = window.getComputedStyle(rootElement.value);
-        const widthFromCss = style.getPropertyValue("--togostanza-canvas-width").trim();
+        const widthFromCss = style
+          .getPropertyValue("--togostanza-canvas-width")
+          .trim();
         canvasWidth.value = widthFromCss ? widthFromCss + "px" : "100%";
-        const heightFromCss = style.getPropertyValue("--togostanza-canvas-height").trim();
+        const heightFromCss = style
+          .getPropertyValue("--togostanza-canvas-height")
+          .trim();
         canvasHeight.value = heightFromCss ? heightFromCss + "px" : "";
         const flexDirection = style.getPropertyValue(
           "--togostanza-pagination-placement_vertical"
@@ -421,7 +424,6 @@ export default defineComponent({
       axisSelectorActiveColumn: null,
 
       selectedRows: [],
-      lastSelectedRow: null,
 
       isFetching: false,
       hasError: false,
@@ -597,7 +599,7 @@ export default defineComponent({
       const row = state.allRows[rowIndex];
       if (row) {
         const newState = !row[0].lineClampOn;
-        row.forEach(cell => {
+        row.forEach((cell) => {
           cell.lineClampOn = newState;
         });
       }
@@ -637,55 +639,59 @@ export default defineComponent({
     async function fetchData() {
       state.isFetching = true;
       state.hasError = false;
-      
+
       try {
-        const data = await loadData(params.dataUrl, params.dataType, params.main);
+        const data = await loadData(
+          params.dataUrl,
+          params.dataType,
+          params.main
+        );
 
         state.responseJSON = data;
-      let columns;
-      if (params.columns) {
-        columns = JSON.parse(params.columns).map((column, index) => {
-          column.fixed = index < params.fixedColumns;
-          return column;
-        });
-      } else if (data.length > 0) {
-        const firstRow = data[0];
-        columns = Object.keys(firstRow).map((key, index) => {
-          return {
-            id: key,
-            label: key,
-            fixed: index < params.fixedColumns,
-          };
-        });
-      } else {
-        columns = [];
-      }
-      columns.push({ id: "__togostanza_id__", label: "", fixed: false });
-
-      state.columns = columns.map((column) => {
-        const values = data.map((obj) => obj[column.id]);
-        return createColumnState(column, values);
-      });
-
-      state.allRows = data.map((row, rowIndex) => {
-        return state.columns.map((column) => {
-          return {
-            column,
-            value: column.parseValue(row[column.id]),
-            href: column.href ? row[column.href] : null,
-            charClampOn: true,
-            lineClampOn: true,
-            rowIndex,
-          };
-        });
-      });
-      
-      state.isFetching = false;
-      } catch (error) {
-        if (process.env.NODE_ENV !== 'production') {
-          console.error('Failed to fetch data:', error);
+        let columns;
+        if (params.columns) {
+          columns = JSON.parse(params.columns).map((column, index) => {
+            column.fixed = index < params.fixedColumns;
+            return column;
+          });
+        } else if (data.length > 0) {
+          const firstRow = data[0];
+          columns = Object.keys(firstRow).map((key, index) => {
+            return {
+              id: key,
+              label: key,
+              fixed: index < params.fixedColumns,
+            };
+          });
         } else {
-          console.error('Failed to fetch data');
+          columns = [];
+        }
+        columns.push({ id: METASTANZA_NODE_ID_KEY, label: "", fixed: false });
+
+        state.columns = columns.map((column) => {
+          const values = data.map((obj) => obj[column.id]);
+          return createColumnState(column, values);
+        });
+
+        state.allRows = data.map((row, rowIndex) => {
+          return state.columns.map((column) => {
+            return {
+              column,
+              value: column.parseValue(row[column.id]),
+              href: column.href ? row[column.href] : null,
+              charClampOn: true,
+              lineClampOn: true,
+              rowIndex,
+            };
+          });
+        });
+
+        state.isFetching = false;
+      } catch (error) {
+        if (process.env.NODE_ENV !== "production") {
+          console.error("Failed to fetch data:", error);
+        } else {
+          console.error("Failed to fetch data");
         }
         state.hasError = true;
         state.isFetching = false;
@@ -709,86 +715,26 @@ export default defineComponent({
       return state.responseJSON;
     };
 
-    const handleRowClick = (event, rowIndex) => {
-      if (!params.eventOutgoing_change_selected_nodes) {
-        return;
-      }
-      const isShift = event.shiftKey;
-      const isCmd = event.metaKey || event.ctrlKey;
-      const filteredRowIds = filteredRows.value.map((row) => {
-        return +row.find((obj) => obj.column.id === "__togostanza_id__").value;
-      });
-
-      // get index and ID
-      const actualRowIndex =
-        (state.pagination.currentPage - 1) * state.pagination.perPage +
-        rowIndex;
-      const rowId = filteredRowIds[actualRowIndex];
-      // selected rows
-      let selectedIds = [...state.selectedRows];
-      // update selected rows
-      if (isShift && state.lastSelectedRow !== null) {
-        const lastSelectedRowIndex = filteredRowIds.indexOf(
-          state.lastSelectedRow
-        );
-        const start = Math.min(lastSelectedRowIndex, actualRowIndex);
-        const end = Math.max(lastSelectedRowIndex, actualRowIndex);
-        for (let i = start; i <= end; i++) {
-          if (!selectedIds.includes(filteredRowIds[i])) {
-            selectedIds.push(filteredRowIds[i]);
-          }
-        }
-      } else if (isCmd) {
-        if (selectedIds.includes(rowId)) {
-          selectedIds.splice(selectedIds.indexOf(rowId), 1);
-        } else {
-          selectedIds.push(rowId);
-        }
-      } else {
-        selectedIds = [rowId];
-      }
-
-      // dispatch event
-      const stanza = rootElement.value.parentNode.parentNode.parentNode.host;
-      stanza.dispatchEvent(
-        new CustomEvent("changeSelectedNodes", {
-          detail: {
-            selectedIds,
-            targetId: rowId,
-            dataUrl: params.dataUrl,
-          },
-        })
-      );
-      state.lastSelectedRow = rowId;
-      state.selectedRows = [...selectedIds.map((row) => row.toString())];
-    };
-
     const handleMouseDown = (event) => {
       if (event.shiftKey) {
-        preventTextSelection(true);
+        event.preventDefault();
       }
     };
-    const handleMouseUp = () => {
-      preventTextSelection(false);
-    };
-    const preventTextSelection = (disable) => {
-      if (disable) {
-        table.value.classList.add("no-select");
-      } else {
-        table.value.classList.remove("no-select");
-      }
+
+    const getRowDataId = (row) => {
+      return row.find((column) => column.column.id === METASTANZA_NODE_ID_KEY)
+        .value;
     };
 
     const isSelectedRow = (row) => {
       const rowID = row.find(
-        (column) => column.column.id === "__togostanza_id__"
+        (column) => column.column.id === METASTANZA_NODE_ID_KEY
       ).value;
       return state.selectedRows.includes(rowID);
     };
 
-    const updateSelectedRows = (emitSelectedEventParams) => {
-      const { selectedIds } = emitSelectedEventParams;
-      state.selectedRows = [...selectedIds.map((id) => id.toString())];
+    const updateSelectedRows = (ids) => {
+      state.selectedRows = ids;
     };
 
     return {
@@ -818,12 +764,11 @@ export default defineComponent({
       handleAxisSelectorButton,
       handleAxisSelected,
       showAxisSelector: params.showAxis_selector ?? false,
-      handleRowClick,
       handleMouseDown,
-      handleMouseUp,
       isSelectedRow,
+      getRowDataId,
       updateSelectedRows,
-      eventOutgoing_change_selected_nodes:
+      eventOutgoingChangeSelectedNodes:
         params.eventOutgoing_change_selected_nodes,
     };
   },

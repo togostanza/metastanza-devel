@@ -1,3 +1,13 @@
+import { Axis } from "@/lib/AxisMixin";
+import getStanzaColors from "@/lib/ColorGenerator";
+import Legend from "@/lib/Legend2";
+import MetaStanza, {
+  METASTANZA_DATA_ATTR,
+  METASTANZA_NODE_ID_KEY,
+} from "@/lib/MetaStanza";
+import ToolTip from "@/lib/ToolTip";
+import { SelectionPlugin } from "@/lib/plugins/SelectionPlugin";
+import { getMarginsFromCSSString } from "@/lib/utils";
 import { extent, format, scaleOrdinal, scaleSqrt, select } from "d3";
 import {
   downloadCSVMenuItem,
@@ -6,19 +16,6 @@ import {
   downloadSvgMenuItem,
   downloadTSVMenuItem,
 } from "togostanza-utils";
-import { Axis } from "@/lib/AxisMixin";
-import getStanzaColors from "@/lib/ColorGenerator";
-import Legend from "@/lib/Legend2";
-import MetaStanza from "@/lib/MetaStanza";
-import {
-  emitSelectedEvent,
-  getMarginsFromCSSString,
-  toggleSelectIds,
-  updateSelectedElementClassNameForD3,
-} from "@/lib/utils";
-import ToolTip from "@/lib/ToolTip";
-
-const POINT_ID_KEY = "__togostanza_id__";
 
 type MarginsT = {
   LEFT: number;
@@ -38,14 +35,8 @@ export default class ScatterPlot extends MetaStanza {
   yAxis: Axis;
   legend: Legend;
   tooltips: ToolTip;
-  selectedIds: Array<string | number> = [];
   _graphArea: d3.Selection<SVGGElement, unknown, HTMLElement, unknown>;
-  selectedEventParams = {
-    targetElementSelector: ".chart-node",
-    selectedElementClassName: "-selected",
-    selectedElementSelector: ".-selected",
-    idPath: POINT_ID_KEY,
-  };
+  _selectionPlugin: SelectionPlugin;
 
   menu() {
     return [
@@ -58,6 +49,14 @@ export default class ScatterPlot extends MetaStanza {
   }
 
   async renderNext() {
+    if (this._error) {
+      return null;
+    }
+
+    this._selectionPlugin = new SelectionPlugin({ stanza: this });
+
+    this.use(this._selectionPlugin);
+
     let svg = select(this._main.querySelector("svg"));
 
     const existingLegend = this.root.querySelector("togostanza--legend2");
@@ -326,29 +325,9 @@ export default class ScatterPlot extends MetaStanza {
       this.tooltips.setup(nodesWithTooltips);
     }
 
-    if (this.params["event-outgoing_change_selected_nodes"]) {
-      this._graphArea
-        .selectAll(this.selectedEventParams.targetElementSelector)
-        .on("click", (_, d) => {
-          toggleSelectIds({
-            selectedIds: this.selectedIds,
-            targetId: d[POINT_ID_KEY],
-          });
-
-          updateSelectedElementClassNameForD3({
-            drawing: this._graphArea,
-            selectedIds: this.selectedIds,
-            ...this.selectedEventParams,
-          });
-
-          emitSelectedEvent({
-            rootElement: this.element,
-            targetId: d[POINT_ID_KEY],
-            selectedIds: this.selectedIds,
-            dataUrl: this.params["data-url"],
-          });
-        });
-    }
+    this._graphArea
+      .selectAll(".chart-node")
+      .attr(METASTANZA_DATA_ATTR, (d) => d[METASTANZA_NODE_ID_KEY]);
 
     enteredCircles.on("mouseenter", function () {
       const node = select(this);
@@ -360,20 +339,5 @@ export default class ScatterPlot extends MetaStanza {
     });
 
     circlesUpdate.exit().remove();
-  }
-
-  handleEvent(event) {
-    const { selectedIds, dataUrl } = event.detail;
-    if (
-      this.params["event-incoming_change_selected_nodes"] &&
-      dataUrl === this.params["data-url"]
-    ) {
-      this.selectedIds = selectedIds;
-      updateSelectedElementClassNameForD3({
-        drawing: this._graphArea,
-        selectedIds,
-        ...this.selectedEventParams,
-      });
-    }
   }
 }
