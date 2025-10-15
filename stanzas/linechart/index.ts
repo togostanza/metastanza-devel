@@ -398,8 +398,6 @@ function drawPoints(
     .attr("data-tooltip", (d) => d[symbols.tooltipSym])
     .attr("cursor", "pointer");
 
-  // Selection is now handled by the NodeSelectionPlugin
-
   return enterSymbols;
 }
 

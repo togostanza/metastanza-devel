@@ -209,8 +209,4 @@ export default class Piechart extends MetaStanza {
       this.tooltips.setup(root.querySelectorAll("[data-tooltip]"));
     }
   }
-
-  handleEvent(event) {
-    // Selection events are now handled by the NodeSelectionPlugin
-  }
 }

@@ -55,10 +55,6 @@ export default class ScatterPlot extends MetaStanza {
 
     this._selectionPlugin = new SelectionPlugin({ stanza: this });
 
-    this._selectionPlugin = new SelectionPlugin({ stanza: this });
-
-    this._selectionPlugin = new SelectionPlugin({ stanza: this });
-
     this.use(this._selectionPlugin);
 
     let svg = select(this._main.querySelector("svg"));
@@ -343,9 +339,5 @@ export default class ScatterPlot extends MetaStanza {
     });
 
     circlesUpdate.exit().remove();
-  }
-
-  handleEvent(event) {
-    // Selection events are now handled by the NodeSelectionPlugin
   }
 }

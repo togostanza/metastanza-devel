@@ -54,10 +54,6 @@ export default class Sunburst extends MetaStanza {
 
   async renderNext() {
     this._selectionPlugin = new SelectionPlugin({ stanza: this });
-
-    this._selectionPlugin = new SelectionPlugin({ stanza: this });
-
-    this._selectionPlugin = new SelectionPlugin({ stanza: this });
     this.use(this._selectionPlugin);
 
     const that = this;

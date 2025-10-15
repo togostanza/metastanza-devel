@@ -416,9 +416,6 @@ function addErrorBars(
     .attr("x2", (d) => groupScale(d[groupKeyName]) + groupScale.bandwidth());
 }
 
-// Legacy selection functions have been removed
-// Selection is now handled by the NodeSelectionPlugin
-
 /**
  *
  * @param this - Barchart instance

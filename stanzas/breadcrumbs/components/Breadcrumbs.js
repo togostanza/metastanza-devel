@@ -196,7 +196,7 @@ export class Breadcrumbs extends LitElement {
             @click=${(event) => {
               // need to send only the clicked id to the plugin. the plugin will handle selected state.
               this.currentId = "" + node[this.nodeIdKey];
-              this.selectionParams?.onSelect(event, { id: this.currentId });
+              this.selectionParams?.onSelect(event, this.currentId);
             }}
             @menu-item-clicked=${({ detail }) =>
               (this.currentId = "" + detail.id)}

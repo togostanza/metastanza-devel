@@ -88,10 +88,6 @@ export default class TreeMapStanza extends MetaStanza {
       drawContent,
     });
   }
-
-  handleEvent(event) {
-    // Selection events are now handled by the NodeSelectionPlugin
-  }
 }
 
 /**
@@ -199,21 +195,12 @@ function draw(el, dataset, opts, stanza) {
     let timeout;
     node
       .attr("cursor", "pointer")
-      .on("click", (e, d) => {
-        if (e.detail === 1) {
-          timeout = setTimeout(() => {
-            // Selection is now handled by the NodeSelectionPlugin
-          }, 500);
-        }
-      })
       .filter((d) => {
         return d === root ? d.parent : d.children;
       })
       .on("dblclick", (e, d) => {
         clearTimeout(timeout);
         d === root ? zoomout(root) : zoomin(d);
-
-        // Selection is now handled by the NodeSelectionPlugin
       });
 
     node

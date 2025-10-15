@@ -1,4 +1,3 @@
-import { METASTANZA_EVENTS } from "../../lib/MetaStanza";
 import { Breadcrumbs } from "./components/Breadcrumbs";
 import "./components/BreadcrumbsNode";
 import "./components/BreadcrumbsNodeMenu";

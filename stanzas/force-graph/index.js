@@ -71,8 +71,6 @@ export default class ForceGraph extends MetaStanza {
         nodeIdKey: this.params["node-id_key"],
       });
 
-      console.log("data", graph);
-
       const { nodes, edges } = graph;
 
       const nodeSizeParams = {
