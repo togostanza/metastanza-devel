@@ -638,44 +638,150 @@ export class Axis {
       if (this.params.placement === "bottom") {
         translate = `translate(0,${y})`;
 
-        if (angle > 0 && angle < 90) {
-          this._axisG.selectAll("text").attr("text-anchor", "start");
-        } else if (angle > -90 && angle < 0) {
-          this._axisG.selectAll("text").attr("text-anchor", "end");
-        } else {
-          this._axisG.selectAll("text").attr("text-anchor", "middle");
+        if (angle === 0) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "middle")
+            .attr("dominant-baseline", "auto");
+        } else if (angle > 0 && angle < 45) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "start")
+            .attr("dominant-baseline", "auto");
+        } else if (angle >= 45 && angle <= 135) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "start")
+            .attr("dominant-baseline", "text-after-edge");
+        } else if (angle > 135 && angle <= 180) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "start")
+            .attr("dominant-baseline", "text-after-edge");
+        } else if (angle > 180) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "end")
+            .attr("dominant-baseline", "text-after-edge");
+          // マイナス角度
+        } else if (angle < 0 && angle > -45) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "end")
+            .attr("dominant-baseline", "auto");
+        } else if (angle <= -45 && angle >= -135) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "end")
+            .attr("dominant-baseline", "text-after-edge");
+        } else if (angle < -135 && angle >= -180) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "end")
+            .attr("dominant-baseline", "text-after-edge");
+        } else if (angle < -180) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "start")
+            .attr("dominant-baseline", "text-after-edge");
         }
       } else if (this.params.placement === "top") {
         translate = `translate(0,${y})`;
 
-        if (angle > 0 && angle < 90) {
-          this._axisG.selectAll("text").attr("text-anchor", "end");
-        } else if (angle > -90 && angle < 0) {
-          this._axisG.selectAll("text").attr("text-anchor", "start");
-        } else {
-          this._axisG.selectAll("text").attr("text-anchor", "middle");
+        if (angle === 0) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "middle")
+            .attr("dominant-baseline", "auto");
+        } else if (angle > 0 && angle < 45) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "end")
+            .attr("dominant-baseline", "auto");
+        } else if (angle >= 45 && angle <= 135) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "end")
+            .attr("dominant-baseline", "middle");
+        } else if (angle > 135 && angle <= 180) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "end")
+            .attr("dominant-baseline", "text-before-edge");
+        } else if (angle > 180) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "start")
+            .attr("dominant-baseline", "text-before-edge");
+          // マイナス角度
+        } else if (angle < 0 && angle > -45) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "start")
+            .attr("dominant-baseline", "auto");
+        } else if (angle <= -45 && angle >= -135) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "start")
+            .attr("dominant-baseline", "middle");
+        } else if (angle < -135 && angle >= -180) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "start")
+            .attr("dominant-baseline", "text-before-edge");
+        } else if (angle < -180) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "end")
+            .attr("dominant-baseline", "text-before-edge");
         }
       } else if (this.params.placement === "left") {
-        if (angle > -90 && angle < 90) {
-          this._axisG.selectAll("text").attr("text-anchor", "end");
-          if (angle === 90) {
-            this._axisG
-              .selectAll(".tick")
-              .select("text")
-              .attr("alignment-baseline", "middle");
-          }
-          translate = `translate(${x},0)`;
+        translate = `translate(${x},0)`;
+
+        if (angle === 90 || angle === -90) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "middle")
+            .attr("dominant-baseline", "middle");
+        } else if (angle > 90) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "start")
+            .attr("dominant-baseline", "middle");
+        } else if (angle < -90 && angle >= -179) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "start")
+            .attr("dominant-baseline", "auto");
+        } else {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "end")
+            .attr("dominant-baseline", "auto");
         }
-      } else {
-        if (angle > -90 && angle < 90) {
-          this._axisG.selectAll("text").attr("text-anchor", "start");
-          if (angle === 90) {
-            this._axisG
-              .selectAll(".tick")
-              .select("text")
-              .attr("alignment-baseline", "middle");
-          }
-          translate = `translate(${x},0)`;
+      } else if (this.params.placement === "right") {
+        translate = `translate(${x},0)`;
+
+        if (angle === 90) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "middle")
+            .attr("dominant-baseline", "text-after-edge");
+        } else if (angle === -90) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "middle")
+            .attr("dominant-baseline", "middle");
+        } else if (angle > 90 || angle < -90) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "end")
+            .attr("dominant-baseline", "auto");
+        } else {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "start")
+            .attr("dominant-baseline", "auto");
         }
       }
     }
