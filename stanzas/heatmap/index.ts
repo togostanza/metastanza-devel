@@ -269,10 +269,10 @@ export default class Heatmap extends MetaStanza {
       steps: number = legendGroups >= 2 ? legendGroups : 2
     ): Interval[] {
       return [...Array(steps).keys()].map((i) => {
-        const legendSteps = Math.round(
+        const legendSteps =
           cellDomainMax -
-            i * (Math.abs(cellDomainMax - cellDomainMin) / (steps - 1))
-        );
+          i * (Math.abs(cellDomainMax - cellDomainMin) / (steps - 1));
+
         return {
           label: legendSteps,
           color: color(legendSteps),
