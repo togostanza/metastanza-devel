@@ -738,17 +738,22 @@ export class Axis {
       } else if (this.params.placement === "left") {
         translate = `translate(${x},0)`;
 
-        if (angle === 90 || angle === -90) {
+        if (angle === 90) {
           this._axisG
             .selectAll("text")
             .attr("text-anchor", "middle")
             .attr("dominant-baseline", "middle");
+        } else if (angle === -90) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "middle")
+            .attr("dominant-baseline", "text-after-edge");
         } else if (angle > 90) {
           this._axisG
             .selectAll("text")
             .attr("text-anchor", "start")
             .attr("dominant-baseline", "middle");
-        } else if (angle < -90 && angle >= -179) {
+        } else if (angle < -90) {
           this._axisG
             .selectAll("text")
             .attr("text-anchor", "start")
@@ -772,11 +777,16 @@ export class Axis {
             .selectAll("text")
             .attr("text-anchor", "middle")
             .attr("dominant-baseline", "middle");
-        } else if (angle > 90 || angle < -90) {
+        } else if (angle > 90) {
           this._axisG
             .selectAll("text")
             .attr("text-anchor", "end")
             .attr("dominant-baseline", "auto");
+        } else if (angle < -90) {
+          this._axisG
+            .selectAll("text")
+            .attr("text-anchor", "end")
+            .attr("dominant-baseline", "middle");
         } else {
           this._axisG
             .selectAll("text")
