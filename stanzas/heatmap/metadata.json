@@ -58,7 +58,7 @@
     {
       "stanza:key": "axis-x-title",
       "stanza:type": "text",
-      "stanza:example": "",
+      "stanza:example": "group",
       "stanza:description": "X axis title"
     },
     {
@@ -90,7 +90,7 @@
     {
       "stanza:key": "axis-y-title",
       "stanza:type": "text",
-      "stanza:example": "",
+      "stanza:example": "variable",
       "stanza:description": "Y axis title"
     },
     {

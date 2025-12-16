@@ -123,7 +123,7 @@ export default class Heatmap extends MetaStanza {
       domain: [...new Set(dataset.map((d) => d[xKey]))],
       drawArea: axisArea,
       tickLabelsAngle: this.params["axis-x-ticks_label_angle"] || 0,
-      title: this.params["axis-x-title"] || xKey,
+      title: this.params["axis-x-title"],
       titlePadding: this.params["axis-x-title_padding"] || 0,
       scale: "ordinal",
       margins: {},
@@ -140,7 +140,7 @@ export default class Heatmap extends MetaStanza {
       domain: [...new Set(dataset.map((d) => d[yKey]))],
       drawArea: axisArea,
       tickLabelsAngle: this.params["axis-y-ticks_label_angle"] || 0,
-      title: this.params["axis-y-title"] || yKey,
+      title: this.params["axis-y-title"],
       titlePadding: this.params["axis-y-title_padding"] || 0,
       scale: "ordinal",
       margins: {},
@@ -269,10 +269,10 @@ export default class Heatmap extends MetaStanza {
       steps: number = legendGroups >= 2 ? legendGroups : 2
     ): Interval[] {
       return [...Array(steps).keys()].map((i) => {
-        const legendSteps = Math.round(
+        const legendSteps =
           cellDomainMax -
-            i * (Math.abs(cellDomainMax - cellDomainMin) / (steps - 1))
-        );
+          i * (Math.abs(cellDomainMax - cellDomainMin) / (steps - 1));
+
         return {
           label: legendSteps,
           color: color(legendSteps),
