@@ -9,7 +9,7 @@
 @mixin button {
   border-style: solid;
   border-width: calc(var(--togostanza-border-width) * 0.5px);
-  border-color: var(--togostanza-border-color);
+  border-color: var(--togostanza-theme-border_color);
   border-radius: 3px;
   background-color: var(--togostanza-table-thead-background_color);
   color: var(--togostanza-fonts-font_color_secondary);
@@ -24,7 +24,7 @@
   height: 20px;
   border-style: solid;
   border-width: calc(var(--togostanza-border-width) * 0.5px);
-  border-color: var(--togostanza-border-color);
+  border-color: var(--togostanza-theme-border_color);
   border-radius: 0.2em;
   font-size: var(--togostanza-fonts-font_size_small);
   color: var(--togostanza-fonts-font_color_primary);
@@ -90,7 +90,7 @@ svg[data-icon] {
         select {
           border-style: solid;
           border-width: calc(var(--togostanza-border-width) * 0.5px);
-          border-color: var(--togostanza-border-color);
+          border-color: var(--togostanza-theme-border_color);
           border-radius: 0.2em;
           height: 20px;
           background-color: var(--togostanza-theme-background_color);
@@ -425,12 +425,12 @@ svg[data-icon] {
         display: flex;
         padding: 0;
         border: calc(var(--togostanza-border-width) * 0.5px) solid
-          var(--togostanza-border-color);
+          var(--togostanza-theme-border_color);
         border-radius: var(--pagination-border-radius);
         > li.pagination {
           color: var(--togostanza-theme-series_0_color);
           border-right: calc(var(--togostanza-border-width) * 0.5px) solid
-            var(--togostanza-border-color);
+            var(--togostanza-theme-border_color);
           padding: 2px 8px;
           font-size: calc(var(--togostanza-fonts-font_size_default) * 1px);
           display: flex;
@@ -486,7 +486,7 @@ svg[data-icon] {
         margin-left: 20px;
         > input[type="text"].jumpToNumberInput {
           border: solid calc(var(--togostanza-border-width) * 0.5px)
-            var(--togostanza-border-color);
+            var(--togostanza-theme-border_color);
           border-radius: var(--pagination-border-radius);
           width: 40px;
           height: 20px;
@@ -513,7 +513,7 @@ svg[data-icon] {
           color: var(--togostanza-pagination-current_font_color);
           background-color: var(--togostanza-theme-series_0_color);
           border: calc(var(--togostanza-border-width) * 0.5px) solid
-            var(--togostanza-border-color);
+            var(--togostanza-theme-border_color);
           padding: 2px 8px;
           font-size: var(--togostanza-fonts-font_size_small);
           border-radius: var(--pagination-border-radius);
@@ -565,7 +565,7 @@ svg[data-icon] {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--togostanza-border-color);
+    background-color: var(--togostanza-theme-border_color);
     opacity: 0.2;
   }
 }
