@@ -1,10 +1,6 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <div
-    ref="rootElement"
-    class="wrapper"
-    :style="`width: ${canvasWidth}; height: ${canvasHeight};`"
-  >
+  <div ref="rootElement" class="wrapper" :style="`width: ${canvasWidth}; height: ${canvasHeight};`" @click="clearSelection">
     <div class="tableOptionWrapper">
       <div class="tableOption">
         <input
@@ -12,10 +8,14 @@
           type="text"
           placeholder="Search for keywords..."
           class="textSearchInput"
+          @click.stop
         />
         <p class="entries">
           Show
-          <select v-model="state.pagination.perPage">
+          <select
+            v-model="state.pagination.perPage"
+            @click.stop
+          >
             <option v-for="size of pageSizeOption" :key="size" :value="size">
               {{ size }}
             </option>
@@ -48,13 +48,13 @@
                     :icon="`sort-${
                       state.sorting.direction === 'asc' ? 'up' : 'down'
                     }`"
-                    @click="setSorting(column)"
+                    @click.stop="setSorting(column)"
                   />
                   <font-awesome-icon
                     v-else
                     class="icon sort"
                     icon="sort"
-                    @click="setSorting(column)"
+                    @click.stop="setSorting(column)"
                   />
 
                   <font-awesome-icon
@@ -64,7 +64,7 @@
                       { active: column.isSearchConditionGiven },
                     ]"
                     icon="search"
-                    @click="showModal(column)"
+                    @click.stop="showModal(column)"
                   />
                   <font-awesome-icon
                     v-if="column.searchType === 'category'"
@@ -79,7 +79,7 @@
                         ),
                       },
                     ]"
-                    @click="column.isFilterPopupShowing = true"
+                    @click.stop="column.isFilterPopupShowing = true"
                   />
                   <transition name="modal">
                     <div
@@ -133,6 +133,7 @@
                         'modal',
                         { lastCol: state.columns.length - 1 === i },
                       ]"
+                      @click.stop
                     >
                       <p class="title">
                         <template v-if="column.searchType === 'number'">
@@ -188,7 +189,7 @@
                     v-if="showAxisSelector === true"
                     :class="['icon', 'chart-bar']"
                     icon="chart-bar"
-                    @click="handleAxisSelectorButton(column)"
+                    @click.stop="handleAxisSelectorButton(column)"
                   />
                   <AxisSelectorModal
                     :active="state.axisSelectorActiveColumn === column"
@@ -208,6 +209,11 @@
                 selected: isSelectedRow(row),
                 selectable: eventOutgoingChangeSelectedNodes,
               }"
+              @click.stop="
+                eventOutgoing_change_selected_nodes
+                  ? handleRowClick($event, row_index, row)
+                  : null
+              "
             >
               <template v-for="(cell, i) in row">
                 <td
@@ -225,7 +231,7 @@
                       ? `left: ${i === 0 ? 0 : state.thListWidth[i - 1]}px;`
                       : null
                   "
-                  @mousedown="handleMouseDown"
+                  class="clamp-td"
                 >
                   <span v-if="cell.href">
                     <AnchorCell
@@ -250,24 +256,33 @@
                       "
                     />
                   </span>
-                  <span
-                    v-else-if="cell.column.unescape"
-                    v-html="cell.value"
-                    :class="{
-                      'line-clamp': cell.lineClampOn,
-                      'line-clamp-expanded': !cell.lineClampOn,
-                    }"
-                    @click="toggleRowLineClamp(cell.rowIndex)"
-                  ></span>
-                  <span
-                    v-else
-                    :class="{
-                      'line-clamp': cell.lineClampOn,
-                      'line-clamp-expanded': !cell.lineClampOn,
-                    }"
-                    @click="toggleRowLineClamp(cell.rowIndex)"
-                    >{{ cell.value }}</span
-                  >
+                  <!-- Line clamp cell (unescaped) -->
+                  <template v-else-if="cell.column.unescape">
+                    <span
+                      v-html="cell.value"
+                      :class="{ 
+                        'line-clamp': cell.lineClampOn,
+                        'line-clamp-expanded': !cell.lineClampOn
+                      }"
+                    ></span>
+                  </template>
+                  <!-- Line clamp cell (escaped) -->
+                  <template v-else>
+                    <span 
+                      :class="{ 
+                        'line-clamp': cell.lineClampOn,
+                        'line-clamp-expanded': !cell.lineClampOn
+                      }"
+                    >{{ cell.value }}</span>
+                  </template>
+                  <button
+                    v-if="cell.lineClampOn !== undefined"
+                    class="clamp-toggle-button"
+                    type="button"
+                    :data-expanded="!cell.lineClampOn"
+                    :aria-label="cell.lineClampOn ? 'Expand content' : 'Collapse content'"
+                    @click.stop="toggleRowLineClamp(cell.rowIndex)"
+                  ></button>
                 </td>
               </template>
             </tr>
@@ -737,6 +752,11 @@ export default defineComponent({
       state.selectedRows = ids;
     };
 
+    function clearSelection(event) {
+      state.selectedRows = [];
+      state.lastSelectedRow = null;
+    }
+
     return {
       canvasWidth,
       canvasHeight,
@@ -768,7 +788,8 @@ export default defineComponent({
       isSelectedRow,
       getRowDataId,
       updateSelectedRows,
-      eventOutgoingChangeSelectedNodes:
+      clearSelection,
+      eventOutgoing_change_selected_nodes:
         params.eventOutgoing_change_selected_nodes,
     };
   },

@@ -223,29 +223,29 @@ svg[data-icon] {
               > .textSearchByColumnWrapper {
                 position: absolute;
                 top: calc(
-                  var(--togostanza-fonts-font_size_default) * 1px + 16px
+                  var(--togostanza-fonts-font_size_default) * 1px + 15px
                 );
                 left: 0;
                 z-index: 3;
                 background: #ffffff;
-                box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+                box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3);
                 &.lastCol {
                   left: auto;
                   right: 0;
                 }
                 > p.title {
                   display: block;
-                  padding: 6px 16px;
+                  padding: 8px 10px 4px;
                   background-color: var(
                     --togostanza-table-thead-background_color
                   );
                   color: var(--togostanza-fonts-font_color_secondary);
                 }
                 > input.textSearchInput[name="queryInputByColumn"] {
-                  margin: 20px 30px;
+                  margin: 0 10px 8px;
                 }
                 #slider {
-                  margin: 30px 40px 8px;
+                  margin: 10px 15px 8px;
                   width: 230px;
                   .slider-connect {
                     background-color: var(--togostanza-theme-series_0_color);
@@ -263,7 +263,7 @@ svg[data-icon] {
 
                 .rangeInput {
                   width: 242px;
-                  margin: 0 34px 30px;
+                  margin: 0 10px 8px;
                   display: flex;
                   justify-content: space-between;
                   align-items: flex-end;
@@ -577,21 +577,12 @@ svg[data-icon] {
   line-clamp: var(--togostanza-line_clamp);
   overflow: hidden;
   text-overflow: ellipsis;
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: underline;
-  }
+  cursor: default;
 }
 
 .line-clamp-expanded {
-  cursor: pointer;
+  cursor: default;
   position: relative;
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-    border-radius: 2px;
-  }
 
   &:after {
     content: " ▲";
@@ -600,3 +591,72 @@ svg[data-icon] {
     margin-left: 4px;
   }
 }
+
+/* Wrapper to position toggle button */
+.clamp-td { position: relative; }
+.clamp-td:hover .clamp-toggle-button { opacity: 1; transform: scale(1); }
+
+/* Expand / collapse corner button */
+.clamp-toggle-button {
+  --btn-size: 18px;
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: var(--btn-size);
+  height: var(--btn-size);
+  padding: 0;
+  border: none;
+  background: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+  cursor: pointer;
+  opacity: 0; /* show on hover */
+  transform: scale(.6);
+  transition: opacity .18s ease, transform .25s cubic-bezier(.4,0,.2,1), filter .2s;
+
+  &::before, &::after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 5px;
+    height: 5px;
+  transition: transform .25s ease;
+  transform: translate(0,0);
+  }
+
+  &::before {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 6'><polygon points='5.78 5.08 1.71 1 5.5 1 5.5 0 0 0 0 5.5 1 5.5 1 1.71 5.08 5.79 5.78 5.08'/></svg>");
+    bottom: 8px;
+    right: 8px;
+  }
+
+  &::after {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 6'><polygon points='5 .5 5 4.29 .92 .21 .22 .92 4.29 5 .5 5 .5 6 6 6 6 .5 5 .5'/></svg>");
+    bottom: 3px;
+    right: 3px;
+  }
+
+  /* hover animation: move apart */
+  &:hover::before { transform: translate(-2px, -2px); }
+  &:hover::after { transform: translate(2px, 2px); }
+
+  &[data-expanded='true'] {
+    &::before {
+      transform: translate(-2px, -2px);
+      bottom: 1px;
+      right: 1px;
+    }
+    &::after {
+      bottom: 10px;
+      right: 10px;
+    }
+  }
+
+  &:hover { filter: brightness(0.6); }
+  &:focus-visible { outline: 2px solid #2684ff; outline-offset: 2px; }
+}
+
+/* Remove old ▲ marker when custom button is present */
+.clamp-td .line-clamp-expanded:after { content: none; }
+
