@@ -148,7 +148,7 @@
       "stanza:description": "Secondary font size in px"
     },
     {
-      "stanza:key": "--togostanza-border-color",
+      "stanza:key": "--togostanza-theme-border_color",
       "stanza:type": "color",
       "stanza:default": "#4E5059",
       "stanza:description": "Border color"
