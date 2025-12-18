@@ -93,6 +93,7 @@ svg[data-icon] {
           border-color: var(--togostanza-border-color);
           border-radius: 0.2em;
           height: 20px;
+          background-color: var(--togostanza-theme-background_color);
         }
       }
       > .menuWrapper {
@@ -130,10 +131,13 @@ svg[data-icon] {
           }
         }
       }
+      > input {
+        background-color: var(--togostanza-theme-background_color);
+      }
     }
     > .tableWrapper {
       overflow: auto;
-      background-color: var(--togostanza-theme-background_color_body);
+      background-color: var(--togostanza-theme-background_color);
       > table {
         > thead {
           margin-bottom: 0;
@@ -350,7 +354,7 @@ svg[data-icon] {
               &.fixed {
                 position: sticky;
                 z-index: 10;
-                background-color: var(--togostanza-theme-background_color_body);
+                background-color: var(--togostanza-theme-background_color);
               }
               &.hide {
                 display: none;
