@@ -24,7 +24,7 @@
         </p>
       </div>
       <div class="tableWrapper" :style="`width: ${canvasWidth};`">
-        <table v-if="state.allRows" ref="table">
+        <table v-if="state.allRows && state.allRows.length > 0 && filteredRows.length > 0" ref="table">
           <thead ref="thead">
             <tr>
               <template v-for="(column, i) in state.columns">
@@ -300,7 +300,13 @@
           {{ message_load_error }}
         </div>
         <div
-          v-else-if="filteredRows && filteredRows.length === 0"
+          v-else-if="!state.isFetching && (!state.allRows || state.allRows.length === 0)"
+          class="togostanza-table-no-data"
+        >
+          {{ message_not_found }}
+        </div>
+        <div
+          v-else-if="!state.isFetching && filteredRows.length === 0 && state.allRows && state.allRows.length > 0"
           class="togostanza-table-no-data"
         >
           {{ message_not_found }}
@@ -332,6 +338,7 @@ import {
   watchEffect,
   onMounted,
   onRenderTriggered,
+  nextTick,
 } from "vue";
 
 import SliderPagination from "./SliderPagination.vue";
@@ -720,10 +727,21 @@ export default defineComponent({
     const rootElement = ref(null);
 
     onRenderTriggered(() => {
-      setTimeout(() => {
-        const thList = thead.value.children[0].children;
-        state.thListWidth = Array.from(thList).map((th) => th.clientWidth);
-      }, 0);
+      nextTick(() => {
+        try {
+          if (thead.value && 
+              thead.value.children && 
+              thead.value.children.length > 0 && 
+              thead.value.children[0] && 
+              thead.value.children[0].children && 
+              thead.value.children[0].children.length > 0) {
+            const thList = thead.value.children[0].children;
+            state.thListWidth = Array.from(thList).map((th) => th.clientWidth);
+          }
+        } catch (error) {
+          console.warn('Failed to calculate column widths:', error);
+        }
+      });
     });
 
     const json = () => {
