@@ -58,20 +58,20 @@
       "stanza:key": "axis-x-key",
       "stanza:type": "text",
       "stanza:example": "group",
-      "stanza:description": "What x-key in data to use",
+      "stanza:description": "What X key in data to use",
       "stanza:required": true
     },
     {
       "stanza:key": "axis-x-title",
       "stanza:type": "text",
       "stanza:example": "group",
-      "stanza:description": "X-axis title"
+      "stanza:description": "X axis title"
     },
     {
       "stanza:key": "axis-x-title_padding",
       "stanza:type": "number",
       "stanza:example": 40,
-      "stanza:description": "Title and x-axis gap in px"
+      "stanza:description": "Title and X axis gap in px"
     },
     {
       "stanza:key": "axis-x-ticks_label_angle",
@@ -91,26 +91,26 @@
       "stanza:type": "single-choice",
       "stanza:choice": ["bottom", "top"],
       "stanza:example": "bottom",
-      "stanza:description": "X-axis placement"
+      "stanza:description": "X axis placement"
     },
     {
       "stanza:key": "axis-y-key",
       "stanza:type": "text",
       "stanza:example": "variable",
-      "stanza:description": "What y key in data to use",
+      "stanza:description": "What Y key in data to use",
       "stanza:required": true
     },
     {
       "stanza:key": "axis-y-title",
       "stanza:type": "text",
       "stanza:example": "variable",
-      "stanza:description": "Y-axis title"
+      "stanza:description": "Y axis title"
     },
     {
       "stanza:key": "axis-y-title_padding",
       "stanza:type": "number",
       "stanza:example": 40,
-      "stanza:description": "Title and y-axis gap in px"
+      "stanza:description": "Title and Y axis gap in px"
     },
     {
       "stanza:key": "axis-y-ticks_label_angle",
@@ -130,7 +130,7 @@
       "stanza:type": "single-choice",
       "stanza:choice": ["left", "right"],
       "stanza:example": "left",
-      "stanza:description": "Y-axis placement"
+      "stanza:description": "Y axis placement"
     },
     {
       "stanza:key": "cell-color_key",
