@@ -2,10 +2,6 @@
 @use "@/common.scss";
 
 svg {
-  .domain,
-  .tick {
-    color: #333;
-  }
   .text {
     font-family: var(--togostanza-fonts-font_family);
     font-size: calc(var(--togostanza-fonts-font_size_default) * 1px);
