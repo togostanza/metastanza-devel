@@ -120,6 +120,7 @@ export interface AxisParamsI {
   ticksInterval?: number;
   ticksIntervalUnits?: TimeIntervalUnitsT;
   ticksLabelsFormat?: string;
+  tickLabelsVisible?: boolean;
   title?: string;
   titlePadding?: number;
   gridInterval?: number;
@@ -155,6 +156,7 @@ const initialState: AxisParamsI = {
   ticksIntervalUnits: "none",
   title: "",
   ticksLabelsFormat: "%s",
+  tickLabelsVisible: true,
   titlePadding: 0,
   gridInterval: 0,
   gridIntervalUnits: "none",
@@ -324,6 +326,10 @@ export class Axis {
     this.callbackMap.set(
       "tickLabelsAngle",
       this._handleTickLabelsAngleUpdate.bind(this)
+    );
+    this.callbackMap.set(
+      "tickLabelsVisible",
+      this._handleTickLabelsVisibleUpdate.bind(this)
     );
     this.callbackMap.set("scale", this._handleScaleUpdate.bind(this));
     this.callbackMap.set(
@@ -512,6 +518,7 @@ export class Axis {
 
     queueMicrotask(() => {
       this._handleTickLabelsAngleUpdate();
+      this._handleTickLabelsVisibleUpdate();
       this._handleTitlePaddingUpdate();
     });
   }
@@ -748,6 +755,18 @@ export class Axis {
       .attr("text-anchor", textAnchor)
       .attr("dominant-baseline", dominantBaseline)
       .attr("transform", `${translate || ""} rotate(${angle})`);
+  }
+
+  private _handleTickLabelsVisibleUpdate(
+    visible: boolean = this.params.tickLabelsVisible ?? true
+  ) {
+    this._axisG
+      .selectAll(".tick text")
+      .style("display", visible ? null : "none");
+
+    this._axisG
+      .selectAll(".tick line")
+      .style("display", visible ? null : "none");
   }
 
   private _checkScaleErrors(scale: ScaleType, domain: d3.AxisDomain[]) {
