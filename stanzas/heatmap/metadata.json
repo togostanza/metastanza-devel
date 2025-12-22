@@ -49,6 +49,12 @@
       "stanza:description": "Number of gradation colors between color-min and color-max"
     },
     {
+      "stanza:key": "legend-decimal_places",
+      "stanza:type": "number",
+      "stanza:example": 0,
+      "stanza:description": "Number of decimal places for legend values"
+    },
+    {
       "stanza:key": "axis-x-key",
       "stanza:type": "text",
       "stanza:example": "group",
