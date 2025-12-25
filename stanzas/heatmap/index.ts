@@ -90,8 +90,13 @@ export default class Heatmap extends MetaStanza {
     const legendTitle = this.params["legend-title"];
     const isLegendVisible = this.params["legend-visible"];
     const legendGroups = this.params["legend-color_steps"];
+    const rawDecimalPlaces = this.params["legend-decimal_places"];
+    const legendDecimalPlaces = Math.max(
+      0,
+      Math.min(10, Math.floor(Number(rawDecimalPlaces) || 0))
+    );
     const legendConfiguration = {
-      items: intervals(setColor).map((interval) => ({
+      items: intervals(setColor, legendDecimalPlaces).map((interval) => ({
         id: interval.label,
         color: interval.color,
         value: interval.label,
@@ -123,6 +128,7 @@ export default class Heatmap extends MetaStanza {
       domain: [...new Set(dataset.map((d) => d[xKey]))],
       drawArea: axisArea,
       tickLabelsAngle: this.params["axis-x-ticks_label_angle"] || 0,
+      tickLabelsVisible: this.params["axis-x-label-visible"],
       title: this.params["axis-x-title"],
       titlePadding: this.params["axis-x-title_padding"] || 0,
       scale: "ordinal",
@@ -140,6 +146,7 @@ export default class Heatmap extends MetaStanza {
       domain: [...new Set(dataset.map((d) => d[yKey]))],
       drawArea: axisArea,
       tickLabelsAngle: this.params["axis-y-ticks_label_angle"] || 0,
+      tickLabelsVisible: this.params["axis-y-label-visible"],
       title: this.params["axis-y-title"],
       titlePadding: this.params["axis-y-title_padding"] || 0,
       scale: "ordinal",
@@ -266,6 +273,7 @@ export default class Heatmap extends MetaStanza {
     // fix ColorGenerator to typescript
     function intervals(
       color,
+      decimalPlaces: number,
       steps: number = legendGroups >= 2 ? legendGroups : 2
     ): Interval[] {
       return [...Array(steps).keys()].map((i) => {
@@ -274,7 +282,7 @@ export default class Heatmap extends MetaStanza {
           i * (Math.abs(cellDomainMax - cellDomainMin) / (steps - 1));
 
         return {
-          label: legendSteps,
+          label: parseFloat(legendSteps.toFixed(decimalPlaces)),
           color: color(legendSteps),
         };
       });

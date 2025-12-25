@@ -49,6 +49,12 @@
       "stanza:description": "Number of gradation colors between color-min and color-max"
     },
     {
+      "stanza:key": "legend-decimal_places",
+      "stanza:type": "number",
+      "stanza:example": 0,
+      "stanza:description": "Number of decimal places for legend values"
+    },
+    {
       "stanza:key": "axis-x-key",
       "stanza:type": "text",
       "stanza:example": "group",
@@ -74,11 +80,18 @@
       "stanza:description": "X ticks labels angle (in degree)"
     },
     {
+      "stanza:key": "axis-x-label-visible",
+      "stanza:type": "boolean",
+      "stanza:label": "Show labels on x-axis",
+      "stanza:example": true,
+      "stanza:description": "Show labels on x-axis"
+    },
+    {
       "stanza:key": "axis-x-placement",
       "stanza:type": "single-choice",
       "stanza:choice": ["bottom", "top"],
       "stanza:example": "bottom",
-      "stanza:description": "axis placement"
+      "stanza:description": "X axis placement"
     },
     {
       "stanza:key": "axis-y-key",
@@ -104,6 +117,13 @@
       "stanza:type": "number",
       "stanza:example": 0,
       "stanza:description": "Y ticks labels angle (in degree)"
+    },
+    {
+      "stanza:key": "axis-y-label-visible",
+      "stanza:type": "boolean",
+      "stanza:label": "Show labels on y-axis",
+      "stanza:example": true,
+      "stanza:description": "Show labels on y-axis"
     },
     {
       "stanza:key": "axis-y-placement",
