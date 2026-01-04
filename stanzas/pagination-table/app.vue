@@ -791,7 +791,7 @@ export default defineComponent({
       updateSelectedRows,
       clearSelection,
       METASTANZA_DATA_ATTR,
-      eventOutgoing_change_selected_nodes:
+      eventOutgoingChangeSelectedNodes:
         params.eventOutgoing_change_selected_nodes,
     };
   },
