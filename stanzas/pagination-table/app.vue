@@ -296,7 +296,7 @@
           {{ message_load_error }}
         </div>
         <div
-          v-else-if="!state.isFetching && ((!state.allRows || state.allRows.length === 0) || (filteredRows.length === 0 && state.allRows && state.allRows.length > 0))"
+          v-else-if="!state.isFetching && (!state.allRows || state.allRows.length === 0 || filteredRows.length === 0)"
           class="togostanza-table-no-data"
         >
           {{ message_not_found }}
