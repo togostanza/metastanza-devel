@@ -24,7 +24,7 @@
         </p>
       </div>
       <div class="tableWrapper" :style="`width: ${canvasWidth};`">
-        <table v-if="state.allRows && state.allRows.length > 0 && filteredRows.length > 0" ref="table">
+        <table v-if="filteredRows.length > 0" ref="table">
           <thead ref="thead">
             <tr>
               <template v-for="(column, i) in state.columns">
@@ -300,13 +300,7 @@
           {{ message_load_error }}
         </div>
         <div
-          v-else-if="!state.isFetching && (!state.allRows || state.allRows.length === 0)"
-          class="togostanza-table-no-data"
-        >
-          {{ message_not_found }}
-        </div>
-        <div
-          v-else-if="!state.isFetching && filteredRows.length === 0 && state.allRows && state.allRows.length > 0"
+          v-else-if="!state.isFetching && ((!state.allRows || state.allRows.length === 0) || (filteredRows.length === 0 && state.allRows && state.allRows.length > 0))"
           class="togostanza-table-no-data"
         >
           {{ message_not_found }}
@@ -729,12 +723,7 @@ export default defineComponent({
     onRenderTriggered(() => {
       nextTick(() => {
         try {
-          if (thead.value && 
-              thead.value.children && 
-              thead.value.children.length > 0 && 
-              thead.value.children[0] && 
-              thead.value.children[0].children && 
-              thead.value.children[0].children.length > 0) {
+          if (thead.value?.children?.[0]?.children?.length > 0) {
             const thList = thead.value.children[0].children;
             state.thListWidth = Array.from(thList).map((th) => th.clientWidth);
           }
