@@ -204,12 +204,11 @@
             <tr
               v-for="(row, row_index) in rowsInCurrentPage"
               :key="row.id"
-              :data-id="getRowDataId(row)"
               :class="{
                 selected: isSelectedRow(row),
                 selectable: eventOutgoingChangeSelectedNodes,
               }"
-              :[METASTANZA_DATA_ATTR]="row.find(column => column.column.id === METASTANZA_NODE_ID_KEY)?.value"
+              :[METASTANZA_DATA_ATTR]="getRowDataId(row)"
             >
               <template v-for="(cell, i) in row">
                 <td
@@ -357,7 +356,7 @@ import {
   faChartBar,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { METASTANZA_NODE_ID_KEY } from "@/lib/MetaStanza";
+import { METASTANZA_NODE_ID_KEY, METASTANZA_DATA_ATTR } from "@/lib/MetaStanza";
 
 library.add(
   faEllipsisH,
@@ -791,6 +790,7 @@ export default defineComponent({
       getRowDataId,
       updateSelectedRows,
       clearSelection,
+      METASTANZA_DATA_ATTR,
       eventOutgoing_change_selected_nodes:
         params.eventOutgoing_change_selected_nodes,
     };
