@@ -209,11 +209,7 @@
                 selected: isSelectedRow(row),
                 selectable: eventOutgoingChangeSelectedNodes,
               }"
-              @click.stop="
-                eventOutgoing_change_selected_nodes
-                  ? handleRowClick($event, row_index, row)
-                  : null
-              "
+              :[METASTANZA_DATA_ATTR]="row.find(column => column.column.id === METASTANZA_NODE_ID_KEY)?.value"
             >
               <template v-for="(cell, i) in row">
                 <td
@@ -440,7 +436,6 @@ export default defineComponent({
       axisSelectorActiveColumn: null,
 
       selectedRows: [],
-      lastSelectedRow: null,
 
       isFetching: false,
       hasError: false,
@@ -762,58 +757,6 @@ export default defineComponent({
 
     function clearSelection(event) {
       state.selectedRows = [];
-      state.lastSelectedRow = null;
-    }
-
-    function handleRowClick(event, rowIndex, row) {
-      if (!params.eventOutgoing_change_selected_nodes) return;
-      
-      const rowID = row.find(
-        (column) => column.column.id === METASTANZA_NODE_ID_KEY
-      )?.value;
-      
-      if (!rowID) return;
-      
-      const isCurrentlySelected = state.selectedRows.includes(rowID);
-      
-      if (event.ctrlKey || event.metaKey) {
-        // Ctrl/Cmd+click: toggle selection
-        if (isCurrentlySelected) {
-          state.selectedRows = state.selectedRows.filter(id => id !== rowID);
-        } else {
-          state.selectedRows = [...state.selectedRows, rowID];
-        }
-      } else if (event.shiftKey && state.lastSelectedRow !== null) {
-        // Shift+click: select range
-        const currentIndex = filteredRows.findIndex(r => 
-          r.find(col => col.column.id === METASTANZA_NODE_ID_KEY)?.value === rowID
-        );
-        const lastIndex = filteredRows.findIndex(r => 
-          r.find(col => col.column.id === METASTANZA_NODE_ID_KEY)?.value === state.lastSelectedRow
-        );
-        
-        const startIndex = Math.min(currentIndex, lastIndex);
-        const endIndex = Math.max(currentIndex, lastIndex);
-        
-        const rangeIds = [];
-        for (let i = startIndex; i <= endIndex; i++) {
-          const id = filteredRows[i].find(col => col.column.id === METASTANZA_NODE_ID_KEY)?.value;
-          if (id) rangeIds.push(id);
-        }
-        
-        state.selectedRows = [...new Set([...state.selectedRows, ...rangeIds])];
-      } else {
-        // Regular click: select only this row
-        state.selectedRows = [rowID];
-      }
-      
-      state.lastSelectedRow = rowID;
-      
-      // Emit event
-      const customEvent = new CustomEvent("change_selected_nodes", {
-        detail: state.selectedRows,
-      });
-      params.stanzaElement.dispatchEvent(customEvent);
     }
 
     return {
@@ -848,7 +791,6 @@ export default defineComponent({
       getRowDataId,
       updateSelectedRows,
       clearSelection,
-      handleRowClick,
       eventOutgoing_change_selected_nodes:
         params.eventOutgoing_change_selected_nodes,
     };
