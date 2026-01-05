@@ -10,6 +10,8 @@ import {
 } from "togostanza-utils";
 import { SelectionPlugin } from "../../lib/plugins/SelectionPlugin";
 
+const MESSAGE_PARAM_KEYS = ["message-not_found", "message-load_error"];
+
 export default class PaginationTable extends MetaStanza {
   _selectionPlugin;
   _messageParamObserver;
@@ -44,24 +46,23 @@ export default class PaginationTable extends MetaStanza {
 
     this._app?.unmount();
 
-    const attributeMessageNotFound =
-      this.element.getAttribute("message-not_found") ?? undefined;
-    const attributeMessageLoadError =
-      this.element.getAttribute("message-load_error") ?? undefined;
+    const normalizeAttrValue = (value) => (value === null ? undefined : value);
+    const syncParamsFromAttributes = (keys) => {
+      return keys.reduce((acc, key) => {
+        const attrValue = normalizeAttrValue(this.element.getAttribute(key));
+        const resolvedValue = attrValue ?? this.params[key];
+        this.params[key] = resolvedValue;
+        acc[key] = resolvedValue;
+        return acc;
+      }, {});
+    };
 
-    const resolvedMessageNotFound =
-      attributeMessageNotFound ?? this.params["message-not_found"];
-    const resolvedMessageLoadError =
-      attributeMessageLoadError ?? this.params["message-load_error"];
-
-    this.params["message-not_found"] = resolvedMessageNotFound;
-    this.params["message-load_error"] = resolvedMessageLoadError;
+    const messageParams = syncParamsFromAttributes(MESSAGE_PARAM_KEYS);
 
     const drawContent = async () => {
       this._app = createApp(App, {
         ...this.params,
-        "message-not_found": resolvedMessageNotFound,
-        "message-load_error": resolvedMessageLoadError,
+        ...messageParams,
         main,
         stanzaElement: this.element,
       });
@@ -71,41 +72,45 @@ export default class PaginationTable extends MetaStanza {
     await drawContent();
 
     this._component?.updateMessageStrings?.(
-      resolvedMessageNotFound,
-      resolvedMessageLoadError
+      messageParams["message-not_found"],
+      messageParams["message-load_error"]
     );
 
     this._messageParamObserver = new MutationObserver((mutations) => {
       let hasRelevantChange = false;
-      let nextNotFound = this.params["message-not_found"];
-      let nextLoadError = this.params["message-load_error"];
+      const nextMessageParams = { ...messageParams };
 
       for (const mutation of mutations) {
-        if (mutation.type !== "attributes") {
+        if (
+          mutation.type !== "attributes" ||
+          !MESSAGE_PARAM_KEYS.includes(mutation.attributeName)
+        ) {
           continue;
         }
 
-        if (mutation.attributeName === "message-not_found") {
-          hasRelevantChange = true;
-          nextNotFound = this.element.getAttribute("message-not_found") ?? undefined;
-          this.params["message-not_found"] = nextNotFound;
-        } else if (mutation.attributeName === "message-load_error") {
-          hasRelevantChange = true;
-          nextLoadError = this.element.getAttribute("message-load_error") ?? undefined;
-          this.params["message-load_error"] = nextLoadError;
-        }
+        hasRelevantChange = true;
+        const nextValue = normalizeAttrValue(
+          this.element.getAttribute(mutation.attributeName)
+        );
+        nextMessageParams[mutation.attributeName] = nextValue;
+        this.params[mutation.attributeName] = nextValue;
       }
 
       if (!hasRelevantChange) {
         return;
       }
 
-      this._component?.updateMessageStrings?.(nextNotFound, nextLoadError);
+      Object.assign(messageParams, nextMessageParams);
+
+      this._component?.updateMessageStrings?.(
+        nextMessageParams["message-not_found"],
+        nextMessageParams["message-load_error"]
+      );
     });
 
     this._messageParamObserver.observe(this.element, {
       attributes: true,
-      attributeFilter: ["message-not_found", "message-load_error"],
+      attributeFilter: MESSAGE_PARAM_KEYS,
     });
 
     this._selectionPlugin = new SelectionPlugin({
