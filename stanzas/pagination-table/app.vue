@@ -414,6 +414,12 @@ export default defineComponent({
       .split(",")
       .map(Number);
 
+    const getMetadataParamExample = (key) => {
+      return metadata["stanza:parameter"]?.find(
+        (param) => param["stanza:key"] === key
+      )?.["stanza:example"];
+    };
+
     const state = reactive({
       responseJSON: null, // for download. may consume extra memory
 
@@ -440,8 +446,12 @@ export default defineComponent({
       hasError: false,
     });
 
-    const message_not_found = ref(params["message-not_found"]);
-    const message_load_error = ref(params["message-load_error"]);
+    const message_not_found = ref(
+      params["message-not_found"] ?? getMetadataParamExample("message-not_found") ?? ""
+    );
+    const message_load_error = ref(
+      params["message-load_error"] ?? getMetadataParamExample("message-load_error") ?? ""
+    );
 
     const filteredRows = computed(() => {
       const queryForAllColumns = state.queryForAllColumns;
