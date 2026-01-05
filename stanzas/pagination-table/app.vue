@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <div ref="rootElement" class="wrapper" :style="`width: ${canvasWidth}; height: ${canvasHeight};`" @click="clearSelection">
+  <div ref="rootElement" class="wrapper" :style="`width: ${canvasWidth}; max-height: ${canvasHeight};`" @click="clearSelection">
     <div class="tableOptionWrapper">
       <div class="tableOption">
         <input
