@@ -24,7 +24,7 @@
         </p>
       </div>
       <div class="tableWrapper" :style="`width: ${canvasWidth};`">
-        <table v-if="filteredRows.length > 0" ref="table">
+        <table v-if="state.columns.length > 0" ref="table">
           <thead ref="thead">
             <tr>
               <template v-for="(column, i) in state.columns">
