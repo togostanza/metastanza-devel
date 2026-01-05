@@ -420,6 +420,10 @@ export default defineComponent({
       )?.["stanza:example"];
     };
 
+    const resolveMessageValue = (value, key) => {
+      return value ?? getMetadataParamExample(key) ?? "";
+    };
+
     const state = reactive({
       responseJSON: null, // for download. may consume extra memory
 
@@ -447,11 +451,22 @@ export default defineComponent({
     });
 
     const message_not_found = ref(
-      params["message-not_found"] ?? getMetadataParamExample("message-not_found") ?? ""
+      resolveMessageValue(params["message-not_found"], "message-not_found")
     );
     const message_load_error = ref(
-      params["message-load_error"] ?? getMetadataParamExample("message-load_error") ?? ""
+      resolveMessageValue(params["message-load_error"], "message-load_error")
     );
+
+    const updateMessageStrings = (notFound, loadError) => {
+      message_not_found.value = resolveMessageValue(
+        notFound,
+        "message-not_found"
+      );
+      message_load_error.value = resolveMessageValue(
+        loadError,
+        "message-load_error"
+      );
+    };
 
     const filteredRows = computed(() => {
       const queryForAllColumns = state.queryForAllColumns;
@@ -800,6 +815,7 @@ export default defineComponent({
       getRowDataId,
       updateSelectedRows,
       clearSelection,
+      updateMessageStrings,
       METASTANZA_DATA_ATTR,
       eventOutgoingChangeSelectedNodes:
         params.eventOutgoing_change_selected_nodes,
