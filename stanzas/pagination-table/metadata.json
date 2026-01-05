@@ -180,7 +180,7 @@
     {
       "stanza:key": "--togostanza-table-thead-background_color",
       "stanza:type": "color",
-      "stanza:default": "",
+      "stanza:default": "#FFF",
       "stanza:description": "Background color of table header"
     },
     {
