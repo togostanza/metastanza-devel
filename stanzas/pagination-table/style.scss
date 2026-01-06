@@ -415,6 +415,7 @@ svg[data-icon] {
   > .paginationWrapper {
     --pagination-border-radius: 3px;
     display: flex;
+    justify-content: center;
     width: calc(100% - 30px);
     margin: 10px auto;
     > .serialPagination {
