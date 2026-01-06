@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <div ref="rootElement" class="wrapper" :style="`width: ${canvasWidth}; height: ${canvasHeight};`" @click="clearSelection">
+  <div ref="rootElement" class="wrapper" :style="`width: ${canvasWidth}; max-height: ${canvasHeight};`" @click="clearSelection">
     <div class="tableOptionWrapper">
       <div class="tableOption">
         <input
@@ -24,7 +24,7 @@
         </p>
       </div>
       <div class="tableWrapper" :style="`width: ${canvasWidth};`">
-        <table v-if="state.allRows" ref="table">
+        <table v-if="state.columns.length > 0" ref="table">
           <thead ref="thead">
             <tr>
               <template v-for="(column, i) in state.columns">
@@ -204,16 +204,11 @@
             <tr
               v-for="(row, row_index) in rowsInCurrentPage"
               :key="row.id"
-              :data-id="getRowDataId(row)"
               :class="{
                 selected: isSelectedRow(row),
                 selectable: eventOutgoingChangeSelectedNodes,
               }"
-              @click.stop="
-                eventOutgoing_change_selected_nodes
-                  ? handleRowClick($event, row_index, row)
-                  : null
-              "
+              :[METASTANZA_DATA_ATTR]="getRowDataId(row)"
             >
               <template v-for="(cell, i) in row">
                 <td
@@ -300,7 +295,7 @@
           {{ message_load_error }}
         </div>
         <div
-          v-else-if="filteredRows && filteredRows.length === 0"
+          v-else-if="!state.isFetching && (!state.allRows || state.allRows.length === 0 || filteredRows.length === 0)"
           class="togostanza-table-no-data"
         >
           {{ message_not_found }}
@@ -332,6 +327,7 @@ import {
   watchEffect,
   onMounted,
   onRenderTriggered,
+  nextTick,
 } from "vue";
 
 import SliderPagination from "./SliderPagination.vue";
@@ -360,7 +356,7 @@ import {
   faChartBar,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { METASTANZA_NODE_ID_KEY } from "@/lib/MetaStanza";
+import { METASTANZA_NODE_ID_KEY, METASTANZA_DATA_ATTR } from "@/lib/MetaStanza";
 
 library.add(
   faEllipsisH,
@@ -418,6 +414,16 @@ export default defineComponent({
       .split(",")
       .map(Number);
 
+    const getMetadataParamExample = (key) => {
+      return metadata["stanza:parameter"]?.find(
+        (param) => param["stanza:key"] === key
+      )?.["stanza:example"];
+    };
+
+    const resolveMessageValue = (value, key) => {
+      return value ?? getMetadataParamExample(key) ?? "";
+    };
+
     const state = reactive({
       responseJSON: null, // for download. may consume extra memory
 
@@ -444,8 +450,23 @@ export default defineComponent({
       hasError: false,
     });
 
-    const message_not_found = ref(params["message-not_found"]);
-    const message_load_error = ref(params["message-load_error"]);
+    const message_not_found = ref(
+      resolveMessageValue(params["message-not_found"], "message-not_found")
+    );
+    const message_load_error = ref(
+      resolveMessageValue(params["message-load_error"], "message-load_error")
+    );
+
+    const updateMessageStrings = (notFound, loadError) => {
+      message_not_found.value = resolveMessageValue(
+        notFound,
+        "message-not_found"
+      );
+      message_load_error.value = resolveMessageValue(
+        loadError,
+        "message-load_error"
+      );
+    };
 
     const filteredRows = computed(() => {
       const queryForAllColumns = state.queryForAllColumns;
@@ -720,10 +741,16 @@ export default defineComponent({
     const rootElement = ref(null);
 
     onRenderTriggered(() => {
-      setTimeout(() => {
-        const thList = thead.value.children[0].children;
-        state.thListWidth = Array.from(thList).map((th) => th.clientWidth);
-      }, 0);
+      nextTick(() => {
+        try {
+          if (thead.value?.children?.[0]?.children?.length > 0) {
+            const thList = thead.value.children[0].children;
+            state.thListWidth = Array.from(thList).map((th) => th.clientWidth);
+          }
+        } catch (error) {
+          console.warn('Failed to calculate column widths:', error);
+        }
+      });
     });
 
     const json = () => {
@@ -754,7 +781,6 @@ export default defineComponent({
 
     function clearSelection(event) {
       state.selectedRows = [];
-      state.lastSelectedRow = null;
     }
 
     return {
@@ -789,7 +815,9 @@ export default defineComponent({
       getRowDataId,
       updateSelectedRows,
       clearSelection,
-      eventOutgoing_change_selected_nodes:
+      updateMessageStrings,
+      METASTANZA_DATA_ATTR,
+      eventOutgoingChangeSelectedNodes:
         params.eventOutgoing_change_selected_nodes,
     };
   },

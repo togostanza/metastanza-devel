@@ -56,8 +56,8 @@
         :min="1"
         :max="totalPages"
         class="pageSlider"
-        @update.stop="updateCurrentPage(inputtingCurrentPage)"
-          @click.stop
+        @update="updateCurrentPage(inputtingCurrentPage)"
+        @click.stop
       >
       </Slider>
     </template>
